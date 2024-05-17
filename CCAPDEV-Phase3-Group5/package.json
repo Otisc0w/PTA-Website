@@ -1,0 +1,22 @@
+{
+  "name": "ccapdev-phase3-group5",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.43.2",
+    "connect-mongo": "^5.1.0",
+    "express": "^4.19.2",
+    "express-fileupload": "^1.5.0",
+    "express-session": "^1.18.0",
+    "hbs": "^4.2.0",
+    "mongoose": "^8.3.1",
+    "pkg": "^5.8.1"
+  },
+  "description": ""
+}

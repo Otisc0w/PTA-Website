@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Post | Pineapple</title>
+    <link rel="stylesheet" type="text/css" href="stylesheets/post.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"/>
+</head>
+
+<body>
+    <div class="header">
+        <div class="website-name">
+            <span class="webname"><a href="home">Pineapple </a></span><span class="logo"> </span>
+        </div>
+
+        <div class="tabs-container">
+            <ul class="tabs">
+                <li class="home"><a href="home">Home</a></li>
+            </ul>
+        </div>
+
+        <div class="actions-container">
+            <div class="action-buttons">
+                <ul class="actions">
+                    <li class="profile">
+                        <a href="profile?profile={{ post.user }}">
+                            <span class="material-symbols-outlined">
+                                person
+                            </span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div id="post" class="post">
+            <div class="username-wrapper">
+                <div class="username">
+                    <a class="post-community" href="community?community={{ removeFirst post.community }}">{{ post.community }}</a>
+                    <p class="posted no-margin">
+                        Posted by <a class="post-user" href="profile?username={{ post.user }}">{{ post.user }}</a> on {{ post.date }} 
+                        <span class="edited">{{ edited post.edited }}</span>
+                    </p>
+                </div>
+            </div>
+            <div class="post-content">
+                <div class="title-wrapper">
+                    <h3 id="post-title" class="title">{{ post.title }}</h3>
+                </div>
+                <div>
+                    <h4 id="post-content" class="desc">{{ post.content }}</h4>
+                </div>
+            </div>
+            <div class="icons">
+                <div class="icons background"> 
+                    {{!-- !! --}}
+                    <a href="/upvote?postId={{ post.postId }}"><button class="vote-button no-padding" upvote-data="{{ upvotes post.upvotes user.username }}" id="upvote-button"><span class="material-symbols-outlined">arrow_upward</span></button></a>
+                    <h4 class="vote no-margin">{{ calculateVotes post.upvotes post.downvotes }}</h4>
+                    <a href="/downvote?postId={{ post.postId }}"><button class="vote-button no-padding" downvote-data="{{ downvotes post.downvotes user.username }}" id="downvote-button"><span class="material-symbols-outlined">arrow_downward</span></button></a>
+                </div>
+
+                <div class="icons background">
+                    <img class="replydisplay-icon" src="images/reply-icon.png">
+                    <h4 class="comment-count no-margin" id="comment-count">{{ length comments }} Comment/s</h4>
+                </div>
+
+                <button id="edit-post-button" class="button" data-user="{{ post.user }}" data-postId="{{ post.postId }}">Edit</button>
+                <button id="delete-post-button" class="button" data-user="{{ post.user }}" data-postId="{{ post.postId }}">Delete</button>
+            </div>
+        </div>
+
+        <div class="comments">
+            <form action="/submit-comment?postId={{ post.postId }}" method="post">
+                <span>
+                    <p class="comment-desc">Comment as <span id="comment-username">{{ user.username }}</span></p>
+                    <textarea id="content" name="content" placeholder="What are your thoughts..."></textarea>
+                    <button class="commentbutton" onclick="return validateForm()" type="submit">Comment</button>
+                </span>
+            </form>
+            <hr>
+            <div id="comment-section" class="view-comments">
+                <div>
+                    {{#each comments}}
+                    <div class="other-comment" style="margin-left: {{ times this.level }}px;">
+                        <p class="no-margin">
+                            <strong><a class="comment-user" href="profile?username={{ this.user }}">{{ this.user }}</a></strong> 
+                            <span class="dot">•</span> 
+                            <span class="posted">{{ this.date }}</span>
+                            <span class="edited">{{ edited this.edited }}</span><br>
+                            <span class="comment-content">{{ this.content }}</span>
+                        </p>
+                        <div class="view-icons">
+                            <div class="view-icons button show-textarea">
+                                <img class="reply-icon reply no-margin" src="images/reply-icon.png"><h4 class="reply">Reply</h4></img>
+                            </div>
+                            
+                            <button class="button edit-comment-button" data-user="{{ this.user }}" data-commentId="{{ this.commentId }}">Edit</button>
+                            <button class="button delete-comment-button" data-user="{{ this.user }}" data-commentId="{{ this.commentId }}">Delete</button>
+                        </div>
+
+                        <form class="reply-textarea" action="/submit-comment?postId={{ this.postId }}&parentId={{ this.commentId }}" method="post" hidden>
+                            <div>
+                                <textarea class="reply" name="content" placeholder="Write a reply..."></textarea>
+                                <button class="button commentbutton" onclick="return validateReply()" type="submit">Comment</button>
+                                <button class="button commentbutton cancelbutton" type="button">Cancel</button>
+                            </div>
+                        </form>
+                    </div>
+                    {{/each}}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <form class="edit-container no-margin" action="/edit" method="post" hidden>
+        <div class="edit-container">
+            <label class="edit-label">Edit</label>
+            <textarea class="edit-textarea" name="content" cols="40"></textarea>
+            <div class="inline">
+                <button class="vote-button no-margin edit-submit" type="button">Cancel</button>
+                <button class="vote-button no-margin edit-submit no-padding" onclick="return validateEdit" type="submit"><span class="material-symbols-outlined">save</span></button>
+            </div>
+        </div>
+    </form>
+
+    <form class="edit-container no-margin" action="/edit" method="post" hidden>
+        <div class="edit-container">
+            <label class="edit-label">Edit</label>
+            <textarea class="edit-textarea" name="content" cols="40"></textarea>
+            <div class="inline">
+                <button class="vote-button no-margin edit-submit" type="button">Cancel</button>
+                <button class="vote-button no-margin edit-submit no-padding" onclick="return validateEdit" type="submit"><span class="material-symbols-outlined">save</span></button>
+            </div>
+        </div>
+    </form>
+
+    <div class="delete-container no-margin" hidden>
+        <label class="delete-label">Delete?</label><br>
+        <div class="inline">
+            <button class="vote-button no-margin delete-submit">Cancel</button>
+            <a id="delete-href" href="/delete"><button class="vote-button no-margin delete-submit no-padding"><span class="material-symbols-outlined">Delete</span></button></a>
+        </div>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            var username = $("#comment-username").text().trim();
+            
+            $(".edit-comment-button, .delete-comment-button").each(function() {
+                var buttonUser = $(this).data("user");
+                if (buttonUser !== username) {
+                    $(this).hide();
+                }
+            });
+        });
+
+        $(document).ready(function() {
+            var username = $("#comment-username").text().trim();
+            
+            $("button[data-user]").each(function() {
+                var buttonUser = $(this).data("user");
+                if (buttonUser !== username) {
+                    $(this).hide();
+                }
+            });
+        });
+
+        $(document).ready(function() {
+            $(".show-textarea").on("click", function() {
+                $(".reply-textarea").not($(this).closest(".other-comment").find(".reply-textarea")).hide();
+                var $replyTextarea = $(this).closest(".other-comment").find(".reply-textarea");
+                $replyTextarea.toggle();
+                if ($replyTextarea.is(":visible")) {
+                    $replyTextarea.find("textarea").focus();
+                }
+            });
+        });
+
+        $(".cancelbutton").on("click", function() {
+            $(this).closest(".reply-textarea").hide();
+        });
+
+        function validateForm() {
+            var content = $("#content").val().trim();
+
+            if (content === '') {
+                alert("Comment cannot be empty.");
+                return false;
+            }
+
+            return true;
+        }
+
+        function validateReply() {
+            var content = $('.reply-textarea:visible textarea').val().trim();
+
+            if (content === '') {
+                alert("Comment cannot be empty.");
+                return false;
+            }
+
+            return true;
+        }
+
+        function validateEdit() {
+            var content = $('.edit-textarea').val().trim();
+
+            if (content === '') {
+                alert("Comment cannot be empty.");
+                return false;
+            }
+
+            return true;
+        }
+
+        // Delete post
+        $(document).ready(function() {
+            var deletePostButton = $('#delete-post-button');
+            var deleteContainer = $('.delete-container');
+            var deleteHref = $('#delete-href');
+            var editContainer = $('.edit-container');
+
+            deletePostButton.on('click', function() {
+                var postId = $(this).data('postid');
+                var label = $('.delete-label');
+
+                editContainer.hide();
+
+                label.text('Delete post?');
+                deleteHref.attr('href', '/delete?postId=' + postId);
+
+                deleteContainer.show();
+            });
+        });
+
+        // Delete comment
+        $(document).ready(function() {
+            var deletePostButton = $('.delete-comment-button');
+            var deleteContainer = $('.delete-container');
+            var deleteHref = $('#delete-href');
+            var editContainer = $('.edit-container');
+
+            deletePostButton.on('click', function() {
+                var commentId = $(this).data('commentid');
+                var label = $('.delete-label');
+
+                editContainer.hide();
+
+                label.text('Delete comment?');
+                deleteHref.attr('href', '/delete?commentId=' + commentId);
+
+                deleteContainer.show();
+            });
+        });
+
+        // Edit post
+        $(document).ready(function() {
+            var editPostButton = $('#edit-post-button');
+            var editForm = $('.edit-container');
+            var deleteContainer = $('.delete-container');
+
+            editPostButton.on('click', function() {
+                var postContent = $('#post-content').text();
+
+                var postId = $(this).data('postid');
+
+                var editTextarea = $('.edit-textarea');
+                var form = $(this).closest('.other-comment').find('.reply-textarea');
+                var label = $('.edit-label');
+
+                deleteContainer.hide();
+
+                label.text('Edit Post');
+                editForm.attr('action', '/edit?postId=' + postId);
+                editTextarea.val(postContent);
+
+                editForm.show();
+            });
+        });
+
+        // Edit comment
+        $(document).ready(function() {
+            var editCommentButton = $('.edit-comment-button');
+            var editForm = $('.edit-container');
+            var deleteContainer = $('.delete-container');
+
+            editCommentButton.on('click', function() {
+                var commentContent = $(this).closest('.other-comment').find('.comment-content').text();
+
+                var commentId = $(this).data('commentid'); 
+
+                var editTextarea = $('.edit-textarea');
+                var form = $(this).closest('.other-comment').find('.reply-textarea');
+                var label = $('.edit-label');
+
+                deleteContainer.hide();
+
+                label.text('Edit Comment');
+                editForm.attr('action', '/edit?commentId=' + commentId);
+                editTextarea.val(commentContent);
+
+                editForm.show();
+            });
+        });
+
+        $(document).ready(function() {
+            var cancelButton = $('.edit-submit');
+            var editForm = $('.edit-container');
+            
+            cancelButton.on('click', function() {
+            editForm.hide();
+            });
+        });
+
+        $(document).ready(function() {
+            var cancelButton = $('.delete-submit');
+            var deleteContainer = $('.delete-container');
+            
+            cancelButton.on('click', function() {
+            deleteContainer.hide();
+            });
+        });
+
+        $(document).ready(function() {
+            $('.comment-content').each(function() {
+                if ($(this).text().trim() === "(Comment has been deleted)") {
+                    $(this).addClass('deleted');
+                }
+            });
+        });
+
+        
+        $(document).ready(function() {
+            var commentUsername = $('#comment-username').text(); 
+            var upvoteData = $('#upvote-button').attr('upvote-data'); 
+
+            if (upvoteData.includes(commentUsername)) {
+                $('#upvote-button').removeClass('vote-button').addClass('voted-button');
+            }
+        });
+
+        $(document).ready(function() {
+            var commentUsername = $('#comment-username').text(); 
+            var downvoteData = $('#downvote-button').attr('downvote-data'); 
+
+            if (downvoteData.includes(commentUsername)) {
+                $('#downvote-button').removeClass('vote-button').addClass('voted-button'); 
+            }
+        });
+
+        $(document).ready(function() {
+            var commentDesc = $('.comment-desc').text(); 
+            
+            if (commentDesc === 'Comment as !!') {
+                $('.comment-desc').text('Cannot comment as Guest');
+            }
+        });
+    </script>
+</body>
+</html>

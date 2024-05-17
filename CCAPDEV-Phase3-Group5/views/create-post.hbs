@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>CREATE POST | Pineapple</title>
+    <link rel="stylesheet" type="text/css" href="stylesheets/createpost.css">
+    <link rel="stylesheet" type="text/css" href="stylesheets/header.css">
+    <link rel="stylesheet" type="text/css" href="stylesheets/discover.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+</head>
+
+<body>
+    <div class="header">
+        <div class="website-name">
+            <span class="webname"><a href="home">Pineapple </a></span><span class="logo"> </span>
+        </div>
+
+        <div class="tabs-container">
+            <ul class="tabs">
+                <li class="home"><a href="home">Home</a></li>
+            </ul>
+        </div>
+        <div class="actions-container">
+            <div class="action-buttons">
+                <ul class="actions">
+                    <li class="profile">
+                        <a href="profile">
+                            <span class="material-symbols-outlined">
+                                person
+                            </span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <div class="content-container">
+        <div class="left-panel">
+            <div class="profile-card">
+                <div class="profile-container">
+                    <img class="profile-pic" id="pfp" src="images/{{ user.img }}"/>
+                    <label class="username" id="username">{{ user.username }}</label>
+                    <p class="profile-description" id="description">{{ user.description }}</p>
+                </div>
+            </div>
+
+            <div class="others-panel">
+                <ul class="others">
+                    <li onclick="location.href = 'home'">Home</li>
+                    <li onclick="location.href = 'profile'">Profile</li>
+                    <li onclick="location.href = 'index'">Sign Out</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <form id="postForm" action="/submit-post" method="post">
+            <div class="create-post">
+                <div class="title-container">
+                    <h2 class="createpost-title">Create a post</h2>
+                </div>
+                <div class="communities-dropdown">
+                    <label for="communities-dropdown">Communities: </label>
+                    <select id="communities-dropdown" name="community">
+                        <option>Select</option>
+                        <!-- Communities here -->
+                        {{#each (sortByProperty communities 'name')}}
+                        <option>{{name}}</option>
+                        {{/each}}
+                    </select>
+                </div>
+
+                <div class="choice">
+                    <input type="text" id="title" name="title" placeholder="Title">
+                    <textarea id="content" name="content" placeholder="Your post content..."></textarea>
+                </div>
+                <button class="postbutton" onclick="return validateForm()" type="submit">
+                    Post
+                </button>                
+            </div>
+        </form> 
+    </div>
+
+    <div id="errorMessage" class="error-message hidden">
+        <span class="close-btn" onclick="hideErrorMessage()">&times;</span>
+        <p id="errorText"></p>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script>
+        function validateForm() {
+            var title = $("#title").val().trim();
+            var content = $("#content").val().trim();
+            var community = $("#communities-dropdown").val(); // Get the selected community
+
+            if (title === "" && content === "" && community === "Select") {
+                displayErrorMessage("Title, content, and community are missing!");
+                return false;
+            } else if (title === "" && content === "") {
+                displayErrorMessage("Title and content are missing!");
+                return false;
+            } else if (title === "" && community === "Select") {
+                displayErrorMessage("Title and community are missing!");
+                return false;
+            } else if (content === "" && community === "Select") {
+                displayErrorMessage("Content and community are missing!");
+                return false;
+            } else if (title === "") {
+                displayErrorMessage("Title is missing!");
+                return false;
+            } else if (content === "") {
+                displayErrorMessage("Content is missing!");
+                return false;
+            } else if (community === "Select") {
+                displayErrorMessage("Please select a community!");
+                return false;
+            }
+
+            return true;
+        }
+
+        function displayErrorMessage(message) {
+            var errorMessageElement = $("#errorMessage");
+            var errorTextElement = $("#errorText");
+
+            errorTextElement.text(message);
+
+            errorMessageElement.addClass("show");
+
+            setTimeout(function () {
+                hideErrorMessage();
+            }, 5000);
+        }
+
+        function hideErrorMessage() {
+            var errorMessageElement = $("#errorMessage");
+            errorMessageElement.removeClass("show");
+        }
+    </script>
+</body>
+
+</html>

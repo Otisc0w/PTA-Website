@@ -1,0 +1,144 @@
+@import url(https://fonts.googleapis.com/css?family=Open+Sans);
+@import url('https://fonts.cdnfonts.com/css/sf-pro-display');
+
+:root {
+    font-family: 'SF Pro Display', sans-serif;    
+    --dark: #111214;
+    --light: #232428;
+    --white: #F1F6F9;
+    --border: #343536;
+    --color: #1ED760;
+    color: var(--white);
+}
+
+.header {
+    padding: 15px 0;
+    width: 100%;
+    border-bottom: 1px solid var(--white);
+    font-size: larger;
+    font-weight: 100;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between; 
+    position: fixed;
+    background-color: var(--dark);
+}
+
+.website-name {
+    margin-left: 90px;
+    font-size: x-large;
+    font-weight: 900;
+}
+
+.webname {
+    padding-bottom: 50px;
+}
+
+.logo {
+    display: inline-block;
+    background-image: url('../images/logo.png');
+    background-size: 32px 40px;
+    height: 40px;
+    width: 32px;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+a:hover, a:active, a:visited{
+    text-decoration: underline;
+    text-underline-offset: 5px;
+    color: inherit;
+}
+
+.webname>a:hover, .tabs>li>a:hover{
+    text-decoration: none;
+}
+
+.actions-container {
+    margin-right: 120px;
+}
+
+.tabs-container, .actions-container{
+    display: flex;
+    flex-direction: row;
+    width: max-content;
+}
+
+.tabs>li:hover{
+    text-decoration: underline;
+    font-weight: 900;
+    text-underline-offset: 10px;
+}
+
+ul {
+    margin: 0;
+    padding: 0;
+}
+
+.search-bar {
+    display: flex;
+    justify-content: center;
+    width: fit-content;
+    height: fit-content;
+}
+
+input {
+    width: 200px;
+    height: 25px;
+    margin: 0;
+    border-radius: 25px;
+    font-size: 14px;
+    background-color: var(--light);
+    border: 1px solid var(--border);
+    padding: 5px 5px 5px 20px;
+}
+
+input:hover, input:focus {
+    background-color: var(--primary);
+    border-color: var(--contrast);
+    color: var(--contrast);
+}
+
+form{
+    position: relative;
+    margin: 15px 30px 5 0;
+}
+
+form>button {
+    position: absolute;
+    right: 0;
+    width: 32px;
+    height: 32px;
+    padding-top: 5px;
+    border-radius: 50%;
+    cursor: pointer;
+    border: none;
+    background: none;
+    color: var(--contrast);
+}
+
+.actions>li, .tabs>li{
+    width: max-content;
+    padding: 8px 8px 0 8px;
+    grid-area: header-section;
+    display: inline-block;
+    list-style: none;
+    margin-right: 15px;
+    margin-top: 5px;
+}
+
+.tabs>li:hover {
+    cursor: pointer;
+}
+
+.actions>li {
+    border-radius: 100%;
+}
+
+#community-filter {
+    align-self: center;
+    margin-right: 30px;
+}

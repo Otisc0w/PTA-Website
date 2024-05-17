@@ -1,0 +1,199 @@
+<!-- profile.hbs -->
+<html>
+    <head>
+        <title>Profile | Pineapple</title>
+        <link rel="stylesheet" type="text/css" href="stylesheets/profile.css" />
+        <link rel="stylesheet" type="text/css" href="stylesheets/header.css" />
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"/>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    </head>
+    <body>
+        <div class="header">
+            <div class="website-name">
+                <span class="webname"><a href="home">Pineapple </a></span><span class="logo"> </span>
+            </div>
+
+            <div class="tabs-container">
+                <ul class="tabs">
+                    <li class="home"><a href="home">Home</a></li>
+                </ul>
+            </div>
+
+            <div class="actions-container">
+                <div class="action-buttons">
+                    <ul class="actions">
+                        <li class="profile">
+                            <a href="profile">
+                                <span class="material-symbols-outlined">
+                                    person
+                                </span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="body-container">
+            <div class="flex general-container">
+                <div id="append-container">
+                    <div class="flex sort-container">
+                        <div class="sort-icons-container">
+                            <button id="user-posts" class="button selected sort">
+                                <span class="material-symbols-outlined">
+                                    menu
+                                </span>
+                                Posts
+                            </button>
+                            <button id="user-comments" class="button sort">
+                                <span class="material-symbols-outlined">
+                                    forum
+                                </span>
+                                Comments
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="nothing" class="center padding">
+                        <p>Nothing to see here...</p>
+                    </div>
+
+                    {{!-- Posts and Comments below --}}
+                    {{#each (reverse posts)}}
+                    <div class="flex post-container post">
+                        <div class="flex post-content">
+                            <div class="post-text no-bottom">
+                                <div class="flex post-info">
+                                    <span class="community"><a href="community?community={{removeFirst community}}">{{community}}</a> •</span>
+                                    <span class="small">by <a href="profile">{{user}}</a> on {{date}}</span>
+                                </div>
+                                <a href="post?postId={{postId}}"><h2 class="margin no-sides no-bottom post-title">{{title}}</h2></a>
+                                <p class="light post-description">{{postcontent}}</p>
+                                <div class="flex no-padding">
+                                    <div class="flex">
+                                        <a href="post?postId={{postId}}"><button class="button sides"><span class="material-symbols-outlined">mode_comment</span>View Thread</button></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {{/each}}
+
+                    {{#each (reverse comments)}}
+                    <div class="flex post-container comment">
+                        <div class="flex post-content">
+                            <div class="post-text no-bottom">
+                                <div class="flex post-info">
+                                    <span class="material-symbols-outlined community-image">forum</span>
+                                    <span>
+                                        <span class="bold">{{user}}</span><span class="small light"> Commented on </span><span class="bold"><a href="post?postId={{postId}}">a post</a></span><span class="small light"> on {{date}}</span>
+                                    </span>
+                                </div>
+                                <p class="light comment">
+                                    <span class="comment-nest">{{commentLevelSymbol level}}</span>
+                                    <a class="comment-post" href="post?postId={{postId}}">{{content}}</a>
+                                </p>
+                                <div class="flex no-padding">
+                                    <div class="flex">
+                                        <a href="post?postId={{postId}}">
+                                            <button class="button sides">
+                                                <span class="material-symbols-outlined">mode_comment</span>View Thread
+                                            </button>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {{/each}}
+                </div>
+                
+                <div class="flex profile-container">
+                    <img id="pfp" class="pfp" src="images/{{user.img}}" />
+                    <button class="edit-profile"><a href="edit-profile"><span class="material-symbols-outlined">edit</span></a></button>
+    
+                    <div class="wide profile-details">
+                        <h2 id="username" class="no-margin">{{user.username}}</h2>
+    
+                        <p id="description" class="description no-margin">{{user.description}}</p><br>
+                        
+                        <div class="flex">
+                            <ul class="info-box">
+                                <li>
+                                    <span class="info-title">
+                                        POSTS
+                                    </span>
+                                </li>
+                                <li><h3 id="posts" class="no-margin light">{{posts.length}}</h3></li>
+        
+                                <li>
+                                    <span class="info-title">
+                                        UPVOTES
+                                    </span>
+                                </li>
+                                <li><h3 id="upvotes" class="no-margin light">{{calculateTotalVotes posts}}</h3></li>
+        
+                                <li>
+                                    <span class="info-title">
+                                        USER SINCE
+                                    </span>
+                                </li>
+                                <li><h3 id="userSince" class="no-margin light">{{user.userSince}}</h3></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+        <script>
+            // profile.js
+            function hideAll() {
+                $('.post-container').hide();
+                $('.flex.post-container.post').show();
+                if ($('.flex.post-container.post').length === 0) {
+                    $('#nothing').show();
+                } else {
+                    $('#nothing').hide();
+                }
+            }
+
+            hideAll();
+
+            $(document).ready(function() {
+                var url = new URLSearchParams(window.location.search);
+                if (url.get('username')) {
+                    $('.edit-profile').hide();
+                }
+            });
+
+            $('#user-posts').on('click', function() {
+                $('.flex.post-container.comment').hide();
+                $('.flex.post-container.post').show();
+
+                if ($('.flex.post-container.post').length === 0) {
+                    $('#nothing').show();
+                } else {
+                    $('#nothing').hide();
+                }
+            });
+
+            $('#user-comments').on('click', function() {
+                $('.flex.post-container.post').hide();
+                $('.flex.post-container.comment').show();
+
+                if ($('.flex.post-container.comment').length === 0) {
+                    $('#nothing').show();
+                } else {
+                    $('#nothing').hide();
+                }
+            });
+
+            $('.sort').on('click', function() {
+                $('button').removeClass('selected');
+                $(this).addClass('selected');
+            });
+        </script> 
+    </body>
+</html>

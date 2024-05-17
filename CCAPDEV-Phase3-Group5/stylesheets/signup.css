@@ -1,0 +1,74 @@
+@import url('https://fonts.cdnfonts.com/css/sf-pro-display');
+
+:root {
+  font-family: 'SF Pro Display', sans-serif;    
+  --dark: #111214;
+  --light: #232428;
+  --white: #F1F6F9;
+  --border: #343536;
+  --color: #1ED760;
+  color: var(--white);
+}
+
+body{
+  margin: 0;
+}
+
+.container {
+  display: flex;
+  height: 100vh; 
+  background-color: var(--dark);
+  justify-content: center; 
+  align-items: center; 
+  text-align: center;
+  color: var(--white);
+}
+	
+
+.create-title {
+	font-size: 35px;
+	margin: 0;
+}
+
+.login {
+	font-size: 15px;
+	font-weight: lighter;
+	margin-top: 5px;
+	margin-bottom: 30px;
+}
+
+.login-link {
+  color: var(--white);
+  text-decoration: underline; 
+  cursor: pointer; 
+}
+
+.login-link:hover {
+	color: #536878;
+}
+
+.username-input,
+.email-input,
+.password-input {
+  font-size: 15px;
+  font-weight: lighter;
+  text-align: left; 
+  display: inline-block; 
+  width: 100px; 
+  margin-right: 70px;
+}
+
+button {
+  background: none;
+  border: none;
+  border-radius: 10px;
+  color: var(--white);
+  width: fit-content;
+  height: fit-content;
+  padding: 3;
+  background-color: var(--light);
+}
+button:hover {
+  background-color: var(--color);
+  color: var(--white);
+}

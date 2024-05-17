@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SIGN UP | Pineapple</title>
+    <link rel="stylesheet" type="text/css" href="stylesheets/signup.css">
+</head>
+<body>
+    <div class="container">
+        <div class="create-account">
+            <h2 class="create-title">Create your account</h2>
+            <div class="login">Already Registered? <a class="login-link" href="/">Login</a></div>
+
+            <div class="signup-input">
+                <form id="signupForm" action="/submit-user" method="post">
+                    <label class="username-input" for="username">Username</label><br>
+                    <input type="text" id="username" name="username" required><br><br>
+
+                    <label class="password-input" for="password">Password</label><br>
+                    <input type="password" id="password" name="password" required><br><br>
+
+                    <label class="password-input" for="confirm-password">Confirm Password</label><br>
+                    <input type="password" id="confirm-password" name="confirm-password" required><br><br>
+
+                    <button onclick="return validateForm()" type="submit">Sign Up</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script>
+        function validateForm() {
+            var username = $("#username").val();
+            var password = $("#password").val();
+            var confirmPassword = $("#confirm-password").val();
+
+            if ($.trim(username) === '' || $.trim(password) === '') {
+                alert("Please fill out both username and password fields.");
+                return false;
+            }
+
+            var usernameFormat = /^[a-zA-Z0-9]+$/;
+
+            if (!usernameFormat.test(username)) {
+                alert("Username can only contain alphanumeric characters without spaces.");
+                return false;
+            }
+
+            if (password !== confirmPassword) {
+                alert("Password and confirm password do not match.");
+                return false;
+            }
+
+            return true;
+        }
+    </script>
+</body>
+</html>

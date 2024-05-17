@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>Home | Pineapple</title>
+        <link rel="stylesheet" type="text/css" href="stylesheets/home.css">
+        <link rel="stylesheet" type="text/css" href="stylesheets/header.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"/>
+    </head>
+
+    <body>
+        <div class="header">
+            <div class="website-name">
+                <span class="webname"><a href="home">Pineapple </a></span><span class="logo"> </span>
+            </div>
+
+            <div class="tabs-container">
+                <ul class="tabs">
+                    <li class="home"><a href="home">Home</a></li>
+                </ul>
+            </div>
+
+            <div class="actions-container">
+                <select id="community-filter">
+                    <option value="">Filter by Community</option>
+                    {{#each (sortByProperty communities 'name')}}
+                    <option>{{name}}</option>
+                    {{/each}}
+                </select>
+
+                <div class="search-bar">
+                    <form class="search">
+                        <input id="search" type="text" name="search" placeholder="Search"/>
+                    </form>
+                </div>
+                
+                <div class="action-buttons">
+                    <ul class="actions">
+                        <li class="profile">
+                            <a href="profile">
+                                <span class="material-symbols-outlined">
+                                    person
+                                </span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-container">
+            <div class="left-panel">
+                <div class="profile-card">
+                    <div class="profile-container">
+                        <img class="profile-pic" id="pfp" src="images/{{ user.img }}"/>
+                        <label class="username" id="username">{{ user.username }}</label>
+                        <p class="profile-description" id="description">{{ user.description }}</p>
+                    </div>
+                </div>
+
+                <div class="others-panel">
+                    <ul class="others">
+                        <li onclick="location.href = 'home'">Home</li>
+                        <li onclick="location.href = 'profile'">Profile</li>
+                        <li onclick="location.href = 'logout'">Sign Out</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="main-panel">
+                {{#each (reverse posts)}}
+                <div class='flex post-container'>
+                    <div class='flex post-content'>
+                        <div class='post-text nobottom'>
+                            <div class='flex post-info'>
+                                <span class='community'><a class='post-community' href='community?community={{removeFirst community}}'>{{community}}</a> •</span>
+                                <span class='small'>by <a class='post-user' href='profile?username={{user}}'>{{user}}</a> on {{date}}</span>
+                            </div>
+                            <a href='post?postId={{postId}}'><h2 class='post-title {{postId}} margin no-sides nobottom'>{{title}}</h2></a>
+                            <p class='post-description light'>{{content}}</p>
+
+                            <div class='flex no-padding'>
+                                <div class='flex'>
+                                    <a class='post-title' href='post?postId={{postId}}'><button class='button sides'><span class='material-symbols-outlined'>mode_comment</span>Comment</button></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {{/each}}
+            </div>
+
+            <div class="right-panel">
+                <div class="community-panel">
+                    <h2 class="community-name">Home</h2>
+                    <p class="community-description">Your personal blend of fun. Find out what people are arguing about!</p>
+                </div>
+                
+                <a href="create-post">
+                    <button class="create-button">
+                        <span class="material-symbols-outlined">
+                            add
+                        </span>
+                        Create Post
+                    </button>
+                </a>
+
+                <button class="create-button  container" onclick="location.href = 'create-community'">
+                    <span class="material-symbols-outlined">
+                        add
+                    </span>
+                    Create Community
+                </button>
+            </div>
+        </div>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+        <script>
+            $(document).ready(function() {
+                var url = new URLSearchParams(window.location.search);
+                if (url.get('community') === 'failed') {
+                    alert("A community with the same name already exists.");
+                } else if (url.get('community') === 'success') {
+                    alert("Community created.");
+                }
+            });
+
+            $(document).ready(function() {
+                $('.search').on('keydown', function(event) {
+                    if (event.which === 13) {
+                    event.preventDefault();
+                    }
+                });
+            });
+
+            $(document).ready(function() {
+                function filterPosts() {
+                    var searchText = $('#search').val().toLowerCase();
+                    var selectedCommunity = $('#community-filter').val().toLowerCase();
+                    
+                    $('.flex.post-container').each(function() {
+                    var title = $(this).find('.post-title').text().toLowerCase().replace(/[^\w\s]/g, '');
+                    var description = $(this).find('.post-description').text().toLowerCase().replace(/[^\w\s]/g, '');
+                    var community = $(this).find('.post-community').text().toLowerCase();
+                    
+                    var titleMatch = title.includes(searchText);
+                    var descriptionMatch = description.includes(searchText);
+                    var communityMatch = selectedCommunity === "" || community === selectedCommunity;
+                    
+                    if ((titleMatch || descriptionMatch) && communityMatch) {
+                        $(this).show();
+                    } else {
+                        $(this).hide();
+                    }
+                    });
+                }
+                
+                $('#search').on('input', filterPosts);
+                $('#community-filter').on('change', filterPosts);
+            });
+
+            $(document).ready(function() {
+                var username = $('#username').text(); 
+                
+                if (username === '!!') {
+                    $('#username').text('Guest');
+                }
+            });
+        </script>
+    </body>
+</html>

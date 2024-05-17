@@ -1,0 +1,166 @@
+@import url('https://fonts.cdnfonts.com/css/sf-pro-display');
+
+:root {
+    font-family: 'SF Pro Display', sans-serif;    
+    --dark: #111214;
+    --light: #232428;
+    --white: #F1F6F9;
+    --border: #343536;
+    --color: #1ED760;
+    color: var(--white);
+}
+
+.hidden {
+    display: none;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    color: var(--white);
+}
+
+.container {
+    background-color: var(--dark);
+    color: var(--white);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    padding: 0 20px;
+}
+
+.createpost-title {
+    font-size: 24px; 
+    margin-left: 10px;
+    margin-bottom: 10px;
+}
+
+.title-container {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    max-width: 1200px;
+    margin-top: 10px; /* Reduced margin */
+}
+
+.communities-dropdown {
+    position: relative;
+    display: inline-block;
+    margin-top: 10px;
+    z-index: 2; 
+}
+
+.dropdown-button {
+    background-color: var(--light);
+    color: var(--white);
+    padding: 6px 10px; /* Smaller padding */
+    border: none;
+    cursor: pointer;
+    position: relative;
+    margin-left: 10px;
+}
+
+.arrow {
+    margin-left: 5px;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: var(--white);
+    min-width: 160px;
+    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+    z-index: 3; 
+    margin-left: 10px;
+}
+
+.dropdown-content a {
+    color: black;
+    padding: 6px 10px; /* Smaller padding */
+    text-decoration: none;
+    display: block;
+}
+
+.dropdown-content a:hover {
+    background-color: var(--white);
+}
+
+.communities-dropdown:hover .dropdown-content {
+    display: block;
+}
+
+#title {
+    width: calc(100% - 22px);
+    height: 30px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    background-color: var(--white);
+    padding: 5px 10px;
+    border: 1px solid var(--color);
+    border-radius: 5px;
+    font-size: 14px;
+    color: black;
+    /*z-index: 2; Ensure input field appears above other elements */
+}
+
+#content {
+    width: calc(100% - 22px);
+    height: 200px;
+    margin-bottom: 20px;
+    background-color: var(--white);
+    padding: 5px 10px;
+    border: 1px solid var(--color);
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+.postbutton {
+    border-radius: 20px;
+    padding: 10px 20px;
+    margin-top: 10px;
+    margin-left: auto;
+    display: block;
+    background-color: var(--light);
+    border: 2px solid var(--color);
+    color: var(--white);
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.postbutton:hover {
+    background-color: #36454f;
+}
+
+.error-message {
+    position: fixed;
+    top: calc(50px + 20px);
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #f44336;
+    color: white;
+    padding: 15px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    display: none;
+    z-index: 999;
+}
+
+.error-message.show {
+    display: block;
+}
+
+.close-btn {
+    position: absolute;
+    top: 5px;
+    right: 10px;
+    cursor: pointer;
+}
+
+.profile-description {
+    text-align: center;
+    inline-size: 200px;
+    overflow-wrap: break-word;
+    margin: 0px;
+    margin-bottom: 10px;
+}

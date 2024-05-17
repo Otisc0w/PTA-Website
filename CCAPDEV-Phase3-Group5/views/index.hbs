@@ -1,0 +1,76 @@
+<html>
+
+	<head>
+	  <title>LOGIN | Pineapple</title>
+	  <link rel="stylesheet" type="text/css" href="stylesheets/login.css">
+	</head>
+	
+	<body>
+		<div class="container">
+			<div class="leftside">
+				<div class="forumtitle">
+					<h1 class= "forumname">Pineapple <span class="logo"> </span></h1>
+					<hr>
+					<h3 class = "forumdesc">It's better on pizza.</h3>
+					
+				</div>
+			</div>
+		
+			<div class="rightside">
+				<div class="login">
+					<h2 class="login-title">Login</h2>
+					<div class="signup">
+						Need an account? <a class="signup-link" href="register">Sign Up</a>
+						<br> or <a class="signup-link" href="guest">visit as a Guest</a>
+					</div>
+					
+					<div class ="login-input">
+					
+						<form id="login-form" action="/submit-login" method="post">
+							<label class="username-input" for="username">Email/ Username</label><br>
+							<input type="text" id="username" name="username" required><br><br>
+							
+							<label class="password-input" for="password">Password</label><br>
+							<input type="password" id="password" name="password" required><br><br>
+							
+							<input type="checkbox" id="remember" name="remember">
+							<label class="remember-label" for="remember">Remember Me</label><br><br>
+							
+							<button class="button" onclick="return validateLogin()" type="submit">Log in</button>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+	<script>
+		function validateLogin() {
+			var username = $('#username').val().trim();
+			var password = $('#password').val();
+
+			if (username === "" && password === "") {
+				alert("Invalid username or password!");
+				return false;
+			}
+
+			return true;
+		}
+
+		$(document).ready(function() {
+			var url = new URLSearchParams(window.location.search);
+			if (url.get('login') === 'failed') {
+				alert("Invalid username or password!");
+			}
+		});
+
+		$(document).ready(function() {
+            var url = new URLSearchParams(window.location.search);
+            if (url.get('register') === 'failed') {
+                alert("Username already exists.");
+            } else if (url.get('register') === 'success') {
+                alert("Signed up successfully!");
+            }
+        });
+	</script>
+	</body>
+</html>

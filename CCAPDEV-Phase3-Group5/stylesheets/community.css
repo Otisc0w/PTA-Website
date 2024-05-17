@@ -1,0 +1,426 @@
+@import url('https://fonts.cdnfonts.com/css/sf-pro-display');
+
+:root {
+    --primary: #121212;
+    --secondary:#232428;
+    --contrast: #f2f3f5;
+    --accent: #1ED760;
+    --border: #343536;
+    color: var(--contrast);
+    font-family: 'SF Pro Display', sans-serif;
+    overflow-y: scroll;
+    align-items: center;
+    box-sizing: border-box;
+}
+
+body {
+    width: 100%;
+    margin: 0%;
+    background-color: var(--primary);
+    display: grid;
+    grid-template-areas: 
+        "header-section"
+        "content-section";
+    grid-template-rows: 60px 100%;
+    justify-items: center;
+}
+
+.header {
+    padding: 15px 0;
+    width: 100%;
+    border-bottom: 1px solid var(--contrast);
+    font-size: larger;
+    font-weight: 100;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between; 
+    position: fixed;
+    background-color: var(--primary);
+}
+
+.website-name {
+    margin-left: 90px;
+    font-size: x-large;
+    font-weight: 900;
+}
+
+.webname {
+    padding-bottom: 50px;
+}
+
+.logo {
+    display: inline-block;
+    background-image: url('../images/logo.png');
+    background-size: 32px 40px;
+    height: 40px;
+    width: 32px;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+a:hover, a:active, a:visited{
+    text-decoration: underline;
+    text-underline-offset: 5px;
+    color: inherit;
+}
+
+.webname>a:hover, .tabs>li>a:hover{
+    text-decoration: none;
+}
+
+.actions-container {
+    margin-right: 120px;
+}
+
+.tabs-container, .actions-container{
+    display: flex;
+    flex-direction: row;
+    width: max-content;
+}
+
+.tabs>li:hover{
+    text-decoration: underline;
+    font-weight: 900;
+    text-underline-offset: 10px;
+}
+
+ul {
+    margin: 0;
+    padding: 0;
+}
+
+.search-bar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: fit-content;
+    height: fit-content
+}
+
+form{
+    position: relative;
+    margin: 5px 30px 0 0;
+}
+
+form>button {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    cursor: pointer;
+    border: none;
+    background: none;
+    color: var(--contrast);
+}
+
+input {
+    width: 200px;
+    height: 24px;
+    border-radius: 25px;
+    font-size: 14px;
+    background-color: var(--secondary);
+    border: 1px solid var(--border);
+    padding: 5px 5px 5px 20px;
+}
+
+.actions>li, .tabs>li{
+    width: max-content;
+    padding: 8px 8px 0 8px;
+    grid-area: header-section;
+    display: inline-block;
+    list-style: none;
+    margin-right: 15px;
+    margin-top: 5px;
+}
+
+.tabs>li:hover {
+    cursor: pointer;
+}
+
+.actions>li {
+    border-radius: 100%;
+}
+
+.notif-container {
+    top: 55px;
+    left: 1560px;
+    background-color: var(--contrast);
+    border: 1px solid var(--primary);
+    color: var(--primary);
+    width: 300px;
+    margin-top: 20px;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+}
+
+.notif-container:hover, .notifications:hover {
+    cursor: pointer;
+}
+
+.tri {
+    top: 40px;
+    left: 1668px;
+    border-left: 20px solid transparent;
+    border-right: 20px solid transparent;
+    border-bottom: 20px solid var(--contrast);
+    border-top: 20px solid transparent;
+    display: block;
+    position: absolute;
+}
+
+.hidden {
+    display: none   ;
+}
+
+.notif {    
+    width: 100%;
+    height: fit-content;
+    padding: 10px;
+    margin: 0;
+    border: 1px solid var(--border);
+    font-size: small;
+    overflow-wrap: break-word;
+    inline-size: 280px;
+}
+
+.content-container {
+    margin-top: 50px;
+    grid-area: content-section;
+    width: 90%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.left-panel {
+    width: 22%;
+    display: inline-block;
+    justify-content: space-evenly;
+    height: 450px;
+}
+
+.profile-card {
+    margin: 0 0 28px 15px;
+    height: 50%;
+    width: 80%;
+    border: 1px solid var(--border);
+    background-color: var(--secondary);
+    border-radius: 10px; 
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.profile-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+.profile-pic {
+    height: 90px;
+    width: 90px;
+    border: 1px solid var(--border);
+    border-radius: 100%;
+}
+
+.username {
+    font-weight: 900;
+    text-align: center;
+}
+
+.profile-description {
+    text-align: center;
+    inline-size: 200px;
+    overflow-wrap: break-word;
+    margin: 0px;
+    margin-bottom: 10px;
+}
+
+.others>li {
+    list-style: none;
+    margin: 10px 0 0 15px;
+    font-size: 20px;
+    padding: 15px;
+    width: max-content;
+    border-radius: 15px;
+}
+
+.others>li:hover, .actions>li:hover{
+    background-color: var(--secondary);
+    cursor: pointer;
+}
+
+.flex {
+    display: flex;
+}
+
+.main-panel {
+    width: 50%;
+}
+
+.community-banner {
+    padding: 10px;
+    width: 95%;
+    display: flex;
+    flex-direction: row;
+    background-color: var(--secondary);
+    border: 1px solid var(--border);
+    border-radius: 25px;
+    justify-content: center;
+    margin-bottom: 30px;
+}
+
+.banner-container {
+    display: flex;
+    flex-direction: column;
+    justify-self: space-evenly;
+    align-items: center;
+}
+
+.banner-container>input {
+    background-color: var(--secondary);
+    color: var(--contrast);
+    border: 1px solid var(--contrast);
+    text-align: center;
+    padding-right: 20px;
+    width: 100px;
+}
+
+.banner-container>input:hover {
+    background-color: var(--accent);
+    color: var(--primary);
+}
+
+.post-container {
+    border-radius: 10px;
+    padding: 10px;
+    width: 95%;
+    height: fit-content;
+    background-color: var(--secondary);
+    border: 1px solid var(--border);
+    margin-bottom: 30px;
+}
+
+.no-padding {
+    padding: 0;
+}
+
+.no-margin {
+    margin: 0;
+}
+
+.light {
+    font-weight: lighter;
+}
+
+.nobottom {
+    margin-bottom: 0;
+}
+
+.button {
+    background: none;
+    border: none;
+    border-radius: 10px;
+    color: var(--white);
+    width: fit-content;
+    height: fit-content;
+    padding: 3;
+}
+
+.button:hover {
+    background-color: var(--accent);
+    color: var(--contrast);
+}
+
+.sides {
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.post-info {
+    align-items: center;
+    justify-content: flex-start;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.center {
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    vertical-align: middle;
+}
+.post-text {
+    padding: 10px;
+}
+
+.small {
+    font-size: 12px;
+}
+
+.column {
+    flex-direction: column;
+}
+
+.post-text>h2 , .post-text>p{
+    inline-size: 100%;
+}
+
+.right-panel {
+    width: 25%;
+}
+
+.community-panel {
+    width: 80%;
+    background-color: var(--secondary);
+    border: 1px solid var(--border);
+    color: var(--contrast);
+    border-radius: 10px;
+    margin-bottom: 15px;
+    height: fit-content;
+}
+
+.community-name, .community-description{
+    margin-left: 30px;
+    overflow-wrap: break-word;
+    inline-size: 80%;
+    text-align: justify;
+    text-justify: inter-word;
+}
+.community-name {
+    margin-bottom: 50px;
+}
+
+.create-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-color: var(--secondary);
+    border: 1px solid var(--border);
+    height: 50px;
+    width: 60%;
+    border-radius: 5px;
+    margin-left: 10%;
+    margin-bottom: 15px;
+    transition: 0.3;
+    opacity: 1;
+}
+
+.container {
+    background-color: var(--primary);
+    color: var(--contrast);
+}
+
+.create-button:hover {
+    opacity: 0.7;
+}
+
