@@ -2,3 +2,51 @@ h3 {
     color:blue;
     font-size: 50px;
 }
+:root {
+    font-family: 'SF Pro Display', sans-serif;    
+    --dark: #111214;
+    --light: #232428;
+    --white: #F1F6F9;
+    --border: #343536;
+    --color: #1ED760;
+    color: var(--white);
+}
+
+hr {
+    width: 250px;
+}
+
+.logo {
+    display: inline-block;
+    background-image: url('../images/logo.png');
+    background-size: 44px 52px;
+    height: 52px;
+    width: 44px;
+  }
+
+  .leftside, .rightside {
+    flex: 1; 
+  }
+
+.container {
+    display: flex;
+    height: 100vh; 
+    color: var(--white);
+  }
+
+body {
+    margin: 0;
+}
+.leftside {
+    background-color: var(--dark); 
+    display: flex;
+    justify-content: right; 
+    align-items: top;
+  }
+  
+.rightside {
+    background-color: var(--light); 
+    display: flex;
+    justify-content: center; 
+    align-items: center;
+  }
