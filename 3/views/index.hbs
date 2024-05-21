@@ -1,7 +1,7 @@
 <html>
 
 	<head>
-	  <title>PTA Login</title>
+	  <title>PTA | Login</title>
 	  <link rel="stylesheet" type="text/css" href="../stylesheets/login.css" />
 	</head>
 	
@@ -12,6 +12,12 @@
 					<h1 class= "forumname"> <span class="logo"> </span></h1>
 					
 					<h3 class = "forumdesc">Philippine Taekwondo Assocation</h3>
+					<h2>User Data</h2>
+    				<ul>
+      					{{#each users}}
+        				<li>ID: {{id}}, username: {{username}}, pass: {{password}}</li>
+      					{{/each}}
+    				</ul>
 					
 				</div>
 			</div>
@@ -26,7 +32,7 @@
 					
 					<div class ="login-input">
 					
-						<form id="login-form" action="/submit-login" method="post">
+						<form id="loginform" action="/submit-login" method="post">
 							<label class="username-input" for="username">Email/ Username</label><br>
 							<input type="text" id="username" name="username" required><br><br>
 							
@@ -36,11 +42,48 @@
 							<input type="checkbox" id="remember" name="remember">
 							<label class="remember-label" for="remember">Remember Me</label><br><br>
 							
-							<button class="button" onclick="return validateLogin()" type="submit">Log in</button>
+							<button class="button" type="submit">Log in</button>
+							<p id="error-message" style="color:red;"></p>
 						</form>
+
+						<form id="forum-form" action="/go-forum" method="post">
+							<button class="button" type="submit">go to forum</button>
+						</form>
+
 					</div>
 				</div>
 			</div>
 		</div>
+		<script>
+    document.addEventListener("DOMContentLoaded", function() {
+      const form = document.getElementById("loginform");
+
+      form.addEventListener("submit", function(event) {
+        const username = document.getElementById("username").value;
+        const password = document.getElementById("password").value;
+
+        // Clear any previous error messages
+        document.getElementById("error-message").textContent = "";
+
+        if (!username || !password) {
+          document.getElementById("error-message").textContent = "Both username and password are required.";
+          event.preventDefault(); // Prevent form submission
+          return;
+        }
+
+        if (username.length < 3) {
+          document.getElementById("error-message").textContent = "Username must be at least 3 characters long.";
+          event.preventDefault(); // Prevent form submission
+          return;
+        }
+
+        if (password.length < 3) {
+          document.getElementById("error-message").textContent = "Password must be at least 6 characters long.";
+          event.preventDefault(); // Prevent form submission
+          return;
+        }
+      });
+    });
+  </script>
 	</body>
 </html>
