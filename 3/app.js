@@ -75,7 +75,7 @@ app.post('/submit-login', async (req, res) => {
       .from('users')
       .select('*')
       .eq('username', username)
-      .eq('password', password)
+      .eq('password', password) //blue is from form and red is column in databse
       .single(); // Ensure a single match
 
     if (error || !data) {
@@ -93,6 +93,32 @@ app.post('/submit-login', async (req, res) => {
   }
 });
 
+app.post('/submit-signup', async (req, res) => {
+  const { username, password } = req.body;
+
+  try {
+    const { data, error } = await supabase
+      .from('users')
+      .select('*')
+      .eq('username', username)
+      .eq('password', password) //blue is from form and red is column in databse
+      .single(); // Ensure a single match
+
+    if (error || !data) {
+      // Invalid credentials
+      return res.status(401).render('index', {
+        error: 'Invalid username or password.',
+        users: [] // Pass users array if needed
+      });
+    }
+
+    // Successful signup
+    res.redirect('/home');
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 app.get('/home', async function (req, res) {
   res.render('home');
 });
@@ -103,6 +129,14 @@ app.post('/go-forum', async function (req, res) {
 
 app.get('/forum', async function (req, res) {
   res.render('forum');
+});
+
+app.post('/go-membership', async function (req, res) {
+  res.redirect('/membership');
+});
+
+app.get('/membership', async function (req, res) {
+  res.render('membership');
 });
 
 app.listen(port, () => {

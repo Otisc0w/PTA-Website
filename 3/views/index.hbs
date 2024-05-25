@@ -12,12 +12,12 @@
 					<h1 class= "forumname"> <span class="logo"> </span></h1>
 					
 					<h3 class = "forumdesc">Philippine Taekwondo Assocation</h3>
-					<h2>User Data</h2>
+					{{!-- <h2>User Data</h2>
     				<ul>
       					{{#each users}}
         				<li>ID: {{id}}, username: {{username}}, pass: {{password}}</li>
       					{{/each}}
-    				</ul>
+    				</ul> --}}
 					
 				</div>
 			</div>
@@ -25,8 +25,8 @@
 			<div class="rightside">
 				<div class="login">
 					<h2 class="login-title">Login</h2>
-					<div class="signup">
-						Need an account? <a class="signup-link" href="register">Sign Up</a>
+					<div class="signup-button">
+						Need an account? <a class="signup-link" href="#" id="showSignup">Sign Up</a>
 						<br> or <a class="signup-link" href="guest">visit as a Guest</a>
 					</div>
 					
@@ -46,19 +46,43 @@
 							<p id="error-message" style="color:red;"></p>
 						</form>
 
-						<form id="forum-form" action="/go-forum" method="post">
-							<button class="button" type="submit">go to forum</button>
+					</div>
+				</div>
+
+				<div class="signup" style="display:none;">
+					<h2 class="signup-title">Signup</h2>
+					<div class="login-button">
+						Have an account? <a class="login-link" href="#" id="showLogin">Login</a>
+						<br> or <a class="signup-link" href="guest">visit as a Guest</a>
+					</div>
+					
+					<div class ="login-input">
+					
+						<form id="loginform" action="/submit-signup" method="post">
+							<label class="username-input" for="username">Email/ Username</label><br>
+							<input type="text" id="username" name="username" required><br><br>
+							
+							<label class="password-input" for="password">Password</label><br>
+							<input type="password" id="password" name="password" required><br><br>
+
+							<label class="confpassword-input" for="confpassword">Confirm Password</label><br>
+							<input type="password" id="confpassword" name="confpassword" required><br><br>
+							
+							<button class="button" type="submit">Submit</button>
+							<p id="error-message" style="color:red;"></p>
 						</form>
 
 					</div>
 				</div>
 			</div>
+
+			
 		</div>
 		<script>
-    document.addEventListener("DOMContentLoaded", function() {
-      const form = document.getElementById("loginform");
+    	document.addEventListener("DOMContentLoaded", function() {
+      	const form = document.getElementById("loginform");
 
-      form.addEventListener("submit", function(event) {
+      	form.addEventListener("submit", function(event) {
         const username = document.getElementById("username").value;
         const password = document.getElementById("password").value;
 
@@ -77,11 +101,30 @@
           return;
         }
 
-        if (password.length < 3) {
-          document.getElementById("error-message").textContent = "Password must be at least 6 characters long.";
+        if (password.length < 4) {
+          document.getElementById("error-message").textContent = "Password must be at least 5 km characters long.";
           event.preventDefault(); // Prevent form submission
           return;
         }
+      });
+    });
+
+	document.addEventListener("DOMContentLoaded", function() {
+    	const showSignupLink = document.getElementById("showSignup");
+      	const showLoginLink = document.getElementById("showLogin");
+      	const loginDiv = document.querySelector(".login");
+      	const signupDiv = document.querySelector(".signup");
+
+    	showSignupLink.addEventListener("click", function(event) {
+        event.preventDefault();
+        loginDiv.style.display = "none";
+        signupDiv.style.display = "block";
+      });
+
+      	showLoginLink.addEventListener("click", function(event) {
+        event.preventDefault();
+        loginDiv.style.display = "block";
+        signupDiv.style.display = "none";
       });
     });
   </script>

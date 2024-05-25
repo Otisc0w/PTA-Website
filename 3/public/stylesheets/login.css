@@ -15,7 +15,7 @@
     width: 100%;
     overflow: hidden;
     color: var(--white);
-    background-image: url('../images/ptabg.png')
+    background-image: url('../images/ptabg.png');
 }
 
 .leftside{
@@ -50,6 +50,12 @@
 }
 
 .login{
-    margin-top: 20%;
+    margin-top: 250px;
     margin-left: 2%;
 }
+
+.signup{
+    margin-top: 250px;
+    margin-left: 2%;
+}
+
