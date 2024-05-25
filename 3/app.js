@@ -93,28 +93,36 @@ app.post('/submit-login', async (req, res) => {
   }
 });
 
+
 app.post('/submit-signup', async (req, res) => {
-  const { username, password } = req.body;
+  const { username, password, confpassword } = req.body; // Capture user input from the form
+
+  // Validate the input
+  if (password !== confpassword) {
+    return res.status(400).render('index', {
+      error: 'Passwords do not match.',
+      users: [] // Optionally pass users array if you need it in the view
+    });
+  }
 
   try {
+    // Insert the new user into the database
     const { data, error } = await supabase
-      .from('users')
-      .select('*')
-      .eq('username', username)
-      .eq('password', password) //blue is from form and red is column in databse
-      .single(); // Ensure a single match
+      .from('users') // Replace 'users' with your actual table name if different
+      .insert([{ username, password }]);
 
-    if (error || !data) {
-      // Invalid credentials
-      return res.status(401).render('index', {
-        error: 'Invalid username or password.',
-        users: [] // Pass users array if needed
+    if (error) {
+      // Handle any errors that occur during the insert
+      return res.status(500).render('index', {
+        error: 'Error creating user.',
+        users: [] // Optionally pass users array if you need it in the view
       });
     }
 
-    // Successful signup
-    res.redirect('/home');
+    // Redirect to the login page after successful signup
+    res.redirect('/');
   } catch (error) {
+    // Handle any server-side errors
     res.status(500).json({ error: error.message });
   }
 });
