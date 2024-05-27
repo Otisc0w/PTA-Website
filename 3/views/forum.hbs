@@ -1,34 +1,47 @@
 <html>
 
 	<head>
-	  <title>PTA | Forum</title>
-	  <link rel="stylesheet" type="text/css" href="../stylesheets/home.css" />
+	  <title>PTA | Home</title>
+	  <link rel="stylesheet" type="text/css" href="../stylesheets/forum.css" />
 	</head>
 	
-	<body style="margin: 0;">
-		<div class="container">
-			<nav>forum reddit stupid people
-				I used to steal cash from the Subway (sandwich shop) I worked at
-I started working at a Subway as my first job. My boss was a loser. I was 17, he was 24. After working there for a while I found out his parents bought him the Subway as I'm assuming he wasn't really capable of doing much on his own. I was more mature than he was, he would always show me pictures of his weekend nights out, as if I thought that was cool or something. I just kept it easy going and went along with it.
+	<body style="margin:0;" class="container">
+        <div class="header">
+            <div class="navbar">
+				<a href="home"><img src="/images/logo.png" class="logo"></img></a>        
+                <ul class="tabs">
+                    <li class="home"><a href="home">Home</a></li>
+                    <li class="athletes"><a href="athletes">Athletes</a></li>
+                    <li class="clubs"><a href="clubs">Clubs</a></li>
+                    <li class="events"><a href="events">Events</a></li>
+                    <li class="membership"><a href="membership">Membership</a></li>
+                    <li class="forum"><a href="forum">Forum</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="forum-container">
+				{{#each forumthreads}}
+				<div class='flex post-container'>
+                    <div class='flex post-content'>
+                        <div class='post-text nobottom'>
+                            <div class='flex post-info'>
+                                <span class='community'><a class='post-community' href='community?community='>{{community}}</a> •</span>
+                                <span class='small'>by <a class='post-user' href='profile?username='>{{user}}</a> on {{date}}</span>
+                            </div>
+                            <a href='post?postId='><h2 class='post-title margin no-sides nobottom'>{{title}}</h2></a>
+                            <p class='post-description light'>{{body}}</p>
 
-He was very lazy. Within a month or two of me working there, it went from me and one another person, and sometimes 3 during rushes, to me by myself, and one other person for dinner rush to an hour before close. Whenever my boss showed up, he might fuck around for a bit and help a few customers, do paperwork and what not and just leave or sit in his office doing jack shit.
-
-Essentially he became very comfortable with me doing most of the work, and I did it well with no complaints. Honestly subways was kind of fun besides the lines when I was alone.
-
-After about 3 months in, he would barely be there when I start shift, or leave shortly after. I started dealing with more things like franchise inspections and inventory/ordering. I was already doing the end of day reports since I was closing. I asked for a raise, he said no. It really didn't bother me too much as it was just a part time job for spending money, help at home.
-
-Well, the more and more I learned the system, and understood his lack of attention, I quickly realized I could make some extra cash.
-
-Basically, the end of day report would have counts of white and wheat bread to make sure all used bread is accounted for (we throw some away at night, so there is generally a little variance). This count includes all the bread we have in stock, including in the freezer.
-
-The thing is, the open boxes in the freezer, we would just mark with a permanent marker subtracting from the total each time we removed bread. Knowing he's not actually going to count out the bread in the freezer box, I would modify that count to say there was more bread in the box than there was. He rarely did the bread himself, and if the bread count in the box was low, I wouldn't mess with it, to be safe. He never knew the counts were actually off because the system was accurate.
-
-I would make cash by not ringing up the order (there's a camera aimed at the cash register, but I naturally block the screen, so he wouldn't have seen me not ringing the order up, and i pretended like i was pressing buttons lol). I had the subs prices with tax memorized. When they pay with cash, I don't ring up the order, but I put the cash in the register, making a mental note of that amount. I didn't do this to every cash order, just easy ones, and obviously can't have 0 cash sales.
-
-At the end of shift, we do a cash drop of excess cash from the register to the safe via envelope drop. So while I was counting out the cash to drop, I'd know exactly how much of that was 'mine'. I knew the perfect angle of the camera that when placing the cash into the envelope, I'd quickly crumple up the money and keep it in my hand while I drop the envelope into the safe. Then I'd just go do more closing stuff and put the cash in my pocket inconspicuously.
-
-I never got caught. On weekends I could easily make $100 without him noticing. I made over $10,000 from stealing cash alone, and I gave my mom most of my paycheck. I just used that money to put a down payment on my first car. Thanks [name redacted] ya fuckin idiot.
-			</nav>
+                            <div class='flex no-padding'>
+                                <div class='flex'>
+                                    <a class='post-title' href='post?postId={{postId}}'><button class='button sides'><span class='material-symbols-outlined'>mode_comment</span>Comment</button></a>
+                                </div>
+								{{upvotes}}
+								{{downvotes}}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+				{{/each}}
 		</div>
 	</body>
 </html>

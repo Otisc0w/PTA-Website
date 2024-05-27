@@ -28,18 +28,29 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Route to fetch and display data on the index page
 app.get('/', async (req, res) => {
   try {
-    const { data, error } = await supabase
+    // Fetch users data
+    const { data: users, error: usersError } = await supabase
       .from('users')
       .select('*');
 
-    if (error) {
-      return res.status(400).json({ error: error.message });
+    if (usersError) {
+      return res.status(400).json({ error: usersError.message });
     }
 
-    //console.log("Fetched data:", data); // Log the data to the console
+    // Fetch athletes data
+    const { data: athletes, error: athletesError } = await supabase
+      .from('athletes')
+      .select('*');
+
+    if (athletesError) {
+      return res.status(400).json({ error: athletesError.message });
+    }
+
+    console.log("Fetched users data:", users); // Log the users data to the console
+    console.log("Fetched athletes data:", athletes); // Log the athletes data to the console
 
     // Render the index.hbs template with the fetched data
-    res.render('index', { users: data });
+    res.render('index', { users, athletes });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -136,7 +147,22 @@ app.post('/go-forum', async function (req, res) {
 });
 
 app.get('/forum', async function (req, res) {
-  res.render('forum');
+  try {
+    const { data, error } = await supabase
+      .from('forumthreads')
+      .select('*');
+
+    if (error) {
+      return res.status(400).json({ error: error.message });
+    }
+
+    console.log("Fetched data:", data); // Log the data to the console 
+
+    // Render the athletes.hbs template with the fetched data
+    res.render('forum', { forumthreads: data });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 });
 
 app.post('/go-membership', async function (req, res) {
@@ -145,6 +171,37 @@ app.post('/go-membership', async function (req, res) {
 
 app.get('/membership', async function (req, res) {
   res.render('membership');
+});
+
+app.post('/go-events', async function (req, res) {
+  res.redirect('/events');
+});
+
+app.get('/events', async function (req, res) {
+  res.render('events');
+});
+
+app.post('/go-athletes', async function (req, res) {
+  res.redirect('/athletes');
+});
+
+app.get('/athletes', async function (req, res) {
+  try {
+    const { data, error } = await supabase
+      .from('athletes')
+      .select('*');
+
+    if (error) {
+      return res.status(400).json({ error: error.message });
+    }
+
+    console.log("Fetched data:", data); // Log the data to the console 
+
+    // Render the athletes.hbs template with the fetched data
+    res.render('athletes', { athletes: data });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 });
 
 app.listen(port, () => {
