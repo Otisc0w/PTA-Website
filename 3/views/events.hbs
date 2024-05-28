@@ -1,7 +1,7 @@
 <html>
 
 	<head>
-	  <title>PTA | Home</title>
+	  <title>PTA | Athletes</title>
 	  <link rel="stylesheet" type="text/css" href="../stylesheets/home.css" />
 	</head>
 	
@@ -35,7 +35,12 @@
 
                 <div class="right-panel">
                     <div class="community-panel">
-                        <p class="community-description">PTA Services Center do whatever you want bruh</p>
+                        <p class="community-description">competitions this year bro</p>
+                        <ul>
+      					{{#each athletes}}
+        				<li>ID: {{id}}, firstname: {{firstname}}, lastname: {{lastname}}, points: {{points}}</li>
+      					{{/each}}
+    				</ul>
                     </div>
                 </div>
             </div>

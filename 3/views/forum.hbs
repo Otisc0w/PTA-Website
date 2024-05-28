@@ -1,13 +1,47 @@
 <html>
 
 	<head>
-	  <title>PTA | Forum</title>
-	  <link rel="stylesheet" type="text/css" href="../stylesheets/login.css" />
+	  <title>PTA | Home</title>
+	  <link rel="stylesheet" type="text/css" href="../stylesheets/forum.css" />
 	</head>
 	
-	<body style="margin: 0;">
-		<div class="container">
-			<nav>forum reddit stupid people</nav>
+	<body style="margin:0;" class="container">
+        <div class="header">
+            <div class="navbar">
+				<a href="home"><img src="/images/logo.png" class="logo"></img></a>        
+                <ul class="tabs">
+                    <li class="home"><a href="home">Home</a></li>
+                    <li class="athletes"><a href="athletes">Athletes</a></li>
+                    <li class="clubs"><a href="clubs">Clubs</a></li>
+                    <li class="events"><a href="events">Events</a></li>
+                    <li class="membership"><a href="membership">Membership</a></li>
+                    <li class="forum"><a href="forum">Forum</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="forum-container">
+				{{#each forumthreads}}
+				<div class='flex post-container'>
+                    <div class='flex post-content'>
+                        <div class='post-text nobottom'>
+                            <div class='flex post-info'>
+                                <span class='community'><a class='post-community' href='community?community='>{{community}}</a> •</span>
+                                <span class='small'>by <a class='post-user' href='profile?username='>{{user}}</a> on {{date}}</span>
+                            </div>
+                            <a href='post?postId='><h2 class='post-title margin no-sides nobottom'>{{title}}</h2></a>
+                            <p class='post-description light'>{{body}}</p>
+
+                            <div class='flex no-padding'>
+                                <div class='flex'>
+                                    <a class='post-title' href='post?postId={{postId}}'><button class='button sides'><span class='material-symbols-outlined'>mode_comment</span>Comment</button></a>
+                                </div>
+								{{upvotes}}
+								{{downvotes}}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+				{{/each}}
 		</div>
 	</body>
 </html>

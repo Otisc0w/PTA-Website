@@ -1,0 +1,55 @@
+<html>
+
+	<head>
+	  <title>PTA | Athletes</title>
+	  <link rel="stylesheet" type="text/css" href="../stylesheets/athletes.css" />
+	</head>
+	
+	<body style="margin:0;" class="container">
+        
+            <div class="header">
+                <div class="navbar">
+                    <a href="home"><img src="/images/logo.png" class="logo"></img></a>        
+                    <ul class="tabs">
+                        <li class="home"><a href="home">Home</a></li>
+                        <li class="athletes"><a href="athletes">Athletes</a></li>
+                        <li class="clubs"><a href="clubs">Clubs</a></li>
+                        <li class="events"><a href="events">Events</a></li>
+                        <li class="membership"><a href="membership">Membership</a></li>
+                        <li class="forum"><a href="forum">Forum</a></li>
+                        
+                    </ul>
+                </div>
+            </div>
+
+            <div class="athletes-container">
+
+                <div class="right-panel">
+                    <div class="community-panel">
+                        <h3>Athlete Rankings</h3>
+                        
+                        <table class="rankings">
+                            <thead>
+                                <tr>
+                                    <th> Rank </th>
+                                    <th> Name </th>
+                                    <th></th>
+                                    <th> Points </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {{#each athletes}}
+                                <tr>
+                                    <td> {{id}} </td>
+                                    <td> {{firstname}}</td>
+                                    <td> {{lastname}} </td>
+                                    <td> {{points}} </td>
+                                </tr>
+                                {{/each}}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+    </body>
+</html>
