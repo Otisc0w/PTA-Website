@@ -138,13 +138,14 @@ app.post('/submit-signup', async (req, res) => {
   }
 });
 
+
 app.get('/home', async function (req, res) {
   res.render('home');
 });
 
-app.post('/go-forum', async function (req, res) {
-  res.redirect('/forum');
-});
+// app.post('/go-forum', async function (req, res) {
+//   res.redirect('/forum');
+// });
 
 app.get('/forum', async function (req, res) {
   try {
@@ -165,25 +166,25 @@ app.get('/forum', async function (req, res) {
   }
 });
 
-app.post('/go-membership', async function (req, res) {
-  res.redirect('/membership');
-});
+// app.post('/go-membership', async function (req, res) {
+//   res.redirect('/membership');
+// });
 
 app.get('/membership', async function (req, res) {
   res.render('membership');
 });
 
-app.post('/go-events', async function (req, res) {
-  res.redirect('/events');
-});
+// app.post('/go-events', async function (req, res) {
+//   res.redirect('/events');
+// });
 
 app.get('/events', async function (req, res) {
   res.render('events');
 });
 
-app.post('/go-athletes', async function (req, res) {
-  res.redirect('/athletes');
-});
+// app.post('/go-athletes', async function (req, res) {
+//   res.redirect('/athletes');
+// });
 
 app.get('/athletes', async function (req, res) {
   try {
