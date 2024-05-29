@@ -34,7 +34,7 @@
 
 .navbar ul{
     display: inline-block;
-    margin-right: 120px;
+    margin-right: 80px;
 }
 
 .navbar ul li{
@@ -56,6 +56,12 @@ a {
 .athletes-container{
     height: 850px;
 }
+
+.profile-pic img{
+    width:50px;
+    border-radius: 50%;
+}
+
 
 /* youtube stuff */
 main.table {

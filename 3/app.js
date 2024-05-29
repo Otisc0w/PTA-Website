@@ -140,7 +140,22 @@ app.post('/submit-signup', async (req, res) => {
 
 
 app.get('/home', async function (req, res) {
-  res.render('home');
+  try {
+    const { data, error } = await supabase
+      .from('users')
+      .select('*');
+
+    if (error) {
+      return res.status(400).json({ error: error.message });
+    }
+
+    console.log("Fetched data:", data); // Log the data to the console 
+
+    // Render the home.hbs template with the fetched data
+    res.render('home', { users: data });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 });
 
 // app.post('/go-forum', async function (req, res) {
@@ -159,7 +174,7 @@ app.get('/forum', async function (req, res) {
 
     console.log("Fetched data:", data); // Log the data to the console 
 
-    // Render the athletes.hbs template with the fetched data
+    // Render the forum.hbs template with the fetched data
     res.render('forum', { forumthreads: data });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -180,6 +195,25 @@ app.get('/membership', async function (req, res) {
 
 app.get('/events', async function (req, res) {
   res.render('events');
+});
+
+app.get('/profile', async function (req, res) {
+  try {
+    const { data, error } = await supabase
+      .from('users')
+      .select('*');
+
+    if (error) {
+      return res.status(400).json({ error: error.message });
+    }
+
+    console.log("Fetched data:", data); // Log the data to the console 
+
+    // Render the profile.hbs template with the fetched data
+    res.render('profile', { users: data });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 });
 
 // app.post('/go-athletes', async function (req, res) {

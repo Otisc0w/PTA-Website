@@ -5,42 +5,13 @@
 
 }
 
-.content-container {
-    position:relative; 
+.container {
+    background-color: #3A3A3A;
     width: 100%;
-    overflow: hidden;
-    color: var(--white);
-
-}
-
-.leftside{
-    width: 50%;
     height: 100%;
-    background-color: #3A3A3A;
-    float: left;
-    text-align: right;
-    opacity: 1;   
     color: white;
-    background-image: url('../images/ptabg.png');
+    opacity: .9;
 }
-
-.rightside{
-    width: 50%;
-    height: 100%;
-    overflow: hidden;
-    text-align: center;
-    color: white;
-    background-color: #3A3A3A;
-}
-
-.registration ul{
-    margin-top: 200px;
-    list-style-type: none;
-}
-.registration ul li{
-    margin: 80px 0;
-}
-
 .header{
     width: 100%;
     height: 12%;
@@ -65,7 +36,7 @@
 
 .navbar ul{
     display: inline-block;
-    margin-right: 80px;
+    margin-right: 120px;
 }
 
 .navbar ul li{
@@ -84,9 +55,11 @@ a {
     font-size: 18px;
 }
 
-.profile-pic img{
-    width:50px;
-    border-radius: 50%;
+.profile-container{
+    height: 850px;
 }
 
+.profile-pic img{
+    width:50px;
+}
 
