@@ -1,6 +1,7 @@
 const express = require('express');
 const path = require('path');
 const hbs = require('hbs');
+const session = require('express-session'); // Import express-session
 const app = express();
 
 require('dotenv').config();
@@ -17,6 +18,14 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 // Middleware to parse JSON
 app.use(express.json());
 app.use(express.urlencoded({ extended: true })); // Middleware to parse URL-encoded data
+
+// Configure express-session
+app.use(session({
+  secret: 'your_secret_key', // Replace with a secure secret key
+  resave: false,
+  saveUninitialized: true,
+  cookie: { secure: false } // Set to true if using HTTPS
+}));
 
 // Set up Handlebars view engine
 app.set('view engine', 'hbs');
@@ -71,7 +80,6 @@ app.get('/data/:id', async (req, res) => {
       return res.status(400).json({ error: error.message });
     }
 
-
     res.status(200).json(data);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -93,9 +101,18 @@ app.post('/submit-login', async (req, res) => {
       // Invalid credentials
       return res.status(401).render('index', {
         error: 'Invalid username or password.',
-        users: [] // Pass users array if needed
+        users: [], // Pass users array if needed
+        athletes: [] // Pass athletes array if needed
       });
     }
+
+    // Store user information in session
+    req.session.user = {
+      id: data.id,
+      username: data.username,
+      password: data.password,
+      usertype: data.usertype 
+    };
 
     // Successful login
     res.redirect('/home');
@@ -138,29 +155,14 @@ app.post('/submit-signup', async (req, res) => {
   }
 });
 
-
+// Route to render the home page and display the logged-in user's name
 app.get('/home', async function (req, res) {
-  try {
-    const { data, error } = await supabase
-      .from('users')
-      .select('*');
-
-    if (error) {
-      return res.status(400).json({ error: error.message });
-    }
-
-    console.log("Fetched data:", data); // Log the data to the console 
-
-    // Render the home.hbs template with the fetched data
-    res.render('home', { users: data });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+  if (!req.session.user) {
+    return res.redirect('/');
   }
-});
 
-// app.post('/go-forum', async function (req, res) {
-//   res.redirect('/forum');
-// });
+  res.render('home', { user: req.session.user });
+});
 
 app.get('/forum', async function (req, res) {
   try {
@@ -181,17 +183,9 @@ app.get('/forum', async function (req, res) {
   }
 });
 
-// app.post('/go-membership', async function (req, res) {
-//   res.redirect('/membership');
-// });
-
 app.get('/membership', async function (req, res) {
   res.render('membership');
 });
-
-// app.post('/go-events', async function (req, res) {
-//   res.redirect('/events');
-// });
 
 app.get('/events', async function (req, res) {
   res.render('events');
@@ -215,10 +209,6 @@ app.get('/profile', async function (req, res) {
     res.status(500).json({ error: error.message });
   }
 });
-
-// app.post('/go-athletes', async function (req, res) {
-//   res.redirect('/athletes');
-// });
 
 app.get('/athletes', async function (req, res) {
   try {
