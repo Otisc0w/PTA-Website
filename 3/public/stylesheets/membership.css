@@ -33,11 +33,11 @@
     background-color: #3A3A3A;
 }
 
-.registration ul{
+.rightside ul{
     margin-top: 200px;
     list-style-type: none;
 }
-.registration ul li{
+.rightside ul li{
     margin: 80px 0;
 }
 
@@ -66,6 +66,14 @@
 .navbar ul{
     display: inline-block;
     margin-right: 80px;
+}
+
+a:hover{
+    background-color: #0c0c0c;
+    border-radius: 15%;
+    width: 100px;
+    font-weight: bold;
+    
 }
 
 .navbar ul li{

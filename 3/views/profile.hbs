@@ -3,14 +3,14 @@
 	<head>
 	  <title>PTA | Home</title>
       <link rel="icon" type="image/x-icon" href="../images/favicon.ico" />
-	  <link rel="stylesheet" type="text/css" href="../stylesheets/home.css" />
+	  <link rel="stylesheet" type="text/css" href="../stylesheets/profile.css" />
 	</head>
 	
 	<body style="margin:0;" class="container">
         
             <div class="header">
                 <div class="navbar">
-                    <a href="home"><img src="/images/logo.png" class="logo"></img></a>        
+                    <img src="/images/logo.png" class="logo" href="home"></img>          
                     <ul class="tabs">
                         <li class="home"><a href="home">Home</a></li>
                         <li class="athletes"><a href="athletes">Athletes</a></li>
@@ -24,21 +24,39 @@
             </div>
 
             <div class="profile-container">
-                <div class="left-panel">
-                </div>
-
-                <div class="main-panel">
-                    <div class='flex post-container'>
-                        <div class='flex post-content'>
+                
+                    <img id="pfp" class="pfp" src="images/goofy.jpg" />
+                    <button class="edit-profile"><a href="edit-profile"><span class="material-symbols-outlined">edit</span></a></button>
+    
+                    <div class="wide profile-details">
+                        <h2 id="username" class="no-margin">{{user.lastname}}, {{user.firstname}}</h2>
+    
+                        <p id="description" class="description no-margin">{{user.usertype}}</p><br>
+                        
+                        <div class="flex">
+                            <ul class="info-box">
+                                <li>
+                                    <span class="info-title">
+                                        REGION
+                                    </span>
+                                </li>
+                                <li><h3 id="" class="">{{user.region}}</h3></li>
+                                <li>
+                                    <span class="info-title">
+                                        CLUB
+                                    </span>
+                                </li>
+                                <li><h3 id="" class="">{{user.club}}</h3></li>
+                                {{!-- <li>
+                                    <span class="info-title">
+                                        REGISTERED
+                                    </span>
+                                </li>
+                                <li><h3 id="" class="">{{user.club}}</h3></li> --}}
+                                <li><h3 id="" class="signout"><a href="/">Signout</a></h3></li>
+                            </ul>
                         </div>
                     </div>
-                </div>
-
-                <div class="right-panel">
-                    <div class="community-panel">
-                        <p class="community-description">Thisis your profile</p>
-                    </div>
-                </div>
             </div>
     </body>
 </html>

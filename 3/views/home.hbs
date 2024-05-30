@@ -10,7 +10,7 @@
         
             <div class="header">
                 <div class="navbar">
-                    <a href="home"><img src="/images/logo.png" class="logo"></img></a>        
+                    <img src="/images/logo.png" class="logo" href="home"></img>       
                     <ul class="tabs">
                         <li class="home"><a href="home">Home</a></li>
                         <li class="athletes"><a href="athletes">Athletes</a></li>
@@ -18,7 +18,7 @@
                         <li class="events"><a href="events">Events</a></li>
                         <li class="membership"><a href="membership">Membership</a></li>
                         <li class="forum"><a href="forum">Forum</a></li>
-                        <li class="profile-pic"><a href="profile"><img src="/images/goofy.jpg">hello {{user.username}}</img></a></li>
+                        <li class="profile-pic"><a href="profile"><img src="/images/goofy.jpg"></img></a></li>
                     </ul>
                 </div>
             </div>
@@ -36,7 +36,7 @@
 
                 <div class="right-panel">
                     <div class="community-panel">
-                        <p class="community-description">PTA Services Center do whatever you want bruh</p>
+                        <h2 class="greeting">Hello {{user.username}}!</h2>
                     </div>
                 </div>
             </div>

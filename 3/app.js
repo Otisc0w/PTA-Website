@@ -109,9 +109,14 @@ app.post('/submit-login', async (req, res) => {
     // Store user information in session
     req.session.user = {
       id: data.id,
+      firstname: data.firstname,
+      lastname: data.lastname,
       username: data.username,
       password: data.password,
-      usertype: data.usertype 
+      usertype: data.usertype,
+      club: data.club,
+      region: data.region,
+      registered: data.registered
     };
 
     // Successful login
@@ -121,6 +126,49 @@ app.post('/submit-login', async (req, res) => {
   }
 });
 
+app.post('/submit-ncc', async (req, res) => {
+  const { firstname,
+          mi,
+          lastname,
+          gender,
+          bday,
+          phonenum,
+          email,
+          lastpromo,
+          promolocation,
+          clubregion,
+          clubname,
+          beltlevel } = req.body; // Capture user input from the form
+
+  try {
+    // Insert the new user into the database
+    const { data, error } = await supabase
+      .from('nccregis') // Replace 'users' with your actual table name if different
+      .insert([{  firstname,
+                  mi,
+                  lastname,
+                  gender,
+                  bday,
+                  phonenum,
+                  email,
+                  lastpromo,
+                  promolocation,
+                  clubregion,
+                  clubname,
+                  beltlevel }]);
+
+    if (error) {
+      // Handle any errors that occur during the insert
+      return res.status(500).render('index', {
+        error: 'Error creating registration.',
+        users: [] // Optionally pass users array if you need it in the view
+      });
+    }
+  } catch (error) {
+    // Handle any server-side errors
+    res.status(500).json({ error: error.message });
+  }
+});
 
 app.post('/submit-signup', async (req, res) => {
   const { username, password, confpassword } = req.body; // Capture user input from the form
@@ -184,17 +232,9 @@ app.get('/forum', async function (req, res) {
 });
 
 app.get('/membership', async function (req, res) {
-  res.render('membership');
-});
-
-app.get('/events', async function (req, res) {
-  res.render('events');
-});
-
-app.get('/profile', async function (req, res) {
   try {
     const { data, error } = await supabase
-      .from('users')
+      .from('clubs')                                            //need to change to clubs after
       .select('*');
 
     if (error) {
@@ -203,11 +243,23 @@ app.get('/profile', async function (req, res) {
 
     console.log("Fetched data:", data); // Log the data to the console 
 
-    // Render the profile.hbs template with the fetched data
-    res.render('profile', { users: data });
+    // Render the forum.hbs template with the fetched data
+    res.render('membership', { clubs: data });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
+});
+
+app.get('/events', async function (req, res) {
+  res.render('events');
+});
+
+app.get('/profile', async function (req, res) {
+  if (!req.session.user) {
+    return res.redirect('/');
+  }
+
+  res.render('profile', { user: req.session.user });
 });
 
 app.get('/athletes', async function (req, res) {
