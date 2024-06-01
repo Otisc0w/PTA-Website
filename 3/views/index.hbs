@@ -79,53 +79,52 @@
 			
 		</div>
 		<script>
-    	document.addEventListener("DOMContentLoaded", function() {
-      		const form = document.getElementById("loginform");
+			document.addEventListener("DOMContentLoaded", function() {
+				const form = document.getElementById("loginform");
 
-			form.addEventListener("submit", function(event) {
-				const username = document.getElementById("username").value;
-				const password = document.getElementById("password").value;
+				form.addEventListener("submit", function(event) {
+					const username = document.getElementById("username").value;
+					const password = document.getElementById("password").value;
 
-				// Clear any previous error messages
-				document.getElementById("error-message").textContent = "";
+					// Clear any previous error messages
+					document.getElementById("error-message").textContent = "";
 
-				if (!username || !password) {
-				document.getElementById("error-message").textContent = "Both username and password are required.";
-				event.preventDefault(); // Prevent form submission
-				return;
-				}
+					if (!username || !password) {
+					document.getElementById("error-message").textContent = "Both username and password are required.";
+					event.preventDefault(); // Prevent form submission
+					return;
+					}
 
-				if (username.length < 3) {
-				document.getElementById("error-message").textContent = "Username must be at least 3 characters long.";
-				event.preventDefault(); // Prevent form submission
-				return;
-				}
+					if (username.length < 3) {
+					document.getElementById("error-message").textContent = "Username must be at least 3 characters long.";
+					event.preventDefault(); // Prevent form submission
+					return;
+					}
 
-				if (password.length < 4) {
-				document.getElementById("error-message").textContent = "Password must be at least 5 km characters long.";
-				event.preventDefault(); // Prevent form submission
-				return;
-				}
+					if (password.length < 4) {
+					document.getElementById("error-message").textContent = "Password must be at least 5 km characters long.";
+					event.preventDefault(); // Prevent form submission
+					return;
+					}
+				});
+
+				const showSignupLink = document.getElementById("showSignup");
+				const showLoginLink = document.getElementById("showLogin");
+				const loginDiv = document.querySelector(".login");
+				const signupDiv = document.querySelector(".signup");
+
+				showSignupLink.addEventListener("click", function(event) {
+					event.preventDefault();
+					loginDiv.style.display = "none";
+					signupDiv.style.display = "block";
+				});
+
+				showLoginLink.addEventListener("click", function(event) {
+					event.preventDefault();
+					loginDiv.style.display = "block";
+					signupDiv.style.display = "none";
+				});
 			});
-
-	  		const showSignupLink = document.getElementById("showSignup");
-      		const showLoginLink = document.getElementById("showLogin");
-      		const loginDiv = document.querySelector(".login");
-      		const signupDiv = document.querySelector(".signup");
-
-    		showSignupLink.addEventListener("click", function(event) {
-				event.preventDefault();
-				loginDiv.style.display = "none";
-				signupDiv.style.display = "block";
-      		});
-
-      		showLoginLink.addEventListener("click", function(event) {
-				event.preventDefault();
-				loginDiv.style.display = "block";
-				signupDiv.style.display = "none";
-      		});
-    	});
-
-  </script>
+  		</script>
 	</body>
 </html>

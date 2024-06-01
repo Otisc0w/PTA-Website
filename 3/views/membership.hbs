@@ -26,116 +26,16 @@
 				<div class="forumtitle">
 					<h1 class= "forumname"> <span class="logo"> </span></h1>
 					<h3 class = "forumdesc">Membership Registration Center</h3>
-                    <h3 hidden class = "forumdesc">Apply for NCC ID</h3>
-                    <h3 hidden class = "forumdesc">Apply for National Taekwondo Practitioner</h3>
-                    <h3 hidden class = "forumdesc">Register Club</h3>
 				</div>
 			</div>
 		
 			<div class="rightside">
-				<div class="registration" hidden>
+				<div class="registration">
                     <ul>
 					    <li class ="status"><a>Registration Status</a></li>
-                        <li class ="ncc"><a>Apply for NCC ID</a></li>
+                        <li class ="ncc"><a href="membership-ncc">Apply for NCC ID</a></li>
                         <li class ="practitioner"><a>Apply for National Taekwondo Practitioner</a></li>
                         <li class ="club"><a>Register Club</a></li>
-                    </ul>
-				</div>
-                                                                                                                                {{!-- NCC ID APPLICATION FORM part 1 --}}
-
-
-                <div class="ncc1">
-                    <ul>
-					    <form id="nccform" action="/submit-ncc" method="post">
-							<label class="firstname-input" for="firstname">Firstname</label><br>
-							<input type="text" id="firstname" name="firstname" required><br>
-
-                            <label class="mi-input" for="mi">Middle Initial</label><br>
-							<input type="text" id="mi" name="mi" required><br>
-
-                            <label class="lastname-input" for="lastname">Lastname</label><br>
-							<input type="text" id="lastname" name="lastname" required><br>
-							
-							<input type="radio" id="female" name="gender" value="female">
-                            <label for="html">Female</label><br>
-                            <input type="radio" id="male" name="gender" value="male">
-                            <label for="css">Male</label><br>
-
-							<label for="birthday">Birthday:</label><br>
-                            <input type="date" id="birthday" name="birthday"><br>
-
-                            <label for="phone">Mobile Number</label><br>
-                            <input type="tel" id="phone" name="phone" pattern="\d{4}\d{3}\d{4}" placeholder="0912-345-6789" required><br>
-
-                            <label class="email-input" for="email">E-mail</label><br>
-							<input type="text" id="email" name="email" required><br>
-
-                            <label class="email-input" for="email">Confirm E-mail</label><br>
-							<input type="text" id="email" name="email" required><br>
-
-                            <label for="lastpromotion">Date of Last Promotion Test</label><br>
-                            <input type="date" id="lastpromotion" name="lastpromotion" required><br>
-
-                            <label for="promotionlocation">Location of Last Promotion</label><br>
-                            <select name="promotionlocation" id="promotionlocation" required>
-                                <option value="Pampanga">Pampanga</option>
-                                <option value="NCR">NCR</option>
-                                <option value="CAR">CAR</option>
-                            </select><br>
-
-                            <label for="promotionlocation">Region of Club</label><br>
-                            <select name="region" id="region" required>
-                                    <option value="Pampanga">Pampanga</option>
-                                    <option value="NCR">NCR</option>
-                                    <option value="CAR">CAR</option>
-                            </select><br>
-
-                            <label for="club">Club</label><br>
-                            <select name="club" id="club" required>
-                                {{#each clubs}}
-                                <option value="{{name}}">{{name}}</option>
-                                {{/each}}
-                            </select><br>
-
-                            <label for="beltlevel">Current Belt Level</label><br>
-                            <select name="beltlevel" id="beltlevel" required>
-                                    <option value="white">white</option>
-                                    <option value="black">black</option>
-                                    <option value="yellow">yellow</option>
-                            </select><br>
-							
-							<br><button class="nccstep1" type="submit">Next</button>
-							<p id="error-message" style="color:red;"></p>
-						</form>
-                    </ul>
-				</div>
-
-                                                                                                                                {{!-- NCC APPLICATION step 2 --}}
-
-                <div class="ncc2" hidden>
-                    <ul>
-					    <form id="nccform" action="/submit-ncc" method="post">
-							<label class="firstname-input" for="firstname">Instructor Firstname</label><br>
-							<input type="text" id="firstname" name="firstname" required><br>
-
-                            <label class="mi-input" for="mi">Middle Initial</label><br>
-							<input type="text" id="mi" name="mi" required><br>
-
-                            <label class="lastname-input" for="lastname">Lastname</label><br>
-							<input type="text" id="lastname" name="lastname" required><br>
-
-                            <label for="phone">Mobile Number</label><br>
-                            <input type="tel" id="phone" name="phone" pattern="\d{4}\d{3}\d{4}" placeholder="0912-345-6789" required><br>
-
-                            <label class="email-input" for="email">Instructor E-mail</label><br>
-							<input type="text" id="email" name="email" required><br>
-
-                            <label class="email-input" for="email">Confirm E-mail</label><br>
-							<input type="text" id="email" name="email" required><br>
-							
-							<br><button class="nccstep2" type="submit">Next</button>
-							<p id="error-message" style="color:red;"></p>
-						</form>
                     </ul>
 				</div>
 			</div>
