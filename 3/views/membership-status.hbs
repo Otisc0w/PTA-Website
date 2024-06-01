@@ -1,0 +1,65 @@
+<html>
+
+	<head>
+	  <title>PTA | Apply for NCC ID</title>
+      <link rel="icon" type="image/x-icon" href="../images/favicon.ico" />
+	  <link rel="stylesheet" type="text/css" href="../stylesheets/membership.css" />
+	</head>
+	
+	<body style="margin:0;" class="container">
+        <div class="header">
+            <div class="navbar">
+				<img src="/images/logo.png" class="logo" href="home"></img>          
+                <ul class="tabs">
+                    <li class="home"><a href="home">Home</a></li>
+                    <li class="athletes"><a href="athletes">Athletes</a></li>
+                    <li class="clubs"><a href="clubs">Clubs</a></li>
+                    <li class="events"><a href="events">Events</a></li>
+                    <li class="membership"><a href="membership">Membership</a></li>
+                    <li class="forum"><a href="forum">Forum</a></li>
+                    <li class="profile-pic"><a href="profile"><img src="/images/goofy.jpg"></img></a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="content-container">
+			<div class="leftside">
+				<div class="forumtitle">
+					<h1 class= "forumname"> <span class="logo"> </span></h1>
+					<h3 class = "forumdesc">Membership Registration Center</h3>
+                    <h3 hidden class = "forumdesc">Apply for NCC ID</h3>
+                    <h3 hidden class = "forumdesc">Apply for National Taekwondo Practitioner</h3>
+                    <h3 hidden class = "forumdesc">Register Club</h3>
+				</div>
+			</div>
+		
+			<div class="rightside">
+				<div class="membership-statuses">
+                    <ul>
+                        {{#each ncc_registrations}}
+					    <li class ="status">
+                            {{firstname}} {{lastname}} {{gender}} {{clubname}} {{clubregion}}
+                        </li>
+                        {{/each}}
+                    </ul>
+				</div>
+                                                                                                                            
+                <script>
+                    document.addEventListener("DOMContentLoaded", function() {
+                        const form = document.getElementById("nccform");
+
+                        /*form.addEventListener("submit", function(event) {
+                            const firstname = document.getElementById("username").value;
+                            const instructorfirstname = document.getElementById("instructor-firstname").value;
+
+                            // Clear any previous error messages
+                            document.getElementById("error-message").textContent = "";
+                        });*/
+
+                        const nccstep1 = document.getElementById("nccstep1");
+                        const ncc1 = document.querySelector(".ncc1");
+                        
+                    });
+  		        </script>
+			</div>
+    </body>
+</html>

@@ -25,23 +25,11 @@
 			<div class="leftside">
 				<div class="forumtitle">
 					<h1 class= "forumname"> <span class="logo"> </span></h1>
-					<h3 class = "forumdesc">Membership Registration Center</h3>
-                    <h3 hidden class = "forumdesc">Apply for NCC ID</h3>
-                    <h3 hidden class = "forumdesc">Apply for National Taekwondo Practitioner</h3>
-                    <h3 hidden class = "forumdesc">Register Club</h3>
+                    <h3 class = "forumdesc">Apply for NCC ID</h3>
 				</div>
 			</div>
 		
-			<div class="rightside">
-				<div class="registration" hidden>
-                    <ul>
-					    <li class ="status"><a>Registration Status</a></li>
-                        <li class ="ncc"><a>Apply for NCC ID</a></li>
-                        <li class ="practitioner"><a>Apply for National Taekwondo Practitioner</a></li>
-                        <li class ="club"><a>Register Club</a></li>
-                    </ul>
-				</div>
-                                                                                                                                
+			<div class="rightside">                                                                                             
 
                 <form id="nccform" action="/submit-ncc" method="post">
                     <div class="ncc1">                                                          {{!-- NCC ID APPLICATION FORM part 1 --}}
@@ -107,8 +95,8 @@
 				    </div>                                              
 
                     <div class="ncc2" hidden>                                                                           {{!-- NCC APPLICATION step 2 --}}
-                        <label class="instructor-firstname-input" for="instructor-firstname">Instructor Firstname</label><br>
-                        <input type="text" id="instructorfirstname" name="instructorfirstname" ><br>
+                        <label class="instructor-firstname-input" for="instructorfirstname">Instructor Firstname</label><br>
+                        <input type="text" id="instructorfirstname" name="instructorfirstname"><br>
 
                         <label class="instructormiinput" for="instructormi">Middle Initial</label><br>
                         <input type="text" id="instructormi" name="instructormi" ><br>
@@ -117,17 +105,34 @@
                         <input type="text" id="instructorlastname" name="instructorlastname" ><br>
 
                         <label for="phone">Mobile Number</label><br>
-                        <input type="tel" id="phone" name="phone" pattern="\d{4}\d{3}\d{4}" placeholder="0912-345-6789" ><br>
+                        <input type="tel" id="instructormobile" name="instructormobile" pattern="\d{4}\d{3}\d{4}" placeholder="0912-345-6789" ><br>
 
                         <label class="email-input" for="email">Instructor E-mail</label><br>
-                        <input type="text" id="email" name="email" ><br>
+                        <input type="text" id="instructoremail" name="instructoremail" ><br>
 
-                        <label class="email-input" for="email">Confirm E-mail</label><br>
-                        <input type="text" id="email" name="email" ><br>
+                        <label class="email-input" for="instemail">Confirm E-mail</label><br>
+                        <input type="text" id="instemail" name="instemail" ><br>
                         
                         <a class="nccstep2" id="nccstep2">Next</a>
                         <br><button class="nccstep2" type="submit">Submit</button>
                         <p id="error-message" style="color:red;"></p>
+                    </div>
+
+                    <div class="ncc3" hidden>                                                                           {{!-- NCC APPLICATION step 3 --}}
+                        Upload your NSO/PSA<br>
+                        <input type="file" id="myFile" name="filename"><br>
+
+                        <input type="radio" id="agree" name="tc1" value="">
+                        <label for="agree">Do u agree</label><br>
+                        <input type="radio" id="agree" name="tc2" value="">
+                        <label for="agree">Do u also agree</label><br>
+                        <a class="nccstep3" id="nccstep3">Next</a>
+                    </div>
+
+                    <div class="ncc4" hidden>                                                                           {{!-- NCC APPLICATION step 4 --}}
+                        <label class="instructor-firstname-input" for="instructor-firstname">MAYA API</label><br>
+                        <input type="text" id="instructorfirstname" name="instructorfirstname" ><br>
+                        <a class="nccstep4" id="nccstep4">Next</a>
                     </div>
 				</form>
 
@@ -145,8 +150,14 @@
 
                         const nccstep1 = document.getElementById("nccstep1");
                         const nccstep2 = document.getElementById("nccstep2");
+                        const nccstep3 = document.getElementById("nccstep3");
+                        const nccstep4 = document.getElementById("nccstep4");
+                        const nccstep5 = document.getElementById("nccstep5");
                         const ncc1 = document.querySelector(".ncc1");
                         const ncc2 = document.querySelector(".ncc2");
+                        const ncc3 = document.querySelector(".ncc3");
+                        const ncc4 = document.querySelector(".ncc4");
+                        const ncc5 = document.querySelector(".ncc5");
 
                         nccstep1.addEventListener("click", function(event) {
                             event.preventDefault();
@@ -156,8 +167,33 @@
 
                         nccstep2.addEventListener("click", function(event) {
                             event.preventDefault();
-                            ncc1.style.display = "block";
+                            ncc1.style.display = "none"
                             ncc2.style.display = "none";
+                            ncc3.style.display = "block";
+                        });
+
+                        nccstep3.addEventListener("click", function(event) {
+                            event.preventDefault();
+                            ncc1.style.display = "none"
+                            ncc2.style.display = "none";
+                            ncc3.style.display = "none";
+                            ncc4.style.display = "block";
+                        });
+
+                        nccstep4.addEventListener("click", function(event) {
+                            event.preventDefault();
+                            ncc1.style.display = "none"
+                            ncc2.style.display = "none";
+                            ncc3.style.display = "none";
+                            ncc4.style.display = "none";
+                            ncc5.style.display = "block";
+                        });
+
+                        nccstep5.addEventListener("click", function(event) {
+                            event.preventDefault();
+                            ncc1.style.display = "none"
+                            ncc2.style.display = "none";
+                            ncc3.style.display = "block";
                         });
                     });
   		        </script>
