@@ -124,7 +124,7 @@ a:hover {
 }
 
 .event, .news-item {
-    background-color: #1E1E1E; /* Match the dark background */
+    background-color: #1E1E1E; 
     color: white;
     padding: 20px;
     margin: 10px;
@@ -178,16 +178,19 @@ a:hover {
     color: #fff;
     display: flex;
     justify-content: space-between;
+    align-items: center;
     padding: 20px;
-    margin-top: auto; /* This ensures the footer is at the bottom when the content is short */
+    height: 100px;
+    margin-top: auto; 
 }
 
 .footer-content .pta-logo img {
-    height: 60px;
+    height: 100%; 
 }
 
 .footer-content .contact-info {
     flex: 1;
+    text-align: center;
     padding: 0 20px;
 }
 
@@ -198,19 +201,22 @@ a:hover {
 .footer-content .social-media {
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
-    justify-content: center;
+    align-items: flex-end;
 }
 
 .footer-content .social-media p {
-    margin: 0 0 10px;
+    margin-bottom: 5px;
+}
+
+.footer-content .social-media .icons {
+    display: flex;
+    align-items: center;
 }
 
 .footer-content .social-media a {
-    margin: 5px 0;
+    margin-left: 10px;
 }
 
 .footer-content .social-media img {
     height: 30px;
-    margin-right: 10px;
 }
