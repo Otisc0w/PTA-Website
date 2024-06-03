@@ -5,16 +5,18 @@
 
 }
 
-.forum-container {
-    background-color: #3A3A3A;
-    width: 100%;
-    height: 100%;
-    color: white;
-}
 .header{
     width: 100%;
     height: 12%;
     background-color: #252525;
+}
+
+.container {
+    background-color: #3A3A3A;
+    width: 100%;
+    flex: 1;
+    color: white;
+    opacity: .9;
 }
 
 .logo{
@@ -63,3 +65,137 @@ a {
 }
 
 
+/* Forum CSS */
+.main-content {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+}
+
+.sidebar {
+    width: 25%;
+    background-color: #252525;
+    padding: 20px;
+    border-radius: 8px;
+    color: #F0F0F0;
+}
+
+.sidebar h2 {
+    margin-bottom: 20px;
+}
+
+.sidebar ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.sidebar li {
+    margin: 10px 0;
+}
+
+.sidebar a {
+    text-decoration: none;
+    color: #F0F0F0;
+    font-size: 18px;
+}
+
+.sidebar a:hover {
+    color: #949494;
+}
+
+.content {
+    width: 70%;
+    padding: 20px;
+    background-color: #2c2c2c;
+    border-radius: 8px;
+    color: #F0F0F0;
+}
+
+.content h2 {
+    margin-bottom: 20px;
+}
+
+.post-container {
+    background-color: #3a3a3a;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+}
+
+.post-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.post-info {
+    font-size: 14px;
+    color: #B0B0B0;
+    margin-bottom: 10px;
+}
+
+.post-title {
+    font-size: 24px;
+    color: #F0F0F0;
+    margin: 10px 0;
+}
+
+.post-description {
+    font-size: 16px;
+    color: #F0F0F0;
+    margin-bottom: 10px;
+}
+
+.post-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.vote-buttons {
+    display: flex;
+    align-items: center;
+}
+
+.vote-buttons .upvote-count,
+.vote-buttons .downvote-count {
+    font-size: 18px;
+    color: #F0F0F0;
+    margin: 0 10px;
+}
+
+.vote-buttons .button img {
+    width: 24px; 
+    height: 24px; 
+    vertical-align: middle;
+}
+
+.vote-buttons .button {
+    background-color: #00BFFF;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 4px;
+    padding: 10px;
+    margin-right: 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.post-actions .button {
+    background-color: #2c2c2c;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 4px;
+    padding: 10px;
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+.post-actions .button:hover {
+    background-color: #B0B0B0;
+}
+
+.post-actions .material-symbols-outlined {
+    vertical-align: middle;
+}
