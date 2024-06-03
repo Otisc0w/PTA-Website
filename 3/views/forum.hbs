@@ -21,29 +21,41 @@
                 </ul>
             </div>
         </div>
-        <div class="forum-container">
-				{{#each forumthreads}}
-				<div class='flex post-container'>
-                    <div class='flex post-content'>
-                        <div class='post-text nobottom'>
-                            <div class='flex post-info'>
-                                <span class='community'><a class='post-community' href='community?community='>{{community}}</a> •</span>
-                                <span class='small'>by <a class='post-user' href='profile?username='>{{user}}</a> on {{date}}</span>
-                            </div>
-                            <a href='post?postId='><h2 class='post-title margin no-sides nobottom'>{{title}}</h2></a>
-                            <p class='post-description light'>{{body}}</p>
-
-                            <div class='flex no-padding'>
-                                <div class='flex'>
-                                    <a class='post-title' href='post?postId={{postId}}'><button class='button sides'><span class='material-symbols-outlined'>mode_comment</span>Comment</button></a>
-                                </div>
-								{{upvotes}}
-								{{downvotes}}
+       <div class="forum-container">
+        <div class="main-content">
+            <div class="sidebar">
+                <h2>Categories</h2>
+                <ul>
+                    <li><a href="#general-discussion">General Discussion</a></li>
+                    <li><a href="#help-and-support">Help and Support</a></li>
+                    <li><a href="#announcements">Announcements</a></li>
+                </ul>
+            </div>
+            <div class="content">
+                <h2>Recent Threads</h2>
+                {{#each forumthreads}}
+                <div class='post-container'>
+                    <div class='post-content'>
+                        <div class='post-info'>
+                            <span class='community'><a class='post-community' href='community?community='>{{community}}</a> •</span>
+                            <span class='small'>by <a class='post-user' href='profile?username='>{{user}}</a> on {{date}}</span>
+                        </div>
+                        <a href='post?postId='><h2 class='post-title'>{{title}}</h2></a>
+                        <p class='post-description'>{{body}}</p>
+                        <div class='post-actions'>
+                            <a class='post-title' href='post?postId={{postId}}'><button class='button'><span class='material-symbols-outlined'></span> Comment</button></a>
+                            <div class="vote-buttons">
+                                <span class="upvote-count">{{upvotes}}</span>
+                                <button class='button upvote'><span class='material-symbols-outlined'><img src="/images/thumbs up.png"></img></span></button>
+                                <span class="downvote-count">{{downvotes}}</span>
+                                <button class='button downvote'><span class='material-symbols-outlined'><img src="/images/thumbs down.png"></span></button>
                             </div>
                         </div>
                     </div>
                 </div>
-				{{/each}}
-		</div>
-	</body>
+                {{/each}}
+            </div>
+        </div>
+    </div>
+</body>
 </html>
