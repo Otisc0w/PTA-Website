@@ -264,7 +264,22 @@ app.get('/membership', async function (req, res) {
 });
 
 app.get('/events', async function (req, res) {
-  res.render('events');
+  try {
+    const { data, error } = await supabase
+      .from('events')                                            //need to change to clubs after
+      .select('*');
+
+    if (error) {
+      return res.status(400).json({ error: error.message });
+    }
+
+    console.log("Fetched data:", data); // Log the data to the console 
+
+    // Render the forum.hbs template with the fetched data
+    res.render('events', { events: data });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 });
 
 app.get('/profile', async function (req, res) {
