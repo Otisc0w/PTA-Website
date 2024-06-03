@@ -50,17 +50,13 @@ body {
     margin: 0 20px;
 }
 
-<<<<<<< Updated upstream
 a:hover{
     background-color: #0c0c0c;
     border-radius: 15%;
     width: 100px;
     font-weight: bold;
-    
 }
 
-=======
->>>>>>> Stashed changes
 a {
     text-decoration: none;
     color: white;
@@ -73,7 +69,6 @@ a {
     height: 850px;
 }
 
-<<<<<<< Updated upstream
 .profile-pic img{
     width:50px;
     border-radius: 50%;
@@ -83,8 +78,6 @@ a {
     margin-left: 20px;
 }
 
-
-=======
 .left-panel, .right-panel {
     flex: 1;
 }
@@ -140,4 +133,3 @@ a {
 .community-description {
     color: white;
 }
->>>>>>> Stashed changes
