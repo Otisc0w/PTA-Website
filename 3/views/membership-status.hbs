@@ -1,0 +1,59 @@
+<html>
+
+	<head>
+	  <title>PTA | Apply for NCC ID</title>
+      <link rel="icon" type="image/x-icon" href="../images/favicon.ico" />
+	  <link rel="stylesheet" type="text/css" href="../stylesheets/membership.css" />
+	</head>
+	
+	<body style="margin:0;" class="membership-container">
+        <div class="membership-header">
+            <div class="membership-navbar">
+				<img src="/images/logo.png" class="membership-logo" href="home"></img>   
+                <a href="profile" class="memprofile-pic"><img src="/images/goofy.jpg"></img></a>
+            </div>
+        </div>
+        {{!-- <div class="content-container">
+			<div class="leftside">
+				<div class="forumtitle">
+					<h1 class= "forumname"> <span class="logo"> </span></h1>
+					<h3 class = "forumdesc">Membership Registration Center</h3>
+                    <h3 hidden class = "forumdesc">Apply for NCC ID</h3>
+                    <h3 hidden class = "forumdesc">Apply for National Taekwondo Practitioner</h3>
+                    <h3 hidden class = "forumdesc">Register Club</h3>
+				</div>
+			</div> --}}
+		
+			<div class="membership-rightside">
+				<div class="membership-statuses">
+                    <ul>
+                        {{#each ncc_registrations}}
+					    <li class ="status">
+                            <div class="regrow">
+                                {{id}} {{firstname}} {{lastname}} {{clubregion}} {{status}}
+                            </div><br>
+                        </li>
+                        {{/each}}
+                    </ul>
+				</div>
+                                                                                                                            
+                <script>
+                    document.addEventListener("DOMContentLoaded", function() {
+                        const form = document.getElementById("nccform");
+
+                        /*form.addEventListener("submit", function(event) {
+                            const firstname = document.getElementById("username").value;
+                            const instructorfirstname = document.getElementById("instructor-firstname").value;
+
+                            // Clear any previous error messages
+                            document.getElementById("error-message").textContent = "";
+                        });*/
+
+                        const nccstep1 = document.getElementById("nccstep1");
+                        const ncc1 = document.querySelector(".ncc1");
+                        
+                    });
+  		        </script>
+			</div>
+    </body>
+</html>

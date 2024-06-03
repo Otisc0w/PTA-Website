@@ -138,12 +138,18 @@ app.post('/submit-ncc', async (req, res) => {
           promolocation,
           clubregion,
           clubname,
-          beltlevel } = req.body; // Capture user input from the form
+          beltlevel,
+          instructorfirstname,
+          instructormi,
+          instructorlastname,
+          instructormobile,
+          instructoremail,
+        } = req.body; // Capture user input from the form
 
   try {
     // Insert the new user into the database
     const { data, error } = await supabase
-      .from('nccregis') // Replace 'users' with your actual table name if different
+      .from('ncc_registrations') // Replace 'users' with your actual table name if different
       .insert([{  firstname,
                   mi,
                   lastname,
@@ -155,7 +161,13 @@ app.post('/submit-ncc', async (req, res) => {
                   promolocation,
                   clubregion,
                   clubname,
-                  beltlevel }]);
+                  beltlevel,
+                  instructorfirstname,
+                  instructormi,
+                  instructorlastname,
+                  instructormobile,
+                  instructoremail,
+                }]);
 
     if (error) {
       // Handle any errors that occur during the insert
@@ -164,6 +176,7 @@ app.post('/submit-ncc', async (req, res) => {
         users: [] // Optionally pass users array if you need it in the view
       });
     }
+    res.redirect('/membership');
   } catch (error) {
     // Handle any server-side errors
     res.status(500).json({ error: error.message });
@@ -251,7 +264,22 @@ app.get('/membership', async function (req, res) {
 });
 
 app.get('/events', async function (req, res) {
-  res.render('events');
+  try {
+    const { data, error } = await supabase
+      .from('events')                                            //need to change to clubs after
+      .select('*');
+
+    if (error) {
+      return res.status(400).json({ error: error.message });
+    }
+
+    console.log("Fetched data:", data); // Log the data to the console 
+
+    // Render the forum.hbs template with the fetched data
+    res.render('events', { events: data });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 });
 
 app.get('/profile', async function (req, res) {
@@ -276,6 +304,46 @@ app.get('/athletes', async function (req, res) {
 
     // Render the athletes.hbs template with the fetched data
     res.render('athletes', { athletes: data });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+                                                                        //MEMBERSHIP PAGES
+
+app.get('/membership-ncc', async function (req, res) {
+  try {
+    const { data, error } = await supabase
+      .from('clubs')
+      .select('*');
+
+    if (error) {
+      return res.status(400).json({ error: error.message });
+    }
+
+    console.log("Fetched data:", data); // Log the data to the console 
+
+    // Render the athletes.hbs template with the fetched data
+    res.render('membership-ncc', { clubs: data });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.get('/membership-status', async function (req, res) {
+  try {
+    const { data, error } = await supabase
+      .from('ncc_registrations')
+      .select('*');
+
+    if (error) {
+      return res.status(400).json({ error: error.message });
+    }
+
+    console.log("Fetched data:", data); // Log the data to the console 
+
+    // Render the athletes.hbs template with the fetched data
+    res.render('membership-status', { ncc_registrations: data });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
