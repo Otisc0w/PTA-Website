@@ -1,55 +1,54 @@
 @import url('https://fonts.cdnfonts.com/css/sf-pro-display');
 
-:root{
-    font-family: 'SF Pro Display', sans-serif;    
+:root {
+    font-family: 'SF Pro Display', sans-serif;
+}
 
+body {
+    font-family: 'SF Pro Display', sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
 }
 
 .container {
     background-color: #3A3A3A;
     width: 100%;
-    height: 100%;
+    flex: 1;
     color: white;
     opacity: .9;
 }
-.header{
+
+.header {
     width: 100%;
     height: 12%;
     background-color: #252525;
 }
 
-.logo{
-    width: 100px;
+.logo {
+    width: 120px;
     height: auto;
-    margin-top: 10px;
-    margin-left: 100px;
+    margin: 10px 0 0 100px;
 }
 
-.navbar{
+.navbar {
     display: flex;
     justify-content: space-between;
-    margin: auto;
-    padding: 35px 0;
     align-items: center;
-    justify-content: space-between;
+    padding: 0 20px;
 }
 
-.navbar ul{
-    display: inline-block;
-    margin-right: 80px;
+.navbar ul {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
 }
 
-.navbar ul li{
-    display: inline;
+.navbar ul li {
     margin: 0 20px;
-}
-
-a:hover{
-    background-color: #0c0c0c;
-    border-radius: 15%;
-    width: 100px;
-    font-weight: bold;
-    
 }
 
 a {
@@ -58,17 +57,166 @@ a {
     font-size: 18px;
 }
 
-.home-container{
-    height: 850px;
+a:hover {
+    background-color: #0c0c0c;
+    border-radius: 15%;
+    padding: 10px;
+    font-weight: bold;
 }
 
-.profile-pic img{
-    width:50px;
+.profile-pic {
+    position: relative;
+    display: inline-block;
+}
+
+.profile-pic img {
+    width: 50px;
     border-radius: 50%;
 }
 
-.greeting {
-    margin-left: 20px;
+.dropdown-content {
+    display: none;
+    position: absolute;
+    right: 0;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
 }
 
+.dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
 
+.dropdown-content a:hover {
+    background-color: #f1f1f1;
+}
+
+.show {
+    display: block;
+}
+
+.home-container {
+    display: flex;
+    padding: 20px;
+    flex: 1;
+    height: 850px;
+}
+
+.left-panel, .right-panel {
+    flex: 1;
+}
+
+.main-panel {
+    flex: 2;
+    padding: 0 20px;
+}
+
+.upcoming-events, .news {
+    margin-bottom: 20px;
+}
+
+.upcoming-events h2, .news h2 {
+    color: white;
+}
+
+.event, .news-item {
+    background-color: #1E1E1E; 
+    color: white;
+    padding: 20px;
+    margin: 10px;
+    font-size: 16px;
+    width: 300px;
+    text-align: center;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    position: relative;
+}
+
+.event img, .news-item img {
+    width: 100%;
+    height: auto;
+    border-radius: 10px 10px 0 0;
+}
+
+.event h3, .news-item h3 {
+    margin-top: 10px;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.event p, .news-item p {
+    font-size: 14px;
+    margin: 10px 0;
+}
+
+.event a, .news-item a {
+    display: inline-block;
+    padding: 10px 15px;
+    color: #007BFF;
+    text-decoration: none;
+    border-radius: 5px;
+    background-color: #2E2E2E;
+    transition: background-color 0.3s;
+}
+
+.event a:hover, .news-item a:hover {
+    background-color: #1A1A1A;
+}
+
+.horizontal-container {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+}
+
+.footer-content {
+    background-color: #333;
+    color: #fff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    height: 100px;
+    margin-top: auto; 
+}
+
+.footer-content .pta-logo img {
+    height: 100%; 
+}
+
+.footer-content .contact-info {
+    flex: 1;
+    text-align: center;
+    padding: 0 20px;
+}
+
+.footer-content .contact-info p {
+    margin: 5px 0;
+}
+
+.footer-content .social-media {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.footer-content .social-media p {
+    margin-bottom: 5px;
+}
+
+.footer-content .social-media .icons {
+    display: flex;
+    align-items: center;
+}
+
+.footer-content .social-media a {
+    margin-left: 10px;
+}
+
+.footer-content .social-media img {
+    height: 30px;
+}
