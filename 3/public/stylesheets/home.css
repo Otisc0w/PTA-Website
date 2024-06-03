@@ -1,8 +1,13 @@
 @import url('https://fonts.cdnfonts.com/css/sf-pro-display');
 
-:root{
-    font-family: 'SF Pro Display', sans-serif;    
+:root {
+    font-family: 'SF Pro Display', sans-serif;
+}
 
+body {
+    font-family: 'SF Pro Display', sans-serif;
+    margin: 0;
+    padding: 0;
 }
 
 .container {
@@ -12,20 +17,21 @@
     color: white;
     opacity: .9;
 }
-.header{
+
+.header {
     width: 100%;
     height: 12%;
     background-color: #252525;
 }
 
-.logo{
+.logo {
     width: 100px;
     height: auto;
     margin-top: 10px;
     margin-left: 100px;
 }
 
-.navbar{
+.navbar {
     display: flex;
     justify-content: space-between;
     margin: auto;
@@ -34,16 +40,17 @@
     justify-content: space-between;
 }
 
-.navbar ul{
+.navbar ul {
     display: inline-block;
     margin-right: 80px;
 }
 
-.navbar ul li{
+.navbar ul li {
     display: inline;
     margin: 0 20px;
 }
 
+<<<<<<< Updated upstream
 a:hover{
     background-color: #0c0c0c;
     border-radius: 15%;
@@ -52,16 +59,21 @@ a:hover{
     
 }
 
+=======
+>>>>>>> Stashed changes
 a {
     text-decoration: none;
     color: white;
     font-size: 18px;
 }
 
-.home-container{
+.home-container {
+    display: flex;
+    padding: 20px;
     height: 850px;
 }
 
+<<<<<<< Updated upstream
 .profile-pic img{
     width:50px;
     border-radius: 50%;
@@ -72,3 +84,60 @@ a {
 }
 
 
+=======
+.left-panel, .right-panel {
+    flex: 1;
+}
+
+.main-panel {
+    flex: 2;
+    padding: 0 20px;
+}
+
+.upcoming-events, .news {
+    margin-bottom: 20px;
+}
+
+.upcoming-events h2, .news h2 {
+    color: white;
+}
+
+.event, .news-item {
+    background-color: #f4f4f4;
+    color: #333;
+    padding: 20px;
+    margin-bottom: 10px;
+}
+
+.footer-content {
+    background-color: #333;
+    color: #fff;
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+}
+
+.footer-content img {
+    height: 30px;
+    margin-right: 10px;
+}
+
+.footer-content a {
+    color: #fff;
+    text-decoration: none;
+}
+
+.footer-content .social-media a img {
+    height: 30px;
+    margin-left: 10px;
+}
+
+.community-panel {
+    background-color: #252525;
+    padding: 20px;
+}
+
+.community-description {
+    color: white;
+}
+>>>>>>> Stashed changes
