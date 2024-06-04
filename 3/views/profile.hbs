@@ -1,0 +1,62 @@
+<html>
+
+	<head>
+	  <title>PTA | Home</title>
+      <link rel="icon" type="image/x-icon" href="../images/favicon.ico" />
+	  <link rel="stylesheet" type="text/css" href="../stylesheets/profile.css" />
+	</head>
+	
+	<body style="margin:0;" class="container">
+        
+            <div class="header">
+                <div class="navbar">
+                    <img src="/images/logo.png" class="logo" href="home"></img>          
+                    <ul class="tabs">
+                        <li class="home"><a href="home">Home</a></li>
+                        <li class="athletes"><a href="athletes">Athletes</a></li>
+                        <li class="clubs"><a href="clubs">Clubs</a></li>
+                        <li class="events"><a href="events">Events</a></li>
+                        <li class="membership"><a href="membership">Membership</a></li>
+                        <li class="forum"><a href="forum">Forum</a></li>
+                        <li class="profile-pic"><a href="profile"><img src="/images/goofy.jpg"></img></a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="profile-container">
+                
+                    <img id="pfp" class="pfp" src="images/goofy.jpg" />
+                    <button class="edit-profile"><a href="edit-profile"><span class="material-symbols-outlined">edit</span></a></button>
+    
+                    <div class="wide profile-details">
+                        <h2 id="username" class="no-margin">{{user.lastname}}, {{user.firstname}}</h2>
+    
+                        <p id="description" class="description no-margin">{{user.usertype}}</p><br>
+                        
+                        <div class="flex">
+                            <ul class="info-box">
+                                <li>
+                                    <span class="info-title">
+                                        REGION
+                                    </span>
+                                </li>
+                                <li><h3 id="" class="">{{user.region}}</h3></li>
+                                <li>
+                                    <span class="info-title">
+                                        CLUB
+                                    </span>
+                                </li>
+                                <li><h3 id="" class="">{{user.club}}</h3></li>
+                                {{!-- <li>
+                                    <span class="info-title">
+                                        REGISTERED
+                                    </span>
+                                </li>
+                                <li><h3 id="" class="">{{user.club}}</h3></li> --}}
+                                <li><h3 id="" class="signout"><a href="/">Signout</a></h3></li>
+                            </ul>
+                        </div>
+                    </div>
+            </div>
+    </body>
+</html>

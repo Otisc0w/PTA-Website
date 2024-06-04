@@ -2,6 +2,7 @@
 
 	<head>
 	  <title>PTA | Athletes</title>
+      <link rel="icon" type="image/x-icon" href="../images/favicon.ico" />
 	  <link rel="stylesheet" type="text/css" href="../stylesheets/home.css" />
 	</head>
 	
@@ -9,7 +10,7 @@
         
             <div class="header">
                 <div class="navbar">
-                    <a href="home"><img src="/images/logo.png" class="logo"></img></a>        
+                    <img src="/images/logo.png" class="logo" href="home"></img>          
                     <ul class="tabs">
                         <li class="home"><a href="home">Home</a></li>
                         <li class="athletes"><a href="athletes">Athletes</a></li>
@@ -17,7 +18,7 @@
                         <li class="events"><a href="events">Events</a></li>
                         <li class="membership"><a href="membership">Membership</a></li>
                         <li class="forum"><a href="forum">Forum</a></li>
-                        
+                        <li class="profile-pic"><a href="profile"><img src="/images/goofy.jpg"></img></a></li>
                     </ul>
                 </div>
             </div>
@@ -37,10 +38,10 @@
                     <div class="community-panel">
                         <p class="community-description">competitions this year bro</p>
                         <ul>
-      					{{#each athletes}}
-        				<li>ID: {{id}}, firstname: {{firstname}}, lastname: {{lastname}}, points: {{points}}</li>
+      					{{#each events}}
+        				<li>Title: {{title}}, Desc: {{description}}</li>
       					{{/each}}
-    				</ul>
+    				    </ul>
                     </div>
                 </div>
             </div>
