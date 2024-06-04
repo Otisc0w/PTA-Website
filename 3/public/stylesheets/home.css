@@ -19,12 +19,14 @@ body {
     flex: 1;
     color: white;
     opacity: .9;
+    padding-bottom: 100px; /* Adjust padding to accommodate fixed footer */
 }
 
 .header {
+    position: fixed;
+    top: 0;
     width: 100%;
-    height: 12%;
-    background-color: #252525;
+    z-index: 10000; /* Make sure it's above other content */
 }
 
 .logo {
@@ -171,6 +173,13 @@ a:hover {
     display: flex;
     flex-wrap: nowrap;
     overflow-x: auto;
+}
+
+footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    z-index: 1000; /* Make sure it's above other content */
 }
 
 .footer-content {
