@@ -113,26 +113,29 @@
                         <label class="email-input" for="instemail">Confirm E-mail</label><br>
                         <input type="text" id="instemail" name="instemail" ><br>
                         
+                        <a class="nccprev2" id="nccprev2">Previous</a>
                         <a class="nccstep2" id="nccstep2">Next</a>
-                        <br><button class="nccstep2" type="submit">Submit</button>
+                        
                         <p id="error-message" style="color:red;"></p>
                     </div>
 
                     <div class="ncc3" hidden>                                                                           {{!-- NCC APPLICATION step 3 --}}
                         Upload your NSO/PSA<br>
-                        <input type="file" id="myFile" name="filename"><br>
+                        <input type="file" id="birthcert" name="birthcert"><br>
 
                         <input type="radio" id="agree" name="tc1" value="">
                         <label for="agree">Do u agree</label><br>
                         <input type="radio" id="agree" name="tc2" value="">
                         <label for="agree">Do u also agree</label><br>
+                        <a class="nccstep1" id="nccstep1">Previous</a>
                         <a class="nccstep3" id="nccstep3">Next</a>
                     </div>
 
                     <div class="ncc4" hidden>                                                                           {{!-- NCC APPLICATION step 4 --}}
                         <label class="instructor-firstname-input" for="instructor-firstname">MAYA API</label><br>
                         <input type="text" id="instructorfirstname" name="instructorfirstname" ><br>
-                        <a class="nccstep4" id="nccstep4">Next</a>
+                        <a class="nccstep2" id="nccstep2">Previous</a>
+                        <br><button class="nccstep2" type="submit">Submit</button>
                     </div>
 				</form>
 
