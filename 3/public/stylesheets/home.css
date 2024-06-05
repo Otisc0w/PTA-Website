@@ -126,6 +126,13 @@ a:hover {
 .event, .news-item {
     background-color: #1E1E1E; 
     color: white;
+    color: white;
+}
+
+.event, .news-item {
+    background-color: #1E1E1E; 
+    color: white;
+    main
     padding: 20px;
     margin: 10px;
     font-size: 16px;
@@ -161,6 +168,67 @@ a:hover {
     border-radius: 5px;
     background-color: #2E2E2E;
     transition: background-color 0.3s;
+
+}
+
+.event a:hover, .news-item a:hover {
+    background-color: #1A1A1A;
+}
+
+.horizontal-container {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+}
+
+.footer-content {
+    background-color: #333;
+    color: #fff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    height: 100px;
+    margin-top: auto; 
+}
+
+.footer-content .pta-logo img {
+    height: 100%; 
+}
+
+.footer-content .contact-info {
+    flex: 1;
+    text-align: center;
+    padding: 0 20px;
+}
+
+.footer-content .contact-info p {
+    margin: 5px 0;
+}
+
+.footer-content .social-media {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.footer-content .social-media p {
+    margin-bottom: 5px;
+}
+
+.footer-content .social-media .icons {
+    display: flex;
+    align-items: center;
+}
+
+.footer-content .social-media a {
+    margin-left: 10px;
+}
+
+.footer-content .social-media img {
+    height: 30px;
+}
+
 }
 
 .event a:hover, .news-item a:hover {
