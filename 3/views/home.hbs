@@ -16,6 +16,9 @@
                 <li class="events"><a href="events">Events</a></li>
                 <li class="membership"><a href="membership">Membership</a></li>
                 <li class="forum"><a href="forum">Forum</a></li>
+                <li class="notifications">
+                    <a href="notifications">Notifications <span class="badge">3</span></a>
+                </li>
                 <li class="profile-pic">
                     <a href="#" onclick="toggleDropdown()">
                         <img src="/images/goofy.jpg" alt="Profile">
@@ -34,6 +37,12 @@
         <div class="left-panel"></div>
 
         <div class="main-panel">
+            <!-- Poster image section -->
+            <div class="poster">
+                <img src="/images/homepage/ptabg.png" alt="Poster" class="poster-image">
+            </div>
+
+            <!-- Upcoming events section -->
             <div class="upcoming-events">
                 <h2>Upcoming Events</h2>
                 <div id="events" class="horizontal-container">
@@ -48,6 +57,7 @@
                 </div>
             </div>
 
+            <!-- News section -->
             <div class="news">
                 <h2>News</h2>
                 <div id="events" class="horizontal-container">
@@ -88,44 +98,6 @@
     </footer>
 
     <script>
-        /*document.addEventListener("DOMContentLoaded", function() {
-            const events = [
-                { id: "event1", name: "Random Weigh In - May 26, 2024 7:00AM", image: "path-to-event-image1.jpg", description: "Loading... Taking too long? Reload document | Open in new tab" },
-                { id: "event2", name: "Event y", image: "path-to-event-image2.jpg", description: "Loading... Taking too long? Reload document | Open in new tab" },
-                { id: "event3", name: "Event z", image: "path-to-event-image3.jpg", description: "Loading... Taking too long? Reload document | Open in new tab" }
-            ];
-
-            const news = [
-                { id: "news1", name: "Random Weigh In - May 25, 2024 12:00PM", image: "path-to-news-image1.jpg", description: "Loading... Taking too long? Reload document | Open in new tab" },
-                { id: "news2", name: "Event y", image: "path-to-news-image2.jpg", description: "Loading... Taking too long? Reload document | Open in new tab" },
-                { id: "news3", name: "Event z", image: "path-to-news-image3.jpg", description: "Loading... Taking too long? Reload document | Open in new tab" }
-            ];
-
-            const eventsContainer = document.getElementById('events');
-            events.forEach(event => {
-                const eventDiv = document.createElement('div');
-                eventDiv.className = 'event';
-                eventDiv.id = event.id;
-                eventDiv.innerHTML = `<img src="${event.image}" alt="${event.name}">
-                                      <h3>${event.name}</h3>
-                                      <p>${event.description}</p>
-                                      <a href="#">Read More</a>`;
-                eventsContainer.appendChild(eventDiv);
-            });
-
-            const newsContainer = document.getElementById('news');
-            news.forEach(newsItem => {
-                const newsDiv = document.createElement('div');
-                newsDiv.className = 'news-item';
-                newsDiv.id = newsItem.id;
-                newsDiv.innerHTML = `<img src="${newsItem.image}" alt="${newsItem.name}">
-                                     <h3>${newsItem.name}</h3>
-                                     <p>${newsItem.description}</p>
-                                     <a href="#">Read More</a>`;
-                newsContainer.appendChild(newsDiv);
-            });
-        });*/
-
         function toggleDropdown() {
             document.getElementById("dropdown").classList.toggle("show");
         }
