@@ -132,7 +132,6 @@ a:hover {
 .event, .news-item {
     background-color: #1E1E1E; 
     color: white;
-    main
     padding: 20px;
     margin: 10px;
     font-size: 16px;
@@ -227,8 +226,6 @@ a:hover {
 
 .footer-content .social-media img {
     height: 30px;
-}
-
 }
 
 .event a:hover, .news-item a:hover {
