@@ -127,47 +127,56 @@ app.post('/submit-login', async (req, res) => {
 });
 
 app.post('/submit-ncc', async (req, res) => {
-  const { firstname,
-          mi,
-          lastname,
-          gender,
-          bday,
-          phonenum,
-          email,
-          lastpromo,
-          promolocation,
-          clubregion,
-          clubname,
-          beltlevel,
-          instructorfirstname,
-          instructormi,
-          instructorlastname,
-          instructormobile,
-          instructoremail,
-        } = req.body; // Capture user input from the form
+  const {
+    firstname,
+    mi,
+    lastname,
+    gender,
+    bday,
+    phonenum,
+    email,
+    lastpromo,
+    promolocation,
+    clubregion,
+    clubname,
+    beltlevel,
+    instructorfirstname,
+    instructormi,
+    instructorlastname,
+    instructormobile,
+    instructoremail
+  } = req.body; // Capture user input from the form
+
+  if (!req.session.user) {
+    return res.status(401).send('Unauthorized: No user logged in');
+  }
+
+  const submittedby = req.session.user.username; // Get the current user's username from the session
 
   try {
     // Insert the new user into the database
     const { data, error } = await supabase
       .from('ncc_registrations') // Replace 'users' with your actual table name if different
-      .insert([{  firstname,
-                  mi,
-                  lastname,
-                  gender,
-                  bday,
-                  phonenum,
-                  email,
-                  lastpromo,
-                  promolocation,
-                  clubregion,
-                  clubname,
-                  beltlevel,
-                  instructorfirstname,
-                  instructormi,
-                  instructorlastname,
-                  instructormobile,
-                  instructoremail,
-                }]);
+      .insert([{
+        firstname,
+        mi,
+        lastname,
+        gender,
+        bday,
+        phonenum,
+        email,
+        lastpromo,
+        promolocation,
+        clubregion,
+        clubname,
+        beltlevel,
+        instructorfirstname,
+        instructormi,
+        instructorlastname,
+        instructormobile,
+        instructoremail,
+        submittedby // Include the current user's username
+      }]);
 
     if (error) {
       // Handle any errors that occur during the insert
@@ -182,6 +191,7 @@ app.post('/submit-ncc', async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+
 
 app.post('/submit-signup', async (req, res) => {
   const { username, password, confpassword } = req.body; // Capture user input from the form
@@ -366,10 +376,17 @@ app.get('/membership-ncc', async function (req, res) {
 });
 
 app.get('/membership-status', async function (req, res) {
+  if (!req.session.user) {
+    return res.redirect('/');
+  }
+
+  const username = req.session.user.username; // Or use a unique identifier like user ID
+
   try {
     const { data, error } = await supabase
       .from('ncc_registrations')
-      .select('*');
+      .select('*')
+      .eq('submittedby', username); // Filter by the current user's username
 
     if (error) {
       return res.status(400).json({ error: error.message });
@@ -377,8 +394,8 @@ app.get('/membership-status', async function (req, res) {
 
     console.log("Fetched data:", data); // Log the data to the console 
 
-    // Render the athletes.hbs template with the fetched data
-    res.render('membership-status', { ncc_registrations: data });
+    // Render the home.hbs template with the filtered data
+    res.render('membership-status', { user: req.session.user, ncc_registrations: data });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
