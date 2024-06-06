@@ -1,62 +1,109 @@
+<!DOCTYPE html>
 <html>
-
-	<head>
-	  <title>PTA | Home</title>
-      <link rel="icon" type="image/x-icon" href="../images/favicon.ico" />
-	  <link rel="stylesheet" type="text/css" href="../stylesheets/profile.css" />
-	</head>
-	
-	<body style="margin:0;" class="container">
-        
-            <div class="header">
-                <div class="navbar">
-                    <img src="/images/logo.png" class="logo" href="home"></img>          
-                    <ul class="tabs">
-                        <li class="home"><a href="home">Home</a></li>
-                        <li class="athletes"><a href="athletes">Athletes</a></li>
-                        <li class="clubs"><a href="clubs">Clubs</a></li>
-                        <li class="events"><a href="events">Events</a></li>
-                        <li class="membership"><a href="membership">Membership</a></li>
-                        <li class="forum"><a href="forum">Forum</a></li>
-                        <li class="profile-pic"><a href="profile"><img src="/images/goofy.jpg"></img></a></li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="profile-container">
-                
-                    <img id="pfp" class="pfp" src="images/goofy.jpg" />
-                    <button class="edit-profile"><a href="edit-profile"><span class="material-symbols-outlined">edit</span></a></button>
-    
-                    <div class="wide profile-details">
-                        <h2 id="username" class="no-margin">{{user.lastname}}, {{user.firstname}}</h2>
-    
-                        <p id="description" class="description no-margin">{{user.usertype}}</p><br>
-                        
-                        <div class="flex">
-                            <ul class="info-box">
-                                <li>
-                                    <span class="info-title">
-                                        REGION
-                                    </span>
-                                </li>
-                                <li><h3 id="" class="">{{user.region}}</h3></li>
-                                <li>
-                                    <span class="info-title">
-                                        CLUB
-                                    </span>
-                                </li>
-                                <li><h3 id="" class="">{{user.club}}</h3></li>
-                                {{!-- <li>
-                                    <span class="info-title">
-                                        REGISTERED
-                                    </span>
-                                </li>
-                                <li><h3 id="" class="">{{user.club}}</h3></li> --}}
-                                <li><h3 id="" class="signout"><a href="/">Signout</a></h3></li>
-                            </ul>
-                        </div>
+<head>
+    <title>PTA | Profile</title>
+    <link rel="icon" type="image/x-icon" href="../images/favicon.ico" />
+    <link rel="stylesheet" type="text/css" href="../stylesheets/profile.css" />
+</head>
+<body class="container">
+    <div class="header">
+        <div class="navbar">
+            <a href="home"><img src="/images/logo.png" class="logo" alt="Logo"></a>
+            <ul class="tabs">
+                <li class="home"><a href="home">Home</a></li>
+                <li class="athletes"><a href="athletes">Athletes</a></li>
+                <li class="clubs"><a href="clubs">Clubs</a></li>
+                <li class="events"><a href="events">Events</a></li>
+                <li class="membership"><a href="membership">Membership</a></li>
+                <li class="forum"><a href="forum">Forum</a></li>
+                <li class="notifications">
+                    <a href="notifications">Notifications <span class="badge">3</span></a>
+                </li>
+                <li class="profile-pic">
+                    <a href="#" onclick="toggleDropdown()">
+                        <img src="/images/goofy.jpg" alt="Profile">
+                    </a>
+                    <div id="dropdown" class="dropdown-content">
+                        <a href="profile">Profile</a>
+                        <a href="settings">Settings</a>
+                        <a href="logout">Logout</a>
                     </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="profile-container">
+        <div class="side-nav">
+            <ul>
+                <li><a href="#" class="active">Edit Profile</a></li>
+                <li><a href="#">Notification Settings</a></li>
+                <li><a href="#">Security Settings</a></li>
+            </ul>
+        </div>
+        <div class="profile-content">
+            <div class="edit-profile">
+                <h2>Edit Profile</h2>
+                <div class="profile-pic-section">
+                    <img id="pfp" class="pfp" src="/images/goofy.jpg" alt="Profile Picture">
+                    <button class="edit-profile-pic" onclick="changeProfilePic()">Edit</button>
+                </div>
+                <form>
+                    <div class="form-group">
+                        <label for="firstName">First Name:</label>
+                        <input type="text" id="firstName" value="Paula">
+                    </div>
+                    <div class="form-group">
+                        <label for="lastName">Last Name:</label>
+                        <input type="text" id="lastName" value="Pineda">
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email:</label>
+                        <input type="email" id="email" value="paula@example.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="address">Address:</label>
+                        <input type="text" id="address">
+                    </div>
+                    <div class="form-group">
+                        <label for="contactNumber">Contact Number:</label>
+                        <input type="text" id="contactNumber">
+                    </div>
+                    <div class="form-group">
+                        <label for="region">Region:</label>
+                        <input type="text" id="region" value="MIMAROPA">
+                    </div>
+                    <div class="form-group">
+                        <label for="club">Club:</label>
+                        <input type="text" id="club" value="Saitama Club">
+                    </div>
+                    <div class="form-actions">
+                        <button class="cancel-button" onclick="window.location.href='profile'">Cancel</button>
+                        <button class="save-button" type="submit">Save Changes</button>
+                    </div>
+                </form>
             </div>
-    </body>
+        </div>
+    </div>
+    <script>
+        function changeProfilePic() {
+            // JavaScript function to handle profile picture change
+        }
+        function toggleDropdown() {
+            document.getElementById("dropdown").classList.toggle("show");
+        }
+
+        window.onclick = function(event) {
+            if (!event.target.matches('.profile-pic img')) {
+                var dropdowns = document.getElementsByClassName("dropdown-content");
+                for (var i = 0; i < dropdowns.length; i++) {
+                    var openDropdown = dropdowns[i];
+                    if (openDropdown.classList.contains('show')) {
+                        openDropdown.classList.remove('show');
+                    }
+                }
+            }
+        }
+    </script>
+</body>
 </html>
