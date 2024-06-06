@@ -30,7 +30,7 @@ body {
 .logo {
     width: 120px;
     height: auto;
-    margin: 10px 0 0 100px;
+    margin: 0;
 }
 
 .navbar {
@@ -42,25 +42,28 @@ body {
 
 .navbar ul {
     display: flex;
+    align-items: center;
     list-style: none;
     margin: 0;
     padding: 0;
 }
 
 .navbar ul li {
-    margin: 0 20px;
+    margin: 0 10px;
 }
 
-a {
+.navbar a {
     text-decoration: none;
     color: white;
     font-size: 18px;
+    display: flex;
+    align-items: center;
+    padding: 10px 15px;
 }
 
-a:hover {
+.navbar a:hover {
     background-color: #0c0c0c;
     border-radius: 15%;
-    padding: 10px;
     font-weight: bold;
 }
 
@@ -99,6 +102,19 @@ a:hover {
     display: block;
 }
 
+.poster {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.poster-image {
+    width: 100%;
+    height: auto;
+    max-width: 1200px; /* Adjust max-width as needed */
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
 .home-container {
     display: flex;
     padding: 20px;
@@ -120,12 +136,6 @@ a:hover {
 }
 
 .upcoming-events h2, .news h2 {
-    color: white;
-}
-
-.event, .news-item {
-    background-color: #1E1E1E; 
-    color: white;
     color: white;
 }
 
@@ -167,7 +177,6 @@ a:hover {
     border-radius: 5px;
     background-color: #2E2E2E;
     transition: background-color 0.3s;
-
 }
 
 .event a:hover, .news-item a:hover {
@@ -228,60 +237,17 @@ a:hover {
     height: 30px;
 }
 
-.event a:hover, .news-item a:hover {
-    background-color: #1A1A1A;
+.notifications {
+    position: relative;
 }
 
-.horizontal-container {
-    display: flex;
-    flex-wrap: nowrap;
-    overflow-x: auto;
-}
-
-.footer-content {
-    background-color: #333;
-    color: #fff;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 20px;
-    height: 100px;
-    margin-top: auto; 
-}
-
-.footer-content .pta-logo img {
-    height: 100%; 
-}
-
-.footer-content .contact-info {
-    flex: 1;
-    text-align: center;
-    padding: 0 20px;
-}
-
-.footer-content .contact-info p {
-    margin: 5px 0;
-}
-
-.footer-content .social-media {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-}
-
-.footer-content .social-media p {
-    margin-bottom: 5px;
-}
-
-.footer-content .social-media .icons {
-    display: flex;
-    align-items: center;
-}
-
-.footer-content .social-media a {
-    margin-left: 10px;
-}
-
-.footer-content .social-media img {
-    height: 30px;
+.notifications .badge {
+    background-color: red;
+    color: white;
+    border-radius: 50%;
+    padding: 2px 6px;
+    font-size: 12px;
+    position: absolute;
+    top: -10px;
+    right: -10px;
 }
