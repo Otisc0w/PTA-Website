@@ -1,0 +1,49 @@
+<html>
+
+	<head>
+	  <title>PTA | Athletes</title>
+      <link rel="icon" type="image/x-icon" href="../images/favicon.ico" />
+	  <link rel="stylesheet" type="text/css" href="../stylesheets/home.css" />
+	</head>
+	
+	<body style="margin:0;" class="container">
+        
+            <div class="header">
+                <div class="navbar">
+                    <img src="/images/logo.png" class="logo" href="home"></img>          
+                    <ul class="tabs">
+                        <li class="home"><a href="home">Home</a></li>
+                        <li class="athletes"><a href="athletes">Athletes</a></li>
+                        <li class="clubs"><a href="clubs">Clubs</a></li>
+                        <li class="events"><a href="events">Events</a></li>
+                        <li class="membership"><a href="membership">Membership</a></li>
+                        <li class="forum"><a href="forum">Forum</a></li>
+                        <li class="profile-pic"><a href="profile"><img src="/images/goofy.jpg"></img></a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="home-container">
+                <div class="left-panel">
+                </div>
+
+                <div class="main-panel">
+                    <div class='flex post-container'>
+                        <div class='flex post-content'>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="right-panel">
+                    <div class="community-panel">
+                        <p class="community-description">competitions this year bro</p>
+                        <ul>
+      					{{#each clubs}}
+        				<li>Name: {{name}}, Region: {{region}}, Members: {{members}}s</li>
+      					{{/each}}
+    				    </ul>
+                    </div>
+                </div>
+            </div>
+    </body>
+</html>

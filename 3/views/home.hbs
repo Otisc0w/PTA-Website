@@ -37,48 +37,28 @@
             <div class="upcoming-events">
                 <h2>Upcoming Events</h2>
                 <div id="events" class="horizontal-container">
+                    {{#each events}}
                     <div class="event">
-                        <img src="path-to-event-image1.jpg" alt="Event 1">
-                        <h3>Random Weigh In - May 26, 2024 7:00AM</h3>
-                        <p>Loading... Taking too long? Reload document | Open in new tab</p>
+                        <img src="path-to-event-image1.jpg" alt="Event {{id}}">
+                        <h3>{{title}} - May 26, 2024 7:00AM</h3>
+                        <p>{{description}}</p>
                         <a href="#">Read More</a>
                     </div>
-                    <div class="event">
-                        <img src="path-to-event-image2.jpg" alt="Event 2">
-                        <h3>Event y</h3>
-                        <p>Loading... Taking too long? Reload document | Open in new tab</p>
-                        <a href="#">Read More</a>
-                    </div>
-                    <div class="event">
-                        <img src="path-to-event-image3.jpg" alt="Event 3">
-                        <h3>Event z</h3>
-                        <p>Loading... Taking too long? Reload document | Open in new tab</p>
-                        <a href="#">Read More</a>
-                    </div>
+                    {{/each}}
                 </div>
             </div>
 
             <div class="news">
                 <h2>News</h2>
-                <div id="news" class="horizontal-container">
-                    <div class="news-item">
-                        <img src="path-to-news-image1.jpg" alt="News 1">
-                        <h3>Random Weigh In - May 25, 2024 12:00PM</h3>
-                        <p>Loading... Taking too long? Reload document | Open in new tab</p>
+                <div id="events" class="horizontal-container">
+                    {{#each events}}
+                    <div class="event">
+                        <img src="path-to-event-image1.jpg" alt="Event {{id}}">
+                        <h3>{{title}} - May 26, 2024 7:00AM</h3>
+                        <p>{{description}}</p>
                         <a href="#">Read More</a>
                     </div>
-                    <div class="news-item">
-                        <img src="path-to-news-image2.jpg" alt="News 2">
-                        <h3>Event y</h3>
-                        <p>Loading... Taking too long? Reload document | Open in new tab</p>
-                        <a href="#">Read More</a>
-                    </div>
-                    <div class="news-item">
-                        <img src="path-to-news-image3.jpg" alt="News 3">
-                        <h3>Event z</h3>
-                        <p>Loading... Taking too long? Reload document | Open in new tab</p>
-                        <a href="#">Read More</a>
-                    </div>
+                    {{/each}}
                 </div>
             </div>
         </div>
@@ -108,7 +88,7 @@
     </footer>
 
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
+        /*document.addEventListener("DOMContentLoaded", function() {
             const events = [
                 { id: "event1", name: "Random Weigh In - May 26, 2024 7:00AM", image: "path-to-event-image1.jpg", description: "Loading... Taking too long? Reload document | Open in new tab" },
                 { id: "event2", name: "Event y", image: "path-to-event-image2.jpg", description: "Loading... Taking too long? Reload document | Open in new tab" },
@@ -144,7 +124,7 @@
                                      <a href="#">Read More</a>`;
                 newsContainer.appendChild(newsDiv);
             });
-        });
+        });*/
 
         function toggleDropdown() {
             document.getElementById("dropdown").classList.toggle("show");

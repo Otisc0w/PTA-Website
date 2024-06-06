@@ -222,8 +222,24 @@ app.get('/home', async function (req, res) {
     return res.redirect('/');
   }
 
-  res.render('home', { user: req.session.user });
+  try {
+    const { data, error } = await supabase
+      .from('events')
+      .select('*');
+
+    if (error) {
+      return res.status(400).json({ error: error.message });
+    }
+
+    console.log("Fetched data:", data); // Log the data to the console 
+
+    // Render the home.hbs template with both the fetched data and the session user data
+    res.render('home', { events: data, user: req.session.user });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 });
+
 
 app.get('/forum', async function (req, res) {
   try {
@@ -239,6 +255,25 @@ app.get('/forum', async function (req, res) {
 
     // Render the forum.hbs template with the fetched data
     res.render('forum', { forumthreads: data });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.get('/clubs', async function (req, res) {
+  try {
+    const { data, error } = await supabase
+      .from('clubs')
+      .select('*');
+
+    if (error) {
+      return res.status(400).json({ error: error.message });
+    }
+
+    console.log("Fetched data:", data); // Log the data to the console 
+
+    // Render the forum.hbs template with the fetched data
+    res.render('clubs', { clubs: data });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
