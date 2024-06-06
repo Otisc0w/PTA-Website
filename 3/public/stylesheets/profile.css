@@ -1,324 +1,233 @@
 @import url('https://fonts.cdnfonts.com/css/sf-pro-display');
 
-:root{
-    font-family: 'SF Pro Display', sans-serif;    
+:root {
+    font-family: 'SF Pro Display', sans-serif;
+}
 
+body {
+    font-family: 'SF Pro Display', sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
 }
 
 .container {
     background-color: #3A3A3A;
     width: 100%;
-    height: 100%;
+    flex: 1;
     color: white;
     opacity: .9;
 }
-.header{
+
+.header {
     width: 100%;
     height: 12%;
     background-color: #252525;
 }
 
-.logo{
-    width: 100px;
+.logo {
+    width: 120px;
     height: auto;
-    margin-top: 10px;
-    margin-left: 100px;
+    margin: 0;
 }
 
-.navbar{
+.navbar {
     display: flex;
     justify-content: space-between;
-    margin: auto;
-    padding: 35px 0;
     align-items: center;
-    justify-content: space-between;
+    padding: 0 20px;
 }
 
-.navbar ul{
-    display: inline-block;
-    margin-right: 120px;
+.navbar ul {
+    display: flex;
+    align-items: center;
+    list-style: none;
+    margin: 0;
+    padding: 0;
 }
 
-.navbar ul li{
-    display: inline;
-    margin: 0 20px;
+.navbar ul li {
+    margin: 0 10px;
 }
 
-a:hover{
-    background-color: #0c0c0c;
-    border-radius: 15%;
-    width: 100px;
-    font-weight: bold;
-    
-}
-
-a {
+.navbar a {
     text-decoration: none;
     color: white;
     font-size: 18px;
-}
-
-.profile-container{
-    height: 850px;
-}
-
-.profile-pic img{
-    width:50px;
-    border-radius: 50%;
-}
-
-/*kian stuff below*/
-
-.flex {
     display: flex;
-}
-
-.column {
-    flex-direction: column;
-}
-
-.pfp {
-    height: 100;
-    width: 100;
-    border-radius: 50%;
-    margin: 10;
-    margin-bottom: 20;
-}
-
-.info-box {
-    list-style: none;
-    padding: 0;
-    width: 70%;
-}
-.center {
     align-items: center;
-    justify-content: center;
-    text-align: center;
-    vertical-align: middle;
+    padding: 10px 15px;
 }
 
-.post-container, .sort-container {
-    border-radius: 10px;
-    width: 640px;
-    height: fit-content;
-    background-color: var(--light);
-    border: 1px solid var(--border);
-    margin: 20px;
-    margin-right: 0;
-}
-.post-info {
-    align-items: center;
-    justify-content: flex-start;
-    text-align: center;
-    vertical-align: middle;
-}
-.post-text {
-    padding: 20px;
-}
-
-.post-text>h2 , .post-text>p{
-    inline-size: 100%;
-}
-
-.margin {
-    margin: 10px;
-}
-.no-sides {
-    margin-left: 0;
-    margin-right: 0;
-}
-.sides {
-    margin-left: 10px;
-    margin-right: 10px;
-}
-.padding {
-    padding: 10px;
-}
-
-.profile-container {
-    flex-wrap: wrap;
-    margin-left: auto;
-    border-radius: 10px;
-    width: 260px;
-    height: fit-content;
-    padding: 10px;
-    background-color: var(--light);
-    border: 1px solid var(--border);
-    margin: 20px;
-}
-.profile-details {
-    padding: 10px;
-    border-radius: 10px;
-    background-color: var(--dark);
-}
-
-a {
-    color: var(--white);
-}
-
-.description {
-    font-size: 14px;
-    font-style: italic;
-}
-
-.no-margin {
-    margin: 0;
-}
-.no-bottom {
-    margin-bottom: 0;
-}
-
-.light {
-    font-weight: lighter;
-}
-
-.button {
-    background: none;
-    border: none;
-    border-radius: 10px;
-    color: var(--white);
-    width: fit-content;
-    height: fit-content;
-    padding: 3;
-    background-color: var(--light);
-}
-.button:hover {
-    background-color: var(--color);
-    color: var(--white);
-    cursor: pointer;
-}
-.edit-profile {
-    background: none;
-    border-radius: 50%;
-    border: none;
-    color: var(--white);
-    width: fit-content;
-    height: fit-content;
-    justify-self: flex-start;
-    margin-left: auto;
-    padding: 3;
-    background-color: var(--dark);
-}
-.edit-profile:hover {
-    background-color: var(--color);
-    color: var(--white);
-}
-
-.wide {
-    width: 100%;
-}
-.tall {
-    height: 100%;
-}
-
-.info-title {
-    font-size: 12px;
-    font-weight: bolder;
-}
-
-.no-padding {
-    padding: 0;
-}
-
-.edit-container {
-    border-radius: 10px;
-    padding: 20px;
-    margin: 10px;
-    border: 1px solid var(--border);
-    background-color: var(--light);
-}
-
-textarea {
-    width: 100%;
-    resize: none;
-    border-radius: 10px;
-    padding: 5;
-}
-
-.edit-header {
-    margin: 0 20px;
-}
-
-.pfp-container {
-    align-items: center;
-}
-
-#pfp-uploader {
-    display: none;
-}
-
-.current-pfp {
-    height: 100px;
-    width: 100px;
-    border-radius: 50%;
-    margin: 10px 0;
-    margin-bottom: 20px;
-}
-
-.pfp-uploader-label {
-    margin: 0 20px;
-    padding: 5px;
-}
-
-.save-edit {
-    margin-top: 10px;
-}
-
-.italic {
-    font-style: italic;
-}
-.bold {
+.navbar a:hover {
+    background-color: #0c0c0c;
+    border-radius: 5px;
     font-weight: bold;
 }
-.small {
-    font-size: 12px;
-}
 
-.inline {
+.profile-pic {
+    position: relative;
     display: inline-block;
 }
 
-.sort-icons-container {
-    display: flex;
-    justify-content: left;
-    width: 100%;
-    margin: 10px;
+.profile-pic img {
+    width: 50px;
+    border-radius: 50%;
 }
 
-.sort-icons-container>button {
-    margin-left: 5px;
+.dropdown-content {
+    display: none;
+    position: absolute;
+    right: 0;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+}
+
+.dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+.dropdown-content a:hover {
+    background-color: #f1f1f1;
+}
+
+.show {
+    display: block;
+}
+
+.profile-container {
+    display: flex;
+    flex: 1;
+    padding: 20px;
+}
+
+.side-nav {
+    width: 200px;
+    background-color: #2E2E2E;
+    padding: 20px;
+    border-radius: 10px;
     margin-right: 20px;
 }
 
-.sort-icons-container>button.selected {
-    border-bottom: 2px solid var(--white);
-    border-bottom-left-radius: 0px;
-    border-bottom-right-radius: 0px;
+.side-nav ul {
+    list-style-type: none;
+    padding: 0;
 }
-  
-.comment-nest {
-    font-size: 2rem;
+
+.side-nav ul li {
+    margin-bottom: 10px;
 }
-.comment {
-    display: flex;
-    align-items: center;
+
+.side-nav ul li a {
+    color: white;
+    text-decoration: none;
+    font-size: 16px;
 }
-.sub-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: fit-content;
-    font-size: 20px;
-    font-weight: bold;
-    background: none;
+
+.side-nav ul li a.active,
+.side-nav ul li a:hover {
+    color: #007BFF;
+}
+
+.profile-content {
+    flex: 1;
+    background-color: #1E1E1E;
+    border-radius: 10px;
+    padding: 20px;
+}
+
+.edit-profile h2 {
+    margin-top: 0;
+}
+
+.profile-pic-section {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.profile-pic-section img {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+}
+
+.profile-pic-section .edit-profile-pic {
+    background-color: #007BFF;
+    color: white;
     border: none;
-    color: var(--white);
-    background-color: var(--color);
+    padding: 10px;
+    cursor: pointer;
     border-radius: 5px;
-    margin: 5px;
-    padding: 5px;
+    margin-top: 10px;
 }
-.sub-container:hover {
-    color: var(--white);
-    background-color: tomato;
+
+.profile-pic-section .edit-profile-pic:hover {
+    background-color: #0056b3;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    margin-bottom: 5px;
+    font-size: 14px;
+    color: #ddd;
+}
+
+.form-group input {
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #333;
+    color: white;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: #007BFF;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px; /* Adjust the gap as needed */
+    padding: 20px 0;
+}
+
+.form-actions .cancel-button, 
+.form-actions .save-button {
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.form-actions .cancel-button {
+    background-color: #FF5733;
+    color: white;
+}
+
+.form-actions .save-button {
+    background-color: #007BFF;
+    color: white;
+}
+
+.form-actions .cancel-button:hover {
+    background-color: #e14a27;
+}
+
+.form-actions .save-button:hover {
+    background-color: #0056b3;
 }
