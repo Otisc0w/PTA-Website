@@ -1,58 +1,62 @@
 <html>
 
-	<head>
-	  <title>PTA | Home</title>
-      <link rel="icon" type="image/x-icon" href="../images/favicon.ico" />
-	  <link rel="stylesheet" type="text/css" href="../stylesheets/forum.css" />
-	</head>
-	
-	<body style="margin:0;" class="container">
-        <div class="header">
-            <div class="navbar">
-				<img src="/images/logo.png" class="logo" href="home"></img>          
-                <ul class="tabs">
-                    <li class="home"><a href="home">Home</a></li>
-                    <li class="athletes"><a href="athletes">Athletes</a></li>
-                    <li class="clubs"><a href="clubs">Clubs</a></li>
-                    <li class="events"><a href="events">Events</a></li>
-                    <li class="membership"><a href="membership">Membership</a></li>
-                    <li class="forum"><a href="forum">Forum</a></li>
-                    <li class="profile-pic"><a href="profile"><img src="/images/goofy.jpg"></img></a></li>
-                </ul>
-            </div>
+<head>
+  <title>PTA | Home</title>
+  <link rel="icon" type="image/x-icon" href="../images/favicon.ico" />
+  <link rel="stylesheet" type="text/css" href="../stylesheets/forum.css" />
+</head>
+
+<body style="margin:0;" class="container">
+    <div class="header">
+        <div class="navbar">
+            <img src="/images/logo.png" class="logo" href="home"></img>
+            <ul class="tabs">
+                <li class="home"><a href="home">Home</a></li>
+                <li class="athletes"><a href="athletes">Athletes</a></li>
+                <li class="clubs"><a href="clubs">Clubs</a></li>
+                <li class="events"><a href="events">Events</a></li>
+                <li class="membership"><a href="membership">Membership</a></li>
+                <li class="forum"><a href="forum">Forum</a></li>
+                <li class="profile-pic"><a href="profile"><img src="/images/goofy.jpg"></img></a></li>
+            </ul>
         </div>
-       <div class="forum-container">
+    </div>
+
+    <div class="forum-container">
         <div class="main-content">
-            <div class="sidebar">
-                <h2>Categories</h2>
-                <ul>
-                    <li><a href="#general-discussion">General Discussion</a></li>
-                    <li><a href="#help-and-support">Help and Support</a></li>
-                    <li><a href="#announcements">Announcements</a></li>
-                </ul>
-            </div>
             <div class="content">
                 <h2>Recent Threads</h2>
                 {{#each forumthreads}}
+                <a href='post?postId={{postId}}' class='post-link'>
                 <div class='post-container'>
                     <div class='post-content'>
                         <div class='post-info'>
                             <span class='community'><a class='post-community' href='community?community='>{{community}}</a> •</span>
                             <span class='small'>by <a class='post-user' href='profile?username='>{{user}}</a> on {{date}}</span>
                         </div>
-                        <a href='post?postId='><h2 class='post-title'>{{title}}</h2></a>
+                        <h2 class='post-title'>{{title}}</h2>
                         <p class='post-description'>{{body}}</p>
-                        <div class='post-actions'>
-                            <a class='post-title' href='post?postId={{postId}}'><button class='button'><span class='material-symbols-outlined'></span> Comment</button></a>
-                            <div class="vote-buttons">
-                                <span class="upvote-count">{{upvotes}}</span>
-                                <button class='button upvote'><span class='material-symbols-outlined'><img src="/images/thumbs up.png"></img></span></button>
-                                <span class="downvote-count">{{downvotes}}</span>
-                                <button class='button downvote'><span class='material-symbols-outlined'><img src="/images/thumbs down.png"></span></button>
-                            </div>
-                        </div>
+                       <div class='post-actions'>
+                        <ul class="post-buttons">
+                           <li class="comment-buttons">    
+                             <div class='comment-button comment'>Comment
+                            <img src="/images/comment.png" alt="comment"></div></li>
+                              <li class="vote-buttons">
+                                     <div class="vote-button upvote">
+                                         <img src="/images/thumbs up.png" alt="Upvote">
+                                            <span class="upvote-count">{{upvotes}}</span>
+                                      </div>
+                                        <div class="vote-separator"></div>
+                                             <div class="vote-button downvote">
+                                                <img src="/images/thumbs down.png" alt="Downvote">
+                                                     <span class="downvote-count">{{downvotes}}</span>
+                                              </div>
+                                  </li>
+                                 </ul>
+                      </div>
                     </div>
                 </div>
+                </a>
                 {{/each}}
             </div>
         </div>

@@ -1,32 +1,38 @@
 @import url('https://fonts.cdnfonts.com/css/sf-pro-display');
 
-:root{
-    font-family: 'SF Pro Display', sans-serif;    
-
+:root {
+    font-family: 'SF Pro Display', sans-serif;
 }
 
-.header{
+html, body {
+    background-color: #2c2c2c;
+    color: #F0F0F0;
+    margin: 0;
+    padding: 0;
+    height: 100%;
+}
+
+.forum-container {
+    background-color: #3A3A3A;
+    width: 100%;
+    height: 100%;
+    color: white;
+}
+
+.header {
     width: 100%;
     height: 12%;
     background-color: #252525;
 }
 
-.container {
-    background-color: #3A3A3A;
-    width: 100%;
-    flex: 1;
-    color: white;
-    opacity: .9;
-}
-
-.logo{
+.logo {
     width: 100px;
     height: auto;
     margin-top: 10px;
     margin-left: 100px;
 }
 
-.navbar{
+.navbar {
     display: flex;
     justify-content: space-between;
     margin: auto;
@@ -35,22 +41,21 @@
     justify-content: space-between;
 }
 
-.navbar ul{
+.navbar ul {
     display: inline-block;
     margin-right: 80px;
 }
 
-.navbar ul li{
+.navbar ul li {
     display: inline;
     margin: 0 20px;
 }
 
-a:hover{
-    background-color: #0c0c0c;
-    border-radius: 15%;
-    width: 100px;
-    font-weight: bold;
+a:hover {
+    background-color: #4e4d4d;
     
+    width: auto;
+    font-weight: bold;
 }
 
 a {
@@ -59,67 +64,54 @@ a {
     font-size: 18px;
 }
 
-.profile-pic img{
-    width:50px;
+.profile-pic img {
+    width: 50px;
     border-radius: 50%;
 }
 
-
-/* Forum CSS */
 .main-content {
     display: flex;
     justify-content: space-between;
     padding: 20px;
 }
 
-.sidebar {
-    width: 25%;
-    background-color: #252525;
-    padding: 20px;
-    border-radius: 8px;
-    color: #F0F0F0;
-}
 
-.sidebar h2 {
-    margin-bottom: 20px;
-}
+/*forum*/
 
-.sidebar ul {
-    list-style-type: none;
-    padding: 0;
-}
 
-.sidebar li {
-    margin: 10px 0;
-}
-
-.sidebar a {
-    text-decoration: none;
-    color: #F0F0F0;
-    font-size: 18px;
-}
-
-.sidebar a:hover {
-    color: #949494;
-}
 
 .content {
-    width: 70%;
+    width: 50%;
     padding: 20px;
     background-color: #2c2c2c;
     border-radius: 8px;
     color: #F0F0F0;
+    margin:auto;
 }
-
+li {
+    float: left;
+  }
 .content h2 {
     margin-bottom: 20px;
 }
 
+.post-link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+}
 .post-container {
     background-color: #3a3a3a;
     padding: 20px;
-    margin-bottom: 20px;
+    margin-bottom: 20px; 
     border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    border: 1px solid #444; 
+}
+
+.post-container:hover {
+    cursor: pointer;
+    background-color: #4e4d4d;
 }
 
 .post-content {
@@ -148,54 +140,69 @@ a {
 .post-actions {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    
 }
 
-.vote-buttons {
+.comment-buttons, .vote-buttons {
     display: flex;
     align-items: center;
-}
-
-.vote-buttons .upvote-count,
-.vote-buttons .downvote-count {
-    font-size: 18px;
-    color: #F0F0F0;
-    margin: 0 10px;
-}
-
-.vote-buttons .button img {
-    width: 24px; 
-    height: 24px; 
-    vertical-align: middle;
-}
-
-.vote-buttons .button {
-    background-color: #00BFFF;
-    color: #FFFFFF;
-    border: none;
-    border-radius: 4px;
-    padding: 10px;
-    margin-right: 10px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.post-actions .button {
     background-color: #2c2c2c;
     color: #FFFFFF;
-    border: none;
-    border-radius: 4px;
-    padding: 10px;
-    margin-right: 10px;
+    border-radius: 20px;
+    padding: 10px 10px; 
+    margin-right: 5px; 
+    font-size: 16px; 
+    cursor: pointer;
+    transition: background-color 0.3s;
+    
+}
+
+.comment-button {
+    display: flex;
+    align-items: center;
+    color: #F0F0F0;
+    margin: 0 2px;
+    font-size: 16px;
+    padding: 5px;
+    border-radius: 20px;
+    transition: background-color 0.3s;
+    
+}
+
+.vote-button {
+    display: flex;
+    align-items: center;
+    color: #F0F0F0;
+    margin: 0 2px;
+    font-size: 16px;
+    padding: 5px;
+    border-radius: 20px;
+    transition: background-color 0.3s;
+    
+}
+
+
+.vote-button:hover,.comment-button:hover {
+    background-color: #4e4d4d; 
     cursor: pointer;
 }
 
-.post-actions .button:hover {
-    background-color: #B0B0B0;
+.vote-button img {
+    width: 20px; 
+    height: 20px; 
+    margin-right: 2px;
 }
 
-.post-actions .material-symbols-outlined {
-    vertical-align: middle;
+.vote-separator {
+    border-left: 1px solid #5a5a5a;
+    height: 20px;
+    margin: 0 2px;
 }
+
+.comment-button img{
+    width: 20px;
+    height: 20px;
+    margin-right: 2px;
+    margin-left: 10px;
+}
+
