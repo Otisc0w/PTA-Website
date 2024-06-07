@@ -34,6 +34,11 @@ body {
 }
 
 .navbar {
+    position: fixed; /* Fix the navbar at the top */
+    top: 0;
+    width: 100%;
+    background-color: #252525;
+    z-index: 2000; /* Ensure the navbar is above other content */
     display: flex;
     justify-content: space-between;
     align-items: center;

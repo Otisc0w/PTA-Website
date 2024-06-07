@@ -14,10 +14,10 @@
 }
 
 .home-container {
+    margin-top: 90px; /* Add margin to prevent content from being hidden behind the navbar */
     display: flex;
     padding: 20px;
-    flex: 1;
-    height: 850px;
+    flex-grow:1;
 }
 
 .left-panel, .right-panel {
