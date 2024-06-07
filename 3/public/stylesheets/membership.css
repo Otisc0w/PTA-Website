@@ -15,7 +15,7 @@
 
 .leftside{
     width: 50%;
-    height: 100%;
+    height: 1080px;
     background-color: #3A3A3A;
     float: left;
     text-align: right;
@@ -37,48 +37,9 @@
     margin-top: 200px;
     list-style-type: none;
 }
+
 .rightside ul li{
     margin: 80px 0;
-}
-
-.header{
-    width: 100%;
-    height: 12%;
-    background-color: #252525;
-}
-
-.logo{
-    width: 100px;
-    height: auto;
-    margin-top: 10px;
-    margin-left: 100px;
-    cursor: pointer;
-}
-
-.navbar{
-    display: flex;
-    justify-content: space-between;
-    margin: auto;
-    padding: 35px 0;
-    align-items: center;
-    justify-content: space-between;
-}
-
-.navbar ul{
-    display: inline-block;
-    margin-right: 80px;
-}
-
-a:hover{
-    background-color: #0c0c0c;
-    border-radius: 15%;
-    width: 100px;
-    font-weight: bold;
-}
-
-.navbar ul li{
-    display: inline;
-    margin: 0 20px;
 }
 
 a {
@@ -87,14 +48,25 @@ a {
     font-size: 18px;
 }
 
-.profile-pic img{
-    width:50px;
-    border-radius: 50%;
+a:hover {
+    background-color: #0c0c0c;
+    border-radius: 15%;
+    font-weight: bold;
 }
 
-.regrow {
-    padding: 15px;
-    background-color: #2C2C2C;
+.notifications {
+    position: relative;
+}
+
+.notifications .badge {
+    background-color: red;
+    color: white;
+    border-radius: 50%;
+    padding: 2px 6px;
+    font-size: 12px;
+    position: absolute;
+    top: -10px;
+    right: -10px;
 }
 
 /*all membership choices styles*/

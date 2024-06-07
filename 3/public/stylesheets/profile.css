@@ -1,107 +1,5 @@
 @import url('https://fonts.cdnfonts.com/css/sf-pro-display');
 
-:root {
-    font-family: 'SF Pro Display', sans-serif;
-}
-
-body {
-    font-family: 'SF Pro Display', sans-serif;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-}
-
-.container {
-    background-color: #3A3A3A;
-    width: 100%;
-    flex: 1;
-    color: white;
-    opacity: .9;
-}
-
-.header {
-    width: 100%;
-    height: 12%;
-    background-color: #252525;
-}
-
-.logo {
-    width: 120px;
-    height: auto;
-    margin: 0;
-}
-
-.navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 20px;
-}
-
-.navbar ul {
-    display: flex;
-    align-items: center;
-    list-style: none;
-    margin: 0;
-    padding: 0;
-}
-
-.navbar ul li {
-    margin: 0 10px;
-}
-
-.navbar a {
-    text-decoration: none;
-    color: white;
-    font-size: 18px;
-    display: flex;
-    align-items: center;
-    padding: 10px 15px;
-}
-
-.navbar a:hover {
-    background-color: #0c0c0c;
-    border-radius: 5px;
-    font-weight: bold;
-}
-
-.profile-pic {
-    position: relative;
-    display: inline-block;
-}
-
-.profile-pic img {
-    width: 50px;
-    border-radius: 50%;
-}
-
-.dropdown-content {
-    display: none;
-    position: absolute;
-    right: 0;
-    background-color: #f9f9f9;
-    min-width: 160px;
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-    z-index: 1;
-}
-
-.dropdown-content a {
-    color: black;
-    padding: 12px 16px;
-    text-decoration: none;
-    display: block;
-}
-
-.dropdown-content a:hover {
-    background-color: #f1f1f1;
-}
-
-.show {
-    display: block;
-}
-
 .profile-container {
     display: flex;
     flex: 1;
@@ -230,4 +128,19 @@ body {
 
 .form-actions .save-button:hover {
     background-color: #0056b3;
+}
+
+.notifications {
+    position: relative;
+}
+
+.notifications .badge {
+    background-color: red;
+    color: white;
+    border-radius: 50%;
+    padding: 2px 6px;
+    font-size: 12px;
+    position: absolute;
+    top: -10px;
+    right: -10px;
 }
