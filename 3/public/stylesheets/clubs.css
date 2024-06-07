@@ -157,13 +157,6 @@ ul {
     padding: 0;
 }
 
-ul li {
-    background-color: #1E1E1E;
-    color: white;
-    padding: 10px;
-    margin: 5px 0;
-    border-radius: 5px;
-}
 
 .footer-content {
     background-color: #333;

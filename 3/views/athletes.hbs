@@ -1,37 +1,39 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <title>PTA | Athletes</title>
-    <link rel="icon" type="image/x-icon" href="../images/favicon.ico" />
-    <link rel="stylesheet" type="text/css" href="../stylesheets/athletes.css" />
-</head>
-<body class="container">
-    <div class="header">
-        <div class="navbar">
-            <a href="home"><img src="/images/logo.png" class="logo" alt="Logo"></a>
-            <ul class="tabs">
-                <li class="home"><a href="home">Home</a></li>
-                <li class="athletes"><a href="athletes">Athletes</a></li>
-                <li class="clubs"><a href="clubs">Clubs</a></li>
-                <li class="events"><a href="events">Events</a></li>
-                <li class="membership"><a href="membership">Membership</a></li>
-                <li class="forum"><a href="forum">Forum</a></li>
-                <li class="notifications">
-                    <a href="notifications">Notifications <span class="badge">3</span></a>
-                </li>
-                <li class="profile-pic">
-                    <a href="#" onclick="toggleDropdown()">
-                        <img src="/images/goofy.jpg" alt="Profile">
-                    </a>
-                    <div id="dropdown" class="dropdown-content">
-                        <a href="profile">Profile</a>
-                        <a href="settings">Settings</a>
-                        <a href="logout">Logout</a>
-                    </div>
-                </li>
-            </ul>
+    <head>
+        <title>PTA | Athletes</title>
+        <link rel="icon" type="image/x-icon" href="../images/favicon.ico" />
+        <link rel="stylesheet" type="text/css" href="../stylesheets/athletes.css" />
+        <link rel="stylesheet" type="text/css" href="../stylesheets/navbar.css" />
+    </head>
+
+    <body class="container">
+        <div class="header">
+            <div class="navbar">
+                <a href="home"><img src="/images/logo.png" class="logo" alt="Logo"></a>
+                <ul class="tabs">
+                    <li class="home"><a href="home">Home</a></li>
+                    <li class="athletes"><a href="athletes">Athletes</a></li>
+                    <li class="clubs"><a href="clubs">Clubs</a></li>
+                    <li class="events"><a href="events">Events</a></li>
+                    <li class="membership"><a href="membership">Membership</a></li>
+                    <li class="forum"><a href="forum">Forum</a></li>
+                    <li class="notifications">
+                        <a href="notifications">Notifications <span class="badge">3</span></a>
+                    </li>
+                    <li class="profile-pic">
+                        <a href="#" onclick="toggleDropdown()">
+                            <img src="/images/goofy.jpg" alt="Profile">
+                        </a>
+                        <div id="dropdown" class="dropdown-content">
+                            <a href="profile">Profile</a>
+                            <a href="settings">Settings</a>
+                            <a href="logout">Logout</a>
+                        </div>
+                    </li>
+                </ul>
+            </div>
         </div>
-    </div>
 
     <div class="athletes-container">
         <div class="filter-panel">
