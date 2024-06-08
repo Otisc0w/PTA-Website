@@ -4,141 +4,134 @@
 	  <title>PTA | Apply for NCC ID</title>
       <link rel="icon" type="image/x-icon" href="../images/favicon.ico" />
 	  <link rel="stylesheet" type="text/css" href="../stylesheets/membership.css" />
+      <link rel="stylesheet" type="text/css" href="../stylesheets/navbar.css" />
 	</head>
 	
 	<body style="margin:0;" class="container">
-        <div class="header">
-            <div class="navbar">
-				<img src="/images/logo.png" class="logo" href="home"></img>          
-                <ul class="tabs">
-                    <li class="home"><a href="home">Home</a></li>
-                    <li class="athletes"><a href="athletes">Athletes</a></li>
-                    <li class="clubs"><a href="clubs">Clubs</a></li>
-                    <li class="events"><a href="events">Events</a></li>
-                    <li class="membership"><a href="membership">Membership</a></li>
-                    <li class="forum"><a href="forum">Forum</a></li>
-                    <li class="profile-pic"><a href="profile"><img src="/images/goofy.jpg"></img></a></li>
-                </ul>
+        <div class="membership-header">
+            <div class="membership-navbar">
+				<img src="/images/logo.png" class="membership-logo" href="home"></img>   
+                <a href="profile" class="memprofile-pic"><img src="/images/goofy.jpg"></img></a>
             </div>
         </div>
-        <div class="content-container">
-			<div class="leftside">
+        <div class="membership-container">
+			<div class="membership-leftside">
 				<div class="forumtitle">
 					<h1 class= "forumname"> <span class="logo"> </span></h1>
                     <h3 class = "forumdesc">Apply for NCC ID</h3>
 				</div>
 			</div>
 		
-			<div class="rightside">                                                                                             
+			<div class="membership-rightside">                                                                                             
+                <div class="formcontainer">
+                    <form id="nccform" action="/submit-ncc" method="post">
+                        <div class="ncc1">                                                                                  {{!-- NCC ID APPLICATION FORM part 1 --}}
+                            <label class="firstname-input" for="firstname">Firstname</label><br>
+                            <input type="text" id="firstname" name="firstname" ><br>
 
-                <form id="nccform" action="/submit-ncc" method="post">
-                    <div class="ncc1">                                                          {{!-- NCC ID APPLICATION FORM part 1 --}}
-                        <label class="firstname-input" for="firstname">Firstname</label><br>
-                        <input type="text" id="firstname" name="firstname" ><br>
+                            <label class="mi-input" for="mi">Middle Initial</label><br>
+                            <input type="text" id="mi" name="mi" ><br>
 
-                        <label class="mi-input" for="mi">Middle Initial</label><br>
-                        <input type="text" id="mi" name="mi" ><br>
+                            <label class="lastname-input" for="lastname">Lastname</label><br>
+                            <input type="text" id="lastname" name="lastname" ><br>
+                            
+                            <input type="radio" id="female" name="gender" value="female">
+                            <label for="female">Female</label><br>
+                            <input type="radio" id="male" name="gender" value="male">
+                            <label for="male">Male</label><br>
 
-                        <label class="lastname-input" for="lastname">Lastname</label><br>
-                        <input type="text" id="lastname" name="lastname" ><br>
-                        
-                        <input type="radio" id="female" name="gender" value="female">
-                        <label for="female">Female</label><br>
-                        <input type="radio" id="male" name="gender" value="male">
-                        <label for="male">Male</label><br>
+                            <label for="birthday">Birthday:</label><br>
+                            <input type="date" id="bday" name="bday"><br>
 
-                        <label for="birthday">Birthday:</label><br>
-                        <input type="date" id="bday" name="bday"><br>
+                            <label for="phone">Mobile Number</label><br>
+                            <input type="tel" id="phonenum" name="phonenum" pattern="\d{4}\d{3}\d{4}" placeholder="0912-345-6789" ><br>
 
-                        <label for="phone">Mobile Number</label><br>
-                        <input type="tel" id="phonenum" name="phonenum" pattern="\d{4}\d{3}\d{4}" placeholder="0912-345-6789" ><br>
+                            <label class="email-input" for="email">E-mail</label><br>
+                            <input type="text" id="email" name="email" ><br>
 
-                        <label class="email-input" for="email">E-mail</label><br>
-                        <input type="text" id="email" name="email" ><br>
+                            <label class="email-input" for="email">Confirm E-mail</label><br>
+                            <input type="text" id="confemail" name="confemail" ><br>
 
-                        <label class="email-input" for="email">Confirm E-mail</label><br>
-                        <input type="text" id="confemail" name="confemail" ><br>
+                            <label for="lastpromotion">Date of Last Promotion Test</label><br>
+                            <input type="date" id="lastpromo" name="lastpromo" ><br>
 
-                        <label for="lastpromotion">Date of Last Promotion Test</label><br>
-                        <input type="date" id="lastpromo" name="lastpromo" ><br>
-
-                        <label for="promotionlocation">Location of Last Promotion</label><br>
-                        <select name="promolocation" id="promolocation" >
-                            <option value="Pampanga">Pampanga</option>
-                            <option value="NCR">NCR</option>
-                            <option value="CAR">CAR</option>
-                        </select><br>
-
-                        <label for="clubregion">Region of Club</label><br>
-                        <select name="clubregion" id="clubregion" >
+                            <label for="promotionlocation">Location of Last Promotion</label><br>
+                            <select name="promolocation" id="promolocation" >
                                 <option value="Pampanga">Pampanga</option>
                                 <option value="NCR">NCR</option>
                                 <option value="CAR">CAR</option>
-                        </select><br>
+                            </select><br>
 
-                        <label for="clubname">Club</label><br>
-                        <select name="clubname" id="clubname" >
-                            {{#each clubs}}
-                            <option value="{{name}}">{{name}}</option>
-                            {{/each}}
-                        </select><br>
+                            <label for="clubregion">Region of Club</label><br>
+                            <select name="clubregion" id="clubregion" >
+                                    <option value="Pampanga">Pampanga</option>
+                                    <option value="NCR">NCR</option>
+                                    <option value="CAR">CAR</option>
+                            </select><br>
 
-                        <label for="beltlevel">Current Belt Level</label><br>
-                        <select name="beltlevel" id="beltlevel" >
-                                <option value="white">white</option>
-                                <option value="black">black</option>
-                                <option value="yellow">yellow</option>
-                        </select><br>
-                        
-                        <br><a class="nccstep1" id="nccstep1">Next</a>
-                        <p id="error-message" style="color:red;"></p>
-				    </div>                                              
+                            <label for="clubname">Club</label><br>
+                            <select name="clubname" id="clubname" >
+                                {{#each clubs}}
+                                <option value="{{name}}">{{name}}</option>
+                                {{/each}}
+                            </select><br>
 
-                    <div class="ncc2" hidden>                                                                           {{!-- NCC APPLICATION step 2 --}}
-                        <label class="instructor-firstname-input" for="instructorfirstname">Instructor Firstname</label><br>
-                        <input type="text" id="instructorfirstname" name="instructorfirstname"><br>
+                            <label for="beltlevel">Current Belt Level</label><br>
+                            <select name="beltlevel" id="beltlevel" >
+                                    <option value="white">white</option>
+                                    <option value="black">black</option>
+                                    <option value="yellow">yellow</option>
+                            </select><br>
+                            
+                            <br><a class="nccstep1" id="nccstep1">Next</a>
+                            <p id="error-message" style="color:red;"></p>
+                        </div>                                              
 
-                        <label class="instructormiinput" for="instructormi">Middle Initial</label><br>
-                        <input type="text" id="instructormi" name="instructormi" ><br>
+                        <div class="ncc2" hidden>                                                                           {{!-- NCC APPLICATION step 2 --}}
+                            <label class="instructor-firstname-input" for="instructorfirstname">Instructor Firstname</label><br>
+                            <input type="text" id="instructorfirstname" name="instructorfirstname"><br>
 
-                        <label class="instructorlastnameinput" for="instructorlastname">Lastname</label><br>
-                        <input type="text" id="instructorlastname" name="instructorlastname" ><br>
+                            <label class="instructormiinput" for="instructormi">Middle Initial</label><br>
+                            <input type="text" id="instructormi" name="instructormi" ><br>
 
-                        <label for="phone">Mobile Number</label><br>
-                        <input type="tel" id="instructormobile" name="instructormobile" pattern="\d{4}\d{3}\d{4}" placeholder="0912-345-6789" ><br>
+                            <label class="instructorlastnameinput" for="instructorlastname">Lastname</label><br>
+                            <input type="text" id="instructorlastname" name="instructorlastname" ><br>
 
-                        <label class="email-input" for="email">Instructor E-mail</label><br>
-                        <input type="text" id="instructoremail" name="instructoremail" ><br>
+                            <label for="phone">Mobile Number</label><br>
+                            <input type="tel" id="instructormobile" name="instructormobile" pattern="\d{4}\d{3}\d{4}" placeholder="0912-345-6789" ><br>
 
-                        <label class="email-input" for="instemail">Confirm E-mail</label><br>
-                        <input type="text" id="instemail" name="instemail" ><br>
-                        
-                        <a class="nccprev2" id="nccprev2">Previous</a>
-                        <a class="nccstep2" id="nccstep2">Next</a>
-                        
-                        <p id="error-message" style="color:red;"></p>
-                    </div>
+                            <label class="email-input" for="email">Instructor E-mail</label><br>
+                            <input type="text" id="instructoremail" name="instructoremail" ><br>
 
-                    <div class="ncc3" hidden>                                                                           {{!-- NCC APPLICATION step 3 --}}
-                        Upload your NSO/PSA<br>
-                        <input type="file" id="birthcert" name="birthcert"><br>
+                            <label class="email-input" for="instemail">Confirm E-mail</label><br>
+                            <input type="text" id="instemail" name="instemail" ><br>
+                            
+                            <a class="nccprev2" id="nccprev2">Previous</a>
+                            <a class="nccstep2" id="nccstep2">Next</a>
+                            
+                            <p id="error-message" style="color:red;"></p>
+                        </div>
 
-                        <input type="radio" id="agree" name="tc1" value="">
-                        <label for="agree">Do u agree</label><br>
-                        <input type="radio" id="agree" name="tc2" value="">
-                        <label for="agree">Do u also agree</label><br>
-                        <a class="nccstep1" id="nccstep1">Previous</a>
-                        <a class="nccstep3" id="nccstep3">Next</a>
-                    </div>
+                        <div class="ncc3" hidden>                                                                           {{!-- NCC APPLICATION step 3 --}}
+                            Upload your NSO/PSA<br>
+                            <input type="file" id="birthcert" name="birthcert"><br>
 
-                    <div class="ncc4" hidden>                                                                           {{!-- NCC APPLICATION step 4 --}}
-                        <label class="instructor-firstname-input" for="instructor-firstname">MAYA API</label><br>
-                        <input type="text" id="instructorfirstname" name="instructorfirstname" ><br>
-                        <a class="nccstep2" id="nccstep2">Previous</a>
-                        <br><button class="nccstep2" type="submit">Submit</button>
-                    </div>
-				</form>
+                            <input type="radio" id="agree" name="tc1" value="">
+                            <label for="agree">Do u agree</label><br>
+                            <input type="radio" id="agree" name="tc2" value="">
+                            <label for="agree">Do u also agree</label><br>
+                            <a class="nccstep1" id="nccstep1">Previous</a>
+                            <a class="nccstep3" id="nccstep3">Next</a>
+                        </div>
 
+                        <div class="ncc4" hidden>                                                                           {{!-- NCC APPLICATION step 4 --}}
+                            <label class="instructor-firstname-input" for="instructor-firstname">MAYA API</label><br>
+                            <input type="text" id="instructorfirstname" name="instructorfirstname" ><br>
+                            <a class="nccstep2" id="nccstep2">Previous</a>
+                            <br><button class="nccstep2" type="submit">Submit</button>
+                        </div>
+                    </form>
+                </div>
                 <script>
                     document.addEventListener("DOMContentLoaded", function() {
                         const form = document.getElementById("nccform");
@@ -201,5 +194,6 @@
                     });
   		        </script>
 			</div>
+        </div>
     </body>
 </html>

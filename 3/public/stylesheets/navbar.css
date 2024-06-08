@@ -23,14 +23,15 @@ body {
 
 .header {
     width: 100%;
-    height: 12%;
+    height: 10%;
     background-color: #252525;
 }
 
 .logo {
-    width: 120px;
+    width: 65px;
     height: auto;
-    margin: 0;
+    margin-left: 60px;
+    margin-top: 10px;
 }
 
 .navbar {
@@ -43,13 +44,14 @@ body {
     justify-content: space-between;
     align-items: center;
     padding: 0 20px;
+    height: 7%;
 }
 
 .navbar ul {
     display: flex;
     align-items: center;
     list-style: none;
-    margin: 0;
+    margin-right: 20px;
     padding: 0;
 }
 
@@ -69,7 +71,7 @@ body {
 .navbar a:hover {
     background-color: #0c0c0c;
     border-radius: 15%;
-    font-weight: bold;
+    /* font-weight: bold; */
 }
 
 .profile-pic {
@@ -78,7 +80,7 @@ body {
 }
 
 .profile-pic img {
-    width: 50px;
+    width: 35px;
     border-radius: 50%;
 }
 
