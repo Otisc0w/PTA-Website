@@ -121,7 +121,8 @@ app.post('/submit-login', async (req, res) => {
       usertype: data.usertype,
       club: data.club,
       region: data.region,
-      registered: data.registered
+      registered: data.registered,
+      profilepic: data.profilepic
     };
 
     // Successful login
@@ -257,6 +258,10 @@ app.get('/home', async function (req, res) {
 
 
 app.get('/forum', async function (req, res) {
+  if (!req.session.user) {
+    return res.redirect('/');
+  }
+
   try {
     const { data, error } = await supabase
       .from('forumthreads')
@@ -269,13 +274,17 @@ app.get('/forum', async function (req, res) {
     console.log("Fetched data:", data); // Log the data to the console 
 
     // Render the forum.hbs template with the fetched data
-    res.render('forum', { forumthreads: data });
+    res.render('forum', { forumthreads: data, user: req.session.user });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
 
 app.get('/clubs', async function (req, res) {
+  if (!req.session.user) {
+    return res.redirect('/');
+  }
+
   try {
     const { data, error } = await supabase
       .from('clubs')
@@ -288,13 +297,17 @@ app.get('/clubs', async function (req, res) {
     console.log("Fetched data:", data); // Log the data to the console 
 
     // Render the forum.hbs template with the fetched data
-    res.render('clubs', { clubs: data });
+    res.render('clubs', { clubs: data, user: req.session.user });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
 
 app.get('/membership', async function (req, res) {
+  if (!req.session.user) {
+    return res.redirect('/');
+  }
+
   try {
     const { data, error } = await supabase
       .from('clubs')                                            //need to change to clubs after
@@ -307,13 +320,17 @@ app.get('/membership', async function (req, res) {
     console.log("Fetched data:", data); // Log the data to the console 
 
     // Render the forum.hbs template with the fetched data
-    res.render('membership', { clubs: data });
+    res.render('membership', { clubs: data, user: req.session.user });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ error: error.message, user: req.session.user });
   }
 });
 
 app.get('/events', async function (req, res) {
+  if (!req.session.user) {
+    return res.redirect('/');
+  }
+
   try {
     const { data, error } = await supabase
       .from('events')                                            //need to change to clubs after
@@ -326,7 +343,7 @@ app.get('/events', async function (req, res) {
     console.log("Fetched data:", data); // Log the data to the console 
 
     // Render the forum.hbs template with the fetched data
-    res.render('events', { events: data });
+    res.render('events', { events: data, user: req.session.user });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -341,6 +358,10 @@ app.get('/profile', async function (req, res) {
 });
 
 app.get('/athletes', async function (req, res) {
+  if (!req.session.user) {
+    return res.redirect('/');
+  }
+  
   try {
     const { data, error } = await supabase
       .from('athletes')
@@ -353,7 +374,7 @@ app.get('/athletes', async function (req, res) {
     console.log("Fetched data:", data); // Log the data to the console 
 
     // Render the athletes.hbs template with the fetched data
-    res.render('athletes', { athletes: data });
+    res.render('athletes', { athletes: data, user: req.session.user });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -362,6 +383,10 @@ app.get('/athletes', async function (req, res) {
                                                                         //MEMBERSHIP PAGES
 
 app.get('/membership-ncc', async function (req, res) {
+  if (!req.session.user) {
+    return res.redirect('/');
+  }
+
   try {
     const { data, error } = await supabase
       .from('clubs')
@@ -374,7 +399,7 @@ app.get('/membership-ncc', async function (req, res) {
     console.log("Fetched data:", data); // Log the data to the console 
 
     // Render the athletes.hbs template with the fetched data
-    res.render('membership-ncc', { clubs: data });
+    res.render('membership-ncc', { clubs: data, user: req.session.user });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

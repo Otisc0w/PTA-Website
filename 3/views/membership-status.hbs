@@ -10,8 +10,17 @@
 	<body style="margin:0;" class="container">
         <div class="membership-header">
             <div class="membership-navbar">
-				<img src="/images/logo.png" class="membership-logo" href="home"></img>   
-                <a href="profile" class="memprofile-pic"><img src="/images/goofy.jpg"></img></a>
+				<img src="/images/logo.png" class="membership-logo" href="home"></img>
+                    {{#if user.profilepic}}
+                        <a href="#" onclick="toggleDropdown()" class="memprofile-pic"><img src="{{user.profilepic}}" alt="Profile Picture" class="profile-picture"></a>
+                    {{else}}
+                        <a href="#" onclick="toggleDropdown()" class="memprofile-pic"><p>:(</p></a>
+                    {{/if}}
+                    <div id="dropdown" class="dropdown-content">
+                        <a href="profile">Profile</a>
+                        <a href="settings">Settings</a>
+                        <a href="/">Logout</a>
+                    </div>
             </div>
         </div>
         <div class="membership-container">
