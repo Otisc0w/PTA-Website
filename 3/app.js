@@ -1,5 +1,6 @@
 const express = require('express');
 const path = require('path');
+const multer = require('multer');
 const hbs = require('hbs');
 const session = require('express-session'); // Import express-session
 const app = express();
@@ -18,6 +19,10 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 // Middleware to parse JSON
 app.use(express.json());
 app.use(express.urlencoded({ extended: true })); // Middleware to parse URL-encoded data
+
+// Configure Multer for file uploads
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
 
 // Configure express-session
 app.use(session({
@@ -400,6 +405,62 @@ app.get('/membership-status', async function (req, res) {
     res.status(500).json({ error: error.message });
   }
 });
+
+//profile picture thing
+// app.post('/submit-user', upload.single('profile_picture'), async (req, res) => {
+//   const {
+//     username,
+//     password,
+//     email
+//     // Other user fields
+//   } = req.body; // Capture user input from the form
+
+//   try {
+//     // Handle profile picture upload
+//     let profilePictureUrl = '';
+//     if (req.file) {
+//       const profilePicture = req.file;
+//       const filePath = `profile-pictures/${Date.now()}-${profilePicture.originalname}`;
+//       const { data, error: uploadError } = await supabase
+//         .storage
+//         .from('images') // Ensure you have a bucket named 'images' in Supabase Storage
+//         .upload(filePath, profilePicture.buffer, {
+//           contentType: profilePicture.mimetype,
+//           upsert: true,
+//         });
+
+//       if (uploadError) {
+//         console.error('Error uploading profile picture:', uploadError.message);
+//         return res.status(500).send('Error uploading profile picture');
+//       }
+
+//       profilePictureUrl = `${supabaseUrl}/storage/v1/object/public/images/${filePath}`;
+//     }
+
+//     // Insert user data into the database
+//     const { data, error } = await supabase
+//       .from('users')
+//       .insert([{
+//         username,
+//         password,
+//         email,
+//         profile_picture_url: profilePictureUrl // Save the profile picture URL
+//       }]);
+
+//     if (error) {
+//       console.error('Error inserting user data:', error.message);
+//       return res.status(500).send('Error creating user');
+//     }
+
+//     res.redirect('/somewhere'); // Redirect to a success page or the user profile page
+//   } catch (error) {
+//     console.error('Server error:', error.message);
+//     res.status(500).send('Server error');
+//   }
+// });
+
+
+
 
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
