@@ -1,5 +1,6 @@
 const express = require('express');
 const path = require('path');
+const multer = require('multer');
 const hbs = require('hbs');
 const session = require('express-session'); // Import express-session
 const app = express();
@@ -18,6 +19,10 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 // Middleware to parse JSON
 app.use(express.json());
 app.use(express.urlencoded({ extended: true })); // Middleware to parse URL-encoded data
+
+// Configure Multer for file uploads
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
 
 // Configure express-session
 app.use(session({
@@ -116,7 +121,8 @@ app.post('/submit-login', async (req, res) => {
       usertype: data.usertype,
       club: data.club,
       region: data.region,
-      registered: data.registered
+      registered: data.registered,
+      profilepic: data.profilepic
     };
 
     // Successful login
@@ -252,6 +258,10 @@ app.get('/home', async function (req, res) {
 
 
 app.get('/forum', async function (req, res) {
+  if (!req.session.user) {
+    return res.redirect('/');
+  }
+
   try {
     const { data, error } = await supabase
       .from('forumthreads')
@@ -264,13 +274,17 @@ app.get('/forum', async function (req, res) {
     console.log("Fetched data:", data); // Log the data to the console 
 
     // Render the forum.hbs template with the fetched data
-    res.render('forum', { forumthreads: data });
+    res.render('forum', { forumthreads: data, user: req.session.user });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
 
 app.get('/clubs', async function (req, res) {
+  if (!req.session.user) {
+    return res.redirect('/');
+  }
+
   try {
     const { data, error } = await supabase
       .from('clubs')
@@ -283,13 +297,17 @@ app.get('/clubs', async function (req, res) {
     console.log("Fetched data:", data); // Log the data to the console 
 
     // Render the forum.hbs template with the fetched data
-    res.render('clubs', { clubs: data });
+    res.render('clubs', { clubs: data, user: req.session.user });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
 
 app.get('/membership', async function (req, res) {
+  if (!req.session.user) {
+    return res.redirect('/');
+  }
+
   try {
     const { data, error } = await supabase
       .from('clubs')                                            //need to change to clubs after
@@ -302,13 +320,17 @@ app.get('/membership', async function (req, res) {
     console.log("Fetched data:", data); // Log the data to the console 
 
     // Render the forum.hbs template with the fetched data
-    res.render('membership', { clubs: data });
+    res.render('membership', { clubs: data, user: req.session.user });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ error: error.message, user: req.session.user });
   }
 });
 
 app.get('/events', async function (req, res) {
+  if (!req.session.user) {
+    return res.redirect('/');
+  }
+
   try {
     const { data, error } = await supabase
       .from('events')                                            //need to change to clubs after
@@ -321,7 +343,7 @@ app.get('/events', async function (req, res) {
     console.log("Fetched data:", data); // Log the data to the console 
 
     // Render the forum.hbs template with the fetched data
-    res.render('events', { events: data });
+    res.render('events', { events: data, user: req.session.user });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -336,6 +358,10 @@ app.get('/profile', async function (req, res) {
 });
 
 app.get('/athletes', async function (req, res) {
+  if (!req.session.user) {
+    return res.redirect('/');
+  }
+  
   try {
     const { data, error } = await supabase
       .from('athletes')
@@ -348,7 +374,7 @@ app.get('/athletes', async function (req, res) {
     console.log("Fetched data:", data); // Log the data to the console 
 
     // Render the athletes.hbs template with the fetched data
-    res.render('athletes', { athletes: data });
+    res.render('athletes', { athletes: data, user: req.session.user });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -357,6 +383,10 @@ app.get('/athletes', async function (req, res) {
                                                                         //MEMBERSHIP PAGES
 
 app.get('/membership-ncc', async function (req, res) {
+  if (!req.session.user) {
+    return res.redirect('/');
+  }
+
   try {
     const { data, error } = await supabase
       .from('clubs')
@@ -369,7 +399,7 @@ app.get('/membership-ncc', async function (req, res) {
     console.log("Fetched data:", data); // Log the data to the console 
 
     // Render the athletes.hbs template with the fetched data
-    res.render('membership-ncc', { clubs: data });
+    res.render('membership-ncc', { clubs: data, user: req.session.user });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -400,6 +430,62 @@ app.get('/membership-status', async function (req, res) {
     res.status(500).json({ error: error.message });
   }
 });
+
+//profile picture thing
+// app.post('/submit-user', upload.single('profile_picture'), async (req, res) => {
+//   const {
+//     username,
+//     password,
+//     email
+//     // Other user fields
+//   } = req.body; // Capture user input from the form
+
+//   try {
+//     // Handle profile picture upload
+//     let profilePictureUrl = '';
+//     if (req.file) {
+//       const profilePicture = req.file;
+//       const filePath = `profile-pictures/${Date.now()}-${profilePicture.originalname}`;
+//       const { data, error: uploadError } = await supabase
+//         .storage
+//         .from('images') // Ensure you have a bucket named 'images' in Supabase Storage
+//         .upload(filePath, profilePicture.buffer, {
+//           contentType: profilePicture.mimetype,
+//           upsert: true,
+//         });
+
+//       if (uploadError) {
+//         console.error('Error uploading profile picture:', uploadError.message);
+//         return res.status(500).send('Error uploading profile picture');
+//       }
+
+//       profilePictureUrl = `${supabaseUrl}/storage/v1/object/public/images/${filePath}`;
+//     }
+
+//     // Insert user data into the database
+//     const { data, error } = await supabase
+//       .from('users')
+//       .insert([{
+//         username,
+//         password,
+//         email,
+//         profile_picture_url: profilePictureUrl // Save the profile picture URL
+//       }]);
+
+//     if (error) {
+//       console.error('Error inserting user data:', error.message);
+//       return res.status(500).send('Error creating user');
+//     }
+
+//     res.redirect('/somewhere'); // Redirect to a success page or the user profile page
+//   } catch (error) {
+//     console.error('Server error:', error.message);
+//     res.status(500).send('Server error');
+//   }
+// });
+
+
+
 
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);

@@ -21,15 +21,17 @@
                     <a href="notifications">Notifications <span class="badge">3</span></a>
                 </li>
                 <li class="profile-pic">
-                    <a href="#" onclick="toggleDropdown()">
-                        <img src="/images/goofy.jpg" alt="Profile">
-                    </a>
-                    <div id="dropdown" class="dropdown-content">
-                        <a href="profile">Profile</a>
-                        <a href="settings">Settings</a>
-                        <a href="logout">Logout</a>
-                    </div>
-                </li>
+                        {{#if user.profilepic}}
+                            <a href="#" onclick="toggleDropdown()"><img src="{{user.profilepic}}" alt="Profile Picture" class="profile-picture"></a>
+                        {{else}}
+                            <a href="#" onclick="toggleDropdown()" class="profile-picture"><img src="/images/none.jpg" alt="Profile Picture" class="profile-picture"></a>
+                        {{/if}}
+                        <div id="dropdown" class="dropdown-content">
+                            <a href="profile">Profile</a>
+                            <a href="settings">Settings</a>
+                            <a href="/">Logout</a>
+                        </div>
+                    </li>
             </ul>
         </div>
     </div>
@@ -46,7 +48,11 @@
             <div class="edit-profile">
                 <h2>Edit Profile</h2>
                 <div class="profile-pic-section">
-                    <img id="pfp" class="pfp" src="/images/goofy.jpg" alt="Profile Picture">
+                    {{#if user.profilepic}}
+                        <img src="{{user.profilepic}}" alt="Profile Picture" class="profile-picture">
+                    {{else}}
+                        <img src="/images/none.jpg" alt="Profile Picture" class="profile-picture">
+                    {{/if}}
                     <button class="edit-profile-pic" onclick="changeProfilePic()">Edit</button>
                 </div>
                 <form>

@@ -1,6 +1,7 @@
 @import url('https://fonts.cdnfonts.com/css/sf-pro-display');
 
 .profile-container {
+    margin-top: 90px;
     display: flex;
     flex: 1;
     padding: 20px;

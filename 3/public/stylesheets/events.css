@@ -1,7 +1,7 @@
 @import url('https://fonts.cdnfonts.com/css/sf-pro-display');
 
 .events-container {
-    margin-top: 90px; /* Add margin to prevent content from being hidden behind the navbar */
+    margin-top: 60px; /* Add margin to prevent content from being hidden behind the navbar */
     height: 1500px;
 }
 
