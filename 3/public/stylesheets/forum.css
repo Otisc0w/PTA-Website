@@ -66,6 +66,7 @@ li {
     font-size: 14px;
     color: #B0B0B0;
     margin-bottom: 10px;
+    margin-left: 10px;
 }
 
 .post-title {
@@ -80,11 +81,7 @@ li {
     margin-bottom: 10px;
 }
 
-.post-actions {
-    display: flex;
-    align-items: center;
-    
-}
+
 
 .comment-buttons, .vote-buttons {
     display: flex;

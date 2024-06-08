@@ -51,7 +51,8 @@
                         <p class='post-description'>{{body}}</p>
                        <div class='post-actions'>
                         <ul class="post-buttons">
-                           <li class="comment-buttons">    
+                           <li class="comment-buttons">  
+                            
                              <div class='comment-button comment'>Comment
                             <img src="/images/comment.png" alt="comment"></div></li>
                               <li class="vote-buttons">
@@ -91,6 +92,11 @@
                 }
             }
         }
+</script>
+  <script>
+        document.querySelector(".comment-button.comment").addEventListener("click", function() {
+            window.location.href = "create-comment";
+        });
     </script>
 </body>
 </html>
