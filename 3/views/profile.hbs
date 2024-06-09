@@ -48,7 +48,7 @@
         <div class="profile-content">
             <div id="editProfile" class="profile-section">
                 <h2>Edit Profile</h2>
-                <form action="save-profile-changes">
+                <form action="/save-profile-changes">
                     <div class="profile-pic-section">
                         {{#if user.profilepic}}
                             <img src="{{user.profilepic}}" alt="Profile Picture" class="profile-picture">
@@ -78,18 +78,18 @@
                         <label for="address">Password:</label>
                         <input type="password" id="password" value="{{user.password}}">
                     </div>
-                    {{!-- <div class="form-group">
+                    <div class="form-group">
                         <label for="contactNumber">Contact Number:</label>
-                        <input type="text" id="contactNumber" value="">
+                        <input type="text" id="contactNumber" value="{{user.phonenum}}">
                     </div>
                     <div class="form-group">
                         <label for="region">Region:</label>
-                        <input type="text" id="region" value="MIMAROPA">
+                        <input type="text" id="region" value="{{user.region}}">
                     </div>
                     <div class="form-group">
                         <label for="club">Club:</label>
-                        <input type="text" id="club" value="Saitama Club">
-                    </div> --}}
+                        <input type="text" id="club" value="{{user.club}}">
+                    </div>
                     <div class="form-actions">
                         <button class="cancel-button" onclick="window.location.href='profile'">Cancel</button>
                         <button class="save-button" type="submit">Save Changes</button>

@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>PTA | Forum</title>
+        <title>PTA | Create Post</title>
         <link rel="icon" type="image/x-icon" href="../images/favicon.ico" />
-        <link rel="stylesheet" type="text/css" href="../stylesheets/forum.css" />
+        <link rel="stylesheet" type="text/css" href="../stylesheets/home.css" />
         <link rel="stylesheet" type="text/css" href="../stylesheets/navbar.css" />
     </head>
 
@@ -37,46 +37,32 @@
             </div>
         </div>
 
-    <div class="forum-container">
-        <div class="main-content">
-            <div class="content">
-                <h2>Recent Threads</h2>
-                <h2><a href="forum-create">+ Create Post</a></h2>
-                {{#each forumthreads}}
-                <a href='post?postId={{postId}}' class='post-link'>
-                <div class='post-container'>
-                    <div class='post-content'>
-                        <div class='post-info'>
-                            <span class='community'><a class='post-community' href='community?community='>{{community}}</a> •</span>
-                            <span class='small'>by <a class='post-user' href='profile?username='>{{user}}</a> on {{date}}</span>
-                        </div>
-                        <h2 class='post-title'>{{title}}</h2>
-                        <p class='post-description'>{{body}}</p>
-                       <div class='post-actions'>
-                        <ul class="post-buttons">
-                           <li class="comment-buttons">    
-                             <div class='comment-button comment'>Comment
-                            <img src="/images/comment.png" alt="comment"></div></li>
-                              <li class="vote-buttons">
-                                     <div class="vote-button upvote">
-                                         <img src="/images/thumbs up.png" alt="Upvote">
-                                            <span class="upvote-count">{{upvotes}}</span>
-                                      </div>
-                                        <div class="vote-separator"></div>
-                                             <div class="vote-button downvote">
-                                                <img src="/images/thumbs down.png" alt="Downvote">
-                                                     <span class="downvote-count">{{downvotes}}</span>
-                                              </div>
-                                  </li>
-                                 </ul>
-                      </div>
-                    </div>
+        <div class="home-container">
+            <h1>CREATE POST HERE</h1>
+        </div>
+    
+
+    <footer>
+        <div class="footer-content">
+            <div class="pta-logo">
+                <img src="/images/logo.png" alt="PTA Logo">
+            </div>
+            <div class="contact-info">
+                <p>Philippine Taekwondo Central Headquarters</p>
+                <p>Rizal Memorial Coliseum, Manila, Philippines</p>
+                <p>0977 384 5879</p>
+                <p>pthtkd@gmail.com</p>
+            </div>
+            <div class="social-media">
+                <p>Follow us</p>
+                <div class="icons">
+                    <a href="https://www.facebook.com"><img src="/images/homepage/fb.png" alt="Facebook"></a>
+                    <a href="https://www.instagram.com"><img src="/images/homepage/ig.png" alt="Instagram"></a>
+                    <a href="https://www.twitch.com"><img src="/images/homepage/twitch.webp" alt="Twitch"></a>
                 </div>
-                </a>
-                {{/each}}
             </div>
         </div>
-    </div>
+    </footer>
 
     <script>
         function toggleDropdown() {

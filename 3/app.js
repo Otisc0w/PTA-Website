@@ -258,48 +258,48 @@ app.get('/home', async function (req, res) {
   }
 });
 
-// app.post('/save-profile-changes', async (req, res) => {
-//   const {
-//     firstname,
-//     middlename,
-//     lastname,
-//     email,
-//     password
-//   } = req.body; // Capture user input from the form
+app.post('/save-profile-changes', async (req, res) => {
+  const {
+    firstname,
+    middlename,
+    lastname,
+    email,
+    password
+  } = req.body; // Capture user input from the form
 
-//   if (!req.session.user) {
-//     return res.status(401).send('Unauthorized: No user logged in');
-//   }
+  if (!req.session.user) {
+    return res.status(401).send('Unauthorized: No user logged in');
+  }
   
-//   const id = req.session.user.id; // Get the current user's id from the session
+  const id = req.session.user.id; // Get the current user's id from the session
 
-//   try {
-//     // Insert the new user into the database
-//     const { data, error } = await supabase
-//       .from('users') // Replace 'users' with your actual table name if different
-//       .update([{
-//         firstname,
-//         middlename,
-//         lastname,
-//         email,
-//         password
-//       }])
-//       .eq('id','id');
+  try {
+    // Insert the new user into the database
+    const { data, error } = await supabase
+      .from('users') // Replace 'users' with your actual table name if different
+      .update([{
+        firstname,
+        middlename,
+        lastname,
+        email,
+        password
+      }])
+      .eq('id','id');
       
 
-//     if (error) {
-//       // Handle any errors that occur during the insert
-//       return res.status(500).render('home', {
-//         error: 'Error creating registration.',
-//         users: [] // Optionally pass users array if you need it in the view
-//       });
-//     }
-//     res.redirect('/profile');
-//   } catch (error) {
-//     // Handle any server-side errors
-//     res.status(500).json({ error: error.message });
-//   }
-// });
+    if (error) {
+      // Handle any errors that occur during the insert
+      return res.status(500).render('home', {
+        error: 'Error creating registration.',
+        users: [] // Optionally pass users array if you need it in the view
+      });
+    }
+    res.redirect('/profile');
+  } catch (error) {
+    // Handle any server-side errors
+    res.status(500).json({ error: error.message });
+  }
+});
 
 
 app.get('/forum', async function (req, res) {
@@ -320,6 +320,29 @@ app.get('/forum', async function (req, res) {
 
     // Render the forum.hbs template with the fetched data
     res.render('forum', { forumthreads: data, user: req.session.user });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.get('/forum-create', async function (req, res) {
+  if (!req.session.user) {
+    return res.redirect('/');
+  }
+
+  try {
+    const { data, error } = await supabase
+      .from('forumthreads')
+      .select('*');
+
+    if (error) {
+      return res.status(400).json({ error: error.message });
+    }
+
+    console.log("Fetched data:", data); // Log the data to the console 
+
+    // Render the forum.hbs template with the fetched data
+    res.render('forum-create', { forumthreads: data, user: req.session.user });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
