@@ -108,15 +108,15 @@
                 <form>
                     <div class="form-group">
                         <label for="viewFirstName">First Name:</label>
-                        <input type="text" id="viewFirstName" value="Paula" readonly>
+                        <input type="text" id="viewFirstName" value="{{user.firstname}}" readonly>
                     </div>
                     <div class="form-group">
                         <label for="viewLastName">Last Name:</label>
-                        <input type="text" id="viewLastName" value="Pineda" readonly>
+                        <input type="text" id="viewLastName" value="{{user.lastname}}" readonly>
                     </div>
                     <div class="form-group">
                         <label for="viewEmail">Email:</label>
-                        <input type="email" id="viewEmail" value="paula@example.com" readonly>
+                        <input type="email" id="viewEmail" value="{{user.email}}" readonly>
                     </div>
                     <div class="form-group">
                         <label for="viewAddress">Address:</label>
@@ -124,15 +124,15 @@
                     </div>
                     <div class="form-group">
                         <label for="viewContactNumber">Contact Number:</label>
-                        <input type="text" id="viewContactNumber" readonly>
+                        <input type="text" id="viewContactNumber" value="{{user.phonenum}}" readonly>
                     </div>
                     <div class="form-group">
                         <label for="viewRegion">Region:</label>
-                        <input type="text" id="viewRegion" value="MIMAROPA" readonly>
+                        <input type="text" id="viewRegion" value="{{user.region}}" readonly>
                     </div>
                     <div class="form-group">
                         <label for="viewClub">Club:</label>
-                        <input type="text" id="viewClub" value="Saitama Club" readonly>
+                        <input type="text" id="viewClub" value="{{user.club}}" readonly>
                     </div>
                 </form>
             </div>

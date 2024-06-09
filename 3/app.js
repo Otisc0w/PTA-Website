@@ -456,21 +456,31 @@ app.get('/membership-status', async function (req, res) {
   }
 
   const username = req.session.user.username; // Or use a unique identifier like user ID
+  const usertype = req.session.user.usertype;
 
   try {
-    const { data, error } = await supabase
-      .from('ncc_registrations')
-      .select('*')
-      .eq('submittedby', username); // Filter by the current user's username
+    let data;
+    let error;
 
-    if (error) {
-      return res.status(400).json({ error: error.message });
+    if (usertype === 'pta') {
+      // Fetch all rows if user is 'pta'
+      ({ data, error } = await supabase
+        .from('ncc_registrations')
+        .select('*'));
+    } else {
+      // Fetch only rows submitted by the current user
+      ({ data, error } = await supabase
+        .from('ncc_registrations')
+        .select('*')
+        .eq('submittedby', username));
     }
 
-    console.log("Fetched data:", data); // Log the data to the console 
+    if (error) {
+      console.error('Error fetching data:', error.message);
+      return res.status(500).send('Error fetching data');
+    }
 
-    // Render the home.hbs template with the filtered data
-    res.render('membership-status', { user: req.session.user, ncc_registrations: data });
+    res.render('membership-status', { ncc_registrations: data, user: req.session.user });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
