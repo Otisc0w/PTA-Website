@@ -90,7 +90,7 @@ app.get('/data/:id', async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
-
+                                                                      // SUBMIT STUFF
 app.post('/submit-login', async (req, res) => {
   const { username, password } = req.body;
 
@@ -133,6 +133,39 @@ app.post('/submit-login', async (req, res) => {
   }
 });
 
+app.post('/submit-signup', async (req, res) => {
+  const { username, password, confpassword } = req.body; // Capture user input from the form
+
+  // Validate the input
+  if (password !== confpassword) {
+    return res.status(400).render('index', {
+      error: 'Passwords do not match.',
+      users: [] // Optionally pass users array if you need it in the view
+    });
+  }
+
+  try {
+    // Insert the new user into the database
+    const { data, error } = await supabase
+      .from('users') // Replace 'users' with your actual table name if different
+      .insert([{ username, password }]);
+
+    if (error) {
+      // Handle any errors that occur during the insert
+      return res.status(500).render('index', {
+        error: 'Error creating user.',
+        users: [] // Optionally pass users array if you need it in the view
+      });
+    }
+
+    // Redirect to the login page after successful signup
+    res.redirect('/');
+  } catch (error) {
+    // Handle any server-side errors
+    res.status(500).json({ error: error.message });
+  }
+});
+
 app.post('/submit-ncc', async (req, res) => {
   const {
     firstname,
@@ -157,7 +190,6 @@ app.post('/submit-ncc', async (req, res) => {
   if (!req.session.user) {
     return res.status(401).send('Unauthorized: No user logged in');
   }
-  
 
   const submittedby = req.session.user.username; // Get the current user's username from the session
 
@@ -200,41 +232,57 @@ app.post('/submit-ncc', async (req, res) => {
   }
 });
 
+app.post('/save-profile-changes', async (req, res) => {
+  const {
+    firstname,
+    middlename,
+    lastname,
+    email,
+    password
+  } = req.body; // Capture user input from the form
 
-app.post('/submit-signup', async (req, res) => {
-  const { username, password, confpassword } = req.body; // Capture user input from the form
-
-  // Validate the input
-  if (password !== confpassword) {
-    return res.status(400).render('index', {
-      error: 'Passwords do not match.',
-      users: [] // Optionally pass users array if you need it in the view
-    });
+  if (!req.session.user) {
+    return res.status(401).send('Unauthorized: No user logged in');
   }
+  
+  const id = req.session.user.id; // Get the current user's id from the session
 
   try {
-    // Insert the new user into the database
+    // Update the user in the database
     const { data, error } = await supabase
       .from('users') // Replace 'users' with your actual table name if different
-      .insert([{ username, password }]);
+      .update({
+        firstname,
+        middlename,
+        lastname,
+        email,
+        password
+      })
+      .eq('id', id); // Ensure the correct id is used in the eq method
 
     if (error) {
-      // Handle any errors that occur during the insert
-      return res.status(500).render('index', {
-        error: 'Error creating user.',
+      // Handle any errors that occur during the update
+      return res.status(500).render('home', {
+        error: 'Error updating profile.',
         users: [] // Optionally pass users array if you need it in the view
       });
     }
 
-    // Redirect to the login page after successful signup
-    res.redirect('/');
+    // Update the session with the new user data if needed
+    req.session.user = { ...req.session.user, firstname, middlename, lastname, email };
+
+    res.redirect('/profile');
   } catch (error) {
     // Handle any server-side errors
     res.status(500).json({ error: error.message });
   }
 });
 
-// Route to render the home page and display the logged-in user's name
+
+
+                                                                        // VIEWS BELOW
+
+
 app.get('/home', async function (req, res) {
   if (!req.session.user) {
     return res.redirect('/');

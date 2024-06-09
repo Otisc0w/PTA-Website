@@ -48,7 +48,7 @@
         <div class="profile-content">
             <div id="editProfile" class="profile-section">
                 <h2>Edit Profile</h2>
-                <form action="/save-profile-changes">
+                <form id="editprofile" action="/save-profile-changes" method="post">
                     <div class="profile-pic-section">
                         {{#if user.profilepic}}
                             <img src="{{user.profilepic}}" alt="Profile Picture" class="profile-picture">
