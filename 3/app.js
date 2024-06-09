@@ -99,7 +99,7 @@ app.post('/submit-login', async (req, res) => {
       .from('users')
       .select('*')
       .eq('username', username)
-      .eq('password', password) //blue is from form and red is column in databse
+      .eq('password', password) //blue is from form and red is column in database
       .single(); // Ensure a single match
 
     if (error || !data) {
@@ -241,18 +241,23 @@ app.get('/home', async function (req, res) {
   }
 
   try {
-    const { data, error } = await supabase
+    const { data: events, error: eventsError } = await supabase
       .from('events')
       .select('*');
 
-    if (error) {
-      return res.status(400).json({ error: error.message });
+    const { data: notifications, error: notificationsError } = await supabase
+      .from('notifications')
+      .select('*');
+
+    if (eventsError) {
+      return res.status(400).json({ error: eventsError.message });
     }
 
-    console.log("Fetched data:", data); // Log the data to the console 
+    if (notificationsError) {
+      return res.status(400).json({ error: notificationsError.message });
+    }
 
-    // Render the home.hbs template with both the fetched data and the session user data
-    res.render('home', { events: data, user: req.session.user });
+    res.render('home', { events, user: req.session.user, notificationCount: notifications.length });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -284,8 +289,7 @@ app.post('/save-profile-changes', async (req, res) => {
         email,
         password
       }])
-      .eq('id','id');
-      
+      .eq('id', id); // Updated this line to pass `id` instead of a string literal
 
     if (error) {
       // Handle any errors that occur during the insert
@@ -507,6 +511,21 @@ app.get('/membership-status', async function (req, res) {
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
+});
+
+//for notifications
+app.get('/notifications', (req, res) => {
+  const notifications = [
+    { type: 'Message', title: 'Darren Smith sent new message', message: 'Sed ut perspiciatis unde omnis iste natus error sit voluptatem...', user: 'Darren', time: '24 Nov 2018 at 9:30 AM' },
+    { type: 'Comment', title: 'Arin Ganshiram Commented on post', message: 'Sed ut perspiciatis unde omnis iste natus error sit voluptatem...', user: 'Arin Ganshiram', time: '24 Nov 2018 at 9:30 AM' },
+    { type: 'Connect', title: 'Juliet Den Connect Allen Depk', message: 'Sed ut perspiciatis unde omnis iste natus error sit voluptatem...', user: 'Juliet Den', time: '24 Nov 2018 at 9:30 AM' },
+    { type: 'Joined', title: 'New Registration: Finibus Bonorum et Malorum', message: 'Sed ut perspiciatis unde omnis iste natus error sit voluptatem...', user: 'Allen Deu', time: '24 Nov 2018 at 9:30 AM' }
+  ];
+
+  res.render('notifications', {
+    notifications,
+    notificationCount: notifications.length
+  });
 });
 
 app.listen(port, () => {
