@@ -3,7 +3,7 @@
     <head>
         <title>PTA | Events</title>
         <link rel="icon" type="image/x-icon" href="../images/favicon.ico" />
-        <link rel="stylesheet" type="text/css" href="../stylesheets/events.css" />
+        <link rel="stylesheet" type="text/css" href="../stylesheets/home.css" />
         <link rel="stylesheet" type="text/css" href="../stylesheets/navbar.css" />
     </head>
 
@@ -38,25 +38,20 @@
         </div>
 
     <div class="events-container">
-        <div class="rank-panel">
-            <div class="community-panel">
-                <h3>Events</h3>
-                <table class="rankings">
-                    <thead>
-                        <tr>
-                            <th> Title </th>
-                            <th> Description </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {{#each events}}
-                        <tr>
-                            <td> {{title}} </td>
-                            <td> {{description}}</td>
-                        </tr>
-                        {{/each}}
-                    </tbody>
-                </table>
+        <div class="main-panel">
+            <!-- upcoming events -->
+            <div class="news">
+                <h2>Upcoming Events</h2>
+                <div id="events" class="horizontal-container">
+                    {{#each events}}
+                    <div class="event">
+                        <img src="{{eventpicture}}" alt="Event {{id}}">
+                        <h3>{{title}} - May 26, 2024 7:00AM</h3>
+                        <p>{{description}}</p>
+                        <a href="#">Read More</a>
+                    </div>
+                    {{/each}}
+                </div>
             </div>
         </div>
     </div>

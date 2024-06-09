@@ -117,6 +117,7 @@ app.post('/submit-login', async (req, res) => {
       firstname: data.firstname,
       lastname: data.lastname,
       username: data.username,
+      email: data.email,
       password: data.password,
       usertype: data.usertype,
       club: data.club,
@@ -156,6 +157,7 @@ app.post('/submit-ncc', async (req, res) => {
   if (!req.session.user) {
     return res.status(401).send('Unauthorized: No user logged in');
   }
+  
 
   const submittedby = req.session.user.username; // Get the current user's username from the session
 
@@ -256,6 +258,49 @@ app.get('/home', async function (req, res) {
   }
 });
 
+app.post('/save-profile-changes', async (req, res) => {
+  const {
+    firstname,
+    middlename,
+    lastname,
+    email,
+    password
+  } = req.body; // Capture user input from the form
+
+  if (!req.session.user) {
+    return res.status(401).send('Unauthorized: No user logged in');
+  }
+  
+  const id = req.session.user.id; // Get the current user's id from the session
+
+  try {
+    // Insert the new user into the database
+    const { data, error } = await supabase
+      .from('users') // Replace 'users' with your actual table name if different
+      .update([{
+        firstname,
+        middlename,
+        lastname,
+        email,
+        password
+      }])
+      .eq('id','id');
+      
+
+    if (error) {
+      // Handle any errors that occur during the insert
+      return res.status(500).render('home', {
+        error: 'Error creating registration.',
+        users: [] // Optionally pass users array if you need it in the view
+      });
+    }
+    res.redirect('/profile');
+  } catch (error) {
+    // Handle any server-side errors
+    res.status(500).json({ error: error.message });
+  }
+});
+
 
 app.get('/forum', async function (req, res) {
   if (!req.session.user) {
@@ -275,6 +320,29 @@ app.get('/forum', async function (req, res) {
 
     // Render the forum.hbs template with the fetched data
     res.render('forum', { forumthreads: data, user: req.session.user });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.get('/forum-create', async function (req, res) {
+  if (!req.session.user) {
+    return res.redirect('/');
+  }
+
+  try {
+    const { data, error } = await supabase
+      .from('forumthreads')
+      .select('*');
+
+    if (error) {
+      return res.status(400).json({ error: error.message });
+    }
+
+    console.log("Fetched data:", data); // Log the data to the console 
+
+    // Render the forum.hbs template with the fetched data
+    res.render('forum-create', { forumthreads: data, user: req.session.user });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -411,81 +479,35 @@ app.get('/membership-status', async function (req, res) {
   }
 
   const username = req.session.user.username; // Or use a unique identifier like user ID
+  const usertype = req.session.user.usertype;
 
   try {
-    const { data, error } = await supabase
-      .from('ncc_registrations')
-      .select('*')
-      .eq('submittedby', username); // Filter by the current user's username
+    let data;
+    let error;
 
-    if (error) {
-      return res.status(400).json({ error: error.message });
+    if (usertype === 'pta') {
+      // Fetch all rows if user is 'pta'
+      ({ data, error } = await supabase
+        .from('ncc_registrations')
+        .select('*'));
+    } else {
+      // Fetch only rows submitted by the current user
+      ({ data, error } = await supabase
+        .from('ncc_registrations')
+        .select('*')
+        .eq('submittedby', username));
     }
 
-    console.log("Fetched data:", data); // Log the data to the console 
+    if (error) {
+      console.error('Error fetching data:', error.message);
+      return res.status(500).send('Error fetching data');
+    }
 
-    // Render the home.hbs template with the filtered data
-    res.render('membership-status', { user: req.session.user, ncc_registrations: data });
+    res.render('membership-status', { ncc_registrations: data, user: req.session.user });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
-
-//profile picture thing
-// app.post('/submit-user', upload.single('profile_picture'), async (req, res) => {
-//   const {
-//     username,
-//     password,
-//     email
-//     // Other user fields
-//   } = req.body; // Capture user input from the form
-
-//   try {
-//     // Handle profile picture upload
-//     let profilePictureUrl = '';
-//     if (req.file) {
-//       const profilePicture = req.file;
-//       const filePath = `profile-pictures/${Date.now()}-${profilePicture.originalname}`;
-//       const { data, error: uploadError } = await supabase
-//         .storage
-//         .from('images') // Ensure you have a bucket named 'images' in Supabase Storage
-//         .upload(filePath, profilePicture.buffer, {
-//           contentType: profilePicture.mimetype,
-//           upsert: true,
-//         });
-
-//       if (uploadError) {
-//         console.error('Error uploading profile picture:', uploadError.message);
-//         return res.status(500).send('Error uploading profile picture');
-//       }
-
-//       profilePictureUrl = `${supabaseUrl}/storage/v1/object/public/images/${filePath}`;
-//     }
-
-//     // Insert user data into the database
-//     const { data, error } = await supabase
-//       .from('users')
-//       .insert([{
-//         username,
-//         password,
-//         email,
-//         profile_picture_url: profilePictureUrl // Save the profile picture URL
-//       }]);
-
-//     if (error) {
-//       console.error('Error inserting user data:', error.message);
-//       return res.status(500).send('Error creating user');
-//     }
-
-//     res.redirect('/somewhere'); // Redirect to a success page or the user profile page
-//   } catch (error) {
-//     console.error('Server error:', error.message);
-//     res.status(500).send('Server error');
-//   }
-// });
-
-
-
 
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);

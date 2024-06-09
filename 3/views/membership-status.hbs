@@ -34,13 +34,17 @@
 			<div class="membership-rightside">
 				<div class="membership-statuses">
                     <ul>
-                        {{#each ncc_registrations}}
-					    <li class ="status">
-                            <div class="regrow">
-                                {{id}} {{firstname}} {{lastname}} {{clubregion}} {{status}}
-                            </div><br>
-                        </li>
-                        {{/each}}
+                        {{#if ncc_registrations}}
+                            {{#each ncc_registrations}}
+                            <li class ="status">
+                                <div class="regrow">
+                                    {{id}} {{firstname}} {{lastname}} {{clubregion}} {{status}}
+                                </div><br>
+                            </li>
+                            {{/each}}
+                        {{else}}
+                            No pending applications
+                        {{/if}}
                     </ul>
 				</div>
                                                                                                                             
