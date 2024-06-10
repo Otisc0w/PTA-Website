@@ -99,7 +99,7 @@ app.post('/submit-login', async (req, res) => {
       .from('users')
       .select('*')
       .eq('username', username)
-      .eq('password', password) //blue is from form and red is column in database
+      .eq('password', password) //blue is from form and red is column in databse
       .single(); // Ensure a single match
 
     if (error || !data) {
@@ -289,70 +289,22 @@ app.get('/home', async function (req, res) {
   }
 
   try {
-    const { data: events, error: eventsError } = await supabase
+    const { data, error } = await supabase
       .from('events')
       .select('*');
 
-    const { data: notifications, error: notificationsError } = await supabase
-      .from('notifications')
-      .select('*');
-
-    if (eventsError) {
-      return res.status(400).json({ error: eventsError.message });
-    }
-
-    if (notificationsError) {
-      return res.status(400).json({ error: notificationsError.message });
-    }
-
-    res.render('home', { events, user: req.session.user, notificationCount: notifications.length });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-app.post('/save-profile-changes', async (req, res) => {
-  const {
-    firstname,
-    middlename,
-    lastname,
-    email,
-    password
-  } = req.body; // Capture user input from the form
-
-  if (!req.session.user) {
-    return res.status(401).send('Unauthorized: No user logged in');
-  }
-  
-  const id = req.session.user.id; // Get the current user's id from the session
-
-  try {
-    // Insert the new user into the database
-    const { data, error } = await supabase
-      .from('users') // Replace 'users' with your actual table name if different
-      .update([{
-        firstname,
-        middlename,
-        lastname,
-        email,
-        password
-      }])
-      .eq('id', id); // Updated this line to pass `id` instead of a string literal
-
     if (error) {
-      // Handle any errors that occur during the insert
-      return res.status(500).render('home', {
-        error: 'Error creating registration.',
-        users: [] // Optionally pass users array if you need it in the view
-      });
+      return res.status(400).json({ error: error.message });
     }
-    res.redirect('/profile');
+
+    console.log("Fetched data:", data); // Log the data to the console 
+
+    // Render the home.hbs template with both the fetched data and the session user data
+    res.render('home', { events: data, user: req.session.user });
   } catch (error) {
-    // Handle any server-side errors
     res.status(500).json({ error: error.message });
   }
 });
-
 
 app.get('/forum', async function (req, res) {
   if (!req.session.user) {
@@ -500,6 +452,29 @@ app.get('/athletes', async function (req, res) {
   }
 });
 
+app.get('/notifications', async function (req, res) {
+  if (!req.session.user) {
+    return res.redirect('/');
+  }
+  
+  try {
+    const { data, error } = await supabase
+      .from('athletes')
+      .select('*');
+
+    if (error) {
+      return res.status(400).json({ error: error.message });
+    }
+
+    console.log("Fetched data:", data); // Log the data to the console 
+
+    // Render the athletes.hbs template with the fetched data
+    res.render('notifications', { athletes: data, user: req.session.user });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
                                                                         //MEMBERSHIP PAGES
 
 app.get('/membership-ncc', async function (req, res) {
@@ -559,21 +534,6 @@ app.get('/membership-status', async function (req, res) {
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
-});
-
-//for notifications
-app.get('/notifications', (req, res) => {
-  const notifications = [
-    { type: 'Message', title: 'Darren Smith sent new message', message: 'Sed ut perspiciatis unde omnis iste natus error sit voluptatem...', user: 'Darren', time: '24 Nov 2018 at 9:30 AM' },
-    { type: 'Comment', title: 'Arin Ganshiram Commented on post', message: 'Sed ut perspiciatis unde omnis iste natus error sit voluptatem...', user: 'Arin Ganshiram', time: '24 Nov 2018 at 9:30 AM' },
-    { type: 'Connect', title: 'Juliet Den Connect Allen Depk', message: 'Sed ut perspiciatis unde omnis iste natus error sit voluptatem...', user: 'Juliet Den', time: '24 Nov 2018 at 9:30 AM' },
-    { type: 'Joined', title: 'New Registration: Finibus Bonorum et Malorum', message: 'Sed ut perspiciatis unde omnis iste natus error sit voluptatem...', user: 'Allen Deu', time: '24 Nov 2018 at 9:30 AM' }
-  ];
-
-  res.render('notifications', {
-    notifications,
-    notificationCount: notifications.length
-  });
 });
 
 app.listen(port, () => {

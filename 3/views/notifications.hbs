@@ -5,33 +5,38 @@
     <title>PTA | Notifications</title>
     <link rel="icon" type="image/x-icon" href="../images/favicon.ico" />
     <link rel="stylesheet" type="text/css" href="../stylesheets/notifications.css" />
+    <link rel="stylesheet" type="text/css" href="../stylesheets/navbar.css" />
 </head>
 
-<body style="margin:0;" class="container">
-    <div class="header">
-        <div class="navbar">
-            <a href="home"><img src="/images/logo.png" class="logo" alt="Logo"></a>
-            <ul class="tabs">
-                <li class="home"><a href="home">Home</a></li>
-                <li class="athletes"><a href="athletes">Athletes</a></li>
-                <li class="clubs"><a href="clubs">Clubs</a></li>
-                <li class="events"><a href="events">Events</a></li>
-                <li class="membership"><a href="membership">Membership</a></li>
-                <li class="forum"><a href="forum">Forum</a></li>
-                  <a href="notifications">Notifications <span class="badge">{{notificationCount}}</span></a>
-                <li class="profile-pic">
-                    <a href="#" onclick="toggleDropdown()">
-                        <img src="/images/goofy.jpg" alt="Profile">
-                    </a>
-                    <div id="dropdown" class="dropdown-content">
-                        <a href="profile">Profile</a>
-                        <a href="settings">Settings</a>
-                        <a href="logout">Logout</a>
-                    </div>
-                </li>
-            </ul>
+<body class="container">
+        <div class="header">
+            <div class="navbar">
+                <a href="home"><img src="/images/logo.png" class="logo" alt="Logo"></a>
+                <ul class="tabs">
+                    <li class="home"><a href="home">Home</a></li>
+                    <li class="athletes"><a href="athletes">Athletes</a></li>
+                    <li class="clubs"><a href="clubs">Clubs</a></li>
+                    <li class="events"><a href="events">Events</a></li>
+                    <li class="membership"><a href="membership">Membership</a></li>
+                    <li class="forum"><a href="forum">Forum</a></li>
+                    <li class="notifications">
+                        <a href="notifications">Notifications <span class="badge">3</span></a>
+                    </li>
+                    <li class="profile-pic">
+                        {{#if user.profilepic}}
+                            <a href="#" onclick="toggleDropdown()"><img src="{{user.profilepic}}" alt="Profile Picture" class="profile-picture"></a>
+                        {{else}}
+                            <a href="#" onclick="toggleDropdown()" class="profile-picture"><img src="/images/none.jpg" alt="Profile Picture" class="profile-picture"></a>
+                        {{/if}}
+                        <div id="dropdown" class="dropdown-content">
+                            <a href="profile">Profile</a>
+                            <a href="settings">Settings</a>
+                            <a href="/">Logout</a>
+                        </div>
+                    </li>
+                </ul>
+            </div>
         </div>
-    </div>
 
     <div class="notifications-container">
         <h1>Notifications</h1>
