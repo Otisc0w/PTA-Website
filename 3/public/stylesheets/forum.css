@@ -18,12 +18,14 @@
 
 .forum-container{
     margin-top:60px;
+    
+
 }
 
 .content {
     margin-top:90px;
     width: 50%;
-    height: 1000px;
+    height: auto;
     padding: 20px;
     background-color: #2c2c2c;
     border-radius: 8px;

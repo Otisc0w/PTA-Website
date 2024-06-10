@@ -220,7 +220,7 @@ app.post('/submit-ncc', async (req, res) => {
 
     if (error) {
       // Handle any errors that occur during the insert
-      return res.status(500).render('index', {
+      return res.status(500).render('membership', {
         error: 'Error creating registration.',
         users: [] // Optionally pass users array if you need it in the view
       });
@@ -232,20 +232,69 @@ app.post('/submit-ncc', async (req, res) => {
   }
 });
 
-app.post('/save-profile-changes', async (req, res) => {
+app.post('/create-post', async (req, res) => {
   const {
-    firstname,
-    middlename,
-    lastname,
-    email,
-    password
+    title,
+    topic,
+    body,
   } = req.body; // Capture user input from the form
 
   if (!req.session.user) {
     return res.status(401).send('Unauthorized: No user logged in');
   }
   
+  const originalposter = req.session.user.username; // Get the current user's id from the session
+  const upvotes = 0, downvotes=0;
+
+  try {
+    // Update the user in the database
+    const { data, error } = await supabase
+      .from('forumthreads') 
+      .insert([{
+        title,
+        originalposter,
+        topic,
+        body,
+        upvotes,
+        downvotes
+      }]);
+
+    if (error) {
+      // Handle any errors that occur during the update
+      return res.status(500).render('forum', {
+        error: 'Error updating profile.',
+        users: [] // Optionally pass users array if you need it in the view
+      });
+    }
+
+    res.redirect('/forum');
+  } catch (error) {
+    // Handle any server-side errors
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.post('/save-profile-changes', async (req, res) => {
+  const {
+    firstname,
+    middlename,
+    lastname,
+    username,
+    email,
+    password,
+    usertype,
+    region,
+    club,
+    registered,
+  } = req.body; // Capture user input from the form
+
+  if (!req.session.user) {
+    console.log("Unauthorized: No user logged in");
+    return res.status(401).send('Unauthorized: No user logged in');
+  }
+  
   const id = req.session.user.id; // Get the current user's id from the session
+  const profilepic = "https://rdgktrbltrabwivyyafw.supabase.co/storage/v1/object/sign/profilepics/bruce.png?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJwcm9maWxlcGljcy9icnVjZS5wbmciLCJpYXQiOjE3MTc4NDY1NTQsImV4cCI6MTc0OTM4MjU1NH0.kUTsIGMsSKv6G03Shzv54Ebr-j6_PRb2EDwvaV9LaLY&t=2024-06-08T11%3A35%3A54.922Z";
 
   try {
     // Update the user in the database
@@ -255,13 +304,19 @@ app.post('/save-profile-changes', async (req, res) => {
         firstname,
         middlename,
         lastname,
+        username,
         email,
-        password
+        password,
+        usertype,
+        region,
+        club,
+        registered,
+        profilepic
       })
       .eq('id', id); // Ensure the correct id is used in the eq method
 
     if (error) {
-      // Handle any errors that occur during the update
+      console.error('Error updating profile:', error.message);
       return res.status(500).render('home', {
         error: 'Error updating profile.',
         users: [] // Optionally pass users array if you need it in the view
@@ -271,12 +326,15 @@ app.post('/save-profile-changes', async (req, res) => {
     // Update the session with the new user data if needed
     req.session.user = { ...req.session.user, firstname, middlename, lastname, email };
 
+    console.log('Profile updated successfully for user:', id);
+
     res.redirect('/profile');
   } catch (error) {
-    // Handle any server-side errors
+    console.error('Server error:', error.message);
     res.status(500).json({ error: error.message });
   }
 });
+
 
 
 
