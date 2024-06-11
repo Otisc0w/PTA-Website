@@ -169,6 +169,7 @@ app.post('/submit-signup', async (req, res) => {
 
 app.post('/submit-ncc', async (req, res) => {
   const {
+    apptype,
     firstname,
     middlename,
     lastname,
@@ -193,12 +194,14 @@ app.post('/submit-ncc', async (req, res) => {
   }
 
   const submittedby = req.session.user.username; // Get the current user's username from the session
+  const status = "under review";
 
   try {
     // Insert the new user into the database
     const { data, error } = await supabase
       .from('ncc_registrations') // Replace 'users' with your actual table name if different
       .insert([{
+        apptype,
         firstname,
         middlename,
         lastname,
@@ -216,6 +219,7 @@ app.post('/submit-ncc', async (req, res) => {
         instructorlastname,
         instructormobile,
         instructoremail,
+        status,
         submittedby // Include the current user's username
       }]);
 
@@ -356,6 +360,76 @@ app.post('/save-profile-changes', upload.single('file'), async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+
+// app.post('/updatestatus', async (req, res) => {
+
+//   if (!req.session.user) {
+//     return res.status(401).send('Unauthorized: No user logged in');
+//   }
+
+//   const id = req.session.user.id; // Get the current user's id from the session
+//   let profilepic = req.session.user.profilepic;
+
+//   if (req.file) {
+//     try {
+//       const filePath = `profilepics/${Date.now()}-${req.file.originalname}`;
+//       const { error: uploadError } = await supabase
+//         .storage
+//         .from('profilepics')
+//         .upload(filePath, req.file.buffer, {
+//           contentType: req.file.mimetype,
+//         });
+
+//       if (uploadError) {
+//         console.error('Error uploading profile picture:', uploadError.message);
+//         return res.status(500).send('Error uploading profile picture');
+//       }
+
+//       profilepic = `${supabaseUrl}/storage/v1/object/public/profilepics/${filePath}`;
+//     } catch (error) {
+//       console.error('Server error:', error.message);
+//       return res.status(500).json({ error: error.message });
+//     }
+//   }
+
+//   try {
+//     // Update the user in the database
+//     const { error } = await supabase
+//       .from('users') // Replace 'users' with your actual table name if different
+//       .update({
+//         firstname,
+//         middlename,
+//         lastname,
+//         username,
+//         email,
+//         password,
+//         usertype,
+//         region,
+//         club,
+//         registered,
+//         profilepic
+//       })
+//       .eq('id', id); // Ensure the correct id is used in the eq method
+
+//     if (error) {
+//       console.error('Error updating profile:', error.message);
+//       return res.status(500).render('home', {
+//         error: 'Error updating profile.',
+//         users: [] // Optionally pass users array if you need it in the view
+//       });
+//     }
+
+//     // Update the session with the new user data if needed
+//     req.session.user = { ...req.session.user, firstname, middlename, lastname, email, profilepic };
+
+//     console.log('Profile updated successfully for user:', id);
+
+//     res.redirect('/profile');
+//   } catch (error) {
+//     console.error('Server error:', error.message);
+//     res.status(500).json({ error: error.message });
+//   }
+// });
 
 
 
@@ -615,6 +689,31 @@ app.get('/membership-status', async function (req, res) {
     res.status(500).json({ error: error.message });
   }
 });
+
+app.get('/membership-review/:id', async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    // Fetch the specific registration data
+    const { data, error } = await supabase
+      .from('ncc_registrations')
+      .select('*')
+      .eq('id', id)
+      .single();
+
+    if (error) {
+      console.error('Error fetching registration:', error.message);
+      return res.status(500).send('Error fetching registration');
+    }
+
+    // Render the membership-review.hbs template with the fetched data
+    res.render('membership-review', { registration: data });
+  } catch (error) {
+    console.error('Server error:', error.message);
+    res.status(500).send('Server error');
+  }
+});
+
 
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);

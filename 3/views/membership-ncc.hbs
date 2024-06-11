@@ -35,6 +35,13 @@
                 <div class="formcontainer">
                     <form id="nccform" action="/submit-ncc" method="post">
                         <div class="ncc1">                                                                                  {{!-- NCC ID APPLICATION FORM part 1 --}}
+
+                            <label class="apptype" for="apptype">Application Type:</label><br>
+                            <input type="radio" id="Renewal" name="apptype" value="Renewal">
+                            <label for="female">Renewal</label><br>
+                            <input type="radio" id="New Application" name="apptype" value="New Application">
+                            <label for="male">New Application</label><br>
+
                             <label class="firstname-input" for="firstname">Firstname</label><br>
                             <input type="text" id="firstname" name="firstname" ><br>
 

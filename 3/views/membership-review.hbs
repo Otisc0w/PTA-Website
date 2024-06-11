@@ -1,0 +1,79 @@
+<html>
+
+	<head>
+	  <title>PTA | Membership Review</title>
+      <link rel="icon" type="image/x-icon" href="../images/favicon.ico" />
+	  <link rel="stylesheet" type="text/css" href="../stylesheets/membership.css" />
+      <link rel="stylesheet" type="text/css" href="../stylesheets/navbar.css" />
+	</head>
+	
+	<body style="margin:0;" class="container">
+        <div class="membership-header">
+            <div class="membership-navbar">
+				<img src="/images/logo.png" class="membership-logo" href="home"></img>
+                    {{#if user.profilepic}}
+                        <a href="#" onclick="toggleDropdown()" class="memprofile-pic"><img src="{{user.profilepic}}" alt="Profile Picture" class="profile-picture"></a>
+                    {{else}}
+                        <a href="#" onclick="toggleDropdown()" class="memprofile-pic"><p>:(</p></a>
+                    {{/if}}
+                    <div id="dropdown" class="dropdown-content">
+                        <a href="profile">Profile</a>
+                        <a href="settings">Settings</a>
+                        <a href="/">Logout</a>
+                    </div>
+            </div>
+        </div>
+        <div class="membership-container">
+			<div class="review-header">
+                <h1>Review Membership Application</h1>
+            </div>
+            <div class="review-details">
+                <h2>Applicant Information</h2>
+                <p><strong>ID:</strong> {{registration.id}}</p>
+                <p><strong>First Name:</strong> {{registration.firstname}}</p>
+                <p><strong>Middle Initial:</strong> {{registration.mi}}</p>
+                <p><strong>Last Name:</strong> {{registration.lastname}}</p>
+                <p><strong>Gender:</strong> {{registration.gender}}</p>
+                <p><strong>Birthday:</strong> {{registration.bday}}</p>
+                <p><strong>Phone Number:</strong> {{registration.phonenum}}</p>
+                <p><strong>Email:</strong> {{registration.email}}</p>
+                <p><strong>Last Promotion:</strong> {{registration.lastpromo}}</p>
+                <p><strong>Promotion Location:</strong> {{registration.promolocation}}</p>
+                <p><strong>Region:</strong> {{registration.region}}</p>
+                <p><strong>Club:</strong> {{registration.clubname}}</p>
+                <p><strong>Belt Level:</strong> {{registration.beltlevel}}</p>
+                <p><strong>Instructor First Name:</strong> {{registration.instructorfirstname}}</p>
+                <p><strong>Instructor Middle Initial:</strong> {{registration.instructormi}}</p>
+                <p><strong>Instructor Last Name:</strong> {{registration.instructorlastname}}</p>
+                <p><strong>Instructor Mobile:</strong> {{registration.instructormobile}}</p>
+                <p><strong>Instructor Email:</strong> {{registration.instructoremail}}</p>
+                <!-- Add any other relevant details here -->
+            </div>
+            <div class="application-actions">
+                <a>Print NCC ID</a>
+                <a>Reject Application</a>
+                <button onclick="printDiv('printableArea')" action="updatestatus" method="post">Print</button> <!-- Print button -->
+            </div>
+            <div class="printwindow" id="printableArea" >
+                <p><strong>ID:</strong> {{registration.id}}</p>
+                <p><strong>First Name:</strong> {{registration.firstname}}</p>
+                <p><strong>Middle Initial:</strong> {{registration.mi}}</p>
+                <p><strong>Last Name:</strong> {{registration.lastname}}</p>
+            </div>
+
+                <script>
+                    function printDiv(divName) {
+                        var printContents = document.getElementById(divName).innerHTML;
+                        var originalContents = document.body.innerHTML;
+
+                        document.body.innerHTML = printContents;
+
+                        window.print();
+
+                        document.body.innerHTML = originalContents;
+                    }
+  		        </script>
+			</div>
+        </div>
+    </body>
+</html>

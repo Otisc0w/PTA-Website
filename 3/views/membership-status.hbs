@@ -33,19 +33,17 @@
 		
 			<div class="membership-rightside">
 				<div class="membership-statuses">
-                    <ul>
                         {{#if ncc_registrations}}
                             {{#each ncc_registrations}}
-                            <li class ="status">
-                                <div class="regrow">
-                                    {{id}} {{firstname}} {{lastname}} {{clubregion}} {{status}}
+                                <div class='post-content'>
+                                    <span class='community'>{{id}} •</span>
+                                    <span class='small'>by {{apptype}} {{firstname}} {{lastname}}on {{created_at}}</span><br>
+                                    <a href="/membership-review/{{id}}">Review -></a>
                                 </div><br>
-                            </li>
                             {{/each}}
                         {{else}}
                             No pending applications
                         {{/if}}
-                    </ul>
 				</div>
                                                                                                                             
                 <script>
