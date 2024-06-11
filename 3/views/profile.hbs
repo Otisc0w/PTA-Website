@@ -48,7 +48,7 @@
         <div class="profile-content">
             <div id="editProfile" class="profile-section">
                 <h2>Edit Profile</h2>
-                <form id="editprofile" action="/save-profile-changes" method="post">
+                <form id="editprofile" action="/save-profile-changes" method="post" enctype="multipart/form-data">
                     <div class="profile-pic-section">
                         {{#if user.profilepic}}
                             <img src="{{user.profilepic}}" alt="Profile Picture" class="profile-picture">
@@ -60,43 +60,39 @@
                     </div>
                     <div class="form-group">
                         <label for="firstname">First Name:</label>
-                        <input type="text" id="firstname" value="{{user.firstname}}">
+                        <input type="text" id="firstname" name="firstname" value="{{user.firstname}}">
                     </div>
                     <div class="form-group">
                         <label for="middlename">M.I.:</label>
-                        <input type="text" id="middlename" value="{{user.middlename}}">
+                        <input type="text" id="middlename" name="middlename" value="{{user.middlename}}">
                     </div>
                     <div class="form-group">
                         <label for="lastname">Last Name:</label>
-                        <input type="text" id="lastname" value="{{user.lastname}}">
+                        <input type="text" id="lastname" name="lastname" value="{{user.lastname}}">
                     </div>
                     <div class="form-group">
                         <label for="username">Username:</label>
-                        <input type="text" id="username" value="{{user.username}}">
+                        <input type="text" id="username" name="username" value="{{user.username}}">
                     </div>
                     <div class="form-group">
                         <label for="email">Email:</label>
-                        <input type="email" id="email" value="{{user.email}}">
-                    </div>
-                    <div class="form-group">
-                        <label for="address">Password:</label>
-                        <input type="password" id="password" value="{{user.password}}">
+                        <input type="email" id="email" name="email" value="{{user.email}}">
                     </div>
                     <div class="form-group">
                         <label for="usertype">User Type:</label>
-                        <input type="text" id="usertype" value="{{user.usertype}}" readonly>
+                        <input type="text" id="usertype" name="usertype" value="{{user.usertype}}" readonly>
                     </div>
                     <div class="form-group">
                         <label for="region">Region:</label>
-                        <input type="text" id="region" value="{{user.region}}">
+                        <input type="text" id="region" name="region" value="{{user.region}}" readonly>
                     </div>
                     <div class="form-group">
                         <label for="club">Club:</label>
-                        <input type="text" id="club" value="{{user.club}}">
+                        <input type="text" id="club" name="club" value="{{user.club}}" readonly>
                     </div>
                     <div class="form-group">
                         <label for="registered">Registered?:</label>
-                        <input type="text" id="registered" value="{{user.registered}}" readonly>
+                        <input type="text" id="registered" name="registered" value="{{user.registered}}" readonly>
                     </div>
                     <div class="form-actions">
                         <button class="cancel-button" onclick="window.location.href='profile'">Cancel</button>
@@ -127,24 +123,28 @@
                         <input type="text" id="viewLastName" value="{{user.lastname}}" readonly>
                     </div>
                     <div class="form-group">
+                        <label for="username">Username:</label>
+                        <input type="text" id="username" name="username" value="{{user.username}}" readonly> 
+                    </div>
+                    <div class="form-group">
                         <label for="viewEmail">Email:</label>
                         <input type="email" id="viewEmail" value="{{user.email}}" readonly>
                     </div>
                     <div class="form-group">
-                        <label for="viewAddress">Address:</label>
-                        <input type="text" id="viewAddress" readonly>
+                        <label for="usertype">User Type:</label>
+                        <input type="text" id="usertype" name="usertype" value="{{user.usertype}}" readonly>
                     </div>
                     <div class="form-group">
-                        <label for="viewContactNumber">Contact Number:</label>
-                        <input type="text" id="viewContactNumber" value="{{user.phonenum}}" readonly>
+                        <label for="region">Region:</label>
+                        <input type="text" id="region" name="region" value="{{user.region}}" readonly>
                     </div>
                     <div class="form-group">
-                        <label for="viewRegion">Region:</label>
-                        <input type="text" id="viewRegion" value="{{user.region}}" readonly>
+                        <label for="club">Club:</label>
+                        <input type="text" id="club" name="club" value="{{user.club}}" readonly>
                     </div>
                     <div class="form-group">
-                        <label for="viewClub">Club:</label>
-                        <input type="text" id="viewClub" value="{{user.club}}" readonly>
+                        <label for="registered">Registered?:</label>
+                        <input type="text" id="registered" name="registered" value="{{user.registered}}" readonly>
                     </div>
                 </form>
             </div>

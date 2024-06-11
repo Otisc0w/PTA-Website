@@ -5,7 +5,6 @@
         <link rel="icon" type="image/x-icon" href="../images/favicon.ico" />
         <link rel="stylesheet" type="text/css" href="../stylesheets/forum.css" />
         <link rel="stylesheet" type="text/css" href="../stylesheets/navbar.css" />
-        <link rel="stylesheet" type="text/css" href="../stylesheets/home.css" />
     </head>
 
     <body class="container">
@@ -120,18 +119,15 @@
                 }
             }
         }
-</script>
-  <script>
+    
         document.querySelector(".comment-button.comment").addEventListener("click", function() {
             window.location.href = "create-comment";
         });
+    
+        document.getElementById("createPostButton").addEventListener("click", function() {
+            window.location.href = "forum-create";
+        });
     </script>
-
-    <script>
-    document.getElementById("createPostButton").addEventListener("click", function() {
-        window.location.href = "forum-create";
-    });
-</script>
 
 </body>
 </html>

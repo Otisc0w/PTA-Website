@@ -115,6 +115,7 @@ app.post('/submit-login', async (req, res) => {
     req.session.user = {
       id: data.id,
       firstname: data.firstname,
+      middlename: data.middlename,
       lastname: data.lastname,
       username: data.username,
       email: data.email,
@@ -169,7 +170,7 @@ app.post('/submit-signup', async (req, res) => {
 app.post('/submit-ncc', async (req, res) => {
   const {
     firstname,
-    mi,
+    middlename,
     lastname,
     gender,
     bday,
@@ -199,7 +200,7 @@ app.post('/submit-ncc', async (req, res) => {
       .from('ncc_registrations') // Replace 'users' with your actual table name if different
       .insert([{
         firstname,
-        mi,
+        middlename,
         lastname,
         gender,
         bday,
@@ -274,7 +275,7 @@ app.post('/create-post', async (req, res) => {
   }
 });
 
-app.post('/save-profile-changes', async (req, res) => {
+app.post('/save-profile-changes', upload.single('file'), async (req, res) => {
   const {
     firstname,
     middlename,
@@ -289,12 +290,33 @@ app.post('/save-profile-changes', async (req, res) => {
   } = req.body; // Capture user input from the form
 
   if (!req.session.user) {
-    console.log("Unauthorized: No user logged in");
     return res.status(401).send('Unauthorized: No user logged in');
   }
-  
+
   const id = req.session.user.id; // Get the current user's id from the session
-  const profilepic = "https://rdgktrbltrabwivyyafw.supabase.co/storage/v1/object/sign/profilepics/bruce.png?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJwcm9maWxlcGljcy9icnVjZS5wbmciLCJpYXQiOjE3MTc4NDY1NTQsImV4cCI6MTc0OTM4MjU1NH0.kUTsIGMsSKv6G03Shzv54Ebr-j6_PRb2EDwvaV9LaLY&t=2024-06-08T11%3A35%3A54.922Z";
+  let profilepic = req.session.user.profilepic;
+
+  if (req.file) {
+    try {
+      const filePath = `profilepics/${Date.now()}-${req.file.originalname}`;
+      const { error: uploadError } = await supabase
+        .storage
+        .from('profilepics')
+        .upload(filePath, req.file.buffer, {
+          contentType: req.file.mimetype,
+        });
+
+      if (uploadError) {
+        console.error('Error uploading profile picture:', uploadError.message);
+        return res.status(500).send('Error uploading profile picture');
+      }
+
+      profilepic = `${supabaseUrl}/storage/v1/object/public/profilepics/${filePath}`;
+    } catch (error) {
+      console.error('Server error:', error.message);
+      return res.status(500).json({ error: error.message });
+    }
+  }
 
   try {
     // Update the user in the database
@@ -324,7 +346,7 @@ app.post('/save-profile-changes', async (req, res) => {
     }
 
     // Update the session with the new user data if needed
-    req.session.user = { ...req.session.user, firstname, middlename, lastname, email };
+    req.session.user = { ...req.session.user, firstname, middlename, lastname, email, profilepic };
 
     console.log('Profile updated successfully for user:', id);
 
