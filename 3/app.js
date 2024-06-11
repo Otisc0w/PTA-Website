@@ -250,7 +250,7 @@ app.post('/create-post', async (req, res) => {
   try {
     // Update the user in the database
     const { data, error } = await supabase
-      .from('forumthreads') 
+      .from('forum_threads') 
       .insert([{
         title,
         originalposter,
@@ -393,7 +393,7 @@ app.get('/forum', async function (req, res) {
 
   try {
     const { data, error } = await supabase
-      .from('forumthreads')
+      .from('forum_threads')
       .select('*');
 
     if (error) {
@@ -403,7 +403,7 @@ app.get('/forum', async function (req, res) {
     console.log("Fetched data:", data); // Log the data to the console 
 
     // Render the forum.hbs template with the fetched data
-    res.render('forum', { forumthreads: data, user: req.session.user });
+    res.render('forum', { forum_threads: data, user: req.session.user });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -416,7 +416,7 @@ app.get('/forum-create', async function (req, res) {
 
   try {
     const { data, error } = await supabase
-      .from('forumthreads')
+      .from('forum_threads')
       .select('*');
 
     if (error) {
@@ -426,7 +426,7 @@ app.get('/forum-create', async function (req, res) {
     console.log("Fetched data:", data); // Log the data to the console 
 
     // Render the forum.hbs template with the fetched data
-    res.render('forum-create', { forumthreads: data, user: req.session.user });
+    res.render('forum-create', { forum_threads: data, user: req.session.user });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
