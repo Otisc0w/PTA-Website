@@ -50,9 +50,10 @@
                 <!-- Add any other relevant details here -->
             </div>
             <div class="application-actions">
-                <a>Print NCC ID</a>
-                <a>Reject Application</a>
-                <button onclick="printDiv('printableArea')" action="updatestatus" method="post">Print</button> <!-- Print button -->
+                {{#if (eq user.usertype "pta")}}
+                    <a onclick="printDiv('printableArea')" action="update-status" method="post">Print NCC ID</a>
+                    <a>Reject Application</a>
+                {{/if}}
             </div>
             <div class="printwindow" id="printableArea" >
                 <p><strong>ID:</strong> {{registration.id}}</p>
