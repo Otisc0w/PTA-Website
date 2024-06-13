@@ -28,7 +28,7 @@
                 <h1>Review Membership Application</h1>
             </div>
                 <form action="/update-status" method="post">
-                    <div class="review-details">
+                    <div class="review-details" hidden>
                         <h2>Applicant Information</h2>
                         <input type="hidden" name="applicationId" value="{{registration.id}}">
                         <p><strong>ID:</strong> {{registration.id}}</p>
@@ -49,22 +49,23 @@
                         <p><strong>Instructor Last Name:</strong> {{registration.instructorlastname}}</p>
                         <p><strong>Instructor Mobile:</strong> {{registration.instructormobile}}</p>
                         <p><strong>Instructor Email:</strong> {{registration.instructoremail}}</p>
-                        <h1>{{registration.status}}</h1>
+                        
                         <!-- Add any other relevant details here -->
                     </div>
                     <div class="application-actions">
+                        <h1>{{registration.status}}</h1>
                         {{#if (eq user.usertype "pta")}}
                             <div>
-                                <a onclick="printDiv('printableArea')">Print NCC ID</a>
+                                <button onclick="printDiv('printableArea')">Print</button>
                             </div>
-                            <div>
+                            <div class="status-buttons" id="status-buttons">
                                 <button type="submit" name="status" value="1">Under Review</button>
                                 <button type="submit" name="status" value="2">Printed</button>
                                 <button type="submit" name="status" value="3">En-route to Regional Office</button>
-                                <button type="submit" name="status" value="4" id="idshipped">ID Shipped</button>
-                                <a>Reject Application</a>
+                                <button type="button" data-status="4" id="idshipped" class="idshipped">ID Shipped</button>
+                                <button type="submit" name="status" value="0">Reject Application</button>
                             </div>
-                            <div class="confirmscreen" id="confirmscreen" hidden>
+                            <div class="confirmscreen" id="confirmscreen" style="display: none;">
                                 <h3>Are you sure? The player will be notified that his ID is ready</h3>
                                 <a class="cancel" id="cancel">Cancel</a>
                                 <a href="/membership-status">Confirm</a>
@@ -81,18 +82,31 @@
 
                 <script>
                     const confirmscreen = document.getElementById("confirmscreen");
-                    const cancel = document.querySelector(".cancel");
-                    const idshipped = document.querySelector(".idshipped");
+                    const statuses = document.getElementById("status-buttons");
+                    const cancel = document.getElementById("cancel");
+                    const idshipped = document.getElementById("idshipped");
+                    const statusForm = document.getElementById("statusForm");
+                    const confirmButton = document.getElementById("confirm");
 
-                    cancel.addEventListener("click", function(event) {
+                    cancel.addEventListener("click", function (event) {
                         event.preventDefault();
                         confirmscreen.style.display = "none";
+                        statuses.style.display = "block";
                     });
 
-                    idshipped.addEventListener("click", function(event)){
+                    idshipped.addEventListener("click", function (event) {
                         event.preventDefault();
                         confirmscreen.style.display = "block";
-                    }
+                        statuses.style.display = "none";
+                        // Set the status value in the confirm button data attribute
+                        confirmButton.value = idshipped.getAttribute("data-status");
+                    });
+
+                    confirmButton.addEventListener("click", function (event) {
+                        event.preventDefault();
+                        const status = confirmButton.value;
+                        const applicationId = document.querySelector('input[name="applicationId"]').value;
+                    });
 
                     function printDiv(divName) {
                         var printContents = document.getElementById(divName).innerHTML;
