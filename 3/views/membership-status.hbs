@@ -37,7 +37,8 @@
                             {{#each ncc_registrations}}
                                 <div class='post-content'>
                                     <span class='community'>{{id}} •</span>
-                                    <span class='small'>by {{apptype}} {{firstname}} {{lastname}}on {{created_at}}</span><br>
+                                    <span class='small'>by {{apptype}} {{firstname}} {{lastname}}on {{created_at}}</span>
+                                    <span><h3>Status: {{status}}</h3></span>
                                     <a href="/membership-review/{{id}}">Review -></a>
                                 </div><br>
                             {{/each}}
