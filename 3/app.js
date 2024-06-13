@@ -198,7 +198,7 @@ app.post('/submit-ncc', async (req, res) => {
   }
 
   const submittedby = req.session.user.username; // Get the current user's username from the session
-  const status = "under review";
+  const status = 1;
 
   try {
     // Insert the new user into the database
@@ -366,52 +366,32 @@ app.post('/save-profile-changes', upload.single('file'), async (req, res) => {
 });
 
 app.post('/update-status', async (req, res) => {
-
   if (!req.session.user) {
     return res.status(401).send('Unauthorized: No user logged in');
   }
 
-  const id = req.session.user.id; // Get the current user's id from the session
-  let profilepic = req.session.user.profilepic;
+  const { applicationId, status } = req.body; // Capture application ID and new status from the form
 
   try {
-    // Update the user in the database
+    // Update the status of the specific registration in the database
     const { error } = await supabase
-      .from('users') // Replace 'users' with your actual table name if different
-      .update({
-        firstname,
-        middlename,
-        lastname,
-        username,
-        email,
-        password,
-        usertype,
-        region,
-        club,
-        registered,
-        profilepic
-      })
-      .eq('id', id); // Ensure the correct id is used in the eq method
+      .from('ncc_registrations')
+      .update({ status })
+      .eq('id', applicationId);
 
     if (error) {
-      console.error('Error updating profile:', error.message);
-      return res.status(500).render('home', {
-        error: 'Error updating profile.',
-        users: [] // Optionally pass users array if you need it in the view
-      });
+      console.error('Error updating status:', error.message);
+      return res.status(500).send('Error updating status');
     }
 
-    // Update the session with the new user data if needed
-    req.session.user = { ...req.session.user, firstname, middlename, lastname, email, profilepic };
-
-    console.log('Profile updated successfully for user:', id);
-
-    res.redirect('/profile');
+    res.redirect(`/membership-review/${applicationId}`); // Redirect back to the review page
   } catch (error) {
     console.error('Server error:', error.message);
     res.status(500).json({ error: error.message });
   }
 });
+
+
 
 
 

@@ -27,34 +27,51 @@
 			<div class="review-header">
                 <h1>Review Membership Application</h1>
             </div>
-            <div class="review-details">
-                <h2>Applicant Information</h2>
-                <p><strong>ID:</strong> {{registration.id}}</p>
-                <p><strong>First Name:</strong> {{registration.firstname}}</p>
-                <p><strong>Middle Initial:</strong> {{registration.mi}}</p>
-                <p><strong>Last Name:</strong> {{registration.lastname}}</p>
-                <p><strong>Gender:</strong> {{registration.gender}}</p>
-                <p><strong>Birthday:</strong> {{registration.bday}}</p>
-                <p><strong>Phone Number:</strong> {{registration.phonenum}}</p>
-                <p><strong>Email:</strong> {{registration.email}}</p>
-                <p><strong>Last Promotion:</strong> {{registration.lastpromo}}</p>
-                <p><strong>Promotion Location:</strong> {{registration.promolocation}}</p>
-                <p><strong>Region:</strong> {{registration.region}}</p>
-                <p><strong>Club:</strong> {{registration.clubname}}</p>
-                <p><strong>Belt Level:</strong> {{registration.beltlevel}}</p>
-                <p><strong>Instructor First Name:</strong> {{registration.instructorfirstname}}</p>
-                <p><strong>Instructor Middle Initial:</strong> {{registration.instructormi}}</p>
-                <p><strong>Instructor Last Name:</strong> {{registration.instructorlastname}}</p>
-                <p><strong>Instructor Mobile:</strong> {{registration.instructormobile}}</p>
-                <p><strong>Instructor Email:</strong> {{registration.instructoremail}}</p>
-                <!-- Add any other relevant details here -->
-            </div>
-            <div class="application-actions">
-                {{#if (eq user.usertype "pta")}}
-                    <a onclick="printDiv('printableArea')" action="update-status" method="post">Print NCC ID</a>
-                    <a>Reject Application</a>
-                {{/if}}
-            </div>
+                <form action="/update-status" method="post">
+                    <div class="review-details">
+                        <h2>Applicant Information</h2>
+                        <input type="hidden" name="applicationId" value="{{registration.id}}">
+                        <p><strong>ID:</strong> {{registration.id}}</p>
+                        <p><strong>First Name:</strong> {{registration.firstname}}</p>
+                        <p><strong>Middle Initial:</strong> {{registration.mi}}</p>
+                        <p><strong>Last Name:</strong> {{registration.lastname}}</p>
+                        <p><strong>Gender:</strong> {{registration.gender}}</p>
+                        <p><strong>Birthday:</strong> {{registration.bday}}</p>
+                        <p><strong>Phone Number:</strong> {{registration.phonenum}}</p>
+                        <p><strong>Email:</strong> {{registration.email}}</p>
+                        <p><strong>Last Promotion:</strong> {{registration.lastpromo}}</p>
+                        <p><strong>Promotion Location:</strong> {{registration.promolocation}}</p>
+                        <p><strong>Region:</strong> {{registration.region}}</p>
+                        <p><strong>Club:</strong> {{registration.clubname}}</p>
+                        <p><strong>Belt Level:</strong> {{registration.beltlevel}}</p>
+                        <p><strong>Instructor First Name:</strong> {{registration.instructorfirstname}}</p>
+                        <p><strong>Instructor Middle Initial:</strong> {{registration.instructormi}}</p>
+                        <p><strong>Instructor Last Name:</strong> {{registration.instructorlastname}}</p>
+                        <p><strong>Instructor Mobile:</strong> {{registration.instructormobile}}</p>
+                        <p><strong>Instructor Email:</strong> {{registration.instructoremail}}</p>
+                        <h1>{{registration.status}}</h1>
+                        <!-- Add any other relevant details here -->
+                    </div>
+                    <div class="application-actions">
+                        {{#if (eq user.usertype "pta")}}
+                            <div>
+                                <a onclick="printDiv('printableArea')">Print NCC ID</a>
+                            </div>
+                            <div>
+                                <button type="submit" name="status" value="1">Under Review</button>
+                                <button type="submit" name="status" value="2">Printed</button>
+                                <button type="submit" name="status" value="3">En-route to Regional Office</button>
+                                <button type="submit" name="status" value="4" id="idshipped">ID Shipped</button>
+                                <a>Reject Application</a>
+                            </div>
+                            <div class="confirmscreen" id="confirmscreen" hidden>
+                                <h3>Are you sure? The player will be notified that his ID is ready</h3>
+                                <a class="cancel" id="cancel">Cancel</a>
+                                <a href="/membership-status">Confirm</a>
+                            </div>
+                        {{/if}}
+                    </div>
+                </form>
             <div class="printwindow" id="printableArea" >
                 <p><strong>ID:</strong> {{registration.id}}</p>
                 <p><strong>First Name:</strong> {{registration.firstname}}</p>
@@ -63,6 +80,20 @@
             </div>
 
                 <script>
+                    const confirmscreen = document.getElementById("confirmscreen");
+                    const cancel = document.querySelector(".cancel");
+                    const idshipped = document.querySelector(".idshipped");
+
+                    cancel.addEventListener("click", function(event) {
+                        event.preventDefault();
+                        confirmscreen.style.display = "none";
+                    });
+
+                    idshipped.addEventListener("click", function(event)){
+                        event.preventDefault();
+                        confirmscreen.style.display = "block";
+                    }
+
                     function printDiv(divName) {
                         var printContents = document.getElementById(divName).innerHTML;
                         var originalContents = document.body.innerHTML;
