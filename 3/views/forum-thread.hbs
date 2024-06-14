@@ -1,0 +1,93 @@
+<html>
+
+	<head>
+	  <title>PTA | Apply for NCC ID</title>
+      <link rel="icon" type="image/x-icon" href="../images/favicon.ico" />
+	  <link rel="stylesheet" type="text/css" href="../stylesheets/membership.css" />
+      <link rel="stylesheet" type="text/css" href="../stylesheets/navbar.css" />
+	</head>
+	
+	<body style="margin:0;" class="container">
+        <div class="membership-header">
+            <div class="membership-navbar">
+				<img src="/images/logo.png" class="membership-logo" href="home"></img>   
+                    {{#if user.profilepic}}
+                        <a href="#" onclick="toggleDropdown()" class="memprofile-pic"><img src="{{user.profilepic}}" alt="Profile Picture" class="profile-picture"></a>
+                    {{else}}
+                        <a href="#" onclick="toggleDropdown()" class="memprofile-pic"><img src="/images/none.jpg" alt="Profile Picture" class="profile-picture"></a>
+                    {{/if}}
+                    <div id="dropdown" class="dropdown-content">
+                        <a href="profile">Profile</a>
+                        <a href="settings">Settings</a>
+                        <a href="/">Logout</a>
+                    </div>
+            </div>
+        </div>
+        <div class="membership-container">
+            <h1>clicked forum here</h1>
+        </div>
+                <script>
+                    document.addEventListener("DOMContentLoaded", function() {
+                        const form = document.getElementById("nccform");
+
+                        /*form.addEventListener("submit", function(event) {
+                            const firstname = document.getElementById("username").value;
+                            const instructorfirstname = document.getElementById("instructor-firstname").value;
+
+                            // Clear any previous error messages
+                            document.getElementById("error-message").textContent = "";
+                        });*/
+
+                        const nccstep1 = document.getElementById("nccstep1");
+                        const nccstep2 = document.getElementById("nccstep2");
+                        const nccstep3 = document.getElementById("nccstep3");
+                        const nccstep4 = document.getElementById("nccstep4");
+                        const nccstep5 = document.getElementById("nccstep5");
+                        const ncc1 = document.querySelector(".ncc1");
+                        const ncc2 = document.querySelector(".ncc2");
+                        const ncc3 = document.querySelector(".ncc3");
+                        const ncc4 = document.querySelector(".ncc4");
+                        const ncc5 = document.querySelector(".ncc5");
+
+                        nccstep1.addEventListener("click", function(event) {
+                            event.preventDefault();
+                            ncc1.style.display = "none";
+                            ncc2.style.display = "block";
+                        });
+
+                        nccstep2.addEventListener("click", function(event) {
+                            event.preventDefault();
+                            ncc1.style.display = "none"
+                            ncc2.style.display = "none";
+                            ncc3.style.display = "block";
+                        });
+
+                        nccstep3.addEventListener("click", function(event) {
+                            event.preventDefault();
+                            ncc1.style.display = "none"
+                            ncc2.style.display = "none";
+                            ncc3.style.display = "none";
+                            ncc4.style.display = "block";
+                        });
+
+                        nccstep4.addEventListener("click", function(event) {
+                            event.preventDefault();
+                            ncc1.style.display = "none"
+                            ncc2.style.display = "none";
+                            ncc3.style.display = "none";
+                            ncc4.style.display = "none";
+                            ncc5.style.display = "block";
+                        });
+
+                        nccstep5.addEventListener("click", function(event) {
+                            event.preventDefault();
+                            ncc1.style.display = "none"
+                            ncc2.style.display = "none";
+                            ncc3.style.display = "block";
+                        });
+                    });
+  		        </script>
+			</div>
+        </div>
+    </body>
+</html>

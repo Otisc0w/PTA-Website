@@ -10,7 +10,7 @@
 	<body style="margin:0;" class="container">
         <div class="membership-header">
             <div class="membership-navbar">
-				<img src="/images/logo.png" class="membership-logo" href="home"></img>
+				<a href="home"><img src="/images/logo.png" class="membership-logo" alt="Logo"></a>
                     {{#if user.profilepic}}
                         <a href="#" onclick="toggleDropdown()" class="memprofile-pic"><img src="{{user.profilepic}}" alt="Profile Picture" class="profile-picture"></a>
                     {{else}}
@@ -46,6 +46,9 @@
                             No pending applications
                         {{/if}}
 				</div>
+                <div class="backtomembership">
+                    <a href="/membership"><-Back</a>
+                </div>
                                                                                                                             
                 <script>
                     document.addEventListener("DOMContentLoaded", function() {

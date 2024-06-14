@@ -528,6 +528,29 @@ app.get('/forum-create', async function (req, res) {
   }
 });
 
+app.get('/forum-thread', async function (req, res) {
+  if (!req.session.user) {
+    return res.redirect('/');
+  }
+
+  try {
+    const { data, error } = await supabase
+      .from('forum_threads')
+      .select('*');
+
+    if (error) {
+      return res.status(400).json({ error: error.message });
+    }
+
+    console.log("Fetched data:", data); // Log the data to the console 
+
+    // Render the forum.hbs template with the fetched data
+    res.render('forum-thread', { forum_threads: data, user: req.session.user });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 app.get('/clubs', async function (req, res) {
   if (!req.session.user) {
     return res.redirect('/');

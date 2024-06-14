@@ -42,41 +42,41 @@
             <div class="content">
                 <h2>Recent Threads</h2>
                 <div class="create-post-button-container">
-                     <button id="createPostButton" class="create-post-button">
+                     <button id="createPostButton" class="create-post-button" href="/create-post">
                          <span class="plus-icon">+</span> Create a post
                      </button>
                 </div>
                 {{#each forum_threads}}
-                <a href='post?postId={{postId}}' class='post-link'>
-                <div class='post-container'>
-                    <div class='post-content'>
-                        <div class='post-info'>
-                            <span class='community'><a class='post-community' href='community?community='>{{topic}}</a> •</span>
-                            <span class='small'>by <a class='post-user' href='profile?username='>{{originalposter}}</a> on {{created_at}}</span>
-                        </div>
-                        <h2 class='post-title'>{{title}}</h2>
-                        <p class='post-description'>{{body}}</p>
-                       <div class='post-actions'>
-                        <ul class="post-buttons">
-                           <li class="comment-buttons">  
-                            
-                             <div class='comment-button comment'>Comment
-                            <img src="/images/comment.png" alt="comment"></div></li>
-                              <li class="vote-buttons">
-                                     <div class="vote-button upvote">
-                                         <img src="/images/thumbs up.png" alt="Upvote">
-                                            <span class="upvote-count">{{upvotes}}</span>
-                                      </div>
-                                        <div class="vote-separator"></div>
-                                             <div class="vote-button downvote">
+                <a href='/forum-thread' class='post-link'>
+                    <div class='post-container'>
+                        <div class='post-content'>
+                            <div class='post-info'>
+                                <span class='community'><a class='post-community' href='community?community='>{{topic}}</a> •</span>
+                                <span class='small'>by <a class='post-user' href='profile?username='>{{originalposter}}</a> on {{created_at}}</span>
+                            </div>
+                            <h2 class='post-title'>{{title}}</h2>
+                            <p class='post-description'>{{body}}</p>
+                            <div class='post-actions'>
+                                <ul class="post-buttons">
+                                    <li class="comment-buttons">  
+                                    
+                                    <div class='comment-button comment'>Comment
+                                        <img src="/images/comment.png" alt="comment"></div></li>
+                                        <li class="vote-buttons">
+                                            <div class="vote-button upvote">
+                                                <img src="/images/thumbs up.png" alt="Upvote">
+                                                    <span class="upvote-count">{{upvotes}}</span>
+                                            </div>
+                                            <div class="vote-separator"></div>
+                                            <div class="vote-button downvote">
                                                 <img src="/images/thumbs down.png" alt="Downvote">
-                                                     <span class="downvote-count">{{downvotes}}</span>
-                                              </div>
-                                  </li>
-                                 </ul>
-                      </div>
+                                                    <span class="downvote-count">{{downvotes}}</span>
+                                            </div>
+                                        </li>
+                                </ul>
+                            </div>
+                        </div>
                     </div>
-                </div>
                 </a>
                 {{/each}}
             </div>
@@ -121,7 +121,7 @@
         }
     
         document.querySelector(".comment-button.comment").addEventListener("click", function() {
-            window.location.href = "create-comment";
+            window.location.href = "forum-thread";
         });
     
         document.getElementById("createPostButton").addEventListener("click", function() {
