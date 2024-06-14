@@ -28,14 +28,14 @@
                 <h1>Review Membership Application</h1>
             </div>
                 <form action="/update-status" method="post">
-                    <div class="review-details" hidden>
+                    <div class="review-details" >
                         <h2>Applicant Information</h2>
                         <input type="hidden" name="applicationId" value="{{registration.id}}">
                         <p><strong>ID:</strong> {{registration.id}}</p>
                         <p><strong>First Name:</strong> {{registration.firstname}}</p>
                         <p><strong>Middle Initial:</strong> {{registration.mi}}</p>
                         <p><strong>Last Name:</strong> {{registration.lastname}}</p>
-                        <p><strong>Gender:</strong> {{registration.gender}}</p>
+                        {{!-- <p><strong>Gender:</strong> {{registration.gender}}</p>
                         <p><strong>Birthday:</strong> {{registration.bday}}</p>
                         <p><strong>Phone Number:</strong> {{registration.phonenum}}</p>
                         <p><strong>Email:</strong> {{registration.email}}</p>
@@ -48,8 +48,8 @@
                         <p><strong>Instructor Middle Initial:</strong> {{registration.instructormi}}</p>
                         <p><strong>Instructor Last Name:</strong> {{registration.instructorlastname}}</p>
                         <p><strong>Instructor Mobile:</strong> {{registration.instructormobile}}</p>
-                        <p><strong>Instructor Email:</strong> {{registration.instructoremail}}</p>
-                        
+                        <p><strong>Instructor Email:</strong> {{registration.instructoremail}}</p> --}}
+                        submittedby: {{registration.submittedby}}
                         <!-- Add any other relevant details here -->
                     </div>
                     <div class="application-actions">
@@ -62,13 +62,16 @@
                                 <button type="submit" name="status" value="1">Under Review</button>
                                 <button type="submit" name="status" value="2">Printed</button>
                                 <button type="submit" name="status" value="3">En-route to Regional Office</button>
-                                <button type="button" data-status="4" id="idshipped" class="idshipped">ID Shipped</button>
+                                <button type="button" id="idshipped" class="idshipped">ID Shipped</button>
                                 <button type="submit" name="status" value="0">Reject Application</button>
                             </div>
                             <div class="confirmscreen" id="confirmscreen" style="display: none;">
-                                <h3>Are you sure? The player will be notified that his ID is ready</h3>
-                                <a class="cancel" id="cancel">Cancel</a>
-                                <a href="/membership-status">Confirm</a>
+                                <h3>Are you sure? The player will be notified that his ID is ready. This registration will also disappear after a few days.</h3>
+                                <button class="cancel" id="cancel">Cancel</button>
+                                <button  type="submit" value="4" name="status">Confirm</button>
+                            </div>
+                            <div class="backtolist">
+                                <a href="/membership-status">Back to list</a>
                             </div>
                         {{/if}}
                     </div>
@@ -122,4 +125,4 @@
 			</div>
         </div>
     </body>
-</html>
+</html

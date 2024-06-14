@@ -4,6 +4,7 @@ const multer = require('multer');
 const hbs = require('hbs');
 const session = require('express-session'); // Import express-session
 const app = express();
+const cron = require('node-cron');
 
 require('dotenv').config();
 
@@ -23,6 +24,42 @@ app.use(express.urlencoded({ extended: true })); // Middleware to parse URL-enco
 // Configure Multer for file uploads
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
+
+async function checkAndRemoveOldRegistrations() {
+  const fourHoursAgo = new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString(); // 4 hours ago in ISO format
+  const oneSecondAgo = new Date(Date.now() - 1 * 1000).toISOString();
+
+  try {
+    // Fetch registrations with status '4' older than 4 hours
+    const { data: registrations, error: fetchError } = await supabase
+      .from('ncc_registrations')
+      .select('*')
+      .eq('status', 4)
+      .lt('updated_at', fourHoursAgo);
+
+    if (fetchError) {
+      console.error('Error fetching registrations:', fetchError.message);
+      return;
+    }
+
+    for (const registration of registrations) {
+      // Delete the registration from the 'ncc_registrations' table
+      const { error: deleteRegError } = await supabase
+        .from('ncc_registrations')
+        .delete()
+        .eq('id', registration.id);
+
+      if (deleteRegError) {
+        console.error('Error deleting registration:', deleteRegError.message);
+      } else {
+        console.log(`Deleted registration with ID: ${registration.id}`);
+      }
+    }
+  } catch (error) {
+    console.error('Server error:', error.message);
+  }
+}
+cron.schedule('0 * * * *', checkAndRemoveOldRegistrations);
 
 hbs.registerHelper('eq', function (a, b) {
   return a === b;
@@ -374,14 +411,40 @@ app.post('/update-status', async (req, res) => {
 
   try {
     // Update the status of the specific registration in the database
-    const { error } = await supabase
+    const { data: registration, error: updateStatusError } = await supabase
       .from('ncc_registrations')
       .update({ status })
-      .eq('id', applicationId);
+      .eq('id', applicationId)
+      .select('*')
+      .single(); // Fetch the updated registration to get the submittedby value
 
-    if (error) {
-      console.error('Error updating status:', error.message);
+    if (updateStatusError) {
+      console.error('Error updating status:', updateStatusError.message);
       return res.status(500).send('Error updating status');
+    }
+
+    console.log('Registration updated:', registration);
+
+    // Check if status is 4, indicating the need to update the user's registered column
+    if (status == 4) {
+      const { submittedby } = registration;
+
+      console.log('Updating user with username:', submittedby);
+
+      // Update the corresponding user's registered column to true
+      const { data: user, error: updateUserError } = await supabase
+        .from('users')
+        .update({ registered: true })
+        .eq('username', submittedby)
+        .select('*')
+        .single();
+
+      if (updateUserError) {
+        console.error('Error updating user:', updateUserError.message);
+        return res.status(500).send('Error updating user');
+      }
+
+      console.log('User updated:', user);
     }
 
     res.redirect(`/membership-review/${applicationId}`); // Redirect back to the review page
@@ -390,9 +453,6 @@ app.post('/update-status', async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
-
-
-
 
 
 
