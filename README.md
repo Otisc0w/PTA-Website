@@ -1,5 +1,3 @@
 # PTA-Website
-Philiippines Taekwondo Assocation website
+Philiippines Taekwondo Assocation Website for CAP-2242
 
-test edit the read me feile
-hello
