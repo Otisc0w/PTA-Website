@@ -492,6 +492,35 @@ app.post('/update-status', async (req, res) => {
   }
 });
 
+app.post('/add-comment', async (req, res) => {
+  if (!req.session.user) {
+    return res.status(401).send('Unauthorized: No user logged in');
+  }
+
+  const { threadid, comment } = req.body;
+  const commenter = req.session.user.username;
+
+  try {
+    // Insert the new comment into the database
+    const { error } = await supabase
+      .from('forum_comments')
+      .insert([{
+        threadid,
+        commenter,
+        comment
+      }]);
+
+    if (error) {
+      console.error('Error inserting comment:', error.message);
+      return res.status(500).send('Error inserting comment');
+    }
+
+    res.redirect(`/forum-thread/${threadid}`);
+  } catch (error) {
+    console.error('Server error:', error.message);
+    res.status(500).json({ error: error.message });
+  }
+});
 
 
                                                                         // VIEWS BELOW
@@ -605,8 +634,6 @@ app.get('/forum-thread/:id', async function (req, res) {
     res.status(500).json({ error: error.message });
   }
 });
-
-
 
 app.get('/clubs', async function (req, res) {
   if (!req.session.user) {
