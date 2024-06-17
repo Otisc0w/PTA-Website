@@ -46,39 +46,46 @@
                          <span class="plus-icon">+</span> Create a post
                      </button>
                 </div>
-                {{#each forum_threads}}
-                <a href='/forum-thread' class='post-link'>
+                {{!-- <a href="/forum-thread"> click here</a> --}}
+                {{#reverseEach forum_threads}}
+                <div class='post-link' data-href='/forum-thread/{{id}}'>
                     <div class='post-container'>
-                        <div class='post-content'>
-                            <div class='post-info'>
-                                <span class='community'><a class='post-community' href='community?community='>{{topic}}</a> •</span>
-                                <span class='small'>by <a class='post-user' href='profile?username='>{{originalposter}}</a> on {{created_at}}</span>
+                    <div class='post-content'>
+                        <div class='post-info'>
+                            id:{{id}}
+                        <span class='community'>
+                            <a class='post-community' href='/community?community={{topic}}'>{{topic}}</a> •
+                        </span>
+                        <span class='small'>
+                            by <a class='post-user' href='/profile?username={{originalposter}}'>{{originalposter}}</a> on {{created_at}}
+                        </span>
+                        </div>
+                        <h2 class='post-title'>{{title}}</h2>
+                        <p class='post-description'>{{body}}</p>
+                        <div class='post-actions'>
+                        <ul class="post-buttons">
+                            <li class="comment-buttons">
+                            <div class='comment-button comment'>Comment
+                                <img src="/images/comment.png" alt="comment">
                             </div>
-                            <h2 class='post-title'>{{title}}</h2>
-                            <p class='post-description'>{{body}}</p>
-                            <div class='post-actions'>
-                                <ul class="post-buttons">
-                                    <li class="comment-buttons">  
-                                    
-                                    <div class='comment-button comment'>Comment
-                                        <img src="/images/comment.png" alt="comment"></div></li>
-                                        <li class="vote-buttons">
-                                            <div class="vote-button upvote">
-                                                <img src="/images/thumbs up.png" alt="Upvote">
-                                                    <span class="upvote-count">{{upvotes}}</span>
-                                            </div>
-                                            <div class="vote-separator"></div>
-                                            <div class="vote-button downvote">
-                                                <img src="/images/thumbs down.png" alt="Downvote">
-                                                    <span class="downvote-count">{{downvotes}}</span>
-                                            </div>
-                                        </li>
-                                </ul>
+                            </li>
+                            <li class="vote-buttons">
+                            <div class="vote-button upvote">
+                                <img src="/images/thumbs up.png" alt="Upvote">
+                                <span class="upvote-count">{{upvotes}}</span>
                             </div>
+                            <div class="vote-separator"></div>
+                            <div class="vote-button downvote">
+                                <img src="/images/thumbs down.png" alt="Downvote">
+                                <span class="downvote-count">{{downvotes}}</span>
+                            </div>
+                            </li>
+                        </ul>
                         </div>
                     </div>
-                </a>
-                {{/each}}
+                    </div>
+                </div>
+                {{/reverseEach}}
             </div>
         </div>
     </div>
@@ -120,8 +127,13 @@
             }
         }
     
-        document.querySelector(".comment-button.comment").addEventListener("click", function() {
-            window.location.href = "forum-thread";
+        document.addEventListener("DOMContentLoaded", function() {
+            const postLinks = document.querySelectorAll('.post-link');
+        postLinks.forEach(link => {
+            link.addEventListener('click', function() {
+                window.location.href = this.getAttribute('data-href');
+                });
+            });
         });
     
         document.getElementById("createPostButton").addEventListener("click", function() {

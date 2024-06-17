@@ -61,6 +61,14 @@ async function checkAndRemoveOldRegistrations() {
 }
 cron.schedule('0 * * * *', checkAndRemoveOldRegistrations);
 
+hbs.registerHelper('reverseEach', function(context, options) {
+  let out = '';
+  for (let i = context.length - 1; i >= 0; i--) {
+    out += options.fn(context[i]);
+  }
+  return out;
+});
+
 hbs.registerHelper('eq', function (a, b) {
   return a === b;
 });
@@ -486,7 +494,6 @@ app.post('/update-status', async (req, res) => {
 
 
 
-
                                                                         // VIEWS BELOW
 
 
@@ -559,28 +566,47 @@ app.get('/forum-create', async function (req, res) {
   }
 });
 
-app.get('/forum-thread', async function (req, res) {
+app.get('/forum-thread/:id', async function (req, res) {
   if (!req.session.user) {
     return res.redirect('/');
   }
 
-  try {
-    const { data, error } = await supabase
-      .from('forum_threads')
-      .select('*');
+  const threadId = req.params.id;
 
-    if (error) {
-      return res.status(400).json({ error: error.message });
+  try {
+    // Fetch the specific thread data
+    const { data: thread, error: threadError } = await supabase
+      .from('forum_threads')
+      .select('*')
+      .eq('id', threadId)
+      .single();
+
+    if (threadError) {
+      return res.status(400).json({ error: threadError.message });
     }
 
-    console.log("Fetched data:", data); // Log the data to the console 
+    console.log("Fetched thread data:", thread); // Log the data to the console
 
-    // Render the forum.hbs template with the fetched data
-    res.render('forum-thread', { forum_threads: data, user: req.session.user });
+    // Fetch the comments for this thread
+    const { data: comments, error: commentsError } = await supabase
+      .from('forum_comments')
+      .select('*')
+      .eq('threadid', threadId);
+
+    if (commentsError) {
+      return res.status(400).json({ error: commentsError.message });
+    }
+
+    console.log("Fetched comments data:", comments); // Log the data to the console
+
+    // Render the forum-thread.hbs template with the fetched data
+    res.render('forum-thread', { thread, comments, user: req.session.user });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
+
+
 
 app.get('/clubs', async function (req, res) {
   if (!req.session.user) {
