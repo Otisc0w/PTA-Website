@@ -1,0 +1,208 @@
+.container {
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+    background-color: #3a3a3a;
+}
+
+.forum-container {
+    
+    width: 60%;
+    background-color: #2c2c2c;
+    padding: 20px;
+    border-radius: 8px;
+    color: #d7dadc;
+}
+
+.post-container, .comment {
+    display: flex;
+    background-color: #3a3a3a;
+    margin-bottom: 20px;
+    padding: 15px;
+    border-radius: 8px;
+}
+
+.post-vote, .comment-vote {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px;
+}
+
+.vote-button {
+    cursor: pointer;
+    margin: 5px 0;
+}
+
+.vote-button img {
+    width: 20px;
+    height: 20px;
+}
+
+.upvote-count, .downvote-count {
+    font-size: 14px;
+    color: #d7dadc;
+}
+
+.post-content, .comment-content {
+    flex: 1;
+    padding: 0 10px;
+}
+
+.post-title {
+    font-size: 24px;
+    margin-bottom: 10px;
+    color: #d7dadc;
+}
+
+.post-info {
+    font-size: 14px;
+    color: #818384;
+    margin-bottom: 15px;
+}
+
+.post-body p, .comment-body p {
+    font-size: 16px;
+    line-height: 1.5;
+    color: #d7dadc;
+}
+
+.post-image img {
+    max-width: 100%;
+    border-radius: 8px;
+}
+
+.post-buttons {
+    display: flex;
+    justify-content: space-between;
+    padding-top: 10px;
+    font-size: 14px;
+    color: #818384;
+}
+
+.post-buttons img {
+    width: 20px;
+    height: 20px;
+    margin-right: 5px;
+}
+
+.comments-section h2 {
+    margin-bottom: 20px;
+    color: #d7dadc;
+}
+
+.comment-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.comment-user {
+    font-weight: bold;
+    color: #d7dadc;
+}
+
+.comment-date {
+    font-size: 12px;
+    color: #818384;
+}
+
+.comment-buttons {
+    display: flex;
+    justify-content: flex-start;
+    padding-top: 10px;
+    font-size: 14px;
+    color: #818384;
+}
+
+.comment-buttons img {
+    width: 20px;
+    height: 20px;
+    margin-right: 5px;
+}
+
+.comment-form {
+    background-color: #272729;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.comment-form h3 {
+    margin-top: 0;
+    color: #d7dadc;
+}
+
+.comment-form textarea {
+    width: 100%;
+    background-color: #1A1A1B;
+    color: #d7dadc;
+    border: 1px solid #343536;
+    border-radius: 8px;
+    padding: 10px;
+    font-size: 16px;
+    margin-bottom: 10px;
+    resize: vertical;
+}
+
+.comment-form button {
+    background-color: #0079d3;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.comment-form button:hover {
+    background-color: #1484d6;
+}
+
+.footer-content {
+    background-color: #333;
+    color: #fff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    height: 100px;
+    margin-top: auto; 
+}
+
+.footer-content .pta-logo img {
+    height: 100%; 
+}
+
+.footer-content .contact-info {
+    flex: 1;
+    text-align: center;
+    padding: 0 20px;
+}
+
+.footer-content .contact-info p {
+    margin: 5px 0;
+}
+
+.footer-content .social-media {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.footer-content .social-media p {
+    margin-bottom: 5px;
+}
+
+.footer-content .social-media .icons {
+    display: flex;
+    align-items: center;
+}
+
+.footer-content .social-media a {
+    margin-left: 10px;
+}
+
+.footer-content .social-media img {
+    height: 30px;
+}
