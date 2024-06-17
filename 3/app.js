@@ -425,9 +425,9 @@ app.post('/update-status', async (req, res) => {
 
     console.log('Registration updated:', registration);
 
-    // Check if status is 4, indicating the need to update the user's registered column
+    // Check if status is 4, indicating the need to update the user's registered column and insert into athletes table
     if (status == 4) {
-      const { submittedby } = registration;
+      const { submittedby, firstname, middlename, lastname, gender, bday, phonenum, email, lastpromo, promolocation, clubregion, clubname, beltlevel, instructorfirstname, instructormi, instructorlastname, instructormobile, instructoremail } = registration;
 
       console.log('Updating user with username:', submittedby);
 
@@ -445,6 +445,36 @@ app.post('/update-status', async (req, res) => {
       }
 
       console.log('User updated:', user);
+
+      // Insert the relevant data into the athletes table
+      const { error: insertAthleteError } = await supabase
+        .from('athletes')
+        .insert([{
+          firstname,
+          middlename,
+          lastname,
+          gender,
+          bday,
+          phonenum,
+          email,
+          lastpromo,
+          promolocation,
+          clubregion,
+          clubname,
+          beltlevel,
+          instructorfirstname,
+          instructormi,
+          instructorlastname,
+          instructormobile,
+          instructoremail
+        }]);
+
+      if (insertAthleteError) {
+        console.error('Error inserting athlete:', insertAthleteError.message);
+        return res.status(500).send('Error inserting athlete');
+      }
+
+      console.log('Athlete inserted successfully');
     }
 
     res.redirect(`/membership-review/${applicationId}`); // Redirect back to the review page
@@ -453,6 +483,7 @@ app.post('/update-status', async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+
 
 
 
