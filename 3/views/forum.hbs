@@ -40,14 +40,13 @@
         <div class="main-content">
             <div class="content">
                 <h2>Recent Threads</h2>
-                <!-- Search Filter -->
                 <div class="forum-header">
                     <input type="text" id="searchBar" placeholder="Search threads..." onkeyup="filterThreads()">
-                </div>
-                <div class="create-post-button-container">
-                    <button id="createPostButton" class="create-post-button" href="/create-post">
-                        <span class="plus-icon">+</span> Create a post
-                    </button>
+                    <div class="create-post-button-container">
+                        <button id="createPostButton" class="create-post-button" href="/create-post">
+                            <span class="plus-icon">+</span> Create a post
+                        </button>
+                    </div>
                 </div>
                 {{!-- <a href="/forum-thread"> click here</a> --}}
                 {{#reverseEach forum_threads}}
