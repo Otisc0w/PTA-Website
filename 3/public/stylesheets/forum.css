@@ -1,6 +1,5 @@
 @import url('https://fonts.cdnfonts.com/css/sf-pro-display');
 
-
 .notifications {
     position: relative;
 }
@@ -16,26 +15,26 @@
     right: -10px;
 }
 
-.forum-container{
-    margin-top:60px;
-    
-
+.forum-container {
+    margin-top: 60px;
+    display: flex;
+    justify-content: center; /* Center the content */
 }
 
-.content {
-    margin-top:90px;
-    width: 50%;
+.main-content {
+    width: 60%; /* Adjust the width as needed */
     height: auto;
     padding: 20px;
     background-color: #2c2c2c;
     border-radius: 8px;
     color: #F0F0F0;
-    margin:auto;
 }
+
 li {
     float: left;
-  }
-.content h2 {
+}
+
+.main-content h2 {
     margin-bottom: 20px;
 }
 
@@ -44,13 +43,14 @@ li {
     text-decoration: none;
     color: inherit;
 }
+
 .post-container {
     background-color: #3a3a3a;
     padding: 20px;
-    margin-bottom: 20px; 
+    margin-bottom: 20px;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-    border: 1px solid #444; 
+    border: 1px solid #444;
 }
 
 .post-container:hover {
@@ -82,7 +82,17 @@ li {
     margin-bottom: 10px;
 }
 
+.post-actions {
+    display: flex;
+    align-items: center; /* Center align items */
+}
 
+.post-buttons {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
 
 .comment-buttons, .vote-buttons {
     display: flex;
@@ -90,61 +100,56 @@ li {
     background-color: #2c2c2c;
     color: #FFFFFF;
     border-radius: 20px;
-    padding: 10px 10px; 
-    margin-right: 5px; 
-    font-size: 16px; 
+    padding: 10px 10px;
+    margin-right: 10px; /* Adjust margin for better spacing */
+    font-size: 16px;
     cursor: pointer;
     transition: background-color 0.3s;
-    
 }
 
 .comment-button {
     display: flex;
     align-items: center;
     color: #F0F0F0;
-    margin: 0 2px;
+    margin: 0 10px;
     font-size: 16px;
     padding: 5px;
     border-radius: 20px;
     transition: background-color 0.3s;
-    
 }
 
 .vote-button {
     display: flex;
     align-items: center;
     color: #F0F0F0;
-    margin: 0 2px;
+    margin: 0 10px;
     font-size: 16px;
     padding: 5px;
     border-radius: 20px;
     transition: background-color 0.3s;
-    
 }
 
-
-.vote-button:hover,.comment-button:hover {
-    background-color: #4e4d4d; 
+.vote-button:hover, .comment-button:hover {
+    background-color: #4e4d4d;
     cursor: pointer;
 }
 
 .vote-button img {
-    width: 20px; 
-    height: 20px; 
-    margin-right: 2px;
+    width: 20px;
+    height: 20px;
+    margin-right: 5px; /* Adjust margin for better spacing */
 }
 
 .vote-separator {
     border-left: 1px solid #5a5a5a;
     height: 20px;
-    margin: 0 2px;
+    margin: 0 10px; /* Adjust margin for better spacing */
 }
 
-.comment-button img{
+.comment-button img {
     width: 20px;
     height: 20px;
-    margin-right: 2px;
-    margin-left: 10px;
+    margin-right: 5px; /* Adjust margin for better spacing */
 }
 
 .create-post-button-container {
@@ -175,6 +180,7 @@ li {
     color: #ffffff;
     transition: background-color 0.3s, color 0.3s;
 }
+
 .footer-content {
     background-color: #333;
     color: #fff;
@@ -183,11 +189,11 @@ li {
     align-items: center;
     padding: 20px;
     height: 100px;
-    margin-top: auto; 
+    margin-top: auto;
 }
 
 .footer-content .pta-logo img {
-    height: 100%; 
+    height: 100%;
 }
 
 .footer-content .contact-info {
@@ -221,4 +227,21 @@ li {
 
 .footer-content .social-media img {
     height: 30px;
+}
+
+/* Styles for the search filter */
+.forum-header {
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+#searchBar {
+    width: 100%;
+    max-width: 300px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
 }
