@@ -39,72 +39,110 @@
 
     <div class="athletes-container">
         <div class="filter-panel">
-            <table>
+            <div class="filter-group">
+                <label for="belt-color">Belt Color</label>
+                <select id="belt-color">
+                    <option value="White Belt">White Belt</option>
+                    <option value="Low Yellow Belt">Low Yellow Belt</option>
+                    <option value="High Yellow Belt">High Yellow Belt</option>
+                    <option value="Low Blue Belt">Low Blue Belt</option>
+                    <option value="High Blue Belt">High Blue Belt</option>
+                    <option value="Low Red Belt">Low Red Belt</option>
+                    <option value="High Red Belt">High Red Belt</option>
+                    <option value="Low Brown Belt">Low Brown Belt</option>
+                    <option value="High Brown Belt">High Brown Belt</option>
+                    <option value="Junior/Poom Black Belt">Junior/Poom Black Belt</option>
+                    <option value="Black/Dan Belt">Black/Dan Belt</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="sub-category">Sub Category</label>
+                <select id="sub-category">
+                    <option value="Toddlers Division">Toddlers Division</option>
+                    <option value="Gradeschool Division">Gradeschool Division</option>
+                    <option value="Cadet Division">Cadet Division</option>
+                    <option value="Junior Division">Junior Division</option>
+                    <option value="Senior Division">Senior Division</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="club-region">Club Region</label>
+                <select id="club-region">
+                    <option value="Region I – Ilocos Region">Region I – Ilocos Region</option>
+                    <option value="Region II – Cagayan Valley">Region II – Cagayan Valley</option>
+                    <option value="Region III – Central Luzon">Region III – Central Luzon</option>
+                    <option value="Region IV‑A – CALABARZON">Region IV‑A – CALABARZON</option>
+                    <option value="MIMAROPA Region">MIMAROPA Region</option>
+                    <option value="Region V – Bicol Region">Region V – Bicol Region</option>
+                    <option value="Region VI – Western Visayas">Region VI – Western Visayas</option>
+                    <option value="Region VII – Central Visayas">Region VII – Central Visayas</option>
+                    <option value="Region VIII – Eastern Visayas">Region VIII – Eastern Visayas</option>
+                    <option value="Region IX – Zamboanga Peninsula">Region IX – Zamboanga Peninsula</option>
+                    <option value="Region X – Northern Mindanao">Region X – Northern Mindanao</option>
+                    <option value="Region XI – Davao Region">Region XI – Davao Region</option>
+                    <option value="Region XII – SOCCSKSARGEN">Region XII – SOCCSKSARGEN</option>
+                    <option value="Region XIII – Caraga">Region XIII – Caraga</option>
+                    <option value="NCR – National Capital Region">NCR – National Capital Region</option>
+                    <option value="CAR – Cordillera Administrative Region">CAR – Cordillera Administrative Region</option>
+                    <option value="BARMM – Bangsamoro Autonomous Region in Muslim Mindanao">BARMM – Bangsamoro Autonomous Region in Muslim Mindanao</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="athlete-search">Search Athlete</label>
+                <input type="text" id="athlete-search" placeholder="Search...">
+            </div>
+            <button class="apply-btn">Apply</button>
+        </div>
+
+        <div class="rank-panel">
+            <h3>Athlete Rankings</h3>
+            <table class="rankings">
                 <thead>
                     <tr>
-                        <th>Ranking Category</th>
-                        <th>Sub Category</th>
-                        <th>Club Region</th>
-                        <th>Search Athlete</th>
-                    </tr>
-                    <tr>
-                        <th>
-                            <button class="dropbtn"></button>
-                            <div class="dropdown-content">
-                                <a href="#">Link 1</a>
-                                <a href="#">Link 2</a>
-                                <a href="#">Link 3</a>
-                            </div>
-                        </th>
-                        <th>
-                            <button class="dropbtn"></button>
-                            <div class="dropdown-content">
-                                <a href="#">Link 1</a>
-                                <a href="#">Link 2</a>
-                                <a href="#">Link 3</a>
-                            </div>
-                        </th>
-                        <th>
-                            <button class="dropbtn"></button>
-                            <div class="dropdown-content">
-                                <a href="#">Link 1</a>
-                                <a href="#">Link 2</a>
-                                <a href="#">Link 3</a>
-                            </div>
-                        </th>
-                        <th>
-                            <button class="dropbtn"></button>
-                            <div class="dropdown-content">
-                                <a href="#">Link 1</a>
-                                <a href="#">Link 2</a>
-                                <a href="#">Link 3</a>
-                            </div>
-                        </th>
+                        <th>Rank</th>
+                        <th>Name</th>
+                        <th>Club</th>
+                        <th>Points</th>
                     </tr>
                 </thead>
+                <tbody>
+                    {{#each athletes}}
+                    <tr onclick="showAthleteDetails('{{name}}', '{{class}}', '{{height}}', '{{weight}}', '{{birthplace}}', '{{club}}', '{{image}}')">
+                        <td>{{rank}}</td>
+                        <td>{{name}}</td>
+                        <td>{{club}}</td>
+                        <td>{{points}}</td>
+                    </tr>
+                    {{/each}}
+                </tbody>
             </table>
         </div>
-        <div class="rank-panel">
-            <div class="community-panel">
-                <h3>Athlete Rankings</h3>
-                <table class="rankings">
+
+        <div id="athlete-details" class="athlete-details">
+            <div class="athlete-header">
+                <img id="athlete-image" src="" alt="Athlete Image">
+                <div class="athlete-info">
+                    <h2 id="athlete-name">Name</h2>
+                    <p id="athlete-class">Class</p>
+                    <p id="athlete-height-weight">Height/Weight</p>
+                    <p id="athlete-birthplace">Birthplace</p>
+                    <p id="athlete-club">Club</p>
+                </div>
+            </div>
+            <div class="athlete-stats">
+                <h3>Overview</h3>
+                <p>Career Stats</p>
+                <table>
                     <thead>
                         <tr>
-                            <th> Rank </th>
-                            <th> Name </th>
-                            <th></th>
-                            <th> Points </th>
+                            <th>Year</th>
+                            <th>GP</th>
+                            <th>MIN</th>
+                            <th>PTS</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        {{#each athletes}}
-                        <tr>
-                            <td> {{id}} </td>
-                            <td> {{firstname}}</td>
-                            <td> {{lastname}} </td>
-                            <td> {{points}} </td>
-                        </tr>
-                        {{/each}}
+                    <tbody id="career-stats">
+                        <!-- Stats will be populated here -->
                     </tbody>
                 </table>
             </div>
@@ -148,6 +186,34 @@
                     }
                 }
             }
+        }
+
+        function showAthleteDetails(name, athleteClass, height, weight, birthplace, club, image) {
+            document.getElementById("athlete-name").textContent = name;
+            document.getElementById("athlete-class").textContent = "Class: " + athleteClass;
+            document.getElementById("athlete-height-weight").textContent = "HT/WT: " + height + " ft/in, " + weight + " kg";
+            document.getElementById("athlete-birthplace").textContent = "Birthplace: " + birthplace;
+            document.getElementById("athlete-club").textContent = "Club: " + club;
+            document.getElementById("athlete-image").src = image;
+
+            // Example stats - you will need to load real data
+            const stats = [
+                { year: 2024, gp: 20, min: 200, pts: 300 },
+                { year: 2023, gp: 25, min: 250, pts: 350 },
+                { year: 2022, gp: 22, min: 220, pts: 320 },
+                { year: 2021, gp: 23, min: 230, pts: 330 },
+            ];
+
+            const statsTable = document.getElementById("career-stats");
+            statsTable.innerHTML = ""; // Clear existing rows
+
+            stats.forEach(stat => {
+                const row = document.createElement("tr");
+                row.innerHTML = `<td>${stat.year}</td><td>${stat.gp}</td><td>${stat.min}</td><td>${stat.pts}</td>`;
+                statsTable.appendChild(row);
+            });
+
+            document.getElementById("athlete-details").style.display = "block"; // Show the athlete details
         }
     </script>
 </body>
