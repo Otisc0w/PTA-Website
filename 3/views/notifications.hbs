@@ -9,34 +9,34 @@
 </head>
 
 <body class="container">
-        <div class="header">
-            <div class="navbar">
-                <a href="home"><img src="/images/logo.png" class="logo" alt="Logo"></a>
-                <ul class="tabs">
-                    <li class="home"><a href="home">Home</a></li>
-                    <li class="athletes"><a href="athletes">Athletes</a></li>
-                    <li class="clubs"><a href="clubs">Clubs</a></li>
-                    <li class="events"><a href="events">Events</a></li>
-                    <li class="membership"><a href="membership">Membership</a></li>
-                    <li class="forum"><a href="forum">Forum</a></li>
-                    <li class="notifications">
-                        <a href="notifications">Notifications <span class="badge">3</span></a>
-                    </li>
-                    <li class="profile-pic">
-                        {{#if user.profilepic}}
-                            <a href="#" onclick="toggleDropdown()"><img src="{{user.profilepic}}" alt="Profile Picture" class="profile-picture"></a>
-                        {{else}}
-                            <a href="#" onclick="toggleDropdown()" class="profile-picture"><img src="/images/none.jpg" alt="Profile Picture" class="profile-picture"></a>
-                        {{/if}}
-                        <div id="dropdown" class="dropdown-content">
-                            <a href="profile">Profile</a>
-                            <a href="settings">Settings</a>
-                            <a href="/">Logout</a>
-                        </div>
-                    </li>
-                </ul>
-            </div>
+    <div class="header">
+        <div class="navbar">
+            <a href="home"><img src="/images/logo.png" class="logo" alt="Logo"></a>
+            <ul class="tabs">
+                <li class="home"><a href="home">Home</a></li>
+                <li class="athletes"><a href="athletes">Athletes</a></li>
+                <li class="clubs"><a href="clubs">Clubs</a></li>
+                <li class="events"><a href="events">Events</a></li>
+                <li class="membership"><a href="membership">Membership</a></li>
+                <li class="forum"><a href="forum">Forum</a></li>
+                <li class="notifications">
+                    <a href="notifications">Notifications <span class="badge">3</span></a>
+                </li>
+                <li class="profile-pic">
+                    {{#if user.profilepic}}
+                    <a href="#" onclick="toggleDropdown()"><img src="{{user.profilepic}}" alt="Profile Picture" class="profile-picture"></a>
+                    {{else}}
+                    <a href="#" onclick="toggleDropdown()" class="profile-picture"><img src="/images/none.jpg" alt="Profile Picture" class="profile-picture"></a>
+                    {{/if}}
+                    <div id="dropdown" class="dropdown-content">
+                        <a href="profile">Profile</a>
+                        <a href="settings">Settings</a>
+                        <a href="/">Logout</a>
+                    </div>
+                </li>
+            </ul>
         </div>
+    </div>
 
     <div class="notifications-container">
         <h1>Notifications</h1>
@@ -52,16 +52,26 @@
                 </div>
                 <button class="delete-button">X</button>
             </li>
+            {{else}}
+            <li>No notifications available</li>
             {{/each}}
         </ul>
     </div>
 
     <script>
+        // This code assumes you have access to the `notifications` data in your JavaScript context.
+        // If you don't, you need to make sure the data is available here.
+        document.addEventListener("DOMContentLoaded", function () {
+            // Assuming you have a variable `notifications` that holds your notifications data.
+            const notifications = []; // Replace with actual data fetching logic.
+            console.log("Notifications:", notifications);
+        });
+
         function toggleDropdown() {
             document.getElementById("dropdown").classList.toggle("show");
         }
 
-        window.onclick = function(event) {
+        window.onclick = function (event) {
             if (!event.target.matches('.profile-pic img')) {
                 var dropdowns = document.getElementsByClassName("dropdown-content");
                 for (var i = 0; i < dropdowns.length; i++) {
