@@ -61,6 +61,32 @@ async function checkAndRemoveOldRegistrations() {
 }
 cron.schedule('0 * * * *', checkAndRemoveOldRegistrations);
 
+hbs.registerHelper('renderComments', function(comments, options) {
+  function renderNestedComments(comments, parentId) {
+    let out = '<ul>';
+    comments.filter(comment => comment.parent_id === parentId).forEach(comment => {
+      out += '<li>' + options.fn(comment);
+      const childComments = comments.filter(c => c.parent_id === comment.id);
+      if (childComments.length) {
+        out += renderNestedComments(comments, comment.id);
+      }
+      out += '</li>';
+    });
+    out += '</ul>';
+    return out;
+  }
+
+  return renderNestedComments(comments, null);
+});
+
+hbs.registerHelper('reverseEach', function(context, options) {
+  let out = '';
+  for (let i = context.length - 1; i >= 0; i--) {
+    out += options.fn(context[i]);
+  }
+  return out;
+});
+
 hbs.registerHelper('eq', function (a, b) {
   return a === b;
 });
@@ -425,9 +451,9 @@ app.post('/update-status', async (req, res) => {
 
     console.log('Registration updated:', registration);
 
-    // Check if status is 4, indicating the need to update the user's registered column
+    // Check if status is 4, indicating the need to update the user's registered column and insert into athletes table
     if (status == 4) {
-      const { submittedby } = registration;
+      const { submittedby, firstname, middlename, lastname, gender, bday, phonenum, email, lastpromo, promolocation, clubregion, clubname, beltlevel, instructorfirstname, instructormi, instructorlastname, instructormobile, instructoremail } = registration;
 
       console.log('Updating user with username:', submittedby);
 
@@ -445,6 +471,36 @@ app.post('/update-status', async (req, res) => {
       }
 
       console.log('User updated:', user);
+
+      // Insert the relevant data into the athletes table
+      const { error: insertAthleteError } = await supabase
+        .from('athletes')
+        .insert([{
+          firstname,
+          middlename,
+          lastname,
+          gender,
+          bday,
+          phonenum,
+          email,
+          lastpromo,
+          promolocation,
+          clubregion,
+          clubname,
+          beltlevel,
+          instructorfirstname,
+          instructormi,
+          instructorlastname,
+          instructormobile,
+          instructoremail
+        }]);
+
+      if (insertAthleteError) {
+        console.error('Error inserting athlete:', insertAthleteError.message);
+        return res.status(500).send('Error inserting athlete');
+      }
+
+      console.log('Athlete inserted successfully');
     }
 
     res.redirect(`/membership-review/${applicationId}`); // Redirect back to the review page
@@ -453,6 +509,38 @@ app.post('/update-status', async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+
+app.post('/add-comment', async (req, res) => {
+  if (!req.session.user) {
+    return res.status(401).send('Unauthorized: No user logged in');
+  }
+
+  const { threadid, comment, parentid } = req.body;
+  const commenter = req.session.user.username;
+
+  try {
+    // Insert the new comment into the database
+    const { error } = await supabase
+      .from('forum_comments')
+      .insert([{
+        threadid,
+        parentid: parentid || null, // Handle replies
+        commenter,
+        comment,
+      }]);
+
+    if (error) {
+      console.error('Error inserting comment:', error.message);
+      return res.status(500).send('Error inserting comment');
+    }
+
+    res.redirect(`/forum-thread/${threadid}`);
+  } catch (error) {
+    console.error('Server error:', error.message);
+    res.status(500).json({ error: error.message });
+  }
+});
+
 
 
 
@@ -527,6 +615,48 @@ app.get('/forum-create', async function (req, res) {
     res.status(500).json({ error: error.message });
   }
 });
+
+app.get('/forum-thread/:id', async function (req, res) {
+  if (!req.session.user) {
+    return res.redirect('/');
+  }
+
+  const threadId = req.params.id;
+
+  try {
+    // Fetch the specific thread data
+    const { data: thread, error: threadError } = await supabase
+      .from('forum_threads')
+      .select('*')
+      .eq('id', threadId)
+      .single();
+
+    if (threadError) {
+      return res.status(400).json({ error: threadError.message });
+    }
+
+    console.log("Fetched thread data:", thread); // Log the data to the console
+
+    // Fetch the comments for this thread
+    const { data: comments, error: commentsError } = await supabase
+      .from('forum_comments')
+      .select('*')
+      .eq('threadid', threadId);
+
+    if (commentsError) {
+      return res.status(400).json({ error: commentsError.message });
+    }
+
+    console.log("Fetched comments data:", comments); // Log the data to the console
+
+    // Render the forum-thread.hbs template with the fetched data
+    res.render('forum-thread', { thread, comments, user: req.session.user });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+
 
 app.get('/clubs', async function (req, res) {
   if (!req.session.user) {
