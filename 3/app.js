@@ -2,12 +2,10 @@ const express = require('express');
 const path = require('path');
 const multer = require('multer');
 const hbs = require('hbs');
-const session = require('express-session'); // Import express-session
+const session = require('express-session');
 const app = express();
 const cron = require('node-cron');
-
 require('dotenv').config();
-
 const { createClient } = require('@supabase/supabase-js');
 
 const port = process.env.PORT || 3000;
@@ -139,7 +137,55 @@ app.get('/data/:id', async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
-                                                                      // SUBMIT STUFF
+
+// Event registration route
+app.post('/events/register', async (req, res) => {
+  if (!req.session.user) {
+    return res.status(401).send('Unauthorized: No user logged in');
+  }
+
+  const { eventId } = req.body;
+  const userId = req.session.user.id;
+
+  console.log('Registering user:', userId, 'for event:', eventId);
+
+  try {
+    // Check if the user is already registered for the event
+    const { data: existingRegistration, error: checkError } = await supabase
+      .from('event_registrations')
+      .select('*')
+      .eq('user_id', userId)
+      .eq('event_id', eventId)
+      .single();
+
+    if (checkError) {
+      console.error('Error checking existing registration:', checkError.message);
+      return res.status(500).json({ error: checkError.message });
+    }
+
+    if (existingRegistration) {
+      return res.status(400).json({ msg: 'You are already registered for this event.' });
+    }
+
+    // Register the user for the event
+    const { data, error } = await supabase
+      .from('event_registrations')
+      .insert([{ user_id: userId, event_id: eventId }]);
+
+    if (error) {
+      console.error('Error registering for event:', error.message);
+      throw error;
+    }
+
+    console.log('Successfully registered user:', userId, 'for event:', eventId);
+
+    res.status(200).json({ msg: 'Successfully registered for the event!' });
+  } catch (error) {
+    console.error('Registration error:', error.message);
+    res.status(500).json({ error: error.message });
+  }
+});
+
 app.post('/submit-login', async (req, res) => {
   const { username, password } = req.body;
 
@@ -521,7 +567,6 @@ app.post('/add-comment', async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
-
 
                                                                         // VIEWS BELOW
 

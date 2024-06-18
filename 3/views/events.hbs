@@ -5,12 +5,58 @@
         <link rel="icon" type="image/x-icon" href="../images/favicon.ico" />
         <link rel="stylesheet" type="text/css" href="../stylesheets/home.css" />
         <link rel="stylesheet" type="text/css" href="../stylesheets/navbar.css" />
+        <style>
+            .event-details {
+                display: none;
+                margin-top: 10px;
+            }
+            .show {
+                display: block;
+            }
+            .btn {
+                display: inline-block;
+                padding: 10px 20px;
+                font-size: 16px;
+                color: #fff;
+                background-color: #007bff;
+                text-align: center;
+                text-decoration: none;
+                border-radius: 5px;
+                transition: background-color 0.3s;
+            }
+            .btn:hover {
+                background-color: #0056b3;
+            }
+            .search-bar {
+                margin-left: 10px;
+                margin-right: auto;
+            }
+            .search-bar input {
+                padding: 5px;
+                font-size: 16px;
+            }
+            .search-bar button {
+                padding: 5px 10px;
+                font-size: 16px;
+                background-color: #007bff;
+                color: white;
+                border: none;
+                border-radius: 5px;
+            }
+            .search-bar button:hover {
+                background-color: #0056b3;
+            }
+        </style>
     </head>
 
     <body class="container">
         <div class="header">
             <div class="navbar">
                 <a href="home"><img src="/images/logo.png" class="logo" alt="Logo"></a>
+                <div class="search-bar">
+                    <input type="text" id="searchInput" placeholder="Search for events...">
+                    <button onclick="searchEvents()">Search</button>
+                </div>
                 <ul class="tabs">
                     <li class="home"><a href="home">Home</a></li>
                     <li class="athletes"><a href="athletes">Athletes</a></li>
@@ -37,41 +83,72 @@
             </div>
         </div>
 
-    <div class="events-container">
-        <div class="main-panel">
-            <!-- upcoming events -->
-            <div class="news">
-                <h2>Upcoming Events</h2>
-                <div id="events" class="horizontal-container">
-                    {{#each events}}
-                    <div class="event">
-                        <img src="{{eventpicture}}" alt="Event {{id}}">
-                        <h3>{{title}} - May 26, 2024 7:00AM</h3>
-                        <p>{{description}}</p>
-                        <a href="#">Read More</a>
+        <div class="events-container">
+            <div class="main-panel">
+                <!-- upcoming events -->
+                <div class="news">
+                    <h2>Upcoming Events</h2>
+                    <div id="events" class="horizontal-container">
+                        {{#each events}}
+                        <div class="event">
+                            <img src="{{eventpicture}}" alt="Event {{id}}">
+                            <h3>{{title}} - May 26, 2024 7:00AM</h3>
+                            <p>{{description}}</p>
+                            <a href="#" class="btn" onclick="toggleDetails({{id}})">Read More</a>
+                            <div id="details-{{id}}" class="event-details">
+                                <p>Detailed information about the event.</p>
+                                <a href="#" class="btn" onclick="registerEvent({{id}})">Register</a>
+                            </div>
+                        </div>
+                        {{/each}}
                     </div>
-                    {{/each}}
                 </div>
             </div>
         </div>
-    </div>
 
-    <script>
-        function toggleDropdown() {
-            document.getElementById("dropdown").classList.toggle("show");
-        }
+        <script>
+            function toggleDetails(eventId) {
+                var details = document.getElementById("details-" + eventId);
+                details.classList.toggle("show");
+            }
 
-        window.onclick = function(event) {
-            if (!event.target.matches('.profile-pic img')) {
-                var dropdowns = document.getElementsByClassName("dropdown-content");
-                for (var i = 0; i < dropdowns.length; i++) {
-                    var openDropdown = dropdowns[i];
-                    if (openDropdown.classList.contains('show')) {
-                        openDropdown.classList.remove('show');
+            function toggleDropdown() {
+                document.getElementById("dropdown").classList.toggle("show");
+            }
+
+            window.onclick = function(event) {
+                if (!event.target.matches('.profile-pic img')) {
+                    var dropdowns = document.getElementsByClassName("dropdown-content");
+                    for (var i = 0; i < dropdowns.length; i++) {
+                        var openDropdown = dropdowns[i];
+                        if (openDropdown.classList.contains('show')) {
+                            openDropdown.classList.remove('show');
+                        }
                     }
                 }
             }
-        }
-    </script>
-</body>
+
+            function registerEvent(eventId) {
+                // Add your registration logic here
+                alert("Registered for event ID: " + eventId);
+            }
+
+            function searchEvents() {
+                var input, filter, events, event, title, i;
+                input = document.getElementById("searchInput");
+                filter = input.value.toLowerCase();
+                events = document.getElementById("events").getElementsByClassName("event");
+
+                for (i = 0; i < events.length; i++) {
+                    event = events[i];
+                    title = event.getElementsByTagName("h3")[0];
+                    if (title.innerHTML.toLowerCase().indexOf(filter) > -1) {
+                        event.style.display = "";
+                    } else {
+                        event.style.display = "none";
+                    }
+                }
+            }
+        </script>
+    </body>
 </html>
