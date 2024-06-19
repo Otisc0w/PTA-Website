@@ -5,6 +5,60 @@ const hbs = require('hbs');
 const session = require('express-session'); // Import express-session
 const app = express();
 const cron = require('node-cron');
+const axios = require('axios');
+
+// Replace these with your actual API keys from PayMongo
+const PAYMONGO_SECRET_KEY = 'sk_test_rfwrr7CgVzNP4AnGJcjU6yFa';
+const PAYMONGO_PUBLIC_KEY = 'pk_test_tfhdABT3Jvix9Wvsbv5AGP6d ';
+
+const instance = axios.create({
+  baseURL: 'https://api.paymongo.com/v1',
+  headers: {
+    'Authorization': `Basic ${Buffer.from(PAYMONGO_SECRET_KEY).toString('base64')}`,
+    'Content-Type': 'application/json',
+  }
+});
+
+const createPaymentIntent = async (amount, currency) => {
+  try {
+    const response = await instance.post('/payment_intents', {
+      data: {
+        attributes: {
+          amount: amount * 100, // PayMongo expects the amount in cents
+          currency: currency,
+          payment_method_allowed: ['card'],
+          capture_type: 'automatic'
+        }
+      }
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error creating payment intent:', error.response.data);
+    throw error;
+  }
+};
+
+const attachPaymentMethod = async (paymentIntentId, paymentMethodId) => {
+  try {
+    const response = await instance.post(`/payment_intents/${paymentIntentId}/attach`, {
+      data: {
+        attributes: {
+          payment_method: paymentMethodId
+        }
+      }
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error attaching payment method:', error.response.data);
+    throw error;
+  }
+};
+
+module.exports = {
+  createPaymentIntent,
+  attachPaymentMethod
+};
+                                                                          // fdsfsdfasdfasdfasdfasdf
 
 require('dotenv').config();
 
