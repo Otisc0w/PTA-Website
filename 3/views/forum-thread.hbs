@@ -9,38 +9,38 @@
 
 <body style="margin:0;" class="container">
     <div class="header">
-            <div class="navbar">
-                <a href="home"><img src="/images/logo.png" class="logo" alt="Logo"></a>
-                <ul class="tabs">
-                    <li class="home"><a href="home">Home</a></li>
-                    <li class="athletes"><a href="athletes">Athletes</a></li>
-                    <li class="clubs"><a href="clubs">Clubs</a></li>
-                    <li class="events"><a href="events">Events</a></li>
-                    <li class="membership"><a href="membership">Membership</a></li>
-                    <li class="forum"><a href="forum">Forum</a></li>
-                    <li class="notifications">
-                        <a href="notifications">Notifications <span class="badge">3</span></a>
-                    </li>
-                    <li class="profile-pic">
-                        {{#if user.profilepic}}
-                            <a href="#" onclick="toggleDropdown()"><img src="{{user.profilepic}}" alt="Profile Picture" class="profile-picture"></a>
-                        {{else}}
-                            <a href="#" onclick="toggleDropdown()" class="profile-picture"><img src="/images/none.jpg" alt="Profile Picture" class="profile-picture"></a>
-                        {{/if}}
-                        <div id="dropdown" class="dropdown-content">
-                            <a href="profile">Profile</a>
-                            <a href="settings">Settings</a>
-                            <a href="/">Logout</a>
-                        </div>
-                    </li>
-                </ul>
-            </div>
+        <div class="navbar">
+            <a href="home"><img src="/images/logo.png" class="logo" alt="Logo"></a>
+            <ul class="tabs">
+                <li class="home"><a href="home">Home</a></li>
+                <li class="athletes"><a href="athletes">Athletes</a></li>
+                <li class="clubs"><a href="clubs">Clubs</a></li>
+                <li class="events"><a href="events">Events</a></li>
+                <li class="membership"><a href="membership">Membership</a></li>
+                <li class="forum"><a href="forum">Forum</a></li>
+                <li class="notifications">
+                    <a href="notifications">Notifications <span class="badge">3</span></a>
+                </li>
+                <li class="profile-pic">
+                    {{#if user.profilepic}}
+                        <a href="#" onclick="toggleDropdown()"><img src="{{user.profilepic}}" alt="Profile Picture" class="profile-picture"></a>
+                    {{else}}
+                        <a href="#" onclick="toggleDropdown()" class="profile-picture"><img src="/images/none.jpg" alt="Profile Picture" class="profile-picture"></a>
+                    {{/if}}
+                    <div id="dropdown" class="dropdown-content">
+                        <a href="profile">Profile</a>
+                        <a href="settings">Settings</a>
+                        <a href="/">Logout</a>
+                    </div>
+                </li>
+            </ul>
         </div>
+    </div>
 
    <div class="forum-container">
         <div class="post-container">
             <div class="post-content">
-                <h1 class="post-title">{{thread.title}} id: {{thread.id}}</h1>
+                <h1 class="post-title">{{thread.title}}</h1>
                 <div class="post-info">
                     <span>Posted by <a href="profile?username={{thread.originalposter}}">{{thread.originalposter}}</a> on {{thread.created_at}}</span>
                 </div>
@@ -72,34 +72,31 @@
             </form>
         </div>
 
-        <div class="comments-section">
+        <div class="comments-container">
             <h2>Comments</h2>
-            {{#reverseEach comments}}
-            <div class="comment">
+            {{#if comments.length}}
+            {{#renderComments comments}}
+                <div class="comment">
                 <div class="comment-content">
                     <div class="comment-header">
-                        <span class="comment-user">{{commenter}}</span>
-                        <span class="comment-date">{{created_at}}</span>
+                    <span class="comment-user">{{commenter}}</span>
+                    <span class="comment-date">{{created_at}}</span>
                     </div>
                     <div class="comment-body">
-                        <p>{{comment}}</p>
+                    <p>{{comment}}</p>
                     </div>
+                    <form action="/add-comment" method="POST">
+                    <input type="hidden" name="threadid" value="{{../thread.id}}">
+                    <input type="hidden" name="parentid" value="{{id}}">
+                    <textarea name="comment" placeholder="Reply to this comment" required></textarea>
+                    <button type="submit">Reply</button>
+                    </form>
                 </div>
-            </div>
-                {{!-- {{#reverseEach comments}}
-                <div class="comment">
-                    <div class="comment-content">
-                        <div class="comment-header">
-                            <span class="comment-user">{{commenter}}</span>
-                            <span class="comment-date">{{created_at}}</span>
-                        </div>
-                        <div class="comment-body">
-                            <p>{{comment}}</p>
-                        </div>
-                    </div>
                 </div>
-                {{/reverseEach}} --}}
-            {{/reverseEach}}
+            {{/renderComments}}
+            {{else}}
+            <p>No comments yet.</p>
+            {{/if}}
         </div>
     </div>
 <footer>

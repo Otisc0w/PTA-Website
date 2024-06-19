@@ -127,6 +127,24 @@ hbs.registerHelper('eq', function (a, b) {
   return a === b;
 });
 
+hbs.registerHelper('renderComments', function(comments, options) {
+  function renderNestedComments(comments, parentId) {
+    let out = '<ul>';
+    comments.filter(comment => comment.parentid === parentId).forEach(comment => {
+      out += '<li>' + options.fn(comment);
+      const childComments = comments.filter(c => c.parentid === comment.id);
+      if (childComments.length) {
+        out += renderNestedComments(comments, comment.id);
+      }
+      out += '</li>';
+    });
+    out += '</ul>';
+    return out;
+  }
+
+  return renderNestedComments(comments, null);
+});
+
 // Configure express-session
 app.use(session({
   secret: 'your_secret_key', // Replace with a secure secret key
@@ -551,7 +569,7 @@ app.post('/add-comment', async (req, res) => {
     return res.status(401).send('Unauthorized: No user logged in');
   }
 
-  const { threadid, comment } = req.body;
+  const { threadid, comment, parentid } = req.body;
   const commenter = req.session.user.username;
 
   try {
@@ -560,6 +578,7 @@ app.post('/add-comment', async (req, res) => {
       .from('forum_comments')
       .insert([{
         threadid,
+        parentid: parentid === 'null' ? null : parentid, // Handle replies
         commenter,
         comment
       }]);
@@ -575,6 +594,7 @@ app.post('/add-comment', async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+
 
 
                                                                         // VIEWS BELOW
@@ -668,7 +688,7 @@ app.get('/forum-thread/:id', async function (req, res) {
       return res.status(400).json({ error: threadError.message });
     }
 
-    console.log("Fetched thread data:", thread); // Log the data to the console
+    console.log("Fetched thread data:", thread);
 
     // Fetch the comments for this thread
     const { data: comments, error: commentsError } = await supabase
@@ -680,7 +700,7 @@ app.get('/forum-thread/:id', async function (req, res) {
       return res.status(400).json({ error: commentsError.message });
     }
 
-    console.log("Fetched comments data:", comments); // Log the data to the console
+    console.log("Fetched comments data:", comments);
 
     // Render the forum-thread.hbs template with the fetched data
     res.render('forum-thread', { thread, comments, user: req.session.user });
@@ -688,6 +708,7 @@ app.get('/forum-thread/:id', async function (req, res) {
     res.status(500).json({ error: error.message });
   }
 });
+
 
 app.get('/clubs', async function (req, res) {
   if (!req.session.user) {
