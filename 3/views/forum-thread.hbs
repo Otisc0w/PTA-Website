@@ -77,25 +77,27 @@
             {{#if comments.length}}
             {{#renderComments comments}}
                 <div class="comment">
-                <div class="comment-content">
-                    <div class="comment-header">
-                    <span class="comment-user">{{commenter}}</span>
-                    <span class="comment-date">{{created_at}}</span>
+                    <div class="comment-content">
+                        <div class="comment-header">
+                            <span class="comment-user">{{commenter}}</span>
+                            <span class="comment-date">{{created_at}}</span>
+                        </div>
+                        <div class="comment-body">
+                            <p>{{comment}}</p>
+                        </div>
+                        <div class="comment-form">
+                            <form action="/add-comment" method="POST">
+                                <input type="hidden" name="threadid" value="{{../thread.id}}">
+                                <input type="hidden" name="parentid" value="{{id}}">
+                                <textarea name="comment" placeholder="Reply to this comment" required></textarea>
+                                <button type="submit">Reply</button>
+                            </form>
+                        </div>
                     </div>
-                    <div class="comment-body">
-                    <p>{{comment}}</p>
-                    </div>
-                    <form action="/add-comment" method="POST">
-                    <input type="hidden" name="threadid" value="{{../thread.id}}">
-                    <input type="hidden" name="parentid" value="{{id}}">
-                    <textarea name="comment" placeholder="Reply to this comment" required></textarea>
-                    <button type="submit">Reply</button>
-                    </form>
-                </div>
                 </div>
             {{/renderComments}}
             {{else}}
-            <p>No comments yet.</p>
+                <p>No comments yet.</p>
             {{/if}}
         </div>
     </div>
