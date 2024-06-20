@@ -51,12 +51,12 @@
                 <form id="editprofile" action="/save-profile-changes" method="post" enctype="multipart/form-data">
                     <div class="profile-pic-section">
                         {{#if user.profilepic}}
-                            <img src="{{user.profilepic}}" alt="Profile Picture" class="profile-picture">
+                        <img src="{{user.profilepic}}" alt="Profile Picture" class="profile-picture">
                         {{else}}
-                            <img src="/images/none.jpg" alt="Profile Picture" class="profile-picture">
+                        <img src="/images/none.jpg" alt="Profile Picture" class="profile-picture">
                         {{/if}}
                         <input type="file" id="file-input" name="file" class="file-input">
-                        <button class="edit-profile-pic" onclick="changeProfilePic()">Edit</button>
+                        <button class="edit-profile-pic">Edit</button>
                     </div>
                     <div class="form-group">
                         <label for="firstname">First Name:</label>
@@ -254,7 +254,6 @@
         function toggleDropdown() {
             document.getElementById("dropdown").classList.toggle("show");
         }
-
         window.onclick = function(event) {
             if (!event.target.matches('.profile-pic img')) {
                 var dropdowns = document.getElementsByClassName("dropdown-content");
@@ -266,7 +265,6 @@
                 }
             }
         }
-
         function setActiveTab() {
             const params = new URLSearchParams(window.location.search);
             const tab = params.get('tab') || 'viewProfile';
@@ -279,14 +277,11 @@
             });
             document.getElementById(tab + 'Link').classList.add('active');
         }
-
         window.onload = setActiveTab;
-
         function validatePassword() {
             const newPassword = document.getElementById('newPassword').value;
             const confirmPassword = document.getElementById('confirmPassword').value;
             let isValid = true;
-
             // Validation criteria
             const criteria = {
                 charLength: newPassword.length >= 6,
@@ -295,7 +290,6 @@
                 number: /[0-9]/.test(newPassword),
                 symbol: /[!@#$%^&*(),.?":{}|<>]/.test(newPassword)
             };
-
             // Update UI for criteria
             for (const criterion in criteria) {
                 const element = document.getElementById(criterion.replace(/[A-Z]/g, letter => '-' + letter.toLowerCase()));
@@ -308,7 +302,6 @@
                     isValid = false;
                 }
             }
-
             // Confirm password match
             if (newPassword !== confirmPassword) {
                 isValid = false;
@@ -316,17 +309,14 @@
             } else {
                 document.getElementById('passwordError').style.display = 'none';
             }
-
             return isValid;
         }
-
         function submitPasswordChange() {
             if (validatePassword()) {
                 // Perform password change logic here
                 // For example, send an AJAX request to your server to change the password
                 const currentPassword = document.getElementById('currentPassword').value;
                 const newPassword = document.getElementById('newPassword').value;
-
                 fetch('/change-password', {
                     method: 'POST',
                     headers: {
@@ -344,12 +334,10 @@
                     console.error('Error:', error);
                     alert('Failed to change password');
                 });
-
                 return false; // Prevent form submission
             }
             return false; // Prevent form submission if validation fails
         }
-
         function saveNotificationSettings() {
             // Implement saving logic here
             const formData = new FormData(document.getElementById('notificationSettingsForm'));
@@ -360,7 +348,6 @@
                 }
                 settings[key].push(value);
             });
-
             fetch('/save-notification-settings', {
                 method: 'POST',
                 headers: {
@@ -377,7 +364,6 @@
                 console.error('Error:', error);
                 alert('Failed to save notification settings');
             });
-
             return false; // Prevent form submission
         }
     </script>
