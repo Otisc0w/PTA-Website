@@ -5,6 +5,60 @@ const hbs = require('hbs');
 const session = require('express-session'); // Import express-session
 const app = express();
 const cron = require('node-cron');
+const axios = require('axios');
+
+// Replace these with your actual API keys from PayMongo
+// const PAYMONGO_SECRET_KEY = 'sk_test_rfwrr7CgVzNP4AnGJcjU6yFa';
+// const PAYMONGO_PUBLIC_KEY = 'pk_test_tfhdABT3Jvix9Wvsbv5AGP6d ';
+
+// const instance = axios.create({
+//   baseURL: 'https://api.paymongo.com/v1',
+//   headers: {
+//     'Authorization': `Basic ${Buffer.from(PAYMONGO_SECRET_KEY).toString('base64')}`,
+//     'Content-Type': 'application/json',
+//   }
+// });
+
+// const createPaymentIntent = async (amount, currency) => {
+//   try {
+//     const response = await instance.post('/payment_intents', {
+//       data: {
+//         attributes: {
+//           amount: amount * 100, // PayMongo expects the amount in cents
+//           currency: currency,
+//           payment_method_allowed: ['card'],
+//           capture_type: 'automatic'
+//         }
+//       }
+//     });
+//     return response.data;
+//   } catch (error) {
+//     console.error('Error creating payment intent:', error.response.data);
+//     throw error;
+//   }
+// };
+
+// const attachPaymentMethod = async (paymentIntentId, paymentMethodId) => {
+//   try {
+//     const response = await instance.post(`/payment_intents/${paymentIntentId}/attach`, {
+//       data: {
+//         attributes: {
+//           payment_method: paymentMethodId
+//         }
+//       }
+//     });
+//     return response.data;
+//   } catch (error) {
+//     console.error('Error attaching payment method:', error.response.data);
+//     throw error;
+//   }
+// };
+
+// module.exports = {
+//   createPaymentIntent,
+//   attachPaymentMethod
+// };
+                                                                          // fdsfsdfasdfasdfasdfasdf
 
 require('dotenv').config();
 
@@ -61,24 +115,6 @@ async function checkAndRemoveOldRegistrations() {
 }
 cron.schedule('0 * * * *', checkAndRemoveOldRegistrations);
 
-hbs.registerHelper('renderComments', function(comments, options) {
-  function renderNestedComments(comments, parentId) {
-    let out = '<ul>';
-    comments.filter(comment => comment.parent_id === parentId).forEach(comment => {
-      out += '<li>' + options.fn(comment);
-      const childComments = comments.filter(c => c.parent_id === comment.id);
-      if (childComments.length) {
-        out += renderNestedComments(comments, comment.id);
-      }
-      out += '</li>';
-    });
-    out += '</ul>';
-    return out;
-  }
-
-  return renderNestedComments(comments, null);
-});
-
 hbs.registerHelper('reverseEach', function(context, options) {
   let out = '';
   for (let i = context.length - 1; i >= 0; i--) {
@@ -89,6 +125,24 @@ hbs.registerHelper('reverseEach', function(context, options) {
 
 hbs.registerHelper('eq', function (a, b) {
   return a === b;
+});
+
+hbs.registerHelper('renderComments', function(comments, options) {
+  function renderNestedComments(comments, parentId) {
+    let out = '<ul>';
+    comments.filter(comment => comment.parentid === parentId).forEach(comment => {
+      out += '<li>' + options.fn(comment);
+      const childComments = comments.filter(c => c.parentid === comment.id);
+      if (childComments.length) {
+        out += renderNestedComments(comments, comment.id);
+      }
+      out += '</li>';
+    });
+    out += '</ul>';
+    return out;
+  }
+
+  return renderNestedComments(comments, null);
 });
 
 // Configure express-session
@@ -392,7 +446,7 @@ app.post('/save-profile-changes', upload.single('file'), async (req, res) => {
   try {
     // Update the user in the database
     const { data, error } = await supabase
-      .from('users') // Replace 'users' with your actual table name if different
+      .from('users')
       .update({
         firstname,
         middlename,
@@ -524,9 +578,9 @@ app.post('/add-comment', async (req, res) => {
       .from('forum_comments')
       .insert([{
         threadid,
-        parentid: parentid || null, // Handle replies
+        parentid: parentid === 'null' ? null : parentid, // Handle replies
         commenter,
-        comment,
+        comment
       }]);
 
     if (error) {
@@ -540,8 +594,6 @@ app.post('/add-comment', async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
-
-
 
 
                                                                         // VIEWS BELOW
@@ -635,7 +687,7 @@ app.get('/forum-thread/:id', async function (req, res) {
       return res.status(400).json({ error: threadError.message });
     }
 
-    console.log("Fetched thread data:", thread); // Log the data to the console
+    console.log("Fetched thread data:", thread);
 
     // Fetch the comments for this thread
     const { data: comments, error: commentsError } = await supabase
@@ -647,7 +699,7 @@ app.get('/forum-thread/:id', async function (req, res) {
       return res.status(400).json({ error: commentsError.message });
     }
 
-    console.log("Fetched comments data:", comments); // Log the data to the console
+    console.log("Fetched comments data:", comments);
 
     // Render the forum-thread.hbs template with the fetched data
     res.render('forum-thread', { thread, comments, user: req.session.user });
@@ -655,7 +707,6 @@ app.get('/forum-thread/:id', async function (req, res) {
     res.status(500).json({ error: error.message });
   }
 });
-
 
 
 app.get('/clubs', async function (req, res) {
