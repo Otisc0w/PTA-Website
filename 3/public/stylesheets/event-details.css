@@ -1,0 +1,38 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    width: 80%;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.event-header {
+    text-align: center;
+}
+
+.event-header img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
+}
+
+.event-details {
+    margin-top: 20px;
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.event-details h2 {
+    margin-top: 0;
+}
+
+.event-details p {
+    line-height: 1.6;
+}

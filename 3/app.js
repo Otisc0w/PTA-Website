@@ -5,6 +5,60 @@ const hbs = require('hbs');
 const session = require('express-session');
 const app = express();
 const cron = require('node-cron');
+const axios = require('axios');
+
+// Replace these with your actual API keys from PayMongo
+const PAYMONGO_SECRET_KEY = 'sk_test_rfwrr7CgVzNP4AnGJcjU6yFa';
+const PAYMONGO_PUBLIC_KEY = 'pk_test_tfhdABT3Jvix9Wvsbv5AGP6d';
+
+const instance = axios.create({
+  baseURL: 'https://api.paymongo.com/v1',
+  headers: {
+    'Authorization': `Basic ${Buffer.from(PAYMONGO_SECRET_KEY).toString('base64')}`,
+    'Content-Type': 'application/json',
+  }
+});
+
+const createPaymentIntent = async (amount, currency) => {
+  try {
+    const response = await instance.post('/payment_intents', {
+      data: {
+        attributes: {
+          amount: amount * 100, 
+          currency: currency,
+          payment_method_allowed: ['card'],
+          capture_type: 'automatic'
+        }
+      }
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error creating payment intent:', error.response.data);
+    throw error;
+  }
+};
+
+const attachPaymentMethod = async (paymentIntentId, paymentMethodId) => {
+  try {
+    const response = await instance.post(`/payment_intents/${paymentIntentId}/attach`, {
+      data: {
+        attributes: {
+          payment_method: paymentMethodId
+        }
+      }
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error attaching payment method:', error.response.data);
+    throw error;
+  }
+};
+
+module.exports = {
+  createPaymentIntent,
+  attachPaymentMethod
+};entMethod
+
 require('dotenv').config();
 const { createClient } = require('@supabase/supabase-js');
 
@@ -138,6 +192,7 @@ app.get('/data/:id', async (req, res) => {
   }
 });
 
+
 // Event registration route
 app.post('/events/register', async (req, res) => {
   if (!req.session.user) {
@@ -186,6 +241,7 @@ app.post('/events/register', async (req, res) => {
   }
 });
 
+// Submit Login
 app.post('/submit-login', async (req, res) => {
   const { username, password } = req.body;
 
@@ -194,7 +250,7 @@ app.post('/submit-login', async (req, res) => {
       .from('users')
       .select('*')
       .eq('username', username)
-      .eq('password', password) //blue is from form and red is column in databse
+      .eq('password', password)
       .single(); // Ensure a single match
 
     if (error || !data) {
@@ -229,6 +285,7 @@ app.post('/submit-login', async (req, res) => {
   }
 });
 
+// Submit Signup
 app.post('/submit-signup', async (req, res) => {
   const { username, password, confpassword } = req.body; // Capture user input from the form
 
@@ -243,7 +300,7 @@ app.post('/submit-signup', async (req, res) => {
   try {
     // Insert the new user into the database
     const { data, error } = await supabase
-      .from('users') // Replace 'users' with your actual table name if different
+      .from('users')
       .insert([{ username, password }]);
 
     if (error) {
@@ -262,6 +319,7 @@ app.post('/submit-signup', async (req, res) => {
   }
 });
 
+// Submit NCC
 app.post('/submit-ncc', async (req, res) => {
   const {
     apptype,
@@ -294,7 +352,7 @@ app.post('/submit-ncc', async (req, res) => {
   try {
     // Insert the new user into the database
     const { data, error } = await supabase
-      .from('ncc_registrations') // Replace 'users' with your actual table name if different
+      .from('ncc_registrations')
       .insert([{
         apptype,
         firstname,
@@ -332,6 +390,7 @@ app.post('/submit-ncc', async (req, res) => {
   }
 });
 
+// Create Post
 app.post('/create-post', async (req, res) => {
   const {
     title,
@@ -349,7 +408,7 @@ app.post('/create-post', async (req, res) => {
   try {
     // Update the user in the database
     const { data, error } = await supabase
-      .from('forum_threads') 
+      .from('forum_threads')
       .insert([{
         title,
         originalposter,
@@ -374,6 +433,7 @@ app.post('/create-post', async (req, res) => {
   }
 });
 
+// Save Profile Changes
 app.post('/save-profile-changes', upload.single('file'), async (req, res) => {
   const {
     firstname,
@@ -420,7 +480,7 @@ app.post('/save-profile-changes', upload.single('file'), async (req, res) => {
   try {
     // Update the user in the database
     const { data, error } = await supabase
-      .from('users') // Replace 'users' with your actual table name if different
+      .from('users')
       .update({
         firstname,
         middlename,
@@ -456,6 +516,7 @@ app.post('/save-profile-changes', upload.single('file'), async (req, res) => {
   }
 });
 
+// Update Status
 app.post('/update-status', async (req, res) => {
   if (!req.session.user) {
     return res.status(401).send('Unauthorized: No user logged in');
@@ -538,6 +599,7 @@ app.post('/update-status', async (req, res) => {
   }
 });
 
+// Add Comment
 app.post('/add-comment', async (req, res) => {
   if (!req.session.user) {
     return res.status(401).send('Unauthorized: No user logged in');
@@ -568,9 +630,55 @@ app.post('/add-comment', async (req, res) => {
   }
 });
 
-                                                                        // VIEWS BELOW
+// VIEWS BELOW
+// Create Event Route
+app.get('/create-event', (req, res) => {
+  if (!req.session.user) {
+    return res.redirect('/');
+  }
+  res.render('create-event', { user: req.session.user });
+});
 
+app.post('/create-event', async (req, res) => {
+  const { title, description, eventpicture, date, time, location, rank, age } = req.body;
 
+  try {
+    const { data, error } = await supabase
+      .from('events')
+      .insert([{ title, description, eventpicture, date, time, location, rank, age }]);
+
+    if (error) {
+      return res.status(500).json({ error: error.message });
+    }
+
+    res.redirect('/events');
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Event Details Route
+app.get('/event-details/:id', async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const { data, error } = await supabase
+      .from('events')
+      .select('*')
+      .eq('id', id)
+      .single();
+
+    if (error) {
+      return res.status(500).json({ error: error.message });
+    }
+
+    res.render('event-details', { event: data, user: req.session.user });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Home Route
 app.get('/home', async function (req, res) {
   if (!req.session.user) {
     return res.redirect('/');
@@ -802,8 +910,6 @@ app.get('/notifications', async function (req, res) {
     res.status(500).json({ error: error.message });
   }
 });
-
-                                                                        //MEMBERSHIP PAGES
 
 app.get('/membership-ncc', async function (req, res) {
   if (!req.session.user) {

@@ -1,50 +1,52 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>PTA | Home</title>
-        <link rel="icon" type="image/x-icon" href="../images/favicon.ico" />
-        <link rel="stylesheet" type="text/css" href="../stylesheets/home.css" />
-        <link rel="stylesheet" type="text/css" href="../stylesheets/navbar.css" />
-    </head>
-
-    <body class="container">
-        <div class="header">
-            <div class="navbar">
-                <a href="home"><img src="/images/logo.png" class="logo" alt="Logo"></a>
-                <ul class="tabs">
-                    <li class="home"><a href="home">Home</a></li>
-                    <li class="athletes"><a href="athletes">Athletes</a></li>
-                    <li class="clubs"><a href="clubs">Clubs</a></li>
-                    <li class="events"><a href="events">Events</a></li>
-                    <li class="membership"><a href="membership">Membership</a></li>
-                    <li class="forum"><a href="forum">Forum</a></li>
-                    <li class="notifications">
-                        <a href="notifications">Notifications <span class="badge"></span></a>
-                    </li>
-
-                    <li class="profile-pic">
-                        {{#if user.profilepic}}
-                            <a href="#" onclick="toggleDropdown()"><img src="{{user.profilepic}}" alt="Profile Picture" class="profile-picture"></a>
-                        {{else}}
-                            <a href="#" onclick="toggleDropdown()" class="profile-picture"><img src="/images/none.jpg" alt="Profile Picture" class="profile-picture"></a>
-                        {{/if}}
-                        <div id="dropdown" class="dropdown-content">
-                            <a href="profile">Profile</a>
-                            <a href="settings">Settings</a>
-                            <a href="/">Logout</a>
-                        </div>
-                    </li>
-                </ul>
-            </div>
+<head>
+    <title>PTA | Home</title>
+    <link rel="icon" type="image/x-icon" href="../images/favicon.ico" />
+    <link rel="stylesheet" type="text/css" href="../stylesheets/home.css" />
+    <link rel="stylesheet" type="text/css" href="../stylesheets/navbar.css" />
+</head>
+<body class="container">
+    <div class="header">
+        <div class="navbar">
+            <a href="home"><img src="/images/logo.png" class="logo" alt="Logo"></a>
+            <ul class="tabs">
+                <li class="home"><a href="home">Home</a></li>
+                <li class="athletes"><a href="athletes">Athletes</a></li>
+                <li class="clubs"><a href="clubs">Clubs</a></li>
+                <li class="events"><a href="events">Events</a></li>
+                <li class="membership"><a href="membership">Membership</a></li>
+                <li class="forum"><a href="forum">Forum</a></li>
+                <li class="notifications">
+                    <a href="notifications">Notifications <span class="badge"></span></a>
+                </li>
+                <li class="profile-pic">
+                    {{#if user.profilepic}}
+                        <a href="#" onclick="toggleDropdown()"><img src="{{user.profilepic}}" alt="Profile Picture" class="profile-picture"></a>
+                    {{else}}
+                        <a href="#" onclick="toggleDropdown()" class="profile-picture"><img src="/images/none.jpg" alt="Profile Picture" class="profile-picture"></a>
+                    {{/if}}
+                    <div id="dropdown" class="dropdown-content">
+                        <a href="profile">Profile</a>
+                        <a href="settings">Settings</a>
+                        <a href="/">Logout</a>
+                    </div>
+                </li>
+            </ul>
         </div>
+    </div>
 
     <div class="home-container">
         <div class="left-panel"></div>
-
         <div class="main-panel">
             <!-- Poster image section -->
             <div class="poster">
                 <img src="/images/homepage/ptabg.png" alt="Poster" class="poster-image">
+            </div>
+
+            <!-- Create Event Button -->
+            <div class="create-event-button">
+                <a href="create-event" class="create-event-link">Create Event</a>
             </div>
 
             <!-- Upcoming events section -->
@@ -54,9 +56,9 @@
                     {{#each events}}
                     <div class="event">
                         <img src="{{eventpicture}}" alt="Event {{id}}">
-                        <h3>{{title}} - May 26, 2024 7:00AM</h3>
+                        <h3>{{title}} - {{date}} {{time}}</h3>
                         <p>{{description}}</p>
-                        <a href="#">Read More</a>
+                        <a href="event-details/{{id}}">Read More</a>
                     </div>
                     {{/each}}
                 </div>
@@ -69,9 +71,9 @@
                     {{#each events}}
                     <div class="event">
                         <img src="{{eventpicture}}" alt="Event {{id}}">
-                        <h3>{{title}} - May 26, 2024 7:00AM</h3>
+                        <h3>{{title}} - {{date}} {{time}}</h3>
                         <p>{{description}}</p>
-                        <a href="#">Read More</a>
+                        <a href="event-details/{{id}}">Read More</a>
                     </div>
                     {{/each}}
                 </div>
