@@ -358,6 +358,42 @@ app.post('/submit-ncc', async (req, res) => {
   }
 });
 
+app.post('/submit-club', async (req, res) => {
+  const {
+    clubname,
+    region
+  } = req.body; // Capture user input from the form
+
+  if (!req.session.user) {
+    return res.status(401).send('Unauthorized: No user logged in');
+  }
+
+  const submittedby = req.session.user.username; // Get the current user's username from the session
+  const status = 1;
+
+  try {
+    // Insert the new user into the database
+    const { data, error } = await supabase
+      .from('club_registrations') // Replace 'users' with your actual table name if different
+      .insert([{
+        clubname,
+        region// Include the current user's username
+      }]);
+
+    if (error) {
+      // Handle any errors that occur during the insert
+      return res.status(500).render('membership', {
+        error: 'Error creating registration.',
+        users: [] // Optionally pass users array if you need it in the view
+      });
+    }
+    res.redirect('/membership');
+  } catch (error) {
+    // Handle any server-side errors
+    res.status(500).json({ error: error.message });
+  }
+});
+
 app.post('/create-post', async (req, res) => {
   const {
     title,
@@ -912,6 +948,29 @@ app.get('/membership-review/:id', async (req, res) => {
 
     // Render the membership-review.hbs template with the fetched data
     res.render('membership-review', { registration: data , user: req.session.user });
+  } catch (error) {
+    console.error('Server error:', error.message);
+    res.status(500).send('Server error');
+  }
+});
+
+app.get('/membership-club', async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    // Fetch the specific registration data
+    const { data, error } = await supabase
+      .from('ncc_registrations')
+      .select('*')
+      // .eq('id', id)
+      // .single();
+
+    if (error) {
+      console.error('Error fetching registration:', error.message);
+      return res.status(500).send('Error fetching registration');
+    }
+    
+    res.render('membership-club', { registration: data , user: req.session.user });
   } catch (error) {
     console.error('Server error:', error.message);
     res.status(500).send('Server error');
