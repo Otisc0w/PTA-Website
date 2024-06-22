@@ -15,8 +15,6 @@ body {
   color: var(--text-color);
 }
 
-
-
 .tabs {
   list-style-type: none;
   display: flex;
