@@ -1,0 +1,70 @@
+<head>
+  <title>PTA | Membership Status</title>
+  <link rel="icon" type="image/x-icon" href="../images/favicon.ico" />
+  <link rel="stylesheet" type="text/css" href="../stylesheets/membership-status.css" />
+  <link rel="stylesheet" type="text/css" href="../stylesheets/navbar.css" />
+</head>
+
+<body style="margin:0;" class="container">
+    <div class="membership-header">
+        <div class="membership-navbar">
+			<a href="home"><img src="/images/logo.png" class="membership-logo" alt="Logo"></a>
+                {{#if user.profilepic}}
+                    <a href="#" onclick="toggleDropdown()" class="memprofile-pic"><img src="{{user.profilepic}}" alt="Profile Picture" class="profile-picture"></a>
+                {{else}}
+                    <a href="#" onclick="toggleDropdown()" class="memprofile-pic"><p>:(</p></a>
+                {{/if}}
+                <div id="dropdown" class="dropdown-content">
+                    <a href="profile">Profile</a>
+                    <a href="settings">Settings</a>
+                    <a href="/">Logout</a>
+                </div>
+        </div>
+    </div>
+    <div class="membership-container">
+		<div class="membership-leftside">
+			<div class="forumtitle">
+				<h1 class= "forumname"> <span class="logo"> </span></h1>
+				<h3 class = "forumdesc">Membership Status</h3>
+			</div>
+		</div>
+	
+		<div class="membership-rightside">
+			<div class="membership-statuses">
+                    {{#if ncc_registrations}}
+                        {{#each ncc_registrations}}
+                            <div class='post-content'>
+                                <span class='community'>{{id}} •</span>
+                                <span class='small'>by {{apptype}} {{firstname}} {{lastname}}on {{created_at}}</span>
+                                <span><h3>Status: {{status}}</h3></span>
+                                <a href="/membership-review/{{id}}">Review -></a>
+                            </div><br>
+                        {{/each}}
+                    {{else}}
+                        No pending applications
+                    {{/if}}
+			</div>
+            <div class="backtomembership">
+                <a href="/membership"><-Back</a>
+            </div>
+                                                                                                                        
+            <script>
+                document.addEventListener("DOMContentLoaded", function() {
+                    const form = document.getElementById("nccform");
+
+                    /*form.addEventListener("submit", function(event) {
+                        const firstname = document.getElementById("username").value;
+                        const instructorfirstname = document.getElementById("instructor-firstname").value;
+
+                        // Clear any previous error messages
+                        document.getElementById("error-message").textContent = "";
+                    });*/
+
+                    const nccstep1 = document.getElementById("nccstep1");
+                    const ncc1 = document.querySelector(".ncc1");
+                    
+                });
+	        </script>
+		</div>
+    </div>
+</body>

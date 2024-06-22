@@ -2,8 +2,10 @@
 
 	<head>
 	  <title>PTA | Login</title>
+	  <link rel="icon" type="image/x-icon" href="../images/favicon.ico" />
 	  <link rel="stylesheet" type="text/css" href="../stylesheets/login.css" />
 	</head>
+
 	
 	<body style="margin: 0;">
 		<div class="container">
@@ -11,11 +13,11 @@
 				<div class="forumtitle">
 					<h1 class= "forumname"> <span class="logo"> </span></h1>
 					<h3 class = "forumdesc">Philippine Taekwondo Assocation</h3>
-						{{!-- <ul>
-                            {{#each athletes}}
-                            <li>ID: {{id}}, firstname: {{firstname}}, lastname: {{lastname}}, points: {{points}}</li>
-                            {{/each}}
-    				    </ul> --}}
+						<ul>
+                            {{!-- {{#each users}}
+                            <li>ID: {{id}}, firstname: {{username}}, lastname: {{password}}, points: {{points}}</li>
+                            {{/each}} --}}
+    				    </ul>
 					
 				</div>
 			</div>
@@ -77,53 +79,52 @@
 			
 		</div>
 		<script>
-    	document.addEventListener("DOMContentLoaded", function() {
-      		const form = document.getElementById("loginform");
+			document.addEventListener("DOMContentLoaded", function() {
+				const form = document.getElementById("loginform");
 
-			form.addEventListener("submit", function(event) {
-				const username = document.getElementById("username").value;
-				const password = document.getElementById("password").value;
+				form.addEventListener("submit", function(event) {
+					const username = document.getElementById("username").value;
+					const password = document.getElementById("password").value;
 
-				// Clear any previous error messages
-				document.getElementById("error-message").textContent = "";
+					// Clear any previous error messages
+					document.getElementById("error-message").textContent = "";
 
-				if (!username || !password) {
-				document.getElementById("error-message").textContent = "Both username and password are required.";
-				event.preventDefault(); // Prevent form submission
-				return;
-				}
+					if (!username || !password) {
+					document.getElementById("error-message").textContent = "Both username and password are required.";
+					event.preventDefault(); // Prevent form submission
+					return;
+					}
 
-				if (username.length < 3) {
-				document.getElementById("error-message").textContent = "Username must be at least 3 characters long.";
-				event.preventDefault(); // Prevent form submission
-				return;
-				}
+					if (username.length < 3) {
+					document.getElementById("error-message").textContent = "Username must be at least 3 characters long.";
+					event.preventDefault(); // Prevent form submission
+					return;
+					}
 
-				if (password.length < 4) {
-				document.getElementById("error-message").textContent = "Password must be at least 5 km characters long.";
-				event.preventDefault(); // Prevent form submission
-				return;
-				}
+					if (password.length < 4) {
+					document.getElementById("error-message").textContent = "Password must be at least 5 km characters long.";
+					event.preventDefault(); // Prevent form submission
+					return;
+					}
+				});
+
+				const showSignupLink = document.getElementById("showSignup");
+				const showLoginLink = document.getElementById("showLogin");
+				const loginDiv = document.querySelector(".login");
+				const signupDiv = document.querySelector(".signup");
+
+				showSignupLink.addEventListener("click", function(event) {
+					event.preventDefault();
+					loginDiv.style.display = "none";
+					signupDiv.style.display = "block";
+				});
+
+				showLoginLink.addEventListener("click", function(event) {
+					event.preventDefault();
+					loginDiv.style.display = "block";
+					signupDiv.style.display = "none";
+				});
 			});
-
-	  		const showSignupLink = document.getElementById("showSignup");
-      		const showLoginLink = document.getElementById("showLogin");
-      		const loginDiv = document.querySelector(".login");
-      		const signupDiv = document.querySelector(".signup");
-
-    		showSignupLink.addEventListener("click", function(event) {
-				event.preventDefault();
-				loginDiv.style.display = "none";
-				signupDiv.style.display = "block";
-      		});
-
-      		showLoginLink.addEventListener("click", function(event) {
-				event.preventDefault();
-				loginDiv.style.display = "block";
-				signupDiv.style.display = "none";
-      		});
-    	});
-
-  </script>
+  		</script>
 	</body>
 </html>

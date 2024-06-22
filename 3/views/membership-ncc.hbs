@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>PTA | Apply for NCC ID</title>
+  <link rel="icon" type="image/x-icon" href="../images/favicon.ico" />
+  <link rel="stylesheet" type="text/css" href="../stylesheets/membership-ncc.css" />
+  <link rel="stylesheet" type="text/css" href="../stylesheets/navbar.css" />
+</head>
+<body class="container">
+  <div class="header">
+    <div class="navbar">
+      <a href="home"><img src="/images/logo.png" class="logo" alt="Logo"></a>
+      <ul class="tabs">
+        <li class="home"><a href="home">Home</a></li>
+        <li class="athletes"><a href="athletes">Athletes</a></li>
+        <li class="clubs"><a href="clubs">Clubs</a></li>
+        <li class="events"><a href="events">Events</a></li>
+        <li class="membership"><a href="membership">Membership</a></li>
+        <li class="forum"><a href="forum">Forum</a></li>
+        <li class="notifications">
+          <a href="notifications">Notifications <span class="badge">3</span></a>
+        </li>
+        <li class="profile-pic">
+          {{#if user.profilepic}}
+          <a href="#" onclick="toggleDropdown()"><img src="{{user.profilepic}}" alt="Profile Picture" class="profile-picture"></a>
+          {{else}}
+          <a href="#" onclick="toggleDropdown()" class="profile-picture"><img src="/images/none.jpg" alt="Profile Picture" class="profile-picture"></a>
+          {{/if}}
+          <div id="dropdown" class="dropdown-content">
+            <a href="profile">Profile</a>
+            <a href="settings">Settings</a>
+            <a href="/">Logout</a>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <div class="content-container">
+    <div class="leftside">
+      <div class="forumtitle">
+        <h1 class="forumname"></h1>
+        <h3 class="forumdesc">Apply for NCC ID</h3>
+      </div>
+    </div>
+    <div class="rightside">
+      <div class="formcontainer">
+        <form id="nccform" action="/submit-ncc" method="post">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="firstname">First Name</label>
+              <input type="text" id="firstname" name="firstname">
+            </div>
+            <div class="form-group">
+              <label for="mi">M.I.</label>
+              <input type="text" id="mi" name="mi">
+            </div>
+            <div class="form-group">
+              <label for="lastname">Last Name</label>
+              <input type="text" id="lastname" name="lastname">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="gender">Gender</label>
+              <select id="gender" name="gender">
+                <option value="female">Female</option>
+                <option value="male">Male</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="birthday">Birthday</label>
+              <input type="date" id="birthday" name="birthday">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="phone">Mobile Number</label>
+              <input type="tel" id="phonenum" name="phonenum" pattern="\d{4}\d{3}\d{4}" placeholder="0912-345-6789">
+            </div>
+            <div class="form-group">
+              <label for="email">E-mail</label>
+              <input type="text" id="email" name="email">
+            </div>
+            <div class="form-group">
+              <label for="confemail">Confirm E-mail</label>
+              <input type="text" id="confemail" name="confemail">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="lastpromotion">Date of Last Promotion Test</label>
+              <input type="date" id="lastpromo" name="lastpromo">
+            </div>
+            <div class="form-group">
+              <label for="promolocation">Location of Last Promotion</label>
+              <select name="promolocation" id="promolocation">
+                <option value="Region I – Ilocos Region">Region I – Ilocos Region</option>
+                <option value="Region II – Cagayan Valley">Region II – Cagayan Valley</option>
+                <option value="Region III – Central Luzon">Region III – Central Luzon</option>
+                <option value="Region IV‑A – CALABARZON">Region IV‑A – CALABARZON</option>
+                <option value="MIMAROPA Region">MIMAROPA Region</option>
+                <option value="Region V – Bicol Region">Region V – Bicol Region</option>
+                <option value="Region VI – Western Visayas">Region VI – Western Visayas</option>
+                <option value="Region VII – Central Visayas">Region VII – Central Visayas</option>
+                <option value="Region VIII – Eastern Visayas">Region VIII – Eastern Visayas</option>
+                <option value="Region IX – Zamboanga Peninsula">Region IX – Zamboanga Peninsula</option>
+                <option value="Region X – Northern Mindanao">Region X – Northern Mindanao</option>
+                <option value="Region XI – Davao Region">Region XI – Davao Region</option>
+                <option value="Region XII – SOCCSKSARGEN">Region XII – SOCCSKSARGEN</option>
+                <option value="Region XIII – Caraga">Region XIII – Caraga</option>
+                <option value="NCR – National Capital Region">NCR – National Capital Region</option>
+                <option value="CAR – Cordillera Administrative Region">CAR – Cordillera Administrative Region</option>
+                <option value="BARMM – Bangsamoro Autonomous Region in Muslim Mindanao">BARMM – Bangsamoro Autonomous Region in Muslim Mindanao</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="clubregion">Region of Club</label>
+              <select name="clubregion" id="clubregion">
+                <option value="Region I – Ilocos Region">Region I – Ilocos Region</option>
+                <option value="Region II – Cagayan Valley">Region II – Cagayan Valley</option>
+                <option value="Region III – Central Luzon">Region III – Central Luzon</option>
+                <option value="Region IV‑A – CALABARZON">Region IV‑A – CALABARZON</option>
+                <option value="MIMAROPA Region">MIMAROPA Region</option>
+                <option value="Region V – Bicol Region">Region V – Bicol Region</option>
+                <option value="Region VI – Western Visayas">Region VI – Western Visayas</option>
+                <option value="Region VII – Central Visayas">Region VII – Central Visayas</option>
+                <option value="Region VIII – Eastern Visayas">Region VIII – Eastern Visayas</option>
+                <option value="Region IX – Zamboanga Peninsula">Region IX – Zamboanga Peninsula</option>
+                <option value="Region X – Northern Mindanao">Region X – Northern Mindanao</option>
+                <option value="Region XI – Davao Region">Region XI – Davao Region</option>
+                <option value="Region XII – SOCCSKSARGEN">Region XII – SOCCSKSARGEN</option>
+                <option value="Region XIII – Caraga">Region XIII – Caraga</option>
+                <option value="NCR – National Capital Region">NCR – National Capital Region</option>
+                <option value="CAR – Cordillera Administrative Region">CAR – Cordillera Administrative Region</option>
+                <option value="BARMM – Bangsamoro Autonomous Region in Muslim Mindanao">BARMM – Bangsamoro Autonomous Region in Muslim Mindanao</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="clubname">Club</label>
+              <select name="clubname" id="clubname">
+                {{#each clubs}}
+                <option value="{{name}}">{{name}}</option>
+                {{/each}}
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="beltlevel">Current Belt Level</label>
+              <select name="beltlevel" id="beltlevel">
+                <option value="White Belt">White Belt</option>
+                <option value="Low Yellow Belt">Low Yellow Belt</option>
+                <option value="High Yellow Belt">High Yellow Belt</option>
+                <option value="Low Blue Belt">Low Blue Belt</option>
+                <option value="High Blue Belt">High Blue Belt</option>
+                <option value="Low Red Belt">Low Red Belt</option>
+                <option value="High Red Belt">High Red Belt</option>
+                <option value="Low Brown Belt">Low Brown Belt</option>
+                <option value="High Brown Belt">High Brown Belt</option>
+                <option value="Junior/Poom Black Belt">Junior/Poom Black Belt</option>
+                <option value="Black/Dan Belt">Black/Dan Belt</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <a class="nccstep1" id="nccstep1">Next</a>
+          </div>
+          <p id="error-message" style="color:red;"></p>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div class="footer">
+    <p>&copy; 2024 Philippine Taekwondo Association. All rights reserved.</p>
+  </div>
+  <script>
+    function toggleDropdown() {
+      document.getElementById("dropdown").classList.toggle("show");
+    }
+
+    window.onclick = function (event) {
+      if (!event.target.matches('.profile-pic img')) {
+        var dropdowns = document.getElementsByClassName("dropdown-content");
+        for (var i = 0; i < dropdowns.length; i++) {
+          var openDropdown = dropdowns[i];
+          if (openDropdown.classList.contains('show')) {
+            openDropdown.classList.remove('show');
+          }
+        }
+      }
+    }
+  </script>
+</body>
+</html>

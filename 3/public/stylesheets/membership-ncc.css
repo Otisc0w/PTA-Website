@@ -1,0 +1,200 @@
+@import url('https://fonts.cdnfonts.com/css/sf-pro-display');
+
+:root {
+  font-family: 'SF Pro Display', sans-serif;
+  --dark-bg: #252525;
+  --light-bg: #3A3A3A;
+  --accent-bg: #444;
+  --text-color: white;
+  --highlight-color: #ff0000;
+  --button-color: #4CAF50;
+  --button-hover-color: #45a049;
+}
+
+body {
+  margin: 0;
+  background-color: var(--dark-bg);
+  color: var(--text-color);
+}
+
+.header {
+  background-color: var(--light-bg);
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.navbar {
+  display: flex;
+  align-items: center;
+}
+
+.logo {
+  width: 50px;
+  margin-right: 20px;
+}
+
+.profile-picture {
+  width: 30px;
+  border-radius: 50%;
+}
+
+.content-container {
+  display: flex;
+  height: calc(100vh - 60px);
+}
+
+.leftside {
+  width: 50%;
+  background-image: url('../images/ptabg.png');
+  background-size: cover;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.forumtitle {
+  text-align: center;
+}
+
+.forumname {
+  font-size: 2em;
+}
+
+.forumdesc {
+  font-size: 1.5em;
+  margin-top: 10px;
+}
+
+.rightside {
+  width: 50%;
+  background-color: var(--light-bg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.formcontainer {
+  width: 100%;
+  max-width: 800px;
+  background-color: var(--dark-bg);
+  padding: 20px;
+  border-radius: 10px;
+}
+
+.form-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.form-group {
+  flex: 1;
+  min-width: 200px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-size: 1em;
+}
+
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: none;
+  border-radius: 5px;
+  background-color: var(--accent-bg);
+  color: var(--text-color);
+}
+
+.form-group input[type="radio"] {
+  width: auto;
+}
+
+.nccstep1 {
+  display: block;
+  width: 100%;
+  text-align: center;
+  padding: 10px;
+  margin-top: 10px;
+  border-radius: 5px;
+  background-color: var(--button-color);
+  color: white;
+  text-decoration: none;
+}
+
+.nccstep1:hover {
+  background-color: var(--button-hover-color);
+}
+
+.backtomembership {
+  margin-top: 20px;
+}
+
+.backtomembership a {
+  color: var(--text-color);
+  text-decoration: none;
+}
+
+.backtomembership a:hover {
+  text-decoration: underline;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: var(--dark-bg);
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+  right: 0;
+  top: 60px;
+}
+
+.dropdown-content a {
+  color: var(--text-color);
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+
+.dropdown-content a:hover {
+  background-color: #0c0c0c;
+}
+
+.show {
+  display: block;
+}
+
+.notifications {
+  position: relative;
+}
+
+.notifications .badge {
+  background-color: red;
+  color: white;
+  border-radius: 50%;
+  padding: 2px 6px;
+  font-size: 12px;
+  position: absolute;
+  top: -10px;
+  right: -10px;
+}
+
+.footer {
+  background-color: var(--light-bg);
+  padding: 10px 20px;
+  text-align: center;
+}
+
+.footer p {
+  margin: 0;
+  color: var(--text-color);
+}

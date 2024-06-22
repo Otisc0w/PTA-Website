@@ -1,55 +1,220 @@
+<!DOCTYPE html>
 <html>
+<head>
+    <title>PTA | Athletes</title>
+    <link rel="icon" type="image/x-icon" href="../images/favicon.ico" />
+    <link rel="stylesheet" type="text/css" href="../stylesheets/athletes.css" />
+    <link rel="stylesheet" type="text/css" href="../stylesheets/navbar.css" />
+</head>
 
-	<head>
-	  <title>PTA | Athletes</title>
-	  <link rel="stylesheet" type="text/css" href="../stylesheets/athletes.css" />
-	</head>
-	
-	<body style="margin:0;" class="container">
-        
-            <div class="header">
-                <div class="navbar">
-                    <a href="home"><img src="/images/logo.png" class="logo"></img></a>        
-                    <ul class="tabs">
-                        <li class="home"><a href="home">Home</a></li>
-                        <li class="athletes"><a href="athletes">Athletes</a></li>
-                        <li class="clubs"><a href="clubs">Clubs</a></li>
-                        <li class="events"><a href="events">Events</a></li>
-                        <li class="membership"><a href="membership">Membership</a></li>
-                        <li class="forum"><a href="forum">Forum</a></li>
-                        
-                    </ul>
-                </div>
-            </div>
-
-            <div class="athletes-container">
-
-                <div class="right-panel">
-                    <div class="community-panel">
-                        <h3>Athlete Rankings</h3>
-                        
-                        <table class="rankings">
-                            <thead>
-                                <tr>
-                                    <th> Rank </th>
-                                    <th> Name </th>
-                                    <th></th>
-                                    <th> Points </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {{#each athletes}}
-                                <tr>
-                                    <td> {{id}} </td>
-                                    <td> {{firstname}}</td>
-                                    <td> {{lastname}} </td>
-                                    <td> {{points}} </td>
-                                </tr>
-                                {{/each}}
-                            </tbody>
-                        </table>
+<body class="container">
+    <div class="header">
+        <div class="navbar">
+            <a href="home"><img src="/images/logo.png" class="logo" alt="Logo"></a>
+            <ul class="tabs">
+                <li class="home"><a href="home">Home</a></li>
+                <li class="athletes"><a href="athletes">Athletes</a></li>
+                <li class="clubs"><a href="clubs">Clubs</a></li>
+                <li class="events"><a href="events">Events</a></li>
+                <li class="membership"><a href="membership">Membership</a></li>
+                <li class="forum"><a href="forum">Forum</a></li>
+                <li class="notifications">
+                    <a href="notifications">Notifications <span class="badge">3</span></a>
+                </li>
+                <li class="profile-pic">
+                    {{#if user.profilepic}}
+                        <a href="#" onclick="toggleDropdown()"><img src="{{user.profilepic}}" alt="Profile Picture" class="profile-picture"></a>
+                    {{else}}
+                        <a href="#" onclick="toggleDropdown()" class="profile-picture"><img src="/images/none.jpg" alt="Profile Picture" class="profile-picture"></a>
+                    {{/if}}
+                    <div id="dropdown" class="dropdown-content">
+                        <a href="profile">Profile</a>
+                        <a href="settings">Settings</a>
+                        <a href="/">Logout</a>
                     </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="athletes-container">
+        <div class="filter-panel">
+            <div class="filter-group">
+                <label for="belt-color">Belt Color</label>
+                <select id="belt-color">
+                    <option value="White Belt">White Belt</option>
+                    <option value="Low Yellow Belt">Low Yellow Belt</option>
+                    <option value="High Yellow Belt">High Yellow Belt</option>
+                    <option value="Low Blue Belt">Low Blue Belt</option>
+                    <option value="High Blue Belt">High Blue Belt</option>
+                    <option value="Low Red Belt">Low Red Belt</option>
+                    <option value="High Red Belt">High Red Belt</option>
+                    <option value="Low Brown Belt">Low Brown Belt</option>
+                    <option value="High Brown Belt">High Brown Belt</option>
+                    <option value="Junior/Poom Black Belt">Junior/Poom Black Belt</option>
+                    <option value="Black/Dan Belt">Black/Dan Belt</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="sub-category">Sub Category</label>
+                <select id="sub-category">
+                    <option value="Toddlers Division">Toddlers Division</option>
+                    <option value="Gradeschool Division">Gradeschool Division</option>
+                    <option value="Cadet Division">Cadet Division</option>
+                    <option value="Junior Division">Junior Division</option>
+                    <option value="Senior Division">Senior Division</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="club-region">Club Region</label>
+                <select id="club-region">
+                    <option value="Region I – Ilocos Region">Region I – Ilocos Region</option>
+                    <option value="Region II – Cagayan Valley">Region II – Cagayan Valley</option>
+                    <option value="Region III – Central Luzon">Region III – Central Luzon</option>
+                    <option value="Region IV‑A – CALABARZON">Region IV‑A – CALABARZON</option>
+                    <option value="MIMAROPA Region">MIMAROPA Region</option>
+                    <option value="Region V – Bicol Region">Region V – Bicol Region</option>
+                    <option value="Region VI – Western Visayas">Region VI – Western Visayas</option>
+                    <option value="Region VII – Central Visayas">Region VII – Central Visayas</option>
+                    <option value="Region VIII – Eastern Visayas">Region VIII – Eastern Visayas</option>
+                    <option value="Region IX – Zamboanga Peninsula">Region IX – Zamboanga Peninsula</option>
+                    <option value="Region X – Northern Mindanao">Region X – Northern Mindanao</option>
+                    <option value="Region XI – Davao Region">Region XI – Davao Region</option>
+                    <option value="Region XII – SOCCSKSARGEN">Region XII – SOCCSKSARGEN</option>
+                    <option value="Region XIII – Caraga">Region XIII – Caraga</option>
+                    <option value="NCR – National Capital Region">NCR – National Capital Region</option>
+                    <option value="CAR – Cordillera Administrative Region">CAR – Cordillera Administrative Region</option>
+                    <option value="BARMM – Bangsamoro Autonomous Region in Muslim Mindanao">BARMM – Bangsamoro Autonomous Region in Muslim Mindanao</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="athlete-search">Search Athlete</label>
+                <input type="text" id="athlete-search" placeholder="Search...">
+            </div>
+            <button class="apply-btn">Apply</button>
+        </div>
+
+        <div class="rank-panel">
+            <h3>Athlete Rankings</h3>
+            <table class="rankings">
+                <thead>
+                    <tr>
+                        <th>Rank</th>
+                        <th>Name</th>
+                        <th>Club</th>
+                        <th>Points</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each athletes}}
+                    <tr onclick="showAthleteDetails('{{name}}', '{{class}}', '{{height}}', '{{weight}}', '{{birthplace}}', '{{club}}', '{{image}}')">
+                        <td>{{rank}}</td>
+                        <td>{{name}}</td>
+                        <td>{{club}}</td>
+                        <td>{{points}}</td>
+                    </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+        </div>
+
+        <div id="athlete-details" class="athlete-details">
+            <div class="athlete-header">
+                <img id="athlete-image" src="" alt="Athlete Image">
+                <div class="athlete-info">
+                    <h2 id="athlete-name">Name</h2>
+                    <p id="athlete-class">Class</p>
+                    <p id="athlete-height-weight">Height/Weight</p>
+                    <p id="athlete-birthplace">Birthplace</p>
+                    <p id="athlete-club">Club</p>
                 </div>
             </div>
-    </body>
+            <div class="athlete-stats">
+                <h3>Overview</h3>
+                <p>Career Stats</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Year</th>
+                            <th>GP</th>
+                            <th>MIN</th>
+                            <th>PTS</th>
+                        </tr>
+                    </thead>
+                    <tbody id="career-stats">
+                        <!-- Stats will be populated here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="pta-logo">
+                <img src="/images/logo.png" alt="PTA Logo">
+            </div>
+            <div class="contact-info">
+                <p>Philippine Taekwondo Central Headquarters</p>
+                <p>Rizal Memorial Coliseum, Manila, Philippines</p>
+                <p>0977 384 5879</p>
+                <p>pthtkd@gmail.com</p>
+            </div>
+            <div class="social-media">
+                <p>Follow us</p>
+                <div class="icons">
+                    <a href="https://www.facebook.com"><img src="/images/homepage/fb.png" alt="Facebook"></a>
+                    <a href="https://www.instagram.com"><img src="/images/homepage/ig.png" alt="Instagram"></a>
+                    <a href="https://www.twitch.com"><img src="/images/homepage/twitch.webp" alt="Twitch"></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        function toggleDropdown() {
+            document.getElementById("dropdown").classList.toggle("show");
+        }
+
+        window.onclick = function(event) {
+            if (!event.target.matches('.profile-pic img')) {
+                var dropdowns = document.getElementsByClassName("dropdown-content");
+                for (var i = 0; i < dropdowns.length; i++) {
+                    var openDropdown = dropdowns[i];
+                    if (openDropdown.classList.contains('show')) {
+                        openDropdown.classList.remove('show');
+                    }
+                }
+            }
+        }
+
+        function showAthleteDetails(name, athleteClass, height, weight, birthplace, club, image) {
+            document.getElementById("athlete-name").textContent = name;
+            document.getElementById("athlete-class").textContent = "Class: " + athleteClass;
+            document.getElementById("athlete-height-weight").textContent = "HT/WT: " + height + " ft/in, " + weight + " kg";
+            document.getElementById("athlete-birthplace").textContent = "Birthplace: " + birthplace;
+            document.getElementById("athlete-club").textContent = "Club: " + club;
+            document.getElementById("athlete-image").src = image;
+
+            // Example stats - you will need to load real data
+            const stats = [
+                { year: 2024, gp: 20, min: 200, pts: 300 },
+                { year: 2023, gp: 25, min: 250, pts: 350 },
+                { year: 2022, gp: 22, min: 220, pts: 320 },
+                { year: 2021, gp: 23, min: 230, pts: 330 },
+            ];
+
+            const statsTable = document.getElementById("career-stats");
+            statsTable.innerHTML = ""; // Clear existing rows
+
+            stats.forEach(stat => {
+                const row = document.createElement("tr");
+                row.innerHTML = `<td>${stat.year}</td><td>${stat.gp}</td><td>${stat.min}</td><td>${stat.pts}</td>`;
+                statsTable.appendChild(row);
+            });
+
+            document.getElementById("athlete-details").style.display = "block"; // Show the athlete details
+        }
+    </script>
+</body>
 </html>
