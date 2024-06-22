@@ -2,9 +2,11 @@
 <html>
 <head>
     <title>PTA | Clubs</title>
-    <link rel="icon" type="image/x-icon" href="../images/favicon.ico" />
-    <link rel="stylesheet" type="text/css" href="../stylesheets/clubs.css" />
+    <link rel="icon" type="image/x-icon" href="../images/favicon.ico" /> 
     <link rel="stylesheet" type="text/css" href="../stylesheets/navbar.css" />
+    <link rel="stylesheet" type="text/css" href="../stylesheets/home.css" />
+    <link rel="stylesheet" type="text/css" href="../stylesheets/clubs.css" />
+   
 </head>
 
 <body class="container">
@@ -37,26 +39,30 @@
         </div>
     </div>
 
-    <div class="home-container">
+<div class="home-container">
         <div class="left-panel"></div>
 
-        <div class="main-panel">
-            <div class='flex post-container'>
-                <div class='flex post-content'></div>
-            </div>
-        </div>
-
-        <div class="right-panel">
-            <div class="community-panel">
-                <p class="community-description">Competitions this year</p>
-                <ul>
+            <!-- Upcoming events section -->
+            <div class="club-name">CLUB NAME
+            
+            <div class="upcoming-events">
+               <p> Clubs Events </p>
+                <div id="events" class="horizontal-container">
                     {{#each clubs}}
-                    <li>Name: {{name}}, Region: {{region}}, Members: {{members}}</li>
+                    <div class="event">
+                        <img src="{{image}}" alt="{{name}}">
+                        <h3>{{name}} - {{region}}</h3>
+                        <p>{{members}}</p>
+                        <a href="#">Read More</a>
+                    </div>
                     {{/each}}
-                </ul>
+                </div>
             </div>
+            </div>
+            <div class="right-panel"></div>
         </div>
-    </div>
+        
+   
 
     <footer>
         <div class="footer-content">
