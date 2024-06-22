@@ -17,7 +17,7 @@ body {
   color: var(--text-color);
 }
 
-.membership-header {
+.header {
   background-color: var(--light-bg);
   padding: 10px 20px;
   display: flex;
@@ -25,12 +25,12 @@ body {
   align-items: center;
 }
 
-.membership-navbar {
+.navbar {
   display: flex;
   align-items: center;
 }
 
-.membership-logo {
+.logo {
   width: 50px;
   margin-right: 20px;
 }
@@ -40,12 +40,12 @@ body {
   border-radius: 50%;
 }
 
-.membership-container {
+.content-container {
   display: flex;
   height: calc(100vh - 60px);
 }
 
-.membership-leftside {
+.leftside {
   width: 50%;
   background-image: url('../images/ptabg.png');
   background-size: cover;
@@ -68,7 +68,7 @@ body {
   margin-top: 10px;
 }
 
-.membership-rightside {
+.rightside {
   width: 50%;
   background-color: var(--light-bg);
   display: flex;
@@ -80,19 +80,31 @@ body {
 
 .formcontainer {
   width: 100%;
-  max-width: 400px;
+  max-width: 800px;
   background-color: var(--dark-bg);
   padding: 20px;
   border-radius: 10px;
 }
 
-.formcontainer label {
-  font-size: 1em;
-  margin-bottom: 5px;
+.form-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
 }
 
-.formcontainer input,
-.formcontainer select {
+.form-group {
+  flex: 1;
+  min-width: 200px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-size: 1em;
+}
+
+.form-group input,
+.form-group select {
   width: 100%;
   padding: 10px;
   margin-bottom: 15px;
@@ -102,11 +114,11 @@ body {
   color: var(--text-color);
 }
 
-.formcontainer input[type="radio"] {
+.form-group input[type="radio"] {
   width: auto;
 }
 
-.formcontainer a {
+.nccstep1 {
   display: block;
   width: 100%;
   text-align: center;
@@ -118,7 +130,7 @@ body {
   text-decoration: none;
 }
 
-.formcontainer a:hover {
+.nccstep1:hover {
   background-color: var(--button-hover-color);
 }
 
@@ -175,14 +187,14 @@ body {
   top: -10px;
   right: -10px;
 }
+
 .footer {
-    background-color: var(--light-bg);
-    padding: 10px 20px;
-    text-align: center;
-  }
-  
-  .footer p {
-    margin: 0;
-    color: var(--text-color);
-  }
-  
+  background-color: var(--light-bg);
+  padding: 10px 20px;
+  text-align: center;
+}
+
+.footer p {
+  margin: 0;
+  color: var(--text-color);
+}
