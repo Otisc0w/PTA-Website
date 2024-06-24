@@ -1,13 +1,192 @@
+<!DOCTYPE html>
 <html>
+<head>
+    <title>PTA | Clubs</title>
+    <link rel="icon" type="image/x-icon" href="../images/favicon.ico" /> 
+    <link rel="stylesheet" type="text/css" href="../stylesheets/navbar.css" />
+    <link rel="stylesheet" type="text/css" href="../stylesheets/home.css" />
+    <link rel="stylesheet" type="text/css" href="../stylesheets/faqs.css" />
+   
+</head>
 
-	<head>
-	  <title>PTA | Help Center</title>
-      <link rel="icon" type="image/x-icon" href="../images/favicon.ico" />
-	  <link rel="stylesheet" type="text/css" href="../stylesheets/membership-status.css" />
-      <link rel="stylesheet" type="text/css" href="../stylesheets/navbar.css" />
-	</head>
-	
-	<body style="margin:0;" class="container">
-        FAQ page
-    </body>
+<body class="container">
+    <div class="header">
+        <div class="navbar">
+            <a href="home"><img src="/images/logo.png" class="logo" alt="Logo"></a>
+            <ul class="tabs">
+                <li class="home"><a href="home">Home</a></li>
+                <li class="athletes"><a href="athletes">Athletes</a></li>
+                <li class="clubs"><a href="clubs">Clubs</a></li>
+                <li class="events"><a href="events">Events</a></li>
+                <li class="membership"><a href="membership">Membership</a></li>
+                <li class="forum"><a href="forum">Forum</a></li>
+                <li class="notifications">
+                    <a href="notifications">Notifications <span class="badge">3</span></a>
+                </li>
+                <li class="profile-pic">
+                    {{#if user.profilepic}}
+                        <a href="#" onclick="toggleDropdown()"><img src="{{user.profilepic}}" alt="Profile Picture" class="profile-picture"></a>
+                    {{else}}
+                        <a href="#" onclick="toggleDropdown()" class="profile-picture"><img src="/images/none.jpg" alt="Profile Picture" class="profile-picture"></a>
+                    {{/if}}
+                    <div id="dropdown" class="dropdown-content">
+                        <a href="profile">Profile</a>
+                        <a href="settings">Settings</a>
+                        <a href="help-center">FAQs</a>
+                        <a href="/">Logout</a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+<div class="faq-container">
+    <h1>Questions?</h1>
+    <p>If you have questions, we have answers for you here.</p>
+
+    <h2>General questions</h2>
+
+    <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+            <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</span>
+            <span class="faq-toggle">+</span>
+        </div>
+        <div class="faq-answer">
+            <p>Urna duis convallis convallis tellus id interdum velit. Morbi tristique senectus et netus. Consectetur purus ut faucibus pulvinar elementum integer enim. Vulputate eu scelerisque felis imperdiet.</p>
+        </div>
+    </div>
+
+    <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+            <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</span>
+            <span class="faq-toggle">+</span>
+        </div>
+        <div class="faq-answer">
+            <p>Nec ultrices dui sapien eget mi proin. Pharetra pharetra massa massa ultricies mi quis hendrerit dolor magna. Orci a scelerisque purus semper eget duis at tellus at. Facilisi morbi tempus iaculis urna id volutpat.</p>
+        </div>
+    </div>
+
+    <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+            <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</span>
+            <span class="faq-toggle">+</span>
+        </div>
+        <div class="faq-answer">
+            <p>Diam in arcu cursus euismod quis. Nunc sed blandit libero volutpat sed cras. Quis auctor elit sed vulputate mi. Odio aenean sed adipiscing diam donec adipiscing tristique.</p>
+        </div>
+    </div>
+
+    <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+            <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</span>
+            <span class="faq-toggle">+</span>
+        </div>
+        <div class="faq-answer">
+            <p>Ullamcorper sit amet risus nullam eget felis eget nunc. Commodo sed egestas egestas fringilla phasellus faucibus scelerisque. Faucibus vitae aliquet nec ullamcorper sit. Lorem ipsum dolor sit amet consectetur adipiscing.</p>
+        </div>
+    </div>
+
+    <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+            <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</span>
+            <span class="faq-toggle">+</span>
+        </div>
+        <div class="faq-answer">
+            <p>Proin fermentum leo vel orci porta. Cum sociis natoque penatibus et magnis. Eget est lorem ipsum dolor. Interdum velit euismod in pellentesque.</p>
+        </div>
+    </div>
+
+    <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+            <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</span>
+            <span class="faq-toggle">+</span>
+        </div>
+        <div class="faq-answer">
+            <p>Pellentesque sit amet porttitor eget dolor morbi non arcu. Vel quam elementum pulvinar etiam non quam. Est sit amet facilisis magna etiam tempor orci eu lobortis.</p>
+        </div>
+    </div>
+
+        
+   <div class="chatbot-button" onclick="toggleChatbot()">
+    <img src="/images/chatbot-icon.png" alt="Chatbot">
+</div>
+
+<div class="chatbot-window" id="chatbotWindow">
+    <div class="chatbot-header">
+        <h2>Chatbot</h2>
+        <span class="close-chatbot" onclick="toggleChatbot()">x</span>
+    </div>
+    <div class="chatbot-body">
+        <p>Hi! How can I help you today?</p>
+    </div>
+    <div class="chatbot-footer">
+        <input type="text" placeholder="Type your message here..." disabled>
+        <button disabled>Send</button>
+    </div>
+</div>
+</div>
+<!--
+    <footer>
+        <div class="footer-content">
+            <div class="pta-logo">
+                <img src="/images/logo.png" alt="PTA Logo">
+            </div>
+            <div class="contact-info">
+                <p>Philippine Taekwondo Central Headquarters</p>
+                <p>Rizal Memorial Coliseum, Manila, Philippines</p>
+                <p>0977 384 5879</p>
+                <p>pthtkd@gmail.com</p>
+            </div>
+            <div class="social-media">
+                <p>Follow us</p>
+                <div class="icons">
+                    <a href="https://www.facebook.com"><img src="/images/homepage/fb.png" alt="Facebook"></a>
+                    <a href="https://www.instagram.com"><img src="/images/homepage/ig.png" alt="Instagram"></a>
+                    <a href="https://www.twitch.com"><img src="/images/homepage/twitch.webp" alt="Twitch"></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+-->
+    <script>
+        function toggleDropdown() {
+            document.getElementById("dropdown").classList.toggle("show");
+        }
+
+        window.onclick = function(event) {
+            if (!event.target.matches('.profile-pic img')) {
+                var dropdowns = document.getElementsByClassName("dropdown-content");
+                for (var i = 0; i < dropdowns.length; i++) {
+                    var openDropdown = dropdowns[i];
+                    if (openDropdown.classList.contains('show')) {
+                        openDropdown.classList.remove('show');
+                    }
+                }
+            }
+        }
+    </script>
+
+    <script>
+    function toggleFaq(element) {
+        const answer = element.nextElementSibling;
+        const toggle = element.querySelector('.faq-toggle');
+        
+        if (answer.style.display === "block") {
+            answer.style.display = "none";
+            toggle.textContent = "+";
+        } else {
+            answer.style.display = "block";
+            toggle.textContent = "-";
+        }
+    }
+</script>
+
+<script>
+    function toggleChatbot() {
+        const chatbotWindow = document.getElementById('chatbotWindow');
+        chatbotWindow.style.display = chatbotWindow.style.display === 'block' ? 'none' : 'block';
+    }
+</script>
+
+</body>
 </html>

@@ -1,5 +1,30 @@
 <!DOCTYPE html>
 <html>
+
+
+	<head>
+	  <title>PTA | Apply for NCC ID</title>
+      <link rel="icon" type="image/x-icon" href="../images/favicon.ico" />
+	  <link rel="stylesheet" type="text/css" href="../stylesheets/membership-ncc.css" />
+      <link rel="stylesheet" type="text/css" href="../stylesheets/navbar.css" />
+	</head>
+	
+	<body style="margin:0;" class="container">
+        <div class="membership-header">
+            <div class="membership-navbar">
+				<img src="/images/logo.png" class="membership-logo" href="home"></img>   
+                    {{#if user.profilepic}}
+                        <a href="#" onclick="toggleDropdown()" class="memprofile-pic"><img src="{{user.profilepic}}" alt="Profile Picture" class="profile-picture"></a>
+                    {{else}}
+                        <a href="#" onclick="toggleDropdown()" class="memprofile-pic"><img src="/images/none.jpg" alt="Profile Picture" class="profile-picture"></a>
+                    {{/if}}
+                    <div id="dropdown" class="dropdown-content">
+                        <a href="profile">Profile</a>
+                        <a href="settings">Settings</a>
+                        <a href="help-center">FAQs</a>
+                        <a href="/">Logout</a>
+                    </div>
+
 <head>
   <title>PTA | Apply for NCC ID</title>
   <link rel="icon" type="image/x-icon" href="../images/favicon.ico" />
@@ -49,6 +74,7 @@
             <div class="form-group">
               <label for="firstname">First Name</label>
               <input type="text" id="firstname" name="firstname">
+
             </div>
             <div class="form-group">
               <label for="mi">M.I.</label>
