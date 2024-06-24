@@ -17,7 +17,7 @@
                 <div id="dropdown" class="dropdown-content">
                     <a href="profile">Profile</a>
                     <a href="settings">Settings</a>
-                    <a href="FAQs">FAQs</a>
+                    <a href="help-center">FAQs</a>
                     <a href="/">Logout</a>
                 </div>
         </div>
@@ -34,25 +34,30 @@
 			<div class="membership-statuses">
                     {{#if ncc_registrations}}
                         <h2>NCC ID's</h2>
-                            {{#each ncc_registrations}}
+                            {{#reverseEach ncc_registrations}}
                                 <div class='post-content'>
                                     <span class='community'>{{id}} •</span>
                                     <span class='small'>by {{apptype}} {{firstname}} {{lastname}}on {{created_at}}</span>
                                     <span><h3>Status: {{status}}</h3></span>
                                     <a href="/membership-review/{{id}}">Review -></a>
                                 </div><br>
-                            {{/each}}
-                        <h2>Clubs Registrations</h2>
-                            {{#each club_registrations}}
+                            {{/reverseEach}}
+                    {{else}}
+                        No pending NCC applications
+                    {{/if}}
+
+                    {{#if club_registrations}}
+                        <h2>Club Registrations</h2>
+                            {{#reverseEach club_registrations}}
                                 <div class='post-content'>
                                     <span class='community'>{{id}} •</span>
                                     <span class='small'>by{{firstname}} {{lastname}}on {{created_at}}</span>
                                     <span><h3>Status: {{status}}</h3></span>
                                     <a href="/membership-review/{{id}}">Review -></a>
                                 </div><br>
-                            {{/each}}
+                            {{/reverseEach}}
                     {{else}}
-                        No pending applications
+                        No pending club registrations
                     {{/if}}
 			</div>
             <div class="backtomembership">
