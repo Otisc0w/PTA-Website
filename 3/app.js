@@ -1086,6 +1086,12 @@ app.get('/membership-club', async (req, res) => {
   }
 });
 
+//membership to ncc id to instructor
+app.get('/membership-instructor', (req, res) => {
+  res.render('membership-instructor');
+});
+
+
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
 });
