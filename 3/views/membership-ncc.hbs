@@ -44,7 +44,7 @@
     </div>
     <div class="rightside">
       <div class="formcontainer">
-        <form id="nccform" action="/submit-ncc" method="post">
+        <form id="nccform" action="/membership-instructor" method="get">
           <div class="form-row">
             <div class="form-group">
               <label for="firstname">First Name</label>
@@ -166,8 +166,9 @@
             </div>
           </div>
 
-          <div class="form-row">
-            <button class="nccstep1" id="nccstep1">Next</button>
+          <div class="form-row button-group">
+            <button class="cancel-button" type="button" onclick="window.location.href='membership';">Cancel</button>
+            <button class="nccstep1" id="nccstep1" type="submit">Next</button>
           </div>
           <p id="error-message" style="color:red;"></p>
         </form>
