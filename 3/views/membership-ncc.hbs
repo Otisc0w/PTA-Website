@@ -1,31 +1,4 @@
 <html>
-<<<<<<< HEAD
-=======
-
-	<head>
-	  <title>PTA | Apply for NCC ID</title>
-      <link rel="icon" type="image/x-icon" href="../images/favicon.ico" />
-	  <link rel="stylesheet" type="text/css" href="../stylesheets/membership-ncc.css" />
-      <link rel="stylesheet" type="text/css" href="../stylesheets/navbar.css" />
-	</head>
-	
-	<body style="margin:0;" class="container">
-        <div class="membership-header">
-            <div class="membership-navbar">
-				<img src="/images/logo.png" class="membership-logo" href="home"></img>   
-                    {{#if user.profilepic}}
-                        <a href="#" onclick="toggleDropdown()" class="memprofile-pic"><img src="{{user.profilepic}}" alt="Profile Picture" class="profile-picture"></a>
-                    {{else}}
-                        <a href="#" onclick="toggleDropdown()" class="memprofile-pic"><img src="/images/none.jpg" alt="Profile Picture" class="profile-picture"></a>
-                    {{/if}}
-                    <div id="dropdown" class="dropdown-content">
-                        <a href="profile">Profile</a>
-                        <a href="settings">Settings</a>
-                        <a href="/">Logout</a>
-                    </div>
-            </div>
-          </div>
->>>>>>> 5916eae98fad43d7b852367c2f4eba49b3b604c0
 
 	<head>
 	  <title>PTA | Apply for NCC ID</title>
@@ -83,7 +56,6 @@
                             <input type="radio" id="male" name="gender" value="male">
                             <label for="male">Male</label><br>
 
-<<<<<<< HEAD
                             <label for="birthday">Birthday:</label><br>
                             <input type="date" id="bday" name="bday"><br>
 
@@ -183,7 +155,6 @@
                     document.addEventListener("DOMContentLoaded", function() {
                         const form = document.getElementById("nccform");
 
-=======
           <div class="form-row">
             <a class="nccstep1" id="nccstep1">Next</a>
           </div>
@@ -199,7 +170,6 @@
                     document.addEventListener("DOMContentLoaded", function() {
                         const form = document.getElementById("nccform");
 
->>>>>>> 5916eae98fad43d7b852367c2f4eba49b3b604c0
                         /*form.addEventListener("submit", function(event) {
                             const firstname = document.getElementById("username").value;
                             const instructorfirstname = document.getElementById("instructor-firstname").value;

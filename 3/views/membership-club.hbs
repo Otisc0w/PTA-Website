@@ -34,20 +34,42 @@
 			<div class="membership-rightside">                                                                                             
                 <div class="formcontainer">
                     <form id="clubform" action="/submit-club" method="post">
-                        <div class="ncc1">                                                                                  {{!-- club APPLICATION FORM part 1 --}}
+                    <input type="hidden" value="{{user.username}}" name="submittedby" class="submittedby">
+                        <div class="clubreg1">                                                                                  {{!-- club APPLICATION FORM part 1 --}}
+                            <label class="firstname" for="firstname">Firstname</label><br>
+                            <input type="text" id="firstname" name="firstname" ><br>
 
-                            <label class="clubname-input" for="clubname">Club Name</label><br>
+                            <label class="lastname" for="lastname">Lastname</label><br>
+                            <input type="text" id="lastname" name="lastname" ><br>
+
+                            <label class="phonenum" for="phonenum">Mobile Number</label><br>
+                            <input type="text" id="phonenum" name="phonenum" ><br>
+
+                            <label class="email" for="email">Email</label><br>
+                            <input type="text" id="email" name="email" ><br>
+
+                            <label class="email" for="email">Confirm Email</label><br>
+                            <input type="text" id="email" name="email" ><br>
+
+                            <a class="clubstep2" id="clubstep2">Next</a>
+                        </div>    
+
+                        <div class="clubreg2">
+                            <label class="clubname" for="clubname">Club Name</label><br>
                             <input type="text" id="clubname" name="clubname" ><br>
 
-                            <label for="promotionlocation">Region</label><br>
-                            <select name="promolocation" id="promolocation" >
-                                <option value="Pampanga">Pampanga</option>
-                                <option value="NCR">NCR</option>
-                                <option value="CAR">CAR</option>
-                            </select><br>
+                            <label class="clubaddress" for="clubaddress">Club Address</label><br>
+                            <input type="text" id="clubaddress" name="clubaddress" ><br>
+                            
+                            <label class="province" for="province">Province</label><br>
+                            <input type="text" id="province" name="province" ><br>
+
+                            <input type="file" id="idfile" name="idfile" class="idfile"><br>
+
+                            <input type="file" id="proofdoc" name="proofdoc" class="proofdoc"><br>
 
                             <button type="submit">Submit</button>
-                        </div>                                              
+                        </div>                                          
                     </form>
                 </div>
                 <div class="backtomembership">
@@ -55,31 +77,10 @@
                 </div>
                 <script>
                     document.addEventListener("DOMContentLoaded", function() {
-                        const form = document.getElementById("nccform");
+                        const form = document.getElementById("clubform");
 
                         const nccstep1 = document.getElementById("nccstep1");
-                        const nccstep2 = document.getElementById("nccstep2");
-                        const nccstep3 = document.getElementById("nccstep3");
-                        const nccstep4 = document.getElementById("nccstep4");
-                        const nccstep5 = document.getElementById("nccstep5");
-                        const ncc1 = document.querySelector(".ncc1");
-                        const ncc2 = document.querySelector(".ncc2");
-                        const ncc3 = document.querySelector(".ncc3");
-                        const ncc4 = document.querySelector(".ncc4");
-                        const ncc5 = document.querySelector(".ncc5");
-
-                        nccstep1.addEventListener("click", function(event) {
-                            event.preventDefault();
-                            ncc1.style.display = "none";
-                            ncc2.style.display = "block";
-                        });
-
-                        nccstep2.addEventListener("click", function(event) {
-                            event.preventDefault();
-                            ncc1.style.display = "none"
-                            ncc2.style.display = "none";
-                            ncc3.style.display = "block";
-                        });
+                        
                     });
   		        </script>
 			</div>

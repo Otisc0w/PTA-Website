@@ -595,6 +595,105 @@ app.post('/add-comment', async (req, res) => {
   }
 });
 
+app.post('/submit-club', upload.fields([{ name: 'idfile', maxCount: 1 }, { name: 'proofdoc', maxCount: 1 }]), async (req, res) => {
+  const {
+    firstname,
+    lastname,
+    phonenum,
+    email,
+    clubname,
+    clubaddress,
+    province
+  } = req.body; // Capture user input from the form
+
+  if (!req.session.user) {
+    return res.status(401).send('Unauthorized: No user logged in');
+  }
+
+  const submittedby = req.session.user.username; // Get the current user's username from the session
+
+  let idfileUrl = '';
+  let proofdocUrl = '';
+
+  console.log('Files received:', req.files);
+
+  if (req.files) {
+    try {
+      if (req.files.idfile) {
+        const idfilePath = `documents/${Date.now()}-${req.files.idfile[0].originalname}`;
+        console.log('Uploading ID file:', idfilePath);
+        const { error: idfileError } = await supabase
+          .storage
+          .from('documents')
+          .upload(idfilePath, req.files.idfile[0].buffer, {
+            contentType: req.files.idfile[0].mimetype,
+          });
+
+        if (idfileError) {
+          console.error('Error uploading ID file:', idfileError.message);
+          return res.status(500).send('Error uploading ID file');
+        }
+
+        idfileUrl = `${supabaseUrl}/storage/v1/object/public/documents/${idfilePath}`;
+        console.log('ID file uploaded to:', idfileUrl);
+      }
+
+      if (req.files.proofdoc) {
+        const proofdocPath = `documents/${Date.now()}-${req.files.proofdoc[0].originalname}`;
+        console.log('Uploading proof document:', proofdocPath);
+        const { error: proofdocError } = await supabase
+          .storage
+          .from('documents')
+          .upload(proofdocPath, req.files.proofdoc[0].buffer, {
+            contentType: req.files.proofdoc[0].mimetype,
+          });
+
+        if (proofdocError) {
+          console.error('Error uploading proof document:', proofdocError.message);
+          return res.status(500).send('Error uploading proof document');
+        }
+
+        proofdocUrl = `${supabaseUrl}/storage/v1/object/public/documents/${proofdocPath}`;
+        console.log('Proof document uploaded to:', proofdocUrl);
+      }
+    } catch (error) {
+      console.error('Server error during file upload:', error.message);
+      return res.status(500).json({ error: error.message });
+    }
+  }
+
+  try {
+    // Insert the new club registration into the database
+    const { data, error } = await supabase
+      .from('club_registrations') // Replace 'club_registrations' with your actual table name if different
+      .insert([{
+        firstname,
+        lastname,
+        phonenum,
+        email,
+        clubname,
+        clubaddress,
+        province,
+        idfile: idfileUrl,
+        proofdoc: proofdocUrl,
+        submittedby
+      }])
+      .select(); // Ensure the data is returned
+
+    if (error) {
+      console.error('Error inserting club registration:', error.message);
+      return res.status(500).send('Error inserting club registration');
+    }
+
+    console.log('Club registration submitted successfully:', data);
+
+    res.redirect('membership'); // Redirect to a success page or another appropriate route
+  } catch (error) {
+    console.error('Server error during database insertion:', error.message);
+    res.status(500).json({ error: error.message });
+  }
+});
+
 
 
                                                                         // VIEWS BELOW
@@ -833,6 +932,29 @@ app.get('/notifications', async function (req, res) {
   }
 });
 
+app.get('/help-center', async function (req, res) {
+  if (!req.session.user) {
+    return res.redirect('/');
+  }
+  
+  try {
+    const { data, error } = await supabase
+      .from('athletes')
+      .select('*');
+
+    if (error) {
+      return res.status(400).json({ error: error.message });
+    }
+
+    console.log("Fetched data:", data); // Log the data to the console 
+
+    // Render the athletes.hbs template with the fetched data
+    res.render('help-center', { athletes: data, user: req.session.user });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
                                                                         //MEMBERSHIP PAGES
 
 app.get('/membership-ncc', async function (req, res) {
@@ -912,6 +1034,30 @@ app.get('/membership-review/:id', async (req, res) => {
 
     // Render the membership-review.hbs template with the fetched data
     res.render('membership-review', { registration: data , user: req.session.user });
+  } catch (error) {
+    console.error('Server error:', error.message);
+    res.status(500).send('Server error');
+  }
+});
+
+app.get('/membership-club', async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    // Fetch the specific registration data
+    const { data, error } = await supabase
+      .from('ncc_registrations')
+      .select('*')
+      // .eq('id', id)
+      // .single();
+
+    if (error) {
+      console.error('Error fetching registration:', error.message);
+      return res.status(500).send('Error fetching registration');
+    }
+
+    // Render the membership-review.hbs template with the fetched data
+    res.render('membership-club', { registration: data , user: req.session.user });
   } catch (error) {
     console.error('Server error:', error.message);
     res.status(500).send('Server error');
