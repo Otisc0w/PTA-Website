@@ -9,8 +9,6 @@
   --highlight-color: #ff0000;
   --button-color: #4CAF50;
   --button-hover-color: #45a049;
-  --cancel-button-color: #333333;
-  --cancel-button-hover-color: #555555;
 }
 
 * {
@@ -124,92 +122,26 @@ body, html {
   width: auto;
 }
 
-.button-group {
-  display: flex;
-  gap: 10px;
-}
-
-.nccstep1,
-.cancel-button {
+.previous-button, .next-button {
   display: block;
-  width: 100%;
+  width: 48%;
   text-align: center;
   padding: 10px;
   margin-top: 10px;
   border-radius: 5px;
-  text-decoration: none;
-  color: white;
-  cursor: pointer;
-}
-
-.nccstep1 {
   background-color: var(--button-color);
+  color: white;
+  text-decoration: none;
+  border: none;
 }
 
-.nccstep1:hover {
+.previous-button:hover, .next-button:hover {
   background-color: var(--button-hover-color);
 }
 
-.cancel-button {
-  background-color: var(--cancel-button-color);
-}
-
-.cancel-button:hover {
-  background-color: var(--cancel-button-hover-color);
-}
-
-.backtomembership {
-  margin-top: 20px;
-}
-
-.backtomembership a {
-  color: var(--text-color);
-  text-decoration: none;
-}
-
-.backtomembership a:hover {
-  text-decoration: underline;
-}
-
-.dropdown-content {
-  display: none;
-  position: absolute;
-  background-color: var(--dark-bg);
-  min-width: 160px;
-  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
-  z-index: 1;
-  right: 0;
-  top: 60px;
-}
-
-.dropdown-content a {
-  color: var(--text-color);
-  padding: 12px 16px;
-  text-decoration: none;
-  display: block;
-}
-
-.dropdown-content a:hover {
-  background-color: #0c0c0c;
-}
-
-.show {
-  display: block;
-}
-
-.notifications {
-  position: relative;
-}
-
-.notifications .badge {
-  background-color: red;
-  color: white;
-  border-radius: 50%;
-  padding: 2px 6px;
-  font-size: 12px;
-  position: absolute;
-  top: -10px;
-  right: -10px;
+.button-group {
+  display: flex;
+  justify-content: space-between;
 }
 
 .footer {
@@ -222,3 +154,11 @@ body, html {
   margin: 0;
   color: var(--text-color);
 }
+
+.form-group p {
+    margin-top: 10px;
+    font-size: 0.9em;
+    color: #ccc;
+    line-height: 1.5;
+  }
+  

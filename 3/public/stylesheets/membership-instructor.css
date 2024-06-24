@@ -9,8 +9,8 @@
   --highlight-color: #ff0000;
   --button-color: #4CAF50;
   --button-hover-color: #45a049;
-  --cancel-button-color: #333333;
-  --cancel-button-hover-color: #555555;
+  --previous-button-color: #333333;
+  --previous-button-hover-color: #555555;
 }
 
 * {
@@ -129,8 +129,8 @@ body, html {
   gap: 10px;
 }
 
-.nccstep1,
-.cancel-button {
+.next-button,
+.previous-button {
   display: block;
   width: 100%;
   text-align: center;
@@ -142,20 +142,20 @@ body, html {
   cursor: pointer;
 }
 
-.nccstep1 {
+.next-button {
   background-color: var(--button-color);
 }
 
-.nccstep1:hover {
+.next-button:hover {
   background-color: var(--button-hover-color);
 }
 
-.cancel-button {
-  background-color: var(--cancel-button-color);
+.previous-button {
+  background-color: var(--previous-button-color);
 }
 
-.cancel-button:hover {
-  background-color: var(--cancel-button-hover-color);
+.previous-button:hover {
+  background-color: var(--previous-button-hover-color);
 }
 
 .backtomembership {

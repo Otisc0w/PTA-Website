@@ -1,12 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>PTA | Membership</title>
+  <title>PTA | Instructor Information</title>
   <link rel="icon" type="image/x-icon" href="../images/favicon.ico" />
-  <link rel="stylesheet" type="text/css" href="../stylesheets/membership.css" />
+  <link rel="stylesheet" type="text/css" href="../stylesheets/membership-instructor.css" />
   <link rel="stylesheet" type="text/css" href="../stylesheets/navbar.css" />
 </head>
-
 <body class="container">
   <div class="header">
     <div class="navbar">
@@ -30,36 +29,64 @@
           <div id="dropdown" class="dropdown-content">
             <a href="profile">Profile</a>
             <a href="settings">Settings</a>
-            <a href="help-center">FAQs</a>
             <a href="/">Logout</a>
           </div>
         </li>
       </ul>
     </div>
   </div>
-
   <div class="content-container">
     <div class="leftside">
       <div class="forumtitle">
         <h1 class="forumname"></h1>
-        <h3 class="forumdesc">Membership Registration Center</h3>
+        <h3 class="forumdesc">Instructor Information</h3>
       </div>
     </div>
-
     <div class="rightside">
-      <div class="registration">
-        <ul>
-          <li class="status"><a href="membership-status">Registration Status</a></li>
-          <li class="ncc"><a href="membership-ncc">Apply for NCC ID</a></li>
-          <li class="practitioner"><a href="membership-prac">Apply for National Taekwondo Practitioner</a></li>
-          {{#notAthleteAndRegistered user.usertype user.registered}}
-            <li class="club"><a href="membership-club">Register Club</a></li>
-          {{/notAthleteAndRegistered}}
-        </ul>
+      <div class="formcontainer">
+        <form id="instructorform" action="/membership-ps" method="get">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="firstname">First Name</label>
+              <input type="text" id="firstname" name="firstname">
+            </div>
+            <div class="form-group">
+              <label for="mi">M.I.</label>
+              <input type="text" id="mi" name="mi">
+            </div>
+            <div class="form-group">
+              <label for="lastname">Last Name</label>
+              <input type="text" id="lastname" name="lastname">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="instructormobile">Instructor Mobile Number</label>
+              <input type="tel" id="instructormobile" name="instructormobile" pattern="\d{4}\d{3}\d{4}" placeholder="0912-345-6789">
+            </div>
+            <div class="form-group">
+              <label for="instructoremail">Instructor E-mail</label>
+              <input type="email" id="instructoremail" name="instructoremail">
+            </div>
+            <div class="form-group">
+              <label for="confemail">Verify E-mail</label>
+              <input type="email" id="confemail" name="confemail">
+            </div>
+          </div>
+
+          <div class="form-row button-group">
+            <button class="previous-button" type="button" onclick="window.location.href='/membership-ncc';">Previous</button>
+            <button class="next-button" id="next-button" type="submit">Next</button>
+          </div>
+          <p id="error-message" style="color:red;"></p>
+        </form>
       </div>
     </div>
   </div>
-
+  <div class="footer">
+    <p>&copy; 2024 Philippine Taekwondo Association. All rights reserved.</p>
+  </div>
   <script>
     function toggleDropdown() {
       document.getElementById("dropdown").classList.toggle("show");
@@ -68,7 +95,7 @@
     window.onclick = function (event) {
       if (!event.target.matches('.profile-pic img')) {
         var dropdowns = document.getElementsByClassName("dropdown-content");
-        for (var i = 0; i < dropdowns.length; i++) {
+        for (var i = 0 < dropdowns.length; i++) {
           var openDropdown = dropdowns[i];
           if (openDropdown.classList.contains('show')) {
             openDropdown.classList.remove('show');

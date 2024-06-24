@@ -126,6 +126,15 @@ hbs.registerHelper('reverseEach', function(context, options) {
 hbs.registerHelper('eq', function (a, b) {
   return a === b;
 });
+hbs.registerHelper('ne', function (a, b) {
+  return a !== b;
+});
+hbs.registerHelper('notAthleteAndRegistered', function (usertype, registered, options) {
+  if (usertype !== 'athlete' && registered === true) {
+    return options.fn(this);
+  }
+  return options.inverse(this);
+});
 
 hbs.registerHelper('renderComments', function(comments, options) {
   function renderNestedComments(comments, parentId) {
@@ -1085,6 +1094,17 @@ app.get('/membership-club', async (req, res) => {
     res.status(500).send('Server error');
   }
 });
+
+//membership to ncc id to instructor
+app.get('/membership-instructor', (req, res) => {
+  res.render('membership-instructor');
+});
+
+//instructor to ps
+app.get('/membership-ps', (req, res) => {
+  res.render('membership-ps');
+});
+
 
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
