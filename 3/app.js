@@ -126,6 +126,15 @@ hbs.registerHelper('reverseEach', function(context, options) {
 hbs.registerHelper('eq', function (a, b) {
   return a === b;
 });
+hbs.registerHelper('ne', function (a, b) {
+  return a !== b;
+});
+hbs.registerHelper('notAthleteAndRegistered', function (usertype, registered, options) {
+  if (usertype !== 'athlete' && registered === true) {
+    return options.fn(this);
+  }
+  return options.inverse(this);
+});
 
 hbs.registerHelper('renderComments', function(comments, options) {
   function renderNestedComments(comments, parentId) {

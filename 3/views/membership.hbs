@@ -52,7 +52,9 @@
           <li class="status"><a href="membership-status">Registration Status</a></li>
           <li class="ncc"><a href="membership-ncc">Apply for NCC ID</a></li>
           <li class="practitioner"><a href="membership-prac">Apply for National Taekwondo Practitioner</a></li>
-          <li class="club"><a href="membership-club">Register Club</a></li>
+          {{#notAthleteAndRegistered user.usertype user.registered}}
+            <li class="club"><a href="membership-club">Register Club</a></li>
+          {{/notAthleteAndRegistered}}
         </ul>
       </div>
     </div>
