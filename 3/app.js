@@ -662,6 +662,9 @@ app.post('/submit-club', upload.fields([{ name: 'idfile', maxCount: 1 }, { name:
     }
   }
 
+  console.log('ID File URL:', idfileUrl);
+  console.log('Proof Document URL:', proofdocUrl);
+
   try {
     // Insert the new club registration into the database
     const { data, error } = await supabase
@@ -989,32 +992,51 @@ app.get('/membership-status', async function (req, res) {
   const usertype = req.session.user.usertype;
 
   try {
-    let data;
-    let error;
+    let nccData, clubData;
+    let nccError, clubError;
 
     if (usertype === 'pta') {
       // Fetch all rows if user is 'pta'
-      ({ data, error } = await supabase
+      ({ data: nccData, error: nccError } = await supabase
         .from('ncc_registrations')
+        .select('*'));
+
+      ({ data: clubData, error: clubError } = await supabase
+        .from('club_registrations')
         .select('*'));
     } else {
       // Fetch only rows submitted by the current user
-      ({ data, error } = await supabase
+      ({ data: nccData, error: nccError } = await supabase
         .from('ncc_registrations')
+        .select('*')
+        .eq('submittedby', username));
+
+      ({ data: clubData, error: clubError } = await supabase
+        .from('club_registrations')
         .select('*')
         .eq('submittedby', username));
     }
 
-    if (error) {
-      console.error('Error fetching data:', error.message);
-      return res.status(500).send('Error fetching data');
+    if (nccError) {
+      console.error('Error fetching NCC data:', nccError.message);
+      return res.status(500).send('Error fetching NCC data');
     }
 
-    res.render('membership-status', { ncc_registrations: data, user: req.session.user });
+    if (clubError) {
+      console.error('Error fetching club data:', clubError.message);
+      return res.status(500).send('Error fetching club data');
+    }
+
+    res.render('membership-status', { 
+      ncc_registrations: nccData, 
+      club_registrations: clubData, 
+      user: req.session.user 
+    });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
+
 
 app.get('/membership-review/:id', async (req, res) => {
   const { id } = req.params;

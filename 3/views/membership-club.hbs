@@ -34,43 +34,37 @@
 		
 			<div class="membership-rightside">                                                                                             
                 <div class="formcontainer">
-                    <form id="clubform" action="/submit-club" method="post">
-                    <input type="hidden" value="{{user.username}}" name="submittedby" class="submittedby">
-                        <div class="clubreg1">                                                                                  {{!-- club APPLICATION FORM part 1 --}}
-                            <label class="firstname" for="firstname">Firstname</label><br>
-                            <input type="text" id="firstname" name="firstname" ><br>
+                    <form id="clubform" action="/submit-club" method="post" enctype="multipart/form-data">
+                        <div>
+                        <label for="firstname">Firstname:</label><br>
+                        <input type="text" id="firstname" name="firstname" required><br>
 
-                            <label class="lastname" for="lastname">Lastname</label><br>
-                            <input type="text" id="lastname" name="lastname" ><br>
+                        <label for="lastname">Lastname:</label><br>
+                        <input type="text" id="lastname" name="lastname" required><br>
 
-                            <label class="phonenum" for="phonenum">Mobile Number</label><br>
-                            <input type="text" id="phonenum" name="phonenum" ><br>
+                        <label for="phonenum">Mobile Number:</label><br>
+                        <input type="text" id="phonenum" name="phonenum" required><br>
 
-                            <label class="email" for="email">Email</label><br>
-                            <input type="text" id="email" name="email" ><br>
+                        <label for="email">Email:</label><br>
+                        <input type="email" id="email" name="email" required><br>
 
-                            <label class="email" for="email">Confirm Email</label><br>
-                            <input type="text" id="email" name="email" ><br>
+                        <label for="clubname">Club Name:</label><br>
+                        <input type="text" id="clubname" name="clubname" required><br>
 
-                            <a class="clubstep2" id="clubstep2">Next</a>
-                        </div>    
+                        <label for="clubaddress">Club Address:</label><br>
+                        <input type="text" id="clubaddress" name="clubaddress" required><br>
 
-                        <div class="clubreg2">
-                            <label class="clubname" for="clubname">Club Name</label><br>
-                            <input type="text" id="clubname" name="clubname" ><br>
+                        <label for="province">Province:</label><br>
+                        <input type="text" id="province" name="province" required><br>
 
-                            <label class="clubaddress" for="clubaddress">Club Address</label><br>
-                            <input type="text" id="clubaddress" name="clubaddress" ><br>
-                            
-                            <label class="province" for="province">Province</label><br>
-                            <input type="text" id="province" name="province" ><br>
+                        <label for="idfile">ID File (PDF):</label><br>
+                        <input type="file" id="idfile" name="idfile" accept="application/pdf" required><br>
 
-                            <input type="file" id="idfile" name="idfile" class="idfile"><br>
+                        <label for="proofdoc">Proof Document (PDF):</label><br>
+                        <input type="file" id="proofdoc" name="proofdoc" accept="application/pdf" required><br>
 
-                            <input type="file" id="proofdoc" name="proofdoc" class="proofdoc"><br>
-
-                            <button type="submit">Submit</button>
-                        </div>                                          
+                        <button type="submit">Submit</button>
+                        </div>
                     </form>
                 </div>
                 <div class="backtomembership">
