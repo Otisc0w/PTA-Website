@@ -9,6 +9,8 @@
   --highlight-color: #ff0000;
   --button-color: #4CAF50;
   --button-hover-color: #45a049;
+  --cancel-button-color: #333333;
+  --cancel-button-hover-color: #555555;
 }
 
 * {
@@ -122,20 +124,38 @@ body, html {
   width: auto;
 }
 
-.nccstep1 {
+.button-group {
+  display: flex;
+  gap: 10px;
+}
+
+.nccstep1,
+.cancel-button {
   display: block;
   width: 100%;
   text-align: center;
   padding: 10px;
   margin-top: 10px;
   border-radius: 5px;
-  background-color: var(--button-color);
-  color: white;
   text-decoration: none;
+  color: white;
+  cursor: pointer;
+}
+
+.nccstep1 {
+  background-color: var(--button-color);
 }
 
 .nccstep1:hover {
   background-color: var(--button-hover-color);
+}
+
+.cancel-button {
+  background-color: var(--cancel-button-color);
+}
+
+.cancel-button:hover {
+  background-color: var(--cancel-button-hover-color);
 }
 
 .backtomembership {
