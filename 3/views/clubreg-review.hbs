@@ -1,0 +1,112 @@
+<html>
+
+	<head>
+	  <title>PTA | Club Application Review</title>
+      <link rel="icon" type="image/x-icon" href="../images/favicon.ico" />
+	  <link rel="stylesheet" type="text/css" href="../stylesheets/membership.css" />
+      <link rel="stylesheet" type="text/css" href="../stylesheets/navbar.css" />
+	</head>
+	
+	<body style="margin:0;" class="container">
+        <div class="membership-header">
+            <div class="membership-navbar">
+				<img src="/images/logo.png" class="membership-logo" href="home"></img>
+                    {{#if user.profilepic}}
+                        <a href="#" onclick="toggleDropdown()" class="memprofile-pic"><img src="{{user.profilepic}}" alt="Profile Picture" class="profile-picture"></a>
+                    {{else}}
+                        <a href="#" onclick="toggleDropdown()" class="memprofile-pic"><p>:(</p></a>
+                    {{/if}}
+                    <div id="dropdown" class="dropdown-content">
+                        <a href="profile">Profile</a>
+                        <a href="settings">Settings</a>
+                        <a href="help-center">FAQs</a>
+                        <a href="/">Logout</a>
+                    </div>
+            </div>
+        </div>
+        <div class="membership-container">
+			<div class="review-header">
+                <h1>Review Membership Application</h1>
+            </div>
+                <form action="/update-status" method="post">
+                    <div class="review-details" >
+                        <h2>Club Application Information</h2>
+                        <input type="hidden" name="applicationId" value="{{clubregistration.id}}">
+                        <h2>{{clubregistration.clubname}}</h2>
+                        submittedby: {{clubregistration.submittedby}}
+                        <!-- Add any other relevant details here -->
+                    </div>
+                    <div class="application-actions">
+                        <h1>{{registration.status}}</h1>
+                        {{#if (eq user.usertype "pta")}}
+                            <div>
+                                <button onclick="printDiv('printableArea')">Print</button>
+                            </div>
+                            <div class="status-buttons" id="status-buttons">
+                                <button type="submit" name="status" value="1">Under Review</button>
+                                <button type="submit" name="status" value="2">Printed</button>
+                                <button type="submit" name="status" value="3">En-route to Regional Office</button>
+                                <button type="button" id="idshipped" class="idshipped">ID Shipped</button>
+                                <button type="submit" name="status" value="0">Reject Application</button>
+                            </div>
+                            <div class="confirmscreen" id="confirmscreen" style="display: none;">
+                                <h3>Are you sure? The player will be notified that his ID is ready. This registration will also disappear after a few days.</h3>
+                                <button class="cancel" id="cancel">Cancel</button>
+                                <button  type="submit" value="4" name="status">Confirm</button>
+                            </div>
+                            <div class="backtolist">
+                                <a href="/membership-status">Back to list</a>
+                            </div>
+                        {{/if}}
+                    </div>
+                </form>
+            <div class="printwindow" id="printableArea" >
+                <p><strong>ID:</strong> {{registration.id}}</p>
+                <p><strong>First Name:</strong> {{registration.firstname}}</p>
+                <p><strong>Middle Initial:</strong> {{registration.mi}}</p>
+                <p><strong>Last Name:</strong> {{registration.lastname}}</p>
+            </div>
+
+                <script>
+                    const confirmscreen = document.getElementById("confirmscreen");
+                    const statuses = document.getElementById("status-buttons");
+                    const cancel = document.getElementById("cancel");
+                    const idshipped = document.getElementById("idshipped");
+                    const statusForm = document.getElementById("statusForm");
+                    const confirmButton = document.getElementById("confirm");
+
+                    cancel.addEventListener("click", function (event) {
+                        event.preventDefault();
+                        confirmscreen.style.display = "none";
+                        statuses.style.display = "block";
+                    });
+
+                    idshipped.addEventListener("click", function (event) {
+                        event.preventDefault();
+                        confirmscreen.style.display = "block";
+                        statuses.style.display = "none";
+                        // Set the status value in the confirm button data attribute
+                        confirmButton.value = idshipped.getAttribute("data-status");
+                    });
+
+                    confirmButton.addEventListener("click", function (event) {
+                        event.preventDefault();
+                        const status = confirmButton.value;
+                        const applicationId = document.querySelector('input[name="applicationId"]').value;
+                    });
+
+                    function printDiv(divName) {
+                        var printContents = document.getElementById(divName).innerHTML;
+                        var originalContents = document.body.innerHTML;
+
+                        document.body.innerHTML = printContents;
+
+                        window.print();
+
+                        document.body.innerHTML = originalContents;
+                    }
+  		        </script>
+			</div>
+        </div>
+    </body>
+</html

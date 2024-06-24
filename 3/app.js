@@ -1046,7 +1046,6 @@ app.get('/membership-status', async function (req, res) {
   }
 });
 
-
 app.get('/membership-review/:id', async (req, res) => {
   const { id } = req.params;
 
@@ -1065,6 +1064,29 @@ app.get('/membership-review/:id', async (req, res) => {
 
     // Render the membership-review.hbs template with the fetched data
     res.render('membership-review', { registration: data , user: req.session.user });
+  } catch (error) {
+    console.error('Server error:', error.message);
+    res.status(500).send('Server error');
+  }
+});
+
+app.get('/clubreg-review/:id', async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    // Fetch the specific registration data
+    const { data, error } = await supabase
+      .from('club_registrations')
+      .select('*')
+      .eq('id', id)
+      .single();
+
+    if (error) {
+      console.error('Error fetching registration:', error.message);
+      return res.status(500).send('Error fetching registration');
+    }
+
+    res.render('clubreg-review', { clubregistration: data , user: req.session.user });
   } catch (error) {
     console.error('Server error:', error.message);
     res.status(500).send('Server error');
