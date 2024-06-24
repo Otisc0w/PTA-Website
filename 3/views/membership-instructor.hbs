@@ -44,7 +44,7 @@
     </div>
     <div class="rightside">
       <div class="formcontainer">
-        <form id="instructorform" action="/submit-instructor" method="post">
+        <form id="instructorform" action="/membership-ps" method="get">
           <div class="form-row">
             <div class="form-group">
               <label for="firstname">First Name</label>
@@ -95,7 +95,7 @@
     window.onclick = function (event) {
       if (!event.target.matches('.profile-pic img')) {
         var dropdowns = document.getElementsByClassName("dropdown-content");
-        for (var i = 0; i < dropdowns.length; i++) {
+        for (var i = 0 < dropdowns.length; i++) {
           var openDropdown = dropdowns[i];
           if (openDropdown.classList.contains('show')) {
             openDropdown.classList.remove('show');
