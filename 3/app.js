@@ -1091,6 +1091,11 @@ app.get('/membership-instructor', (req, res) => {
   res.render('membership-instructor');
 });
 
+//instructor to ps
+app.get('/membership-ps', (req, res) => {
+  res.render('membership-ps');
+});
+
 
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
