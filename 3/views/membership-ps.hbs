@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>PTA | Instructor Information</title>
+  <title>PTA | Photos and Signatures</title>
   <link rel="icon" type="image/x-icon" href="../images/favicon.ico" />
-  <link rel="stylesheet" type="text/css" href="../stylesheets/membership-instructor.css" />
+  <link rel="stylesheet" type="text/css" href="../stylesheets/membership-ps.css" />
   <link rel="stylesheet" type="text/css" href="../stylesheets/navbar.css" />
 </head>
 <body class="container">
@@ -39,44 +39,44 @@
     <div class="leftside">
       <div class="forumtitle">
         <h1 class="forumname"></h1>
-        <h3 class="forumdesc">Instructor Information</h3>
+        <h3 class="forumdesc">Photos and Signatures</h3>
       </div>
     </div>
     <div class="rightside">
       <div class="formcontainer">
-        <form id="instructorform" action="/membership-ps" method="get">
+        <form id="psform" action="/submit-ps" method="post">
           <div class="form-row">
             <div class="form-group">
-              <label for="firstname">First Name</label>
-              <input type="text" id="firstname" name="firstname">
+              <label for="birthcert">Birth Certificate NSO/PSA</label>
+              <input type="file" id="birthcert" name="birthcert">
             </div>
             <div class="form-group">
-              <label for="mi">M.I.</label>
-              <input type="text" id="mi" name="mi">
-            </div>
-            <div class="form-group">
-              <label for="lastname">Last Name</label>
-              <input type="text" id="lastname" name="lastname">
+              <label for="signature">Sign Here</label>
+              <input type="text" id="signature" name="signature">
             </div>
           </div>
 
           <div class="form-row">
             <div class="form-group">
-              <label for="instructormobile">Instructor Mobile Number</label>
-              <input type="tel" id="instructormobile" name="instructormobile" pattern="\d{4}\d{3}\d{4}" placeholder="0912-345-6789">
+              <input type="checkbox" id="terms" name="terms">
+              <label for="terms">I AGREE TO THE TERMS OF SERVICE</label>
+              <p>Certification, Waiver and Release Form<br>
+                1. I hereby certify that the above information is true and correct.<br>
+                2. I acknowledge, fully understand and will abide by the rules and regulations of PTA.<br>
+                3. I do hereby waive, release and discharge any and all liabilities from death, injuries or damages arising from my own negligence, furthermore I or my family, will waive and release any or all rights, claims for damages from the entire PTA body including the PTA Officers, PTA competition officials, PTA instructors, or any department/facility of PTA like PTA Admin, PTA Competitions Management Team or Digital Team from any Taekwondo related issues.
+              </p>
             </div>
+          </div>
+
+          <div class="form-row">
             <div class="form-group">
-              <label for="instructoremail">Instructor E-mail</label>
-              <input type="email" id="instructoremail" name="instructoremail">
-            </div>
-            <div class="form-group">
-              <label for="confemail">Verify E-mail</label>
-              <input type="email" id="confemail" name="confemail">
+              <input type="checkbox" id="waiver" name="waiver">
+              <label for="waiver">I AGREE TO THIS WAIVER AND RELEASE FORM</label>
             </div>
           </div>
 
           <div class="form-row button-group">
-            <button class="previous-button" type="button" onclick="window.location.href='/membership-ncc';">Previous</button>
+            <button class="previous-button" type="button" onclick="window.location.href='/membership-instructor';">Previous</button>
             <button class="next-button" id="next-button" type="submit">Next</button>
           </div>
           <p id="error-message" style="color:red;"></p>
@@ -95,7 +95,7 @@
     window.onclick = function (event) {
       if (!event.target.matches('.profile-pic img')) {
         var dropdowns = document.getElementsByClassName("dropdown-content");
-        for (var i = 0 < dropdowns.length; i++) {
+        for (var i = 0; i < dropdowns.length; i++) {
           var openDropdown = dropdowns[i];
           if (openDropdown.classList.contains('show')) {
             openDropdown.classList.remove('show');
