@@ -1,0 +1,87 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f5f5dc;
+    color: #333;
+    margin: 0;
+    padding: 20px;
+}
+
+.faq-container {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+h1 {
+    font-size: 3em;
+    font-weight: bold;
+}
+
+p {
+    font-size: 1.2em;
+}
+
+h2 {
+    font-size: 2em;
+    margin-top: 20px;
+}
+
+.faq-item {
+    border-top: 1px solid #333;
+    padding: 20px 0;
+}
+
+.faq-question {
+    display: flex;
+    justify-content: space-between;
+    cursor: pointer;
+    font-size: 1.5em;
+    margin: 0;
+}
+
+.faq-answer {
+    display: none;
+    margin-top: 20px;
+    font-size: 1.2em;
+    color: #666;
+}
+
+.faq-toggle {
+    font-size: 1.5em;
+}
+
+.footer-content .pta-logo img {
+    height: 100%;
+}
+
+.footer-content .contact-info {
+    flex: 1;
+    text-align: center;
+    padding: 0 20px;
+}
+
+.footer-content .contact-info p {
+    margin: 5px 0;
+}
+
+.footer-content .social-media {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.footer-content .social-media p {
+    margin-bottom: 5px;
+}
+
+.footer-content .social-media .icons {
+    display: flex;
+    align-items: center;
+}
+
+.footer-content .social-media a {
+    margin-left: 10px;
+}
+
+.footer-content .social-media img {
+    height: 30px;
+}
