@@ -57,5 +57,15 @@
 .signup{
     margin-top: 250px;
     margin-left: 2%;
+    
+}
+
+.login-link, .signup-link{
+    color: #4285F4;
+}
+
+
+.login-link:hover, .signup-link:hover{
+    color: #7caeff;
 }
 

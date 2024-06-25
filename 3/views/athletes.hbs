@@ -103,16 +103,16 @@
                         <th>Rank</th>
                         <th>Name</th>
                         <th>Club</th>
-                        <th>Points</th>
+                        <th>Belt Level</th>
                     </tr>
                 </thead>
                 <tbody>
                     {{#each athletes}}
                     <tr onclick="showAthleteDetails('{{name}}', '{{class}}', '{{height}}', '{{weight}}', '{{birthplace}}', '{{club}}', '{{image}}')">
-                        <td>{{rank}}</td>
-                        <td>{{name}}</td>
-                        <td>{{club}}</td>
-                        <td>{{points}}</td>
+                        <td>{{firstname}}</td>
+                        <td>{{lastname}}</td>
+                        <td>{{clubname}}</td>
+                        <td>{{beltlevel}}</td>
                     </tr>
                     {{/each}}
                 </tbody>

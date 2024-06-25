@@ -3,7 +3,7 @@
 	<head>
 	  <title>PTA | Club Application Review</title>
       <link rel="icon" type="image/x-icon" href="../images/favicon.ico" />
-	  <link rel="stylesheet" type="text/css" href="../stylesheets/membership.css" />
+	  <link rel="stylesheet" type="text/css" href="../stylesheets/membership-ncc.css" />
       <link rel="stylesheet" type="text/css" href="../stylesheets/navbar.css" />
 	</head>
 	
@@ -26,7 +26,7 @@
         </div>
         <div class="membership-container">
 			<div class="review-header">
-                <h1>Review Membership Application</h1>
+                <h1>Review Club Application</h1>
             </div>
                 <form action="/update-status" method="post">
                     <div class="review-details" >
@@ -34,14 +34,14 @@
                         <input type="hidden" name="applicationId" value="{{clubregistration.id}}">
                         <h2>{{clubregistration.clubname}}</h2>
                         submittedby: {{clubregistration.submittedby}}
+                        <a href="{{clubregistration.idfile}}" target="_blank" download> ID</a>
+                        <a href="{{clubregistration.proofdoc}}" target="_blank" download> Proof Document </a>
+
                         <!-- Add any other relevant details here -->
                     </div>
                     <div class="application-actions">
                         <h1>{{registration.status}}</h1>
                         {{#if (eq user.usertype "pta")}}
-                            <div>
-                                <button onclick="printDiv('printableArea')">Print</button>
-                            </div>
                             <div class="status-buttons" id="status-buttons">
                                 <button type="submit" name="status" value="1">Under Review</button>
                                 <button type="submit" name="status" value="2">Printed</button>
@@ -61,10 +61,9 @@
                     </div>
                 </form>
             <div class="printwindow" id="printableArea" >
-                <p><strong>ID:</strong> {{registration.id}}</p>
-                <p><strong>First Name:</strong> {{registration.firstname}}</p>
-                <p><strong>Middle Initial:</strong> {{registration.mi}}</p>
-                <p><strong>Last Name:</strong> {{registration.lastname}}</p>
+                <p><strong>ID:</strong> {{clubregistration.id}}</p>
+                <p><strong>First Name:</strong> {{clubregistration.firstname}}</p>
+                <p><strong>Last Name:</strong> {{clubregistration.lastname}}</p>
             </div>
 
                 <script>

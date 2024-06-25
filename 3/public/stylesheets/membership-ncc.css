@@ -129,7 +129,7 @@ body, html {
   gap: 10px;
 }
 
-.nccstep1,
+.next-button,
 .cancel-button {
   display: block;
   width: 100%;
@@ -142,11 +142,11 @@ body, html {
   cursor: pointer;
 }
 
-.nccstep1 {
+.next-button {
   background-color: var(--button-color);
 }
 
-.nccstep1:hover {
+.next-button:hover {
   background-color: var(--button-hover-color);
 }
 

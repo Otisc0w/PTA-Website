@@ -11,53 +11,7 @@ const axios = require('axios');
 const PAYMONGO_SECRET_KEY = 'sk_test_rfwrr7CgVzNP4AnGJcjU6yFa';
 const PAYMONGO_PUBLIC_KEY = 'pk_test_tfhdABT3Jvix9Wvsbv5AGP6d ';
 
-const instance = axios.create({
-  baseURL: 'https://api.paymongo.com/v1',
-  headers: {
-    'Authorization': `Basic ${Buffer.from(PAYMONGO_SECRET_KEY).toString('base64')}`,
-    'Content-Type': 'application/json',
-  }
-});
 
-const createPaymentIntent = async (amount, currency) => {
-  try {
-    const response = await instance.post('/payment_intents', {
-      data: {
-        attributes: {
-          amount: amount * 100, // PayMongo expects the amount in cents
-          currency: currency,
-          payment_method_allowed: ['card'],
-          capture_type: 'automatic'
-        }
-      }
-    });
-    return response.data;
-  } catch (error) {
-    console.error('Error creating payment intent:', error.response.data);
-    throw error;
-  }
-};
-
-const attachPaymentMethod = async (paymentIntentId, paymentMethodId) => {
-  try {
-    const response = await instance.post(`/payment_intents/${paymentIntentId}/attach`, {
-      data: {
-        attributes: {
-          payment_method: paymentMethodId
-        }
-      }
-    });
-    return response.data;
-  } catch (error) {
-    console.error('Error attaching payment method:', error.response.data);
-    throw error;
-  }
-};
-
-module.exports = {
-  createPaymentIntent,
-  attachPaymentMethod
-};
                                                                           // fdsfsdfasdfasdfasdfasdf
 
 require('dotenv').config();
@@ -297,7 +251,7 @@ app.post('/submit-signup', async (req, res) => {
   }
 });
 
-app.post('/submit-ncc', async (req, res) => {
+app.post('/submit-ncc', upload.single('birthcert'), async (req, res) => {
   const {
     apptype,
     firstname,
@@ -326,10 +280,34 @@ app.post('/submit-ncc', async (req, res) => {
   const submittedby = req.session.user.username; // Get the current user's username from the session
   const status = 1;
 
+  let birthcertUrl = null;
+
+  if (req.file) {
+    try {
+      const filePath = `documents/${Date.now()}-${req.file.originalname}`;
+      const { error: uploadError } = await supabase
+        .storage
+        .from('documents')
+        .upload(filePath, req.file.buffer, {
+          contentType: req.file.mimetype,
+        });
+
+      if (uploadError) {
+        console.error('Error uploading birth certificate:', uploadError.message);
+        return res.status(500).send('Error uploading birth certificate');
+      }
+
+      birthcertUrl = `${supabaseUrl}/storage/v1/object/public/documents/${filePath}`;
+    } catch (error) {
+      console.error('Server error:', error.message);
+      return res.status(500).json({ error: error.message });
+    }
+  }
+
   try {
     // Insert the new user into the database
     const { data, error } = await supabase
-      .from('ncc_registrations') // Replace 'users' with your actual table name if different
+      .from('ncc_registrations')
       .insert([{
         apptype,
         firstname,
@@ -350,11 +328,12 @@ app.post('/submit-ncc', async (req, res) => {
         instructormobile,
         instructoremail,
         status,
-        submittedby // Include the current user's username
+        submittedby,
+        birthcert: birthcertUrl // Include the birth certificate URL
       }]);
 
     if (error) {
-      // Handle any errors that occur during the insert
+      console.error('Error creating registration:', error.message);
       return res.status(500).render('membership', {
         error: 'Error creating registration.',
         users: [] // Optionally pass users array if you need it in the view
@@ -362,7 +341,7 @@ app.post('/submit-ncc', async (req, res) => {
     }
     res.redirect('/membership');
   } catch (error) {
-    // Handle any server-side errors
+    console.error('Server error:', error.message);
     res.status(500).json({ error: error.message });
   }
 });
@@ -491,7 +470,7 @@ app.post('/save-profile-changes', upload.single('file'), async (req, res) => {
   }
 });
 
-app.post('/update-status', async (req, res) => {
+app.post('/update-nccstatus', async (req, res) => {
   if (!req.session.user) {
     return res.status(401).send('Unauthorized: No user logged in');
   }
@@ -615,6 +594,8 @@ app.post('/submit-club', upload.fields([{ name: 'idfile', maxCount: 1 }, { name:
     province
   } = req.body; // Capture user input from the form
 
+  const status=1;
+
   if (!req.session.user) {
     return res.status(401).send('Unauthorized: No user logged in');
   }
@@ -688,7 +669,8 @@ app.post('/submit-club', upload.fields([{ name: 'idfile', maxCount: 1 }, { name:
         province,
         idfile: idfileUrl,
         proofdoc: proofdocUrl,
-        submittedby
+        submittedby,
+        status
       }])
       .select(); // Ensure the data is returned
 
