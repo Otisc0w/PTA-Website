@@ -2,6 +2,7 @@
 <html>
 <head>
     <title>Create Event</title>
+<<<<<<< Updated upstream
     <link rel="stylesheet" type="text/css" href="/stylesheets/create-event.css" />
 </head>
 <body>
@@ -35,5 +36,32 @@
             <button type="submit">Create Event</button>
         </form>
     </div>
+=======
+    <link rel="stylesheet" type="text/css" href="../stylesheets/home.css" />
+    <link rel="stylesheet" type="text/css" href="../stylesheets/navbar.css" />
+</head>
+<body class="container">
+    <header>
+        <!-- Navbar and other header elements -->
+    </header>
+    <main>
+        <h1>Create Event</h1>
+        <form action="/events" method="POST">
+            <label for="title">Event Title:</label>
+            <input type="text" id="title" name="title" required>
+            
+            <label for="date">Event Date:</label>
+            <input type="date" id="date" name="date" required>
+            
+            <label for="description">Description:</label>
+            <textarea id="description" name="description" required></textarea>
+            
+            <label for="eventpicture">Event Picture URL:</label>
+            <input type="url" id="eventpicture" name="eventpicture" required>
+            
+            <button type="submit">Create Event</button>
+        </form>
+    </main>
+>>>>>>> Stashed changes
 </body>
 </html>

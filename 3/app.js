@@ -766,3 +766,44 @@ app.get('/event-details/:id', async (req, res) => {
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
 });
+<<<<<<< Updated upstream
+=======
+
+// Route to render create event page
+app.get('/create-event', (req, res) => {
+  if (!req.session.user) {
+    return res.redirect('/');
+  }
+  res.render('create-event', { user: req.session.user });
+});
+
+// Route to handle create event form submission
+app.post('/create-event', async (req, res) => {
+  const { title, date, time, description, eventpicture } = req.body;
+
+  try {
+    const { data, error } = await supabase
+      .from('events')
+      .insert([{
+        title,
+        date,
+        time,
+        description,
+        eventpicture
+      }]);
+
+    if (error) {
+      console.error('Error creating event:', error.message);
+      return res.status(500).render('create-event', {
+        error: 'Error creating event.',
+        user: req.session.user
+      });
+    }
+
+    res.redirect('/events');
+  } catch (error) {
+    console.error('Server error:', error.message);
+    res.status(500).json({ error: error.message });
+  }
+});
+>>>>>>> Stashed changes
