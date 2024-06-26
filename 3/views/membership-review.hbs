@@ -30,7 +30,7 @@
             </div>
                 <form action="/update-nccstatus" method="post">
                     <div class="review-details" >
-                        <h2>Applicant Information</h2>
+                        <h2>Applicant Information</h2>                                                  {{!-- use '{{registration.something}}' to get the data --}}
                         <input type="hidden" name="applicationId" value="{{registration.id}}">
                         <p><strong>ID:</strong> {{registration.id}}</p>
                         <p><strong>First Name:</strong> {{registration.firstname}}</p>
@@ -60,7 +60,7 @@
                             <div>
                                 <button onclick="printDiv('printableArea')">Print</button>
                             </div>
-                            <div class="status-buttons" id="status-buttons">
+                            <div class="status-buttons" id="status-buttons">                                {{!-- TYPES NAMES ID'S CLASSES VALUES NEED TO STAY THE SAME --}}
                                 <button type="submit" name="status" value="1">Under Review</button>
                                 <button type="submit" name="status" value="2">Printed</button>
                                 <button type="submit" name="status" value="3">En-route to Regional Office</button>

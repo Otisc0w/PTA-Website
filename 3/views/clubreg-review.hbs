@@ -31,7 +31,8 @@
                 <form action="/update-clubstatus" method="post">
                     <div class="review-details" >
                         <h2>Club Application Information</h2>
-                        <input type="hidden" name="applicationId" value="{{clubregistration.id}}">
+                        <input type="hidden" name="applicationId" value="{{clubregistration.id}}"> 
+                                                                                                    {{!-- use '{{clubregistration.something}}' to get the data --}}
                         <h2>{{clubregistration.clubname}}</h2>
                         submittedby: {{clubregistration.submittedby}}
                         <a href="{{clubregistration.idfile}}" target="_blank" download> ID</a>
@@ -42,7 +43,7 @@
                     <div class="application-actions">
                         <h1>{{registration.status}}</h1>
                         {{#if (eq user.usertype "pta")}}
-                            <div class="status-buttons" id="status-buttons">
+                            <div class="status-buttons" id="status-buttons">                        {{!-- VALUES NAMES AND TYPES NEED TO STAY THE SAME --}}
                                 <button type="submit" name="status" value="1">Processing Application</button>
                                 <button type="button" id="accepted" class="accepted">Accepted and Registered</button>
                                 <button type="submit" name="status" value="0">Reject Application</button>
