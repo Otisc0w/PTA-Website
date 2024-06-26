@@ -584,7 +584,8 @@ app.post('/update-clubstatus', async (req, res) => {
         clubname,
         clubaddress,
         province,
-        submittedby } = clubregistration;
+        submittedby,
+        clubpic } = clubregistration;
 
       console.log('Updating user with username:', submittedby);
 
@@ -598,7 +599,8 @@ app.post('/update-clubstatus', async (req, res) => {
           email,
           clubaddress,
           province,
-          registeredby
+          registeredby,
+          clubpic
         }]);
 
       if (insertClubError) {
@@ -648,7 +650,11 @@ app.post('/add-comment', async (req, res) => {
   }
 });
 
-app.post('/submit-club', upload.fields([{ name: 'idfile', maxCount: 1 }, { name: 'proofdoc', maxCount: 1 }]), async (req, res) => {
+app.post('/submit-club', upload.fields([
+  { name: 'idfile', maxCount: 1 },
+  { name: 'proofdoc', maxCount: 1 },
+  { name: 'clubpic', maxCount: 1 }
+]), async (req, res) => {
   const {
     firstname,
     lastname,
@@ -659,7 +665,7 @@ app.post('/submit-club', upload.fields([{ name: 'idfile', maxCount: 1 }, { name:
     province
   } = req.body; // Capture user input from the form
 
-  const status=1;
+  const status = 1;
 
   if (!req.session.user) {
     return res.status(401).send('Unauthorized: No user logged in');
@@ -669,6 +675,7 @@ app.post('/submit-club', upload.fields([{ name: 'idfile', maxCount: 1 }, { name:
 
   let idfileUrl = '';
   let proofdocUrl = '';
+  let clubpicUrl = '';
 
   console.log('Files received:', req.files);
 
@@ -711,6 +718,25 @@ app.post('/submit-club', upload.fields([{ name: 'idfile', maxCount: 1 }, { name:
         proofdocUrl = `${supabaseUrl}/storage/v1/object/public/documents/${proofdocPath}`;
         console.log('Proof document uploaded to:', proofdocUrl);
       }
+
+      if (req.files.clubpic) {
+        const clubpicPath = `documents/${Date.now()}-${req.files.clubpic[0].originalname}`;
+        console.log('Uploading club picture:', clubpicPath);
+        const { error: clubpicError } = await supabase
+          .storage
+          .from('documents')
+          .upload(clubpicPath, req.files.clubpic[0].buffer, {
+            contentType: req.files.clubpic[0].mimetype,
+          });
+
+        if (clubpicError) {
+          console.error('Error uploading club picture:', clubpicError.message);
+          return res.status(500).send('Error uploading club picture');
+        }
+
+        clubpicUrl = `${supabaseUrl}/storage/v1/object/public/documents/${clubpicPath}`;
+        console.log('Club picture uploaded to:', clubpicUrl);
+      }
     } catch (error) {
       console.error('Server error during file upload:', error.message);
       return res.status(500).json({ error: error.message });
@@ -719,6 +745,7 @@ app.post('/submit-club', upload.fields([{ name: 'idfile', maxCount: 1 }, { name:
 
   console.log('ID File URL:', idfileUrl);
   console.log('Proof Document URL:', proofdocUrl);
+  console.log('Club Picture URL:', clubpicUrl);
 
   try {
     // Insert the new club registration into the database
@@ -734,6 +761,7 @@ app.post('/submit-club', upload.fields([{ name: 'idfile', maxCount: 1 }, { name:
         province,
         idfile: idfileUrl,
         proofdoc: proofdocUrl,
+        clubpic: clubpicUrl, // Include the club picture URL
         submittedby,
         status
       }])
@@ -1014,6 +1042,33 @@ app.get('/help-center', async function (req, res) {
   }
 });
 
+app.get('/clubs-details/:id', async function (req, res) {
+  const { id } = req.params;
+
+  if (!req.session.user) {
+    return res.redirect('/');
+  }
+  
+  try {
+    const { data, error } = await supabase
+    .from('clubs')
+    .select('*')
+    .eq('id', id)
+    .single();
+
+    if (error) {
+      return res.status(400).json({ error: error.message });
+    }
+
+    console.log("Fetched data:", data); // Log the data to the console 
+
+    // Render the clubs-details.hbs template with the fetched data
+    res.render('clubs-details', { club: data, user: req.session.user });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
                                                                         //MEMBERSHIP PAGES
 
 app.get('/membership-ncc', async function (req, res) {
@@ -1146,10 +1201,6 @@ app.get('/membership-club', async (req, res) => {
   try {
     // Fetch the specific registration data
     const { data, error } = await supabase
-      .from('ncc_registrations')
-      .select('*')
-      // .eq('id', id)
-      // .single();
 
     if (error) {
       console.error('Error fetching registration:', error.message);

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>PTA | Clubs</title>
+    <title>PTA | Club Details</title>
     <link rel="icon" type="image/x-icon" href="../images/favicon.ico" />
     <link rel="stylesheet" type="text/css" href="../stylesheets/clubs.css" />
     <link rel="stylesheet" type="text/css" href="../stylesheets/navbar.css" />
@@ -10,14 +10,14 @@
 <body class="container">
     <div class="header">
         <div class="navbar">
-            <a href="home"><img src="/images/logo.png" class="logo" alt="Logo"></a>
+            <a href="/home"><img src="/images/logo.png" class="logo" alt="Logo"></a>
             <ul class="tabs">
-                <li class="home"><a href="home">Home</a></li>
-                <li class="athletes"><a href="athletes">Athletes</a></li>
-                <li class="clubs"><a href="clubs">Clubs</a></li>
-                <li class="events"><a href="events">Events</a></li>
-                <li class="membership"><a href="membership">Membership</a></li>
-                <li class="forum"><a href="forum">Forum</a></li>
+                <li class="home"><a href="/home">Home</a></li>
+                <li class="athletes"><a href="/athletes">Athletes</a></li>
+                <li class="clubs"><a href="/clubs">Clubs</a></li>
+                <li class="events"><a href="/events">Events</a></li>
+                <li class="membership"><a href="/membership">Membership</a></li>
+                <li class="forum"><a href="/forum">Forum</a></li>
                 <li class="notifications">
                     <a href="notifications">Notifications <span class="badge">3</span></a>
                 </li>
@@ -42,20 +42,7 @@
         <div class="left-panel"></div>
 
         <div class="main-panel">
-            <div class='flex post-container'>
-                <div class='flex post-content'></div>
-            </div>
-        </div>
-
-        <div class="right-panel">
-            <div class="community-panel">
-                <p class="community-description">Competitions this year</p>
-                <ul>
-                    {{#each clubs}}
-                    <li>Name: {{name}}, Region: {{region}}, Members: {{members}}</li>
-                    {{/each}}
-                </ul>
-            </div>
+            {{club.clubname}}
         </div>
     </div>
 

@@ -14,8 +14,8 @@ body {
     min-height: 100vh;
 }
 
-.container {
-    margin-top: 60px; 
+.home-container {
+    margin-top: 70px; 
     background-color: #3A3A3A;
     width: 100%;
     flex: 1;
