@@ -552,6 +552,71 @@ app.post('/update-nccstatus', async (req, res) => {
   }
 });
 
+app.post('/update-clubstatus', async (req, res) => {
+  if (!req.session.user) {
+    return res.status(401).send('Unauthorized: No user logged in');
+  }
+
+  const { applicationId, status } = req.body; // Capture application ID and new status from the form
+
+  try {
+    // Update the status of the specific registration in the database
+    const { data: clubregistration, error: updateStatusError } = await supabase
+      .from('club_registrations')
+      .update({ status })
+      .eq('id', applicationId)
+      .select('*')
+      .single(); // Fetch the updated registration to get the submittedby value
+
+    if (updateStatusError) {
+      console.error('Error updating status:', updateStatusError.message);
+      return res.status(500).send('Error updating status');
+    }
+
+    console.log('Registration updated:', clubregistration);
+
+    // Check if status is 4, indicating the need to update the user's registered column and insert into athletes table
+    if (status == 4) {
+      const { firstname,
+        lastname,
+        phonenum,
+        email,
+        clubname,
+        clubaddress,
+        province,
+        submittedby } = clubregistration;
+
+      console.log('Updating user with username:', submittedby);
+
+      const registeredby = firstname + ' ' + lastname;
+
+      const { error: insertClubError } = await supabase
+        .from('clubs')
+        .insert([{
+          clubname,
+          phonenum,
+          email,
+          clubaddress,
+          province,
+          registeredby
+        }]);
+
+      if (insertClubError) {
+        console.error('Error inserting athlete:', insertClubError.message);
+        return res.status(500).send('Error inserting club');
+      }
+
+      console.log('Club inserted successfully');
+    }
+
+    res.redirect(`/clubreg-review/${applicationId}`); // Redirect back to the review page
+  } catch (error) {
+    console.error('Server error:', error.message);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+
 app.post('/add-comment', async (req, res) => {
   if (!req.session.user) {
     return res.status(401).send('Unauthorized: No user logged in');

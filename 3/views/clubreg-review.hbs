@@ -28,7 +28,7 @@
 			<div class="review-header">
                 <h1>Review Club Application</h1>
             </div>
-                <form action="/update-status" method="post">
+                <form action="/update-clubstatus" method="post">
                     <div class="review-details" >
                         <h2>Club Application Information</h2>
                         <input type="hidden" name="applicationId" value="{{clubregistration.id}}">
@@ -43,14 +43,12 @@
                         <h1>{{registration.status}}</h1>
                         {{#if (eq user.usertype "pta")}}
                             <div class="status-buttons" id="status-buttons">
-                                <button type="submit" name="status" value="1">Under Review</button>
-                                <button type="submit" name="status" value="2">Printed</button>
-                                <button type="submit" name="status" value="3">En-route to Regional Office</button>
-                                <button type="button" id="idshipped" class="idshipped">ID Shipped</button>
+                                <button type="submit" name="status" value="1">Processing Application</button>
+                                <button type="button" id="accepted" class="accepted">Accepted and Registered</button>
                                 <button type="submit" name="status" value="0">Reject Application</button>
                             </div>
                             <div class="confirmscreen" id="confirmscreen" style="display: none;">
-                                <h3>Are you sure? The player will be notified that his ID is ready. This registration will also disappear after a few days.</h3>
+                                <h3>Are you sure? This will be added to the clubs page for the public to see.</h3>
                                 <button class="cancel" id="cancel">Cancel</button>
                                 <button  type="submit" value="4" name="status">Confirm</button>
                             </div>
@@ -70,7 +68,7 @@
                     const confirmscreen = document.getElementById("confirmscreen");
                     const statuses = document.getElementById("status-buttons");
                     const cancel = document.getElementById("cancel");
-                    const idshipped = document.getElementById("idshipped");
+                    const accepted = document.getElementById("accepted");
                     const statusForm = document.getElementById("statusForm");
                     const confirmButton = document.getElementById("confirm");
 
@@ -80,12 +78,12 @@
                         statuses.style.display = "block";
                     });
 
-                    idshipped.addEventListener("click", function (event) {
+                    accepted.addEventListener("click", function (event) {
                         event.preventDefault();
                         confirmscreen.style.display = "block";
                         statuses.style.display = "none";
                         // Set the status value in the confirm button data attribute
-                        confirmButton.value = idshipped.getAttribute("data-status");
+                        confirmButton.value = accepted.getAttribute("data-status");
                     });
 
                     confirmButton.addEventListener("click", function (event) {
