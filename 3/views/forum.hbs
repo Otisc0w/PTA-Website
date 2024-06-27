@@ -3,8 +3,9 @@
 <head>
     <title>PTA | Forum</title>
     <link rel="icon" type="image/x-icon" href="../images/favicon.ico" />
-    <link rel="stylesheet" type="text/css" href="../stylesheets/forum.css" />
     <link rel="stylesheet" type="text/css" href="../stylesheets/navbar.css" />
+    <link rel="stylesheet" type="text/css" href="../stylesheets/forum.css" />
+   
 </head>
 <body class="container">
     <div class="header">
@@ -54,8 +55,16 @@
                 <div class='post-link' data-href='/forum-thread/{{id}}'>
                     <div class='post-container'>
                         <div class='post-content'>
+                              <div class="dropdown-container">
+                                <button onclick="toggleDropdown(this)" class="dropbtn">...</button>
+                                <div class="dropdown-content">
+                                    <a href="#">Save</a>
+                                    <a href="#">Hide</a>
+                                    <a href="#">Report</a>
+                                </div>
+                            </div>
                             <div class='post-info'>
-                                id:{{id}}
+                                id:{{id}}  <!-- need to be removed -->
                                 <span class='community'>
                                     <a class='post-community' href='/community?community={{topic}}'>{{topic}}</a> •
                                 </span>
@@ -158,5 +167,33 @@
             });
         }
     </script>
+
+    <script>
+        function toggleDropdown(button) {
+            event.stopPropagation();
+            var dropdowns = document.getElementsByClassName("dropdown-content");
+                for (var i = 0; i < dropdowns.length; i++) {
+                    var openDropdown = dropdowns[i];
+                        if (openDropdown !== button.nextElementSibling) {
+                            openDropdown.classList.remove('show');
+        }
+    }
+                    button.nextElementSibling.classList.toggle("show");
+}
+
+        window.onclick = function(event) {
+            if (!event.target.matches('.dropbtn')) {
+                var dropdowns = document.getElementsByClassName("dropdown-content");
+                    for (var i = 0; i < dropdowns.length; i++) {
+                        var openDropdown = dropdowns[i];
+                if (openDropdown.classList.contains('show')) {
+                        openDropdown.classList.remove('show');
+            }
+        }
+    }
+}
+</script>
+
+
 </body>
 </html>
