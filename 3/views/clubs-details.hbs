@@ -19,7 +19,7 @@
                 <li class="membership"><a href="/membership">Membership</a></li>
                 <li class="forum"><a href="/forum">Forum</a></li>
                 <li class="notifications">
-                    <a href="notifications">Notifications <span class="badge">3</span></a>
+                    <a href="/notifications">Notifications <span class="badge">3</span></a>
                 </li>
                 <li class="profile-pic">
                     {{#if user.profilepic}}
@@ -28,9 +28,9 @@
                         <a href="#" onclick="toggleDropdown()" class="profile-picture"><img src="/images/none.jpg" alt="Profile Picture" class="profile-picture"></a>
                     {{/if}}
                     <div id="dropdown" class="dropdown-content">
-                        <a href="profile">Profile</a>
-                        <a href="settings">Settings</a>
-                        <a href="help-center">FAQs</a>
+                        <a href="/profile">Profile</a>
+                        <a href="/settings">Settings</a>
+                        <a href="/help-center">FAQs</a>
                         <a href="/">Logout</a>
                     </div>
                 </li>
@@ -44,6 +44,15 @@
         <div class="main-panel">
             {{club.clubname}}
         </div>
+        {{#if (eq club.registeredby user.username)}}
+            <form action="/invite-user" method="post">
+                <input type="hidden" name="clubname" value="{{club.clubname}}">
+                <input type="hidden" name="club_id" value="{{club.id}}">
+                <label for="invited_user">Invite User:</label>
+                <input type="text" name="invited_user" id="invited_user">
+                <button type="submit">Invite</button>
+            </form>
+        {{/if}}
     </div>
 
     <footer>

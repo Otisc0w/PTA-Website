@@ -589,7 +589,8 @@ app.post('/update-clubstatus', async (req, res) => {
 
       console.log('Updating user with username:', submittedby);
 
-      const registeredby = firstname + ' ' + lastname;
+      const registeredby = submittedby;
+      const registeree= firstname + ' ' + lastname;
 
       const { error: insertClubError } = await supabase
         .from('clubs')
@@ -600,6 +601,7 @@ app.post('/update-clubstatus', async (req, res) => {
           clubaddress,
           province,
           registeredby,
+          registeree,
           clubpic
         }]);
 
@@ -617,7 +619,6 @@ app.post('/update-clubstatus', async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
-
 
 app.post('/add-comment', async (req, res) => {
   if (!req.session.user) {
@@ -781,6 +782,128 @@ app.post('/submit-club', upload.fields([
   }
 });
 
+                                                                        //new stuff idk pa
+
+app.post('/accept-invitation/:id', async (req, res) => {
+  const { id } = req.params;
+
+  if (!req.session.user) {
+    return res.status(401).send('Unauthorized: No user logged in');
+  }
+
+  const username = req.session.user.username;
+
+  try {
+    // Fetch the invitation details to get the clubname
+    const { data: invitation, error: fetchError } = await supabase
+      .from('club_invitations')
+      .select('*')
+      .eq('id', id)
+      .eq('invited_user', username)
+      .single();
+
+    if (fetchError || !invitation) {
+      console.error('Error fetching invitation:', fetchError ? fetchError.message : 'Invitation not found');
+      return res.status(500).send('Error fetching invitation');
+    }
+
+    const clubname = invitation.clubname;
+
+    const { error: updateInvitationError } = await supabase
+      .from('club_invitations')
+      .update({ status: 'accepted' })
+      .eq('id', id)
+      .eq('invited_user', username);
+
+    if (updateInvitationError) {
+      console.error('Error accepting invitation:', updateInvitationError.message);
+      return res.status(500).send('Error accepting invitation');
+    }
+
+    // Update the club column in the users table
+    const { error: updateUserError } = await supabase
+      .from('users')
+      .update({ club: clubname })
+      .eq('username', username);
+
+    if (updateUserError) {
+      console.error('Error updating user club:', updateUserError.message);
+      return res.status(500).send('Error updating user club');
+    }
+
+    // Delete the invitation row
+    const { error: deleteInvitationError } = await supabase
+      .from('club_invitations')
+      .delete()
+      .eq('id', id)
+      .eq('invited_user', username);
+
+    if (deleteInvitationError) {
+      console.error('Error deleting invitation:', deleteInvitationError.message);
+      return res.status(500).send('Error deleting invitation');
+    }
+
+    res.redirect('/notifications');
+  } catch (error) {
+    console.error('Server error:', error.message);
+    res.status(500).json({ error: error.message });
+  }
+});
+                                     
+app.post('/invite-user', async (req, res) => {
+  const { club_id, invited_user, clubname } = req.body;
+
+  if (!req.session.user) {
+    return res.status(401).send('Unauthorized: No user logged in');
+  }
+
+  const inviter_user = req.session.user.username;
+
+  try {
+    const { data, error } = await supabase
+      .from('club_invitations')
+      .insert([{ club_id, clubname, invited_user, inviter_user }]);
+
+    if (error) {
+      console.error('Error inviting user:', error.message);
+      return res.status(500).send('Error inviting user');
+    }
+
+    res.redirect(`/clubs-details/${club_id}`);
+  } catch (error) {
+    console.error('Server error:', error.message);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.post('/reject-invitation/:id', async (req, res) => {
+  const { id } = req.params;
+
+  if (!req.session.user) {
+    return res.status(401).send('Unauthorized: No user logged in');
+  }
+
+  const username = req.session.user.username;
+
+  try {
+    const { data, error } = await supabase
+      .from('club_invitations')
+      .update({ status: 'rejected' })
+      .eq('id', id)
+      .eq('invited_user', username);
+
+    if (error) {
+      console.error('Error rejecting invitation:', error.message);
+      return res.status(500).send('Error rejecting invitation');
+    }
+
+    res.redirect('/profile');
+  } catch (error) {
+    console.error('Server error:', error.message);
+    res.status(500).json({ error: error.message });
+  }
+});
+                                                                      
 
 
                                                                         // VIEWS BELOW
@@ -1003,17 +1126,19 @@ app.get('/notifications', async function (req, res) {
   
   try {
     const { data, error } = await supabase
-      .from('athletes')
+      .from('club_invitations')
       .select('*');
 
     if (error) {
       return res.status(400).json({ error: error.message });
     }
 
+    
+
     console.log("Fetched data:", data); // Log the data to the console 
 
     // Render the athletes.hbs template with the fetched data
-    res.render('notifications', { athletes: data, user: req.session.user });
+    res.render('notifications', { club_invitations: data, user: req.session.user });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
