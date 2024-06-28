@@ -4,6 +4,7 @@
     <title>PTA | Club Details</title>
     <link rel="icon" type="image/x-icon" href="../images/favicon.ico" />
     <link rel="stylesheet" type="text/css" href="../stylesheets/clubs.css" />
+    <link rel="stylesheet" type="text/css" href="../stylesheets/club-details.css" />
     <link rel="stylesheet" type="text/css" href="../stylesheets/navbar.css" />
 </head>
 
@@ -37,13 +38,33 @@
             </ul>
         </div>
     </div>
-
-    <div class="home-container">
-        <div class="left-panel"></div>
-
-        <div class="main-panel">
-            {{club.clubname}}
+        
+    <div class="club-details-container">
+        <div class="club-header">
+            <div class="club-image">
+            <h1>{{club.name}}</h1>
+            <img src="{{club.clubpic}}" alt="{{club.clubname}}">
         </div>
+        </div>
+         <div class="club-info">
+            <div class="hosted-by">
+                <img src="{{club.hostImage}}" alt="{{club.hostName}}" class="host-image">
+                <div>
+                    <p>Hosted by {{club.clubname}}</p>
+                    
+                </div>
+            </div>
+            </div>
+            <div class="club-description">
+                <p>Location: {{club.province}}</p>
+                <p>Address: {{club.clubaddress}}</p>
+                <p>Email: {{club.email}}</p>
+                <p>Phone Number: {{club.phonenum}}</p>
+            </div>
+            <div class="club-actions">
+                <button class="notify-button">Join Request</button>
+            </div>
+      <div class="invite-user">     
         {{#if (eq club.registeredby user.username)}}
             <form action="/invite-user" method="post">
                 <input type="hidden" name="clubname" value="{{club.clubname}}">
@@ -57,6 +78,8 @@
                 <button type="submit">Invite</button>
             </form>
         {{/if}}
+
+       </div>  
     </div>
 
     <footer>
