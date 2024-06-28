@@ -782,7 +782,33 @@ app.post('/submit-club', upload.fields([
   }
 });
 
-                                                                        //new stuff idk pa
+
+                                     
+app.post('/invite-user', async (req, res) => {
+  const { club_id, invited_user, clubname } = req.body;
+
+  if (!req.session.user) {
+    return res.status(401).send('Unauthorized: No user logged in');
+  }
+
+  const inviter_user = req.session.user.username;
+
+  try {
+    const { data, error } = await supabase
+      .from('club_invitations')
+      .insert([{ club_id, clubname, invited_user, inviter_user }]);
+
+    if (error) {
+      console.error('Error inviting user:', error.message);
+      return res.status(500).send('Error inviting user');
+    }
+
+    res.redirect(`/clubs-details/${club_id}`);
+  } catch (error) {
+    console.error('Server error:', error.message);
+    res.status(500).json({ error: error.message });
+  }
+});
 
 app.post('/accept-invitation/:id', async (req, res) => {
   const { id } = req.params;
@@ -809,6 +835,7 @@ app.post('/accept-invitation/:id', async (req, res) => {
 
     const clubname = invitation.clubname;
 
+    // Update the invitation status to 'accepted'
     const { error: updateInvitationError } = await supabase
       .from('club_invitations')
       .update({ status: 'accepted' })
@@ -831,45 +858,10 @@ app.post('/accept-invitation/:id', async (req, res) => {
       return res.status(500).send('Error updating user club');
     }
 
-    // Delete the invitation row
-    const { error: deleteInvitationError } = await supabase
-      .from('club_invitations')
-      .delete()
-      .eq('id', id)
-      .eq('invited_user', username);
-
-    if (deleteInvitationError) {
-      console.error('Error deleting invitation:', deleteInvitationError.message);
-      return res.status(500).send('Error deleting invitation');
-    }
+    // Update the session with the new club
+    req.session.user.club = clubname;
 
     res.redirect('/notifications');
-  } catch (error) {
-    console.error('Server error:', error.message);
-    res.status(500).json({ error: error.message });
-  }
-});
-                                     
-app.post('/invite-user', async (req, res) => {
-  const { club_id, invited_user, clubname } = req.body;
-
-  if (!req.session.user) {
-    return res.status(401).send('Unauthorized: No user logged in');
-  }
-
-  const inviter_user = req.session.user.username;
-
-  try {
-    const { data, error } = await supabase
-      .from('club_invitations')
-      .insert([{ club_id, clubname, invited_user, inviter_user }]);
-
-    if (error) {
-      console.error('Error inviting user:', error.message);
-      return res.status(500).send('Error inviting user');
-    }
-
-    res.redirect(`/clubs-details/${club_id}`);
   } catch (error) {
     console.error('Server error:', error.message);
     res.status(500).json({ error: error.message });
@@ -904,7 +896,6 @@ app.post('/reject-invitation/:id', async (req, res) => {
   }
 });
                                                                       
-
 
                                                                         // VIEWS BELOW
 
@@ -1127,7 +1118,9 @@ app.get('/notifications', async function (req, res) {
   try {
     const { data, error } = await supabase
       .from('club_invitations')
-      .select('*');
+      .select('*')
+      .is('status', null);
+
 
     if (error) {
       return res.status(400).json({ error: error.message });
@@ -1175,20 +1168,26 @@ app.get('/clubs-details/:id', async function (req, res) {
   }
   
   try {
-    const { data, error } = await supabase
+    const { data: club, error: clubsError } = await supabase
     .from('clubs')
     .select('*')
     .eq('id', id)
     .single();
 
-    if (error) {
-      return res.status(400).json({ error: error.message });
+    if (clubsError) {
+      return res.status(400).json({ clubsError: error.message });
     }
 
-    console.log("Fetched data:", data); // Log the data to the console 
+    const { data: users, error: usersError } = await supabase
+    .from('users')
+    .select('*')
+
+    if (usersError) {
+      return res.status(400).json({ useresError: error.message });
+    }
 
     // Render the clubs-details.hbs template with the fetched data
-    res.render('clubs-details', { club: data, user: req.session.user });
+    res.render('clubs-details', { club, users, user: req.session.user });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -1340,15 +1339,6 @@ app.get('/membership-club', async (req, res) => {
   }
 });
 
-//membership to ncc id to instructor
-app.get('/membership-instructor', (req, res) => {
-  res.render('membership-instructor');
-});
-
-//instructor to ps
-app.get('/membership-ps', (req, res) => {
-  res.render('membership-ps');
-});
 
 
 app.listen(port, () => {
