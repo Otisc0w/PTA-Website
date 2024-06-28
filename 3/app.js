@@ -895,6 +895,61 @@ app.post('/reject-invitation/:id', async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+
+app.post('/vote', async (req, res) => {
+  const { type, threadId } = req.body;
+
+  if (!req.session.user) {
+    return res.status(401).json({ success: false, message: 'Unauthorized: No user logged in' });
+  }
+
+  const userId = req.session.user.id;
+
+  try {
+    // Fetch the current thread
+    const { data: thread, error: threadError } = await supabase
+      .from('forum_threads')
+      .select('upvotes, downvotes')
+      .eq('id', threadId)
+      .single();
+
+    if (threadError) {
+      return res.status(500).json({ success: false, message: threadError.message });
+    }
+
+    let upvotes = thread.upvotes || [];
+    let downvotes = thread.downvotes || [];
+
+    // Remove user from both arrays to ensure clean state
+    upvotes = upvotes.filter(id => id !== userId);
+    downvotes = downvotes.filter(id => id !== userId);
+
+    // Add user to the appropriate array based on vote type
+    if (type === 'upvote') {
+      upvotes.push(userId);
+    } else if (type === 'downvote') {
+      downvotes.push(userId);
+    }
+
+    // Update the thread with the new arrays
+    const { data, error } = await supabase
+      .from('forum_threads')
+      .update({ upvotes, downvotes })
+      .eq('id', threadId)
+      .select();
+
+    if (error) {
+      return res.status(500).json({ success: false, message: error.message });
+    }
+
+    res.redirect(`/forum-thread/${threadId}`); // Redirect back to the thread page
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+
+
                                                                       
 
                                                                         // VIEWS BELOW
