@@ -11,7 +11,6 @@ const axios = require('axios');
 const PAYMONGO_SECRET_KEY = 'sk_test_rfwrr7CgVzNP4AnGJcjU6yFa';
 const PAYMONGO_PUBLIC_KEY = 'pk_test_tfhdABT3Jvix9Wvsbv5AGP6d ';
 
-
                                                                           // fdsfsdfasdfasdfasdfasdf
 
 require('dotenv').config();
@@ -89,7 +88,9 @@ hbs.registerHelper('notAthleteAndRegistered', function (usertype, registered, op
   }
   return options.inverse(this);
 });
-
+hbs.registerHelper('arraySize', function(array) {
+  return array.length;
+});
 hbs.registerHelper('renderComments', function(comments, options) {
   function renderNestedComments(comments, parentId) {
     let out = '<ul>';
@@ -351,6 +352,7 @@ app.post('/create-post', async (req, res) => {
     title,
     topic,
     body,
+    profilepic
   } = req.body; // Capture user input from the form
 
   if (!req.session.user) {
@@ -358,7 +360,7 @@ app.post('/create-post', async (req, res) => {
   }
   
   const originalposter = req.session.user.username; // Get the current user's id from the session
-  const upvotes = 0, downvotes=0;
+  const upvotes = [], downvotes =[];
 
   try {
     // Update the user in the database
@@ -370,7 +372,8 @@ app.post('/create-post', async (req, res) => {
         topic,
         body,
         upvotes,
-        downvotes
+        downvotes,
+        profilepic
       }]);
 
     if (error) {
@@ -781,8 +784,6 @@ app.post('/submit-club', upload.fields([
     res.status(500).json({ error: error.message });
   }
 });
-
-
                                      
 app.post('/invite-user', async (req, res) => {
   const { club_id, invited_user, clubname } = req.body;
