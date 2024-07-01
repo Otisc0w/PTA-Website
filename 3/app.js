@@ -252,7 +252,7 @@ app.post('/submit-signup', async (req, res) => {
   }
 });
 
-app.post('/submit-ncc', upload.single('birthcert'), async (req, res) => {
+app.post('/submit-ncc', upload.fields([{ name: 'birthcert', maxCount: 1 }, { name: 'portrait', maxCount: 1 }]), async (req, res) => {
   const {
     apptype,
     firstname,
@@ -282,25 +282,45 @@ app.post('/submit-ncc', upload.single('birthcert'), async (req, res) => {
   const status = 1;
 
   let birthcertUrl = null;
+  let portraitUrl = null;
 
-  if (req.file) {
+  if (req.files) {
     try {
-      const filePath = `documents/${Date.now()}-${req.file.originalname}`;
-      const { error: uploadError } = await supabase
-        .storage
-        .from('documents')
-        .upload(filePath, req.file.buffer, {
-          contentType: req.file.mimetype,
-        });
+      if (req.files.birthcert) {
+        const birthcertPath = `documents/${Date.now()}-${req.files.birthcert[0].originalname}`;
+        const { error: birthcertUploadError } = await supabase
+          .storage
+          .from('documents')
+          .upload(birthcertPath, req.files.birthcert[0].buffer, {
+            contentType: req.files.birthcert[0].mimetype,
+          });
 
-      if (uploadError) {
-        console.error('Error uploading birth certificate:', uploadError.message);
-        return res.status(500).send('Error uploading birth certificate');
+        if (birthcertUploadError) {
+          console.error('Error uploading birth certificate:', birthcertUploadError.message);
+          return res.status(500).send('Error uploading birth certificate');
+        }
+
+        birthcertUrl = `${supabaseUrl}/storage/v1/object/public/documents/${birthcertPath}`;
       }
 
-      birthcertUrl = `${supabaseUrl}/storage/v1/object/public/documents/${filePath}`;
+      if (req.files.portrait) {
+        const portraitPath = `documents/${Date.now()}-${req.files.portrait[0].originalname}`;
+        const { error: portraitUploadError } = await supabase
+          .storage
+          .from('documents')
+          .upload(portraitPath, req.files.portrait[0].buffer, {
+            contentType: req.files.portrait[0].mimetype,
+          });
+
+        if (portraitUploadError) {
+          console.error('Error uploading portrait:', portraitUploadError.message);
+          return res.status(500).send('Error uploading portrait');
+        }
+
+        portraitUrl = `${supabaseUrl}/storage/v1/object/public/documents/${portraitPath}`;
+      }
     } catch (error) {
-      console.error('Server error:', error.message);
+      console.error('Server error during file upload:', error.message);
       return res.status(500).json({ error: error.message });
     }
   }
@@ -330,7 +350,8 @@ app.post('/submit-ncc', upload.single('birthcert'), async (req, res) => {
         instructoremail,
         status,
         submittedby,
-        birthcert: birthcertUrl // Include the birth certificate URL
+        birthcert: birthcertUrl, // Include the birth certificate URL
+        portrait: portraitUrl // Include the portrait URL
       }]);
 
     if (error) {
@@ -498,7 +519,10 @@ app.post('/update-nccstatus', async (req, res) => {
 
     // Check if status is 4, indicating the need to update the user's registered column and insert into athletes table
     if (status == 4) {
-      const { submittedby, firstname, middlename, lastname, gender, bday, phonenum, email, lastpromo, promolocation, clubregion, clubname, beltlevel, instructorfirstname, instructormi, instructorlastname, instructormobile, instructoremail } = registration;
+      const { submittedby, firstname, middlename, lastname, gender, bday, 
+        phonenum, email, lastpromo, promolocation, clubregion, clubname, 
+        beltlevel, instructorfirstname, instructormi, instructorlastname, 
+        instructormobile, instructoremail, portrait } = registration;
 
       console.log('Updating user with username:', submittedby);
 
@@ -537,7 +561,8 @@ app.post('/update-nccstatus', async (req, res) => {
           instructormi,
           instructorlastname,
           instructormobile,
-          instructoremail
+          instructoremail,
+          portrait
         }]);
 
       if (insertAthleteError) {
@@ -921,15 +946,23 @@ app.post('/vote', async (req, res) => {
     let upvotes = thread.upvotes || [];
     let downvotes = thread.downvotes || [];
 
+    // Check if the user has already upvoted or downvoted
+    const hasUpvoted = upvotes.includes(userId);
+    const hasDownvoted = downvotes.includes(userId);
+
     // Remove user from both arrays to ensure clean state
     upvotes = upvotes.filter(id => id !== userId);
     downvotes = downvotes.filter(id => id !== userId);
 
-    // Add user to the appropriate array based on vote type
+    // Add user to the appropriate array based on vote type, or remove if they already voted
     if (type === 'upvote') {
-      upvotes.push(userId);
+      if (!hasUpvoted) {
+        upvotes.push(userId);
+      }
     } else if (type === 'downvote') {
-      downvotes.push(userId);
+      if (!hasDownvoted) {
+        downvotes.push(userId);
+      }
     }
 
     // Update the thread with the new arrays
@@ -948,10 +981,7 @@ app.post('/vote', async (req, res) => {
     res.status(500).json({ success: false, message: error.message });
   }
 });
-
-
-
-                                                                      
+                                             
 
                                                                         // VIEWS BELOW
 
@@ -1269,6 +1299,29 @@ app.get('/membership-ncc', async function (req, res) {
 
     // Render the athletes.hbs template with the fetched data
     res.render('membership-ncc', { clubs: data, user: req.session.user });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.get('/membership-instructor', async function (req, res) {
+  if (!req.session.user) {
+    return res.redirect('/');
+  }
+
+  try {
+    const { data, error } = await supabase
+      .from('clubs')
+      .select('*');
+
+    if (error) {
+      return res.status(400).json({ error: error.message });
+    }
+
+    console.log("Fetched data:", data); // Log the data to the console 
+
+    // Render the athletes.hbs template with the fetched data
+    res.render('membership-instructor', { clubs: data, user: req.session.user });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
