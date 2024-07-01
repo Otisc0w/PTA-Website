@@ -1201,27 +1201,28 @@ app.get('/notifications', async function (req, res) {
     return res.redirect('/');
   }
   
+  const username = req.session.user.username; // Get the current user's username from the session
+
   try {
     const { data, error } = await supabase
       .from('club_invitations')
       .select('*')
+      .eq('invited_user', username)
       .is('status', null);
-
 
     if (error) {
       return res.status(400).json({ error: error.message });
     }
 
-    
-
     console.log("Fetched data:", data); // Log the data to the console 
 
-    // Render the athletes.hbs template with the fetched data
+    // Render the notifications.hbs template with the fetched data
     res.render('notifications', { club_invitations: data, user: req.session.user });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
+
 
 app.get('/help-center', async function (req, res) {
   if (!req.session.user) {
@@ -1255,29 +1256,32 @@ app.get('/clubs-details/:id', async function (req, res) {
   
   try {
     const { data: club, error: clubsError } = await supabase
-    .from('clubs')
-    .select('*')
-    .eq('id', id)
-    .single();
+      .from('clubs')
+      .select('*')
+      .eq('id', id)
+      .single();
 
     if (clubsError) {
-      return res.status(400).json({ clubsError: error.message });
+      return res.status(400).json({ clubsError: clubsError.message });
     }
 
-    const { data: users, error: usersError } = await supabase
-    .from('users')
-    .select('*')
+    const { data: allUsers, error: allUsersError } = await supabase
+      .from('users')
+      .select('*');
 
-    if (usersError) {
-      return res.status(400).json({ useresError: error.message });
+    if (allUsersError) {
+      return res.status(400).json({ allUsersError: allUsersError.message });
     }
+
+    const clubMembers = allUsers.filter(user => user.club === club.clubname);
 
     // Render the clubs-details.hbs template with the fetched data
-    res.render('clubs-details', { club, users, user: req.session.user });
+    res.render('clubs-details', { club, allUsers, clubMembers, user: req.session.user });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
+
 
                                                                         //MEMBERSHIP PAGES
 

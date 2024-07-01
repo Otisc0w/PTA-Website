@@ -62,7 +62,7 @@
         <ul>
         {{#each club_invitations}}
                 <li>
-                    Club: {{this.clubname}}, Invited by: {{this.inviter_user}}
+                    Club: {{this.clubname}}, Invited by: {{this.inviter_user}} {{this.invited_user}}
                     <form action="/accept-invitation/{{this.id}}" method="post" style="display: inline;">
                         <button type="submit">Accept</button>
                     </form>

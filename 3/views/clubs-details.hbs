@@ -43,6 +43,10 @@
 
     <div class="main-panel">
       {{club.clubname}}
+      Members: 
+      {{#each clubMembers}}
+        <li>{{this.username}}</li>
+      {{/each}}
     </div>
     {{#if (eq club.registeredby user.username)}}
       <form action="/invite-user" method="post">
@@ -50,7 +54,7 @@
         <input type="hidden" name="club_id" value="{{club.id}}">
         <label for="invited_user">Invite User:</label>
         <select name="invited_user" id="invited_user">
-        {{#each users}}
+        {{#each allUsers}}
           <option value="{{username}}">{{username}}</option>
         {{/each}}
         </select>
