@@ -50,12 +50,8 @@
                 <p><strong>First Name:</strong> {{registration.firstname}}</p>
                 <p><strong>Middle Initial:</strong> {{registration.mi}}</p>
                 <p><strong>Last Name:</strong> {{registration.lastname}}</p>
-
                 <p><strong>Gender:</strong> {{registration.gender}}</p>
-
-                <a href="{{registration.birthcert}}" target="_blank" download> Birth Certificate</a>
-                <!-- <p><strong>Gender:</strong> {{registration.gender}}</p>
-
+                <p><strong>Gender:</strong> {{registration.gender}}</p>
                 <p><strong>Birthday:</strong> {{registration.bday}}</p>
                 <p><strong>Phone Number:</strong> {{registration.phonenum}}</p>
                 <p><strong>Email:</strong> {{registration.email}}</p>
@@ -68,19 +64,10 @@
                 <p><strong>Instructor Middle Initial:</strong> {{registration.instructormi}}</p>
                 <p><strong>Instructor Last Name:</strong> {{registration.instructorlastname}}</p>
                 <p><strong>Instructor Mobile:</strong> {{registration.instructormobile}}</p>
-<<<<<<< HEAD
                 <p><strong>Instructor Email:</strong> {{registration.instructoremail}}</p>
                 <a href="{{registration.birthcert}}" target="_blank" download>Birth Certificate</a>
                 <p>submitted by: {{registration.submittedby}}</p>
-=======
-                <p><strong>Instructor Email:</strong> {{registration.instructoremail}}</p> -->
-
-                 <a href="{{registration.birthcert}}" target="_blank" download> Birth Certificate</a>
-
-
-                submittedby: {{registration.submittedby}}
->>>>>>> 91b93a231c51bda63de53877ea8cbea4b4d05351
-                <!-- Add any other relevant details here -->
+                <a href="{{registration.birthcert}}" target="_blank" download> Birth Certificate</a>
             </section>
 
             <section class="application-actions">
@@ -113,12 +100,9 @@
             <p><strong>First Name:</strong> {{registration.firstname}}</p>
             <p><strong>Middle Initial:</strong> {{registration.mi}}</p>
             <p><strong>Last Name:</strong> {{registration.lastname}}</p>
-<<<<<<< HEAD
             <a href="{{registration.birthcert}}" target="_blank" download>Birth Certificate</a>
             <p>submitted by: {{registration.submittedby}}</p>
             <!-- Add any other relevant details here -->
-=======
->>>>>>> 91b93a231c51bda63de53877ea8cbea4b4d05351
         </div>
     </main>
 
@@ -168,24 +152,14 @@
         function printDiv(divName) {
             var printContents = document.getElementById(divName).innerHTML;
             var originalContents = document.body.innerHTML;
-<<<<<<< HEAD
             document.getElementById(divName).classList.add('visible');
             document.body.innerHTML = printContents;
             window.print();
             document.body.innerHTML = originalContents;
             document.getElementById(divName).classList.remove('visible');
-=======
-            document.body.innerHTML = printContents;
-            window.print();
-            document.body.innerHTML = originalContents;
->>>>>>> 91b93a231c51bda63de53877ea8cbea4b4d05351
             window.location.reload(); // Reload to reset the page state
         }
     </script>
 </body>
 
-<<<<<<< HEAD
 </html>
-=======
-</html>
->>>>>>> 91b93a231c51bda63de53877ea8cbea4b4d05351
