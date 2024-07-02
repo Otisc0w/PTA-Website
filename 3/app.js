@@ -1139,6 +1139,71 @@ app.post('/vote', async (req, res) => {
     res.status(500).json({ success: false, message: error.message });
   }
 });
+
+app.post('/create-event', upload.single('eventpicture'), async (req, res) => {
+  const {
+    name,
+    description,
+    eventtype,
+    registrationcap
+  } = req.body; // Capture user input from the form
+
+  if (!req.session.user) {
+    return res.status(401).send('Unauthorized: No user logged in');
+  }
+
+  const createdby = req.session.user.username; // Get the current user's username from the session
+  let eventpictureUrl = null;
+
+  if (req.file) {
+    try {
+      const filePath = `eventpictures/${Date.now()}-${req.file.originalname}`;
+      const { error: uploadError } = await supabase
+        .storage
+        .from('documents')
+        .upload(filePath, req.file.buffer, {
+          contentType: req.file.mimetype,
+        });
+
+      if (uploadError) {
+        console.error('Error uploading event picture:', uploadError.message);
+        return res.status(500).send('Error uploading event picture');
+      }
+
+      eventpictureUrl = `${supabaseUrl}/storage/v1/object/public/documents/${filePath}`;
+    } catch (error) {
+      console.error('Server error:', error.message);
+      return res.status(500).json({ error: error.message });
+    }
+  }
+
+  try {
+    // Insert the new event into the database
+    const { data, error } = await supabase
+      .from('events')
+      .insert([{
+        name,
+        description,
+        eventpicture: eventpictureUrl,
+        eventtype,
+        createdby,
+        registrationcap
+      }])
+      .select(); // Ensure the data is returned
+
+    if (error) {
+      console.error('Error creating event:', error.message);
+      return res.status(500).send('Error creating event');
+    }
+
+    console.log('Event created successfully:', data);
+
+    res.redirect('/events-create'); // Redirect to a success page or another appropriate route
+  } catch (error) {
+    console.error('Server error:', error.message);
+    res.status(500).json({ error: error.message });
+  }
+});
                                              
 
                                                                         // VIEWS BELOW
@@ -1253,7 +1318,6 @@ app.get('/forum-thread/:id', async function (req, res) {
   }
 });
 
-
 app.get('/clubs', async function (req, res) {
   if (!req.session.user) {
     return res.redirect('/');
@@ -1323,6 +1387,29 @@ app.get('/events', async function (req, res) {
   }
 });
 
+app.get('/events-create', async function (req, res) {
+  if (!req.session.user) {
+    return res.redirect('/');
+  }
+  
+  try {
+    const { data, error } = await supabase
+      .from('events')
+      .select('*');
+
+    if (error) {
+      return res.status(400).json({ error: error.message });
+    }
+
+    console.log("Fetched data:", data); // Log the data to the console 
+
+    // Render the athletes.hbs template with the fetched data
+    res.render('events-create', { events: data, user: req.session.user });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 app.get('/profile', async function (req, res) {
   if (!req.session.user) {
     return res.redirect('/');
@@ -1381,7 +1468,6 @@ app.get('/notifications', async function (req, res) {
   }
 });
 
-
 app.get('/help-center', async function (req, res) {
   if (!req.session.user) {
     return res.redirect('/');
@@ -1439,7 +1525,6 @@ app.get('/clubs-details/:id', async function (req, res) {
     res.status(500).json({ error: error.message });
   }
 });
-
 
                                                                         //MEMBERSHIP PAGES
 
