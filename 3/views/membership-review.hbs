@@ -7,7 +7,7 @@
     <title>PTA | Membership Review</title>
     <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
     <link rel="stylesheet" type="text/css" href="../stylesheets/membership-review.css">
-    <link rel="stylesheet" type="text/css" href="../stylesheets/navbar.css">
+     <link rel="stylesheet" type="text/css" href="../stylesheets/navbar.css" />
 </head>
 
 <body class="container">
@@ -43,13 +43,12 @@
         <form action="/update-nccstatus" method="post" class="review-form">
             <section class="review-details">
                 <h2>Applicant Information</h2> <!-- use '{{registration.something}}' to get the data -->
-                <input type="hidden" name="applicationId" value="{{registration.id}}">
+                <input type="text" name="applicationId" value="{{registration.id}}">
                 <p><strong>ID:</strong> {{registration.id}}</p>
                 <p><strong>First Name:</strong> {{registration.firstname}}</p>
                 <p><strong>Middle Initial:</strong> {{registration.mi}}</p>
                 <p><strong>Last Name:</strong> {{registration.lastname}}</p>
-                <a href="{{registration.birthcert}}" target="_blank" download> Birth Certificate</a>
-                <!-- <p><strong>Gender:</strong> {{registration.gender}}</p>
+                <p><strong>Gender:</strong> {{registration.gender}}</p>
                 <p><strong>Birthday:</strong> {{registration.bday}}</p>
                 <p><strong>Phone Number:</strong> {{registration.phonenum}}</p>
                 <p><strong>Email:</strong> {{registration.email}}</p>
@@ -63,6 +62,7 @@
                 <p><strong>Instructor Last Name:</strong> {{registration.instructorlastname}}</p>
                 <p><strong>Instructor Mobile:</strong> {{registration.instructormobile}}</p>
                 <p><strong>Instructor Email:</strong> {{registration.instructoremail}}</p> -->
+                 <a href="{{registration.birthcert}}" target="_blank" download> Birth Certificate</a>
                 submittedby: {{registration.submittedby}}
                 <!-- Add any other relevant details here -->
             </section>
