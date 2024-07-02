@@ -368,6 +368,122 @@ app.post('/submit-ncc', upload.fields([{ name: 'birthcert', maxCount: 1 }, { nam
   }
 });
 
+app.post('/submit-instructor', upload.fields([{ name: 'birthcert', maxCount: 1 }, { name: 'portrait', maxCount: 1 }]), async (req, res) => {
+  const {
+    apptype,
+    firstname,
+    middlename,
+    lastname,
+    gender,
+    bday,
+    phonenum,
+    email,
+    lastpromo,
+    promolocation,
+    clubregion,
+    clubname,
+    beltlevel,
+    instructorfirstname,
+    instructormi,
+    instructorlastname,
+    instructormobile,
+    instructoremail
+  } = req.body; // Capture user input from the form
+
+  if (!req.session.user) {
+    return res.status(401).send('Unauthorized: No user logged in');
+  }
+
+  const submittedby = req.session.user.username; // Get the current user's username from the session
+  const status = 1;
+
+  let birthcertUrl = null;
+  let portraitUrl = null;
+
+  if (req.files) {
+    try {
+      if (req.files.birthcert) {
+        const birthcertPath = `documents/${Date.now()}-${req.files.birthcert[0].originalname}`;
+        const { error: birthcertUploadError } = await supabase
+          .storage
+          .from('documents')
+          .upload(birthcertPath, req.files.birthcert[0].buffer, {
+            contentType: req.files.birthcert[0].mimetype,
+          });
+
+        if (birthcertUploadError) {
+          console.error('Error uploading birth certificate:', birthcertUploadError.message);
+          return res.status(500).send('Error uploading birth certificate');
+        }
+
+        birthcertUrl = `${supabaseUrl}/storage/v1/object/public/documents/${birthcertPath}`;
+      }
+
+      if (req.files.portrait) {
+        const portraitPath = `documents/${Date.now()}-${req.files.portrait[0].originalname}`;
+        const { error: portraitUploadError } = await supabase
+          .storage
+          .from('documents')
+          .upload(portraitPath, req.files.portrait[0].buffer, {
+            contentType: req.files.portrait[0].mimetype,
+          });
+
+        if (portraitUploadError) {
+          console.error('Error uploading portrait:', portraitUploadError.message);
+          return res.status(500).send('Error uploading portrait');
+        }
+
+        portraitUrl = `${supabaseUrl}/storage/v1/object/public/documents/${portraitPath}`;
+      }
+    } catch (error) {
+      console.error('Server error during file upload:', error.message);
+      return res.status(500).json({ error: error.message });
+    }
+  }
+
+  try {
+    // Insert the new user into the database
+    const { data, error } = await supabase
+      .from('ncc_registrations')
+      .insert([{
+        apptype,
+        firstname,
+        middlename,
+        lastname,
+        gender,
+        bday,
+        phonenum,
+        email,
+        lastpromo,
+        promolocation,
+        clubregion,
+        clubname,
+        beltlevel,
+        instructorfirstname,
+        instructormi,
+        instructorlastname,
+        instructormobile,
+        instructoremail,
+        status,
+        submittedby,
+        birthcert: birthcertUrl, // Include the birth certificate URL
+        portrait: portraitUrl // Include the portrait URL
+      }]);
+
+    if (error) {
+      console.error('Error creating registration:', error.message);
+      return res.status(500).render('membership', {
+        error: 'Error creating registration.',
+        users: [] // Optionally pass users array if you need it in the view
+      });
+    }
+    res.redirect('/membership');
+  } catch (error) {
+    console.error('Server error:', error.message);
+    res.status(500).json({ error: error.message });
+  }
+});
+
 app.post('/create-post', async (req, res) => {
   const {
     title,
@@ -493,6 +609,48 @@ app.post('/save-profile-changes', upload.single('file'), async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+
+app.post('/change-password', async (req, res) => {
+  const { currentPassword, newPassword } = req.body;
+
+  if (!req.session.user) {
+    return res.status(401).send('Unauthorized: No user logged in');
+  }
+
+  const id = req.session.user.id;
+
+  try {
+    // Validate current password (implementation depends on how passwords are stored)
+    const { data: user, error: userError } = await supabase
+      .from('users')
+      .select('*')
+      .eq('id', id)
+      .single();
+
+    if (userError || !user || user.password !== currentPassword) {
+      return res.status(401).send('Incorrect current password');
+    }
+
+    // Update the user's password in the database
+    const { data, error } = await supabase
+      .from('users')
+      .update({
+        password: newPassword
+      })
+      .eq('id', id);
+
+    if (error) {
+      console.error('Error changing password:', error.message);
+      return res.status(500).send('Error changing password');
+    }
+
+    res.status(200).send('Password changed successfully');
+  } catch (error) {
+    console.error('Server error:', error.message);
+    res.status(500).json({ error: error.message });
+  }
+});
+
 
 app.post('/update-nccstatus', async (req, res) => {
   if (!req.session.user) {
