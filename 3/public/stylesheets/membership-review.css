@@ -150,3 +150,7 @@ body {
 .printwindow {
     display: none;
 }
+
+.printwindow.visible {
+    display: block;
+}
