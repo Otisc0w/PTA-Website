@@ -149,12 +149,8 @@ body {
 
 .printwindow {
     display: none;
-<<<<<<< HEAD
 }
 
 .printwindow.visible {
     display: block;
 }
-=======
-}
->>>>>>> 91b93a231c51bda63de53877ea8cbea4b4d05351
