@@ -1,5 +1,6 @@
 @import url('https://fonts.cdnfonts.com/css/sf-pro-display');
 
+
 :root {
     font-family: 'SF Pro Display', sans-serif;
     --dark-bg: #252525;
@@ -9,15 +10,22 @@
     --background-color: #121212; /* Dark background color for contrast */
 }
 
+
 body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
+
     background-color: var(--background-color); /* Updated background color */
     color: var(--text-color); /* Updated text color */
+
+    background-color: #f9f9f9;
+    color: #333; /* Ensures text is visible */
+
 }
 
 .membership-header {
+    background-color: #004085;
     padding: 10px 0;
     background-color: var(--light-bg);
 }
@@ -88,6 +96,15 @@ body {
 
 .review-details p {
     margin: 5px 0;
+}
+
+.review-details a {
+    color: #004085;
+    text-decoration: none;
+}
+
+.review-details a:hover {
+    text-decoration: underline;
 }
 
 .application-actions {
