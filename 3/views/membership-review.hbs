@@ -7,7 +7,7 @@
     <title>PTA | Membership Review</title>
     <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
     <link rel="stylesheet" type="text/css" href="../stylesheets/membership-review.css">
-     <link rel="stylesheet" type="text/css" href="../stylesheets/navbar.css" />
+    <link rel="stylesheet" type="text/css" href="../stylesheets/navbar.css">
 </head>
 
 <body class="container">
@@ -61,9 +61,9 @@
                 <p><strong>Instructor Middle Initial:</strong> {{registration.instructormi}}</p>
                 <p><strong>Instructor Last Name:</strong> {{registration.instructorlastname}}</p>
                 <p><strong>Instructor Mobile:</strong> {{registration.instructormobile}}</p>
-                <p><strong>Instructor Email:</strong> {{registration.instructoremail}}</p> -->
-                 <a href="{{registration.birthcert}}" target="_blank" download> Birth Certificate</a>
-                submittedby: {{registration.submittedby}}
+                <p><strong>Instructor Email:</strong> {{registration.instructoremail}}</p>
+                <a href="{{registration.birthcert}}" target="_blank" download>Birth Certificate</a>
+                <p>submitted by: {{registration.submittedby}}</p>
                 <!-- Add any other relevant details here -->
             </section>
 
@@ -92,100 +92,71 @@
             </section>
         </form>
 
-        <div class="printwindow" id="printableArea" style="display: none;">
+        <div class="printwindow" id="printableArea">
             <p><strong>ID:</strong> {{registration.id}}</p>
             <p><strong>First Name:</strong> {{registration.firstname}}</p>
             <p><strong>Middle Initial:</strong> {{registration.mi}}</p>
             <p><strong>Last Name:</strong> {{registration.lastname}}</p>
-            <a href="{{registration.birthcert}}" target="_blank" download> Birth Certificate</a>
-            {{!-- <p><strong>Gender:</strong> {{registration.gender}}</p>
-            <p><strong>Birthday:</strong> {{registration.bday}}</p>
-            <p><strong>Phone Number:</strong> {{registration.phonenum}}</p>
-            <p><strong>Email:</strong> {{registration.email}}</p>
-            <p><strong>Last Promotion:</strong> {{registration.lastpromo}}</p>
-            <p><strong>Promotion Location:</strong> {{registration.promolocation}}</p>
-            <p><strong>Region:</strong> {{registration.region}}</p>
-            <p><strong>Club:</strong> {{registration.clubname}}</p>
-            <p><strong>Belt Level:</strong> {{registration.beltlevel}}</p>
-            <p><strong>Instructor First Name:</strong> {{registration.instructorfirstname}}</p>
-            <p><strong>Instructor Middle Initial:</strong> {{registration.instructormi}}</p>
-            <p><strong>Instructor Last Name:</strong> {{registration.instructorlastname}}</p>
-            <p><strong>Instructor Mobile:</strong> {{registration.instructormobile}}</p>
-            <p><strong>Instructor Email:</strong> {{registration.instructoremail}}</p> --}}
-            submittedby: {{registration.submittedby}}
+            <a href="{{registration.birthcert}}" target="_blank" download>Birth Certificate</a>
+            <p>submitted by: {{registration.submittedby}}</p>
             <!-- Add any other relevant details here -->
-          </div>
-          <div class="application-actions">
-            <h1>{{registration.status}}</h1>
-            {{#if (eq user.usertype "pta")}}
-              <div>
-                <button onclick="printDiv('printableArea')">Print</button>
-              </div>
-              <div class="status-buttons" id="status-buttons">                {{!-- TYPES NAMES ID'S CLASSES VALUES NEED TO STAY THE SAME --}}
-                <button type="submit" name="status" value="1">Under Review</button>
-                <button type="submit" name="status" value="2">Printed</button>
-                <button type="submit" name="status" value="3">En-route to Regional Office</button>
-                <button type="button" id="idshipped" class="idshipped">ID Shipped</button>
-                <button type="submit" name="status" value="0">Reject Application</button>
-              </div>
-              <div class="confirmscreen" id="confirmscreen" style="display: none;">
-                <h3>Are you sure? The player will be notified that his ID is ready. This registration will also disappear after a few days.</h3>
-                <button class="cancel" id="cancel">Cancel</button>
-                <button  type="submit" value="4" name="status">Confirm</button>
-              </div>
-              <div class="backtolist">
-                <a href="/membership-status">Back to list</a>
-              </div>
-            {{/if}}
-          </div>
-        </form>
-      <div class="printwindow" id="printableArea" >
-        <p><strong>ID:</strong> {{registration.id}}</p>
-        <p><strong>First Name:</strong> {{registration.firstname}}</p>
-        <p><strong>Middle Initial:</strong> {{registration.mi}}</p>
-        <p><strong>Last Name:</strong> {{registration.lastname}}</p>
-      </div>
+        </div>
+    </main>
 
-        <script>
-          const confirmscreen = document.getElementById("confirmscreen");
-          const statuses = document.getElementById("status-buttons");
-          const cancel = document.getElementById("cancel");
-          const idshipped = document.getElementById("idshipped");
-          const statusForm = document.getElementById("statusForm");
-          const confirmButton = document.getElementById("confirm");
+    <script>
+        function toggleDropdown() {
+            document.getElementById("dropdown").classList.toggle("show");
+        }
 
-          cancel.addEventListener("click", function (event) {
+        window.onclick = function (event) {
+            if (!event.target.matches('.memprofile-pic')) {
+                var dropdowns = document.getElementsByClassName("dropdown-content");
+                for (var i = 0; i < dropdowns.length; i++) {
+                    var openDropdown = dropdowns[i];
+                    if (openDropdown.classList.contains('show')) {
+                        openDropdown.classList.remove('show');
+                    }
+                }
+            }
+        }
+
+        const confirmscreen = document.getElementById("confirmscreen");
+        const statuses = document.getElementById("status-buttons");
+        const cancel = document.getElementById("cancel");
+        const idshipped = document.getElementById("idshipped");
+        const confirmButton = document.getElementById("confirm");
+
+        cancel.addEventListener("click", function (event) {
             event.preventDefault();
             confirmscreen.style.display = "none";
             statuses.style.display = "block";
-          });
+        });
 
-          idshipped.addEventListener("click", function (event) {
+        idshipped.addEventListener("click", function (event) {
             event.preventDefault();
             confirmscreen.style.display = "block";
             statuses.style.display = "none";
             // Set the status value in the confirm button data attribute
             confirmButton.value = idshipped.getAttribute("data-status");
-          });
+        });
 
-          confirmButton.addEventListener("click", function (event) {
+        confirmButton.addEventListener("click", function (event) {
             event.preventDefault();
             const status = confirmButton.value;
             const applicationId = document.querySelector('input[name="applicationId"]').value;
-          });
+        });
 
-          function printDiv(divName) {
+        function printDiv(divName) {
             var printContents = document.getElementById(divName).innerHTML;
             var originalContents = document.body.innerHTML;
-
+            document.getElementById(divName).classList.add('visible');
             document.body.innerHTML = printContents;
-
             window.print();
-
             document.body.innerHTML = originalContents;
-          }
-  		    </script>
-			</div>
-    </div>
-  </body>
+            document.getElementById(divName).classList.remove('visible');
+            window.location.reload(); // Reload to reset the page state
+        }
+    </script>
+</body>
+
 </html>
