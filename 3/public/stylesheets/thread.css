@@ -22,11 +22,13 @@
     border-radius: 8px;
 }
 
-.post-vote, .comment-vote {
+.post-vote {
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: flex-end;
     padding: 10px;
+    margin-left:auto;
+    margin-top: auto;
 }
 
 .vote-button {
@@ -157,6 +159,66 @@
 
 .comment-form button:hover {
     background-color: #1484d6;
+}
+
+.back-btn a{
+    color: white;
+}
+
+/* Post container styling to accommodate the dropdown */
+.post-container {
+    position: relative;
+}
+
+/* Dropdown container styling */
+.dropdown-container {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+
+/* Dropdown Button */
+.dropbtn {
+    background-color: transparent;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 20px;
+}
+
+/* Dropdown content */
+.dropdown-content {
+    display: none;
+    position: absolute;
+    right: 0;
+    color:white;
+    min-width: 100px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+}
+
+.dropdown-content a {
+    color: white;
+    padding: 8px 12px;
+    text-decoration: none;
+    display: block;
+    background-color: #2c2c2c;
+    
+}
+
+.dropdown-content a:hover {
+    background-color:#5a5a5a;
+
+}
+
+.dropbtn:hover {
+    background-color: #3a3a3a;
+    border-radius: 75%;
+}
+
+/* Show the dropdown content when the dropdown button is clicked */
+.show {
+    display: block;
 }
 
 .footer-content {

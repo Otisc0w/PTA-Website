@@ -2,7 +2,7 @@
 <html>
 
 <head>
-  <title>PTA | Apply for NCC ID</title>
+  <title>PTA | Apply for Instructor ID</title>
   <link rel="icon" type="image/x-icon" href="../images/favicon.ico" />
   <link rel="stylesheet" type="text/css" href="../stylesheets/membership-ncc.css" />
   <link rel="stylesheet" type="text/css" href="../stylesheets/navbar.css" />
@@ -43,14 +43,14 @@
     <div class="leftside">
       <div class="forumtitle">
         <h1 class="forumname"></h1>
-        <h3 class="forumdesc">Apply for NCC ID</h3>
+        <h3 class="forumdesc">Apply for Instructor ID</h3>
       </div>
     </div>
     <div class="rightside">
       <div class="formcontainer">
-        <form id="nccform" action="/submit-ncc" method="post" enctype="multipart/form-data">
+        <form id="nccform" action="/submit-instructor" method="post" enctype="multipart/form-data">
 					<!-- Page 1 -->
-					<div class="ncc-page ncc-page1">
+					<div class="ins-page ins-page1">
 
 						<div class="form-row">
 							
@@ -193,7 +193,7 @@
 					</div>
 
 					<!-- Page 2 -->
-					<div class="ncc-page ncc-page2 hidden">
+					<div class="ins-page ins-page2 hidden">
 						<div class="form-row">
 							<div class="form-group">
 								<label for="instructorfirstname">Instructor First Name</label>
@@ -231,7 +231,7 @@
 					</div>
 
 					<!-- Page 3 -->
-					<div class="ncc-page ncc-page3 hidden">
+					<div class="ins-page ins-page3 hidden">
 						<div class="form-row">
 							<div class="form-group">
 								<label for="birthcert">Birth Certificate NSO/PSA</label>
@@ -302,7 +302,7 @@
     }
 
 		let currentPage = 0;
-    const pages = document.querySelectorAll('.ncc-page');
+    const pages = document.querySelectorAll('.ins-page');
 
     function showPage(pageIndex) {
       pages.forEach((page, index) => {

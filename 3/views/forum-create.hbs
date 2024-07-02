@@ -43,6 +43,7 @@
                 <div class="create-post-container">
         <h2>Create a Post</h2>
         <form id="create-post" action="create-post" method="POST">
+            <input type="hidden" value="{{user.profilepic}}" name="profilepic" id="profilepic">
            <div class="form-group">
                 <label for="title">Title<span class="required-asterisk">*</span></label>
                 <input type="text" id="title" name="title" placeholder="Title" required>

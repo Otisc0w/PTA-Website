@@ -1,162 +1,196 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>PTA | Forum</title>
-    <link rel="icon" type="image/x-icon" href="../images/favicon.ico" />
-    <link rel="stylesheet" type="text/css" href="../stylesheets/forum.css" />
-    <link rel="stylesheet" type="text/css" href="../stylesheets/navbar.css" />
+  <title>PTA | Forum</title>
+  <link rel="icon" type="image/x-icon" href="../images/favicon.ico" />
+  <link rel="stylesheet" type="text/css" href="../stylesheets/navbar.css" />
+  <link rel="stylesheet" type="text/css" href="../stylesheets/forum.css" />
+   
 </head>
 <body class="container">
-    <div class="header">
-        <div class="navbar">
-            <a href="home"><img src="/images/logo.png" class="logo" alt="Logo"></a>
-            <ul class="tabs">
-                <li class="home"><a href="home">Home</a></li>
-                <li class="athletes"><a href="athletes">Athletes</a></li>
-                <li class="clubs"><a href="clubs">Clubs</a></li>
-                <li class="events"><a href="events">Events</a></li>
-                <li class="membership"><a href="membership">Membership</a></li>
-                <li class="forum"><a href="forum">Forum</a></li>
-                <li class="notifications">
-                    <a href="notifications">Notifications <span class="badge">3</span></a>
-                </li>
-                <li class="profile-pic">
-                    {{#if user.profilepic}}
-                        <a href="#" onclick="toggleDropdown()"><img src="{{user.profilepic}}" alt="Profile Picture" class="profile-picture"></a>
-                    {{else}}
-                        <a href="#" onclick="toggleDropdown()" class="profile-picture"><img src="/images/none.jpg" alt="Profile Picture" class="profile-picture"></a>
-                    {{/if}}
-                    <div id="dropdown" class="dropdown-content">
-                        <a href="profile">Profile</a>
-                        <a href="settings">Settings</a>
-                        <a href="help-center">FAQs</a>
-                        <a href="/">Logout</a>
-                    </div>
-                </li>
-            </ul>
-        </div>
+  <div class="header">
+			<div class="navbar">
+				<a href="home"><img src="/images/logo.png" class="logo" alt="Logo"></a>
+				<ul class="tabs">
+					<li class="home"><a href="home">Home</a></li>
+					<li class="athletes"><a href="athletes">Athletes</a></li>
+					<li class="clubs"><a href="clubs">Clubs</a></li>
+					<li class="events"><a href="events">Events</a></li>
+					<li class="membership"><a href="membership">Membership</a></li>
+					<li class="forum"><a href="forum">Forum</a></li>
+					<li class="notifications">
+							<a href="notifications">Notifications <span class="badge">3</span></a>
+					</li>
+					<li class="profile-pic">
+							{{#if user.profilepic}}
+									<a href="#" onclick="toggleDropdown()"><img src="{{user.profilepic}}" alt="Profile Picture" class="profile-picture"></a>
+							{{else}}
+									<a href="#" onclick="toggleDropdown()" class="profile-picture"><img src="/images/none.jpg" alt="Profile Picture" class="profile-picture"></a>
+							{{/if}}
+							<div id="dropdown" class="dropdown-content">
+									<a href="profile">Profile</a>
+									<a href="settings">Settings</a>
+									<a href="help-center">FAQs</a>
+									<a href="/">Logout</a>
+							</div>
+					</li>
+				</ul>
+			</div>
     </div>
 
-    <div class="forum-container">
-        <div class="main-content">
-            <div class="content">
-                <h2>Recent Threads</h2>
-                <div class="forum-header">
-                    <input type="text" id="searchBar" placeholder="Search threads..." onkeyup="filterThreads()">
-                    <div class="create-post-button-container">
-                        <button id="createPostButton" class="create-post-button" href="/create-post">
-                            <span class="plus-icon">+</span> Create a post
-                        </button>
-                    </div>
-                </div>
-                {{!-- <a href="/forum-thread"> click here</a> --}}
-                {{#reverseEach forum_threads}}
-                <div class='post-link' data-href='/forum-thread/{{id}}'>
-                    <div class='post-container'>
-                        <div class='post-content'>
-                            <div class='post-info'>
-                                id:{{id}}
-                                <span class='community'>
-                                    <a class='post-community' href='/community?community={{topic}}'>{{topic}}</a> •
-                                </span>
-                                <span class='small'>
-                                    by <a class='post-user' href='/profile?username={{originalposter}}'>{{originalposter}}</a> on {{created_at}}
-                                </span>
-                            </div>
-                            <h2 class='post-title'>{{title}}</h2>
-                            <p class='post-description'>{{body}}</p>
-                            <div class='post-actions'>
-                                <ul class="post-buttons">
-                                    <li class="comment-buttons">
-                                        <div class='comment-button comment'>Comment
-                                            <img src="/images/comment.png" alt="comment">
-                                        </div>
-                                    </li>
-                                    <li class="vote-buttons">
-                                        <div class="vote-button upvote">
-                                            <img src="/images/thumbs up.png" alt="Upvote">
-                                            <span class="upvote-count">{{upvotes}}</span>
-                                        </div>
-                                        <div class="vote-separator"></div>
-                                        <div class="vote-button downvote">
-                                            <img src="/images/thumbs down.png" alt="Downvote">
-                                            <span class="downvote-count">{{downvotes}}</span>
-                                        </div>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                {{/reverseEach}}
-            </div>
+  <div class="forum-container">
+    <div class="main-content">
+      <div class="content">
+        <h2>Recent Threads</h2>
+        <div class="forum-header">
+          <input type="text" id="searchBar" placeholder="Search threads..." onkeyup="filterThreads()">
+          <div class="create-post-button-container">
+            <button id="createPostButton" class="create-post-button" href="/create-post">
+              <span class="plus-icon">+</span> Create a post
+            </button>
+          </div>
         </div>
+        {{#reverseEach forum_threads}}
+        <div class='post-link' data-href='/forum-thread/{{id}}'>
+          <div class='post-container'>
+            <div class='post-content'>
+                <div class="dropdown-container">
+                <button onclick="toggleDropdown(this)" class="dropbtn">...</button>
+                <div class="dropdown-content">
+                  <a href="#">Save</a>
+                  <a href="#">Hide</a>
+                  <a href="#">Report</a>
+                </div>
+              </div>
+              <div class='post-info'>
+                <img class="dp" src="{{profilepic}}"></img>
+                <span class='community'>
+                  <a class='post-community' href='/community?community={{topic}}'>#{{topic}}</a> •
+                </span>
+                <span class='small'>
+                  by <a class='post-user' href='/profile?username={{originalposter}}'>{{originalposter}}</a> on {{created_at}}
+                </span>
+              </div>
+              <h2 class='post-title'>{{title}}</h2>
+              <p class='post-description'>{{body}}</p>
+              <div class='post-actions'>
+                <ul class="post-buttons">
+                  <li class="comment-buttons">
+                    <div class='comment-button comment'>Comment
+                    	<img class="commentpic" src="/images/comment.png" alt="comment">
+                    </div>
+                  </li>
+                  <li class="vote-buttons">
+                    <div class="vote-button upvote">
+                        <img src="/images/thumbs up.png" alt="Upvote">
+                      <span class="upvote-count">{{arraySize upvotes}}</span>
+                    </div>
+                    <div class="vote-separator"></div>
+                    <div class="vote-button downvote">
+                      <img src="/images/thumbs down.png" alt="Downvote">
+                      <span class="downvote-count">{{arraySize downvotes}}</span>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+        {{/reverseEach}}
+      </div>
     </div>
-    <footer>
-        <div class="footer-content">
-            <div class="pta-logo">
-                <img src="/images/logo.png" alt="PTA Logo">
-            </div>
-            <div class="contact-info">
-                <p>Philippine Taekwondo Central Headquarters</p>
-                <p>Rizal Memorial Coliseum, Manila, Philippines</p>
-                <p>0977 384 5879</p>
-                <p>pthtkd@gmail.com</p>
-            </div>
-            <div class="social-media">
-                <p>Follow us</p>
-                <div class="icons">
-                    <a href="https://www.facebook.com"><img src="/images/homepage/fb.png" alt="Facebook"></a>
-                    <a href="https://www.instagram.com"><img src="/images/homepage/ig.png" alt="Instagram"></a>
-                    <a href="https://www.twitch.com"><img src="/images/homepage/twitch.webp" alt="Twitch"></a>
-                </div>
-            </div>
+  </div>
+  <footer>
+    <div class="footer-content">
+      <div class="pta-logo">
+        <img src="/images/logo.png" alt="PTA Logo">
+      </div>
+      <div class="contact-info">
+        <p>Philippine Taekwondo Central Headquarters</p>
+        <p>Rizal Memorial Coliseum, Manila, Philippines</p>
+        <p>0977 384 5879</p>
+        <p>pthtkd@gmail.com</p>
+      </div>
+      <div class="social-media">
+        <p>Follow us</p>
+        <div class="icons">
+          <a href="https://www.facebook.com"><img src="/images/homepage/fb.png" alt="Facebook"></a>
+          <a href="https://www.instagram.com"><img src="/images/homepage/ig.png" alt="Instagram"></a>
+          <a href="https://www.twitch.com"><img src="/images/homepage/twitch.webp" alt="Twitch"></a>
         </div>
-    </footer>
-    <script>
-        function toggleDropdown() {
-            document.getElementById("dropdown").classList.toggle("show");
+      </div>
+    </div>
+  </footer>
+  <script>
+    function toggleDropdown() {
+      document.getElementById("dropdown").classList.toggle("show");
+    }
+
+    window.onclick = function(event) {
+      if (!event.target.matches('.profile-pic img')) {
+        var dropdowns = document.getElementsByClassName("dropdown-content");
+        for (var i = 0; i < dropdowns.length; i++) {
+          var openDropdown = dropdowns[i];
+          if (openDropdown.classList.contains('show')) {
+            openDropdown.classList.remove('show');
+          }
         }
+      }
+    }
 
-        window.onclick = function(event) {
-            if (!event.target.matches('.profile-pic img')) {
-                var dropdowns = document.getElementsByClassName("dropdown-content");
-                for (var i = 0; i < dropdowns.length; i++) {
-                    var openDropdown = dropdowns[i];
-                    if (openDropdown.classList.contains('show')) {
-                        openDropdown.classList.remove('show');
-                    }
-                }
+    document.addEventListener("DOMContentLoaded", function() {
+      const postLinks = document.querySelectorAll('.post-link');
+      postLinks.forEach(link => {
+        link.addEventListener('click', function() {
+          window.location.href = this.getAttribute('data-href');
+        });
+      });
+    });
+
+    document.getElementById("createPostButton").addEventListener("click", function() {
+      window.location.href = "forum-create";
+    });
+
+    // Search Filter Function
+    function filterThreads() {
+      const searchInput = document.getElementById('searchBar').value.toLowerCase();
+      const posts = document.querySelectorAll('.post-container');
+      posts.forEach(post => {
+        const title = post.querySelector('.post-title').textContent.toLowerCase();
+        const body = post.querySelector('.post-description').textContent.toLowerCase();
+        if (title.includes(searchInput) || body.includes(searchInput)) {
+          post.parentElement.style.display = '';
+        } else {
+          post.parentElement.style.display = 'none';
+        }
+      });
+    }
+
+    function toggleDropdown(button) {
+      event.stopPropagation();
+      var dropdowns = document.getElementsByClassName("dropdown-content");
+        for (var i = 0; i < dropdowns.length; i++) {
+          var openDropdown = dropdowns[i];
+            if (openDropdown !== button.nextElementSibling) {
+              openDropdown.classList.remove('show');
+          }
+        }
+                button.nextElementSibling.classList.toggle("show");
+      }
+
+    window.onclick = function(event) {
+      if (!event.target.matches('.dropbtn')) {
+        var dropdowns = document.getElementsByClassName("dropdown-content");
+          for (var i = 0; i < dropdowns.length; i++) {
+            var openDropdown = dropdowns[i];
+        if (openDropdown.classList.contains('show')) {
+            openDropdown.classList.remove('show');
             }
+          }
         }
+      }
+</script>
 
-        document.addEventListener("DOMContentLoaded", function() {
-            const postLinks = document.querySelectorAll('.post-link');
-            postLinks.forEach(link => {
-                link.addEventListener('click', function() {
-                    window.location.href = this.getAttribute('data-href');
-                });
-            });
-        });
 
-        document.getElementById("createPostButton").addEventListener("click", function() {
-            window.location.href = "forum-create";
-        });
-
-        // Search Filter Function
-        function filterThreads() {
-            const searchInput = document.getElementById('searchBar').value.toLowerCase();
-            const posts = document.querySelectorAll('.post-container');
-            posts.forEach(post => {
-                const title = post.querySelector('.post-title').textContent.toLowerCase();
-                const body = post.querySelector('.post-description').textContent.toLowerCase();
-                if (title.includes(searchInput) || body.includes(searchInput)) {
-                    post.parentElement.style.display = '';
-                } else {
-                    post.parentElement.style.display = 'none';
-                }
-            });
-        }
-    </script>
 </body>
 </html>

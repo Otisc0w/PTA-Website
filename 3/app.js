@@ -11,7 +11,6 @@ const axios = require('axios');
 const PAYMONGO_SECRET_KEY = 'sk_test_rfwrr7CgVzNP4AnGJcjU6yFa';
 const PAYMONGO_PUBLIC_KEY = 'pk_test_tfhdABT3Jvix9Wvsbv5AGP6d ';
 
-
                                                                           // fdsfsdfasdfasdfasdfasdf
 
 require('dotenv').config();
@@ -89,7 +88,9 @@ hbs.registerHelper('notAthleteAndRegistered', function (usertype, registered, op
   }
   return options.inverse(this);
 });
-
+hbs.registerHelper('arraySize', function(array) {
+  return array.length;
+});
 hbs.registerHelper('renderComments', function(comments, options) {
   function renderNestedComments(comments, parentId) {
     let out = '<ul>';
@@ -251,7 +252,7 @@ app.post('/submit-signup', async (req, res) => {
   }
 });
 
-app.post('/submit-ncc', upload.single('birthcert'), async (req, res) => {
+app.post('/submit-ncc', upload.fields([{ name: 'birthcert', maxCount: 1 }, { name: 'portrait', maxCount: 1 }]), async (req, res) => {
   const {
     apptype,
     firstname,
@@ -281,25 +282,45 @@ app.post('/submit-ncc', upload.single('birthcert'), async (req, res) => {
   const status = 1;
 
   let birthcertUrl = null;
+  let portraitUrl = null;
 
-  if (req.file) {
+  if (req.files) {
     try {
-      const filePath = `documents/${Date.now()}-${req.file.originalname}`;
-      const { error: uploadError } = await supabase
-        .storage
-        .from('documents')
-        .upload(filePath, req.file.buffer, {
-          contentType: req.file.mimetype,
-        });
+      if (req.files.birthcert) {
+        const birthcertPath = `documents/${Date.now()}-${req.files.birthcert[0].originalname}`;
+        const { error: birthcertUploadError } = await supabase
+          .storage
+          .from('documents')
+          .upload(birthcertPath, req.files.birthcert[0].buffer, {
+            contentType: req.files.birthcert[0].mimetype,
+          });
 
-      if (uploadError) {
-        console.error('Error uploading birth certificate:', uploadError.message);
-        return res.status(500).send('Error uploading birth certificate');
+        if (birthcertUploadError) {
+          console.error('Error uploading birth certificate:', birthcertUploadError.message);
+          return res.status(500).send('Error uploading birth certificate');
+        }
+
+        birthcertUrl = `${supabaseUrl}/storage/v1/object/public/documents/${birthcertPath}`;
       }
 
-      birthcertUrl = `${supabaseUrl}/storage/v1/object/public/documents/${filePath}`;
+      if (req.files.portrait) {
+        const portraitPath = `documents/${Date.now()}-${req.files.portrait[0].originalname}`;
+        const { error: portraitUploadError } = await supabase
+          .storage
+          .from('documents')
+          .upload(portraitPath, req.files.portrait[0].buffer, {
+            contentType: req.files.portrait[0].mimetype,
+          });
+
+        if (portraitUploadError) {
+          console.error('Error uploading portrait:', portraitUploadError.message);
+          return res.status(500).send('Error uploading portrait');
+        }
+
+        portraitUrl = `${supabaseUrl}/storage/v1/object/public/documents/${portraitPath}`;
+      }
     } catch (error) {
-      console.error('Server error:', error.message);
+      console.error('Server error during file upload:', error.message);
       return res.status(500).json({ error: error.message });
     }
   }
@@ -329,7 +350,8 @@ app.post('/submit-ncc', upload.single('birthcert'), async (req, res) => {
         instructoremail,
         status,
         submittedby,
-        birthcert: birthcertUrl // Include the birth certificate URL
+        birthcert: birthcertUrl, // Include the birth certificate URL
+        portrait: portraitUrl // Include the portrait URL
       }]);
 
     if (error) {
@@ -351,6 +373,7 @@ app.post('/create-post', async (req, res) => {
     title,
     topic,
     body,
+    profilepic
   } = req.body; // Capture user input from the form
 
   if (!req.session.user) {
@@ -358,7 +381,7 @@ app.post('/create-post', async (req, res) => {
   }
   
   const originalposter = req.session.user.username; // Get the current user's id from the session
-  const upvotes = 0, downvotes=0;
+  const upvotes = [], downvotes =[];
 
   try {
     // Update the user in the database
@@ -370,7 +393,8 @@ app.post('/create-post', async (req, res) => {
         topic,
         body,
         upvotes,
-        downvotes
+        downvotes,
+        profilepic
       }]);
 
     if (error) {
@@ -495,7 +519,10 @@ app.post('/update-nccstatus', async (req, res) => {
 
     // Check if status is 4, indicating the need to update the user's registered column and insert into athletes table
     if (status == 4) {
-      const { submittedby, firstname, middlename, lastname, gender, bday, phonenum, email, lastpromo, promolocation, clubregion, clubname, beltlevel, instructorfirstname, instructormi, instructorlastname, instructormobile, instructoremail } = registration;
+      const { submittedby, firstname, middlename, lastname, gender, bday, 
+        phonenum, email, lastpromo, promolocation, clubregion, clubname, 
+        beltlevel, instructorfirstname, instructormi, instructorlastname, 
+        instructormobile, instructoremail, portrait } = registration;
 
       console.log('Updating user with username:', submittedby);
 
@@ -534,7 +561,8 @@ app.post('/update-nccstatus', async (req, res) => {
           instructormi,
           instructorlastname,
           instructormobile,
-          instructoremail
+          instructoremail,
+          portrait
         }]);
 
       if (insertAthleteError) {
@@ -584,11 +612,13 @@ app.post('/update-clubstatus', async (req, res) => {
         clubname,
         clubaddress,
         province,
-        submittedby } = clubregistration;
+        submittedby,
+        clubpic } = clubregistration;
 
       console.log('Updating user with username:', submittedby);
 
-      const registeredby = firstname + ' ' + lastname;
+      const registeredby = submittedby;
+      const registeree= firstname + ' ' + lastname;
 
       const { error: insertClubError } = await supabase
         .from('clubs')
@@ -598,7 +628,9 @@ app.post('/update-clubstatus', async (req, res) => {
           email,
           clubaddress,
           province,
-          registeredby
+          registeredby,
+          registeree,
+          clubpic
         }]);
 
       if (insertClubError) {
@@ -615,7 +647,6 @@ app.post('/update-clubstatus', async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
-
 
 app.post('/add-comment', async (req, res) => {
   if (!req.session.user) {
@@ -648,7 +679,11 @@ app.post('/add-comment', async (req, res) => {
   }
 });
 
-app.post('/submit-club', upload.fields([{ name: 'idfile', maxCount: 1 }, { name: 'proofdoc', maxCount: 1 }]), async (req, res) => {
+app.post('/submit-club', upload.fields([
+  { name: 'idfile', maxCount: 1 },
+  { name: 'proofdoc', maxCount: 1 },
+  { name: 'clubpic', maxCount: 1 }
+]), async (req, res) => {
   const {
     firstname,
     lastname,
@@ -659,7 +694,7 @@ app.post('/submit-club', upload.fields([{ name: 'idfile', maxCount: 1 }, { name:
     province
   } = req.body; // Capture user input from the form
 
-  const status=1;
+  const status = 1;
 
   if (!req.session.user) {
     return res.status(401).send('Unauthorized: No user logged in');
@@ -669,6 +704,7 @@ app.post('/submit-club', upload.fields([{ name: 'idfile', maxCount: 1 }, { name:
 
   let idfileUrl = '';
   let proofdocUrl = '';
+  let clubpicUrl = '';
 
   console.log('Files received:', req.files);
 
@@ -711,6 +747,25 @@ app.post('/submit-club', upload.fields([{ name: 'idfile', maxCount: 1 }, { name:
         proofdocUrl = `${supabaseUrl}/storage/v1/object/public/documents/${proofdocPath}`;
         console.log('Proof document uploaded to:', proofdocUrl);
       }
+
+      if (req.files.clubpic) {
+        const clubpicPath = `documents/${Date.now()}-${req.files.clubpic[0].originalname}`;
+        console.log('Uploading club picture:', clubpicPath);
+        const { error: clubpicError } = await supabase
+          .storage
+          .from('documents')
+          .upload(clubpicPath, req.files.clubpic[0].buffer, {
+            contentType: req.files.clubpic[0].mimetype,
+          });
+
+        if (clubpicError) {
+          console.error('Error uploading club picture:', clubpicError.message);
+          return res.status(500).send('Error uploading club picture');
+        }
+
+        clubpicUrl = `${supabaseUrl}/storage/v1/object/public/documents/${clubpicPath}`;
+        console.log('Club picture uploaded to:', clubpicUrl);
+      }
     } catch (error) {
       console.error('Server error during file upload:', error.message);
       return res.status(500).json({ error: error.message });
@@ -719,6 +774,7 @@ app.post('/submit-club', upload.fields([{ name: 'idfile', maxCount: 1 }, { name:
 
   console.log('ID File URL:', idfileUrl);
   console.log('Proof Document URL:', proofdocUrl);
+  console.log('Club Picture URL:', clubpicUrl);
 
   try {
     // Insert the new club registration into the database
@@ -734,6 +790,7 @@ app.post('/submit-club', upload.fields([{ name: 'idfile', maxCount: 1 }, { name:
         province,
         idfile: idfileUrl,
         proofdoc: proofdocUrl,
+        clubpic: clubpicUrl, // Include the club picture URL
         submittedby,
         status
       }])
@@ -752,8 +809,179 @@ app.post('/submit-club', upload.fields([{ name: 'idfile', maxCount: 1 }, { name:
     res.status(500).json({ error: error.message });
   }
 });
+                                     
+app.post('/invite-user', async (req, res) => {
+  const { club_id, invited_user, clubname } = req.body;
 
+  if (!req.session.user) {
+    return res.status(401).send('Unauthorized: No user logged in');
+  }
 
+  const inviter_user = req.session.user.username;
+
+  try {
+    const { data, error } = await supabase
+      .from('club_invitations')
+      .insert([{ club_id, clubname, invited_user, inviter_user }]);
+
+    if (error) {
+      console.error('Error inviting user:', error.message);
+      return res.status(500).send('Error inviting user');
+    }
+
+    res.redirect(`/clubs-details/${club_id}`);
+  } catch (error) {
+    console.error('Server error:', error.message);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.post('/accept-invitation/:id', async (req, res) => {
+  const { id } = req.params;
+
+  if (!req.session.user) {
+    return res.status(401).send('Unauthorized: No user logged in');
+  }
+
+  const username = req.session.user.username;
+
+  try {
+    // Fetch the invitation details to get the clubname
+    const { data: invitation, error: fetchError } = await supabase
+      .from('club_invitations')
+      .select('*')
+      .eq('id', id)
+      .eq('invited_user', username)
+      .single();
+
+    if (fetchError || !invitation) {
+      console.error('Error fetching invitation:', fetchError ? fetchError.message : 'Invitation not found');
+      return res.status(500).send('Error fetching invitation');
+    }
+
+    const clubname = invitation.clubname;
+
+    // Update the invitation status to 'accepted'
+    const { error: updateInvitationError } = await supabase
+      .from('club_invitations')
+      .update({ status: 'accepted' })
+      .eq('id', id)
+      .eq('invited_user', username);
+
+    if (updateInvitationError) {
+      console.error('Error accepting invitation:', updateInvitationError.message);
+      return res.status(500).send('Error accepting invitation');
+    }
+
+    // Update the club column in the users table
+    const { error: updateUserError } = await supabase
+      .from('users')
+      .update({ club: clubname })
+      .eq('username', username);
+
+    if (updateUserError) {
+      console.error('Error updating user club:', updateUserError.message);
+      return res.status(500).send('Error updating user club');
+    }
+
+    // Update the session with the new club
+    req.session.user.club = clubname;
+
+    res.redirect('/notifications');
+  } catch (error) {
+    console.error('Server error:', error.message);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.post('/reject-invitation/:id', async (req, res) => {
+  const { id } = req.params;
+
+  if (!req.session.user) {
+    return res.status(401).send('Unauthorized: No user logged in');
+  }
+
+  const username = req.session.user.username;
+
+  try {
+    const { data, error } = await supabase
+      .from('club_invitations')
+      .update({ status: 'rejected' })
+      .eq('id', id)
+      .eq('invited_user', username);
+
+    if (error) {
+      console.error('Error rejecting invitation:', error.message);
+      return res.status(500).send('Error rejecting invitation');
+    }
+
+    res.redirect('/profile');
+  } catch (error) {
+    console.error('Server error:', error.message);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.post('/vote', async (req, res) => {
+  const { type, threadId } = req.body;
+
+  if (!req.session.user) {
+    return res.status(401).json({ success: false, message: 'Unauthorized: No user logged in' });
+  }
+
+  const userId = req.session.user.id;
+
+  try {
+    // Fetch the current thread
+    const { data: thread, error: threadError } = await supabase
+      .from('forum_threads')
+      .select('upvotes, downvotes')
+      .eq('id', threadId)
+      .single();
+
+    if (threadError) {
+      return res.status(500).json({ success: false, message: threadError.message });
+    }
+
+    let upvotes = thread.upvotes || [];
+    let downvotes = thread.downvotes || [];
+
+    // Check if the user has already upvoted or downvoted
+    const hasUpvoted = upvotes.includes(userId);
+    const hasDownvoted = downvotes.includes(userId);
+
+    // Remove user from both arrays to ensure clean state
+    upvotes = upvotes.filter(id => id !== userId);
+    downvotes = downvotes.filter(id => id !== userId);
+
+    // Add user to the appropriate array based on vote type, or remove if they already voted
+    if (type === 'upvote') {
+      if (!hasUpvoted) {
+        upvotes.push(userId);
+      }
+    } else if (type === 'downvote') {
+      if (!hasDownvoted) {
+        downvotes.push(userId);
+      }
+    }
+
+    // Update the thread with the new arrays
+    const { data, error } = await supabase
+      .from('forum_threads')
+      .update({ upvotes, downvotes })
+      .eq('id', threadId)
+      .select();
+
+    if (error) {
+      return res.status(500).json({ success: false, message: error.message });
+    }
+
+    res.redirect(`/forum-thread/${threadId}`); // Redirect back to the thread page
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+                                             
 
                                                                         // VIEWS BELOW
 
@@ -973,10 +1201,14 @@ app.get('/notifications', async function (req, res) {
     return res.redirect('/');
   }
   
+  const username = req.session.user.username; // Get the current user's username from the session
+
   try {
     const { data, error } = await supabase
-      .from('athletes')
-      .select('*');
+      .from('club_invitations')
+      .select('*')
+      .eq('invited_user', username)
+      .is('status', null);
 
     if (error) {
       return res.status(400).json({ error: error.message });
@@ -984,12 +1216,13 @@ app.get('/notifications', async function (req, res) {
 
     console.log("Fetched data:", data); // Log the data to the console 
 
-    // Render the athletes.hbs template with the fetched data
-    res.render('notifications', { athletes: data, user: req.session.user });
+    // Render the notifications.hbs template with the fetched data
+    res.render('notifications', { club_invitations: data, user: req.session.user });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
+
 
 app.get('/help-center', async function (req, res) {
   if (!req.session.user) {
@@ -1014,6 +1247,42 @@ app.get('/help-center', async function (req, res) {
   }
 });
 
+app.get('/clubs-details/:id', async function (req, res) {
+  const { id } = req.params;
+
+  if (!req.session.user) {
+    return res.redirect('/');
+  }
+  
+  try {
+    const { data: club, error: clubsError } = await supabase
+      .from('clubs')
+      .select('*')
+      .eq('id', id)
+      .single();
+
+    if (clubsError) {
+      return res.status(400).json({ clubsError: clubsError.message });
+    }
+
+    const { data: allUsers, error: allUsersError } = await supabase
+      .from('users')
+      .select('*');
+
+    if (allUsersError) {
+      return res.status(400).json({ allUsersError: allUsersError.message });
+    }
+
+    const clubMembers = allUsers.filter(user => user.club === club.clubname);
+
+    // Render the clubs-details.hbs template with the fetched data
+    res.render('clubs-details', { club, allUsers, clubMembers, user: req.session.user });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+
                                                                         //MEMBERSHIP PAGES
 
 app.get('/membership-ncc', async function (req, res) {
@@ -1034,6 +1303,29 @@ app.get('/membership-ncc', async function (req, res) {
 
     // Render the athletes.hbs template with the fetched data
     res.render('membership-ncc', { clubs: data, user: req.session.user });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.get('/membership-instructor', async function (req, res) {
+  if (!req.session.user) {
+    return res.redirect('/');
+  }
+
+  try {
+    const { data, error } = await supabase
+      .from('clubs')
+      .select('*');
+
+    if (error) {
+      return res.status(400).json({ error: error.message });
+    }
+
+    console.log("Fetched data:", data); // Log the data to the console 
+
+    // Render the athletes.hbs template with the fetched data
+    res.render('membership-instructor', { clubs: data, user: req.session.user });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -1146,10 +1438,6 @@ app.get('/membership-club', async (req, res) => {
   try {
     // Fetch the specific registration data
     const { data, error } = await supabase
-      .from('ncc_registrations')
-      .select('*')
-      // .eq('id', id)
-      // .single();
 
     if (error) {
       console.error('Error fetching registration:', error.message);
@@ -1164,15 +1452,6 @@ app.get('/membership-club', async (req, res) => {
   }
 });
 
-//membership to ncc id to instructor
-app.get('/membership-instructor', (req, res) => {
-  res.render('membership-instructor');
-});
-
-//instructor to ps
-app.get('/membership-ps', (req, res) => {
-  res.render('membership-ps');
-});
 
 
 app.listen(port, () => {
