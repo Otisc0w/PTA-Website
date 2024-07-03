@@ -11,8 +11,6 @@ const axios = require('axios');
 const PAYMONGO_SECRET_KEY = 'sk_test_rfwrr7CgVzNP4AnGJcjU6yFa';
 const PAYMONGO_PUBLIC_KEY = 'pk_test_tfhdABT3Jvix9Wvsbv5AGP6d ';
 
-                                                                          // fdsfsdfasdfasdfasdfasdf
-
 require('dotenv').config();
 
 const { createClient } = require('@supabase/supabase-js');
@@ -109,6 +107,25 @@ hbs.registerHelper('renderComments', function(comments, options) {
   return renderNestedComments(comments, null);
 });
 
+// Register the formatStatus helper
+hbs.registerHelper('formatStatus', function(status) {
+  switch (status) {
+      case 1:
+          return '<span class="status-under-review">Under Review</span>';
+      case 2:
+          return '<span class="status-printed">Printed</span>';
+      case 3:
+          return '<span class="status-en-route">En-route to Regional Office</span>';
+      case 4:
+          return '<span class="status-shipped">ID Shipped</span>';
+      case 5:
+          return '<span class="status-rejected">Reject Application</span>';
+      default:
+          return '<span class="status-unknown">Unknown Status</span>';
+  }
+});
+
+
 // Configure express-session
 app.use(session({
   secret: 'your_secret_key', // Replace with a secure secret key
@@ -175,7 +192,8 @@ app.get('/data/:id', async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
-                                                                      // SUBMIT STUFF
+
+// SUBMIT STUFF
 app.post('/submit-login', async (req, res) => {
   const { username, password } = req.body;
 
@@ -981,10 +999,8 @@ app.post('/vote', async (req, res) => {
     res.status(500).json({ success: false, message: error.message });
   }
 });
-                                             
 
-                                                                        // VIEWS BELOW
-
+// VIEWS BELOW
 
 app.get('/home', async function (req, res) {
   if (!req.session.user) {
@@ -1282,8 +1298,7 @@ app.get('/clubs-details/:id', async function (req, res) {
   }
 });
 
-
-                                                                        //MEMBERSHIP PAGES
+// MEMBERSHIP PAGES
 
 app.get('/membership-ncc', async function (req, res) {
   if (!req.session.user) {
@@ -1445,14 +1460,12 @@ app.get('/membership-club', async (req, res) => {
     }
 
     // Render the membership-review.hbs template with the fetched data
-    res.render('membership-club', { registration: data , user: req.session.user });
+    res.render('membership-review', { registration: data , user: req.session.user });
   } catch (error) {
     console.error('Server error:', error.message);
     res.status(500).send('Server error');
   }
 });
-
-
 
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
