@@ -2,7 +2,6 @@
 <html lang="en">
 
 <head>
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PTA | Membership Review</title>
@@ -52,7 +51,6 @@
                 <p><strong>Middle Initial:</strong> {{registration.mi}}</p>
                 <p><strong>Last Name:</strong> {{registration.lastname}}</p>
                 <p><strong>Gender:</strong> {{registration.gender}}</p>
-                <p><strong>Gender:</strong> {{registration.gender}}</p>
                 <p><strong>Birthday:</strong> {{registration.bday}}</p>
                 <p><strong>Phone Number:</strong> {{registration.phonenum}}</p>
                 <p><strong>Email:</strong> {{registration.email}}</p>
@@ -66,13 +64,12 @@
                 <p><strong>Instructor Last Name:</strong> {{registration.instructorlastname}}</p>
                 <p><strong>Instructor Mobile:</strong> {{registration.instructormobile}}</p>
                 <p><strong>Instructor Email:</strong> {{registration.instructoremail}}</p>
-                <a href="{{registration.birthcert}}" target="_blank" download>Birth Certificate</a>
                 <p>submitted by: {{registration.submittedby}}</p>
                 <a href="{{registration.birthcert}}" target="_blank" download> Birth Certificate</a>
             </section>
 
             <section class="application-actions">
-                <h1>{{registration.status}}</h1>
+                <h1 class="status">{{{formatStatus registration.status}}}</h1>
                 {{#if (eq user.usertype "pta")}}
                 <div class="action-buttons"> <!-- TYPES NAMES ID'S CLASSES VALUES NEED TO STAY THE SAME -->
                     <button type="button" onclick="printDiv('printableArea')">Print</button>
@@ -104,28 +101,29 @@
             <a href="{{registration.birthcert}}" target="_blank" download>Birth Certificate</a>
             <p>submitted by: {{registration.submittedby}}</p>
             <!-- Add any other relevant details here -->
-  
         </div>
 
         <div class="confirmscreen" id="confirmscreen" style="display: none;">
-          <h3>Are you sure? The player will be notified that his ID is ready. This registration will also disappear after a few days.</h3>
-          <button type="button" class="cancel" id="cancel">Cancel</button>
-          <button type="submit" value="4" name="status" id="confirm">Confirm</button>
+            <h3>Are you sure? The player will be notified that his ID is ready. This registration will also disappear after a few days.</h3>
+            <button type="button" class="cancel" id="cancel">Cancel</button>
+            <button type="submit" value="4" name="status" id="confirm">Confirm</button>
         </div>
-  <script>
+    </main>
+    
+    <script>
         const confirmscreen = document.getElementById("confirmscreen");
         const statuses = document.getElementById("status-buttons");
         const cancel = document.getElementById("cancel");
         const idshipped = document.getElementById("idshipped");
         const confirmButton = document.getElementById("confirm");
 
-        cancel.addEventListener("click", function (event) {
+        cancel.addEventListener("click", function(event) {
             event.preventDefault();
             confirmscreen.style.display = "none";
             statuses.style.display = "block";
         });
 
-        idshipped.addEventListener("click", function (event) {
+        idshipped.addEventListener("click", function(event) {
             event.preventDefault();
             confirmscreen.style.display = "block";
             statuses.style.display = "none";
@@ -133,7 +131,7 @@
             confirmButton.value = idshipped.getAttribute("data-status");
         });
 
-        confirmButton.addEventListener("click", function (event) {
+        confirmButton.addEventListener("click", function(event) {
             event.preventDefault();
             const status = confirmButton.value;
             const applicationId = document.querySelector('input[name="applicationId"]').value;
@@ -148,46 +146,30 @@
             document.body.innerHTML = originalContents;
             document.getElementById(divName).classList.remove('visible');
             window.location.reload(); // Reload to reset the page state
-
         }
-      }
-    }
 
-    const confirmscreen = document.getElementById("confirmscreen");
-    const statuses = document.getElementById("status-buttons");
-    const cancel = document.getElementById("cancel");
-    const idshipped = document.getElementById("idshipped");
-    const confirmButton = document.getElementById("confirm");
+        function toggleDropdown() {
+            document.getElementById("dropdown").classList.toggle("show");
+        }
 
-    cancel.addEventListener("click", function (event) {
-      event.preventDefault();
-      confirmscreen.style.display = "none";
-      statuses.style.display = "block";
-    });
-
-    idshipped.addEventListener("click", function (event) {
-      event.preventDefault();
-      confirmscreen.style.display = "block";
-      statuses.style.display = "none";
-      // Set the status value in the confirm button data attribute
-      confirmButton.value = idshipped.getAttribute("data-status");
-    });
-
-    confirmButton.addEventListener("click", function (event) {
-      event.preventDefault();
-      const status = confirmButton.value;
-      const applicationId = document.querySelector('input[name="applicationId"]').value;
-    });
-
-    function printDiv(divName) {
-      var printContents = document.getElementById(divName).innerHTML;
-      var originalContents = document.body.innerHTML;
-      document.body.innerHTML = printContents;
-      window.print();
-      document.body.innerHTML = originalContents;
-      window.location.reload(); // Reload to reset the page state
-    }
-  </script>
+        function formatStatus(status) {
+            switch (status) {
+                case 1:
+                    return '<span class="status-under-review">Under Review</span>';
+                case 2:
+                    return '<span class="status-printed">Printed</span>';
+                case 3:
+                    return '<span class="status-en-route">En-route to Regional Office</span>';
+                case 4:
+                    return '<span class="status-shipped">ID Shipped</span>';
+                case 5:
+                    return '<span class="status-rejected">Reject Application</span>';
+                default:
+                    return '<span class="status-unknown">Unknown Status</span>';
+            }
+        }
+    </script>
 </body>
 
 </html>
+
