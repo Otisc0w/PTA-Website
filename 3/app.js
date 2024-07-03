@@ -1410,6 +1410,29 @@ app.get('/events-create', async function (req, res) {
   }
 });
 
+app.get('/events-registration', async function (req, res) {
+  if (!req.session.user) {
+    return res.redirect('/');
+  }
+  
+  try {
+    const { data, error } = await supabase
+      .from('events')
+      .select('*');
+
+    if (error) {
+      return res.status(400).json({ error: error.message });
+    }
+
+    console.log("Fetched data:", data); // Log the data to the console 
+
+    // Render the athletes.hbs template with the fetched data
+    res.render('events-registration', { events: data, user: req.session.user });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 app.get('/profile', async function (req, res) {
   if (!req.session.user) {
     return res.redirect('/');
