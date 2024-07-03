@@ -1,6 +1,5 @@
 @import url('https://fonts.cdnfonts.com/css/sf-pro-display');
 
-
 :root {
     font-family: 'SF Pro Display', sans-serif;
     --dark-bg: #252525;
@@ -10,18 +9,14 @@
     --background-color: #121212; /* Dark background color for contrast */
 }
 
-
 body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
-
     background-color: var(--background-color); /* Updated background color */
     color: var(--text-color); /* Updated text color */
-
     background-color: #f9f9f9;
     color: #333; /* Ensures text is visible */
-
 }
 
 .membership-header {
@@ -83,6 +78,8 @@ body {
 .review-header h1 {
     font-size: 24px;
     color: var(--text-color); /* Updated header text color */
+    text-align: center;
+    margin-bottom: 20px;
 }
 
 .review-details {
@@ -153,4 +150,29 @@ body {
 
 .printwindow.visible {
     display: block;
+}
+
+/* Status colors */
+.status-under-review {
+    color: green;
+}
+
+.status-printed {
+    color: yellow;
+}
+
+.status-en-route {
+    color: blue;
+}
+
+.status-shipped {
+    color: orange;
+}
+
+.status-rejected {
+    color: red;
+}
+
+.status-unknown {
+    color: grey;
 }
