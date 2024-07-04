@@ -160,3 +160,27 @@ a:hover {
 .show {
   display: block;
 }
+.status-under-review {
+  color: green;
+}
+
+.status-printed {
+  color: yellow;
+}
+
+.status-en-route {
+  color: blue;
+}
+
+.status-shipped {
+  color: orange;
+}
+
+.status-rejected {
+  color: red;
+}
+
+.status-unknown {
+  color: grey;
+}
+

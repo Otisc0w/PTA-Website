@@ -19,65 +19,66 @@ body {
     color: #333; /* Ensures text is visible */
 }
 
-.membership-header {
-    background-color: #004085;
-    padding: 10px 0;
-    background-color: var(--light-bg);
-}
-
 .membership-navbar {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    padding: 0 20px;
-    background-color: var(--dark-bg);
+    background-color: #333;
+    padding: 10px;
 }
 
 .membership-logo {
     height: 50px;
 }
 
-.profile-menu {
-    position: relative;
+.memprofile-pic {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    color: white;
+    text-decoration: none;
+    padding: 5px 10px;
 }
 
 .profile-picture {
-    height: 40px;
-    width: 40px;
     border-radius: 50%;
+    width: 40px;
+    height: 40px;
 }
 
+/* Dropdown menu */
 .dropdown-content {
     display: none;
     position: absolute;
-    right: 0;
-    background-color: var(--accent-bg); /* Updated dropdown background */
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
     z-index: 1;
 }
 
 .dropdown-content a {
-    color: var(--text-color); /* Updated dropdown text color */
+    color: black;
     padding: 12px 16px;
     text-decoration: none;
     display: block;
 }
 
 .dropdown-content a:hover {
-    background-color: var(--light-bg); /* Updated hover background color */
+    background-color: #f1f1f1;
 }
 
-.show {
+.memprofile-pic:hover .dropdown-content {
     display: block;
 }
 
+/* Styles for the review container */
 .membership-container {
     padding: 20px;
+    color: white;
 }
 
 .review-header h1 {
     font-size: 24px;
-    color: var(--text-color); /* Updated header text color */
+    color: white;
     text-align: center;
     margin-bottom: 20px;
 }
@@ -91,17 +92,16 @@ body {
     color: var(--text-color); /* Updated text color */
 }
 
-.review-details p {
-    margin: 5px 0;
+.review-details h2 {
+    font-size: 20px;
+    color: white;
+    margin-bottom: 10px;
 }
 
-.review-details a {
-    color: #004085;
-    text-decoration: none;
-}
-
-.review-details a:hover {
-    text-decoration: underline;
+.review-details p, .review-details a {
+    display: block;
+    margin-bottom: 10px;
+    color: #ddd;
 }
 
 .application-actions {
@@ -112,18 +112,41 @@ body {
     color: var(--text-color); /* Updated text color */
 }
 
-.action-buttons button {
-    margin-right: 10px;
+.application-actions h1 {
+    font-size: 18px;
+    color: white;
+    margin-bottom: 10px;
+}
+
+.status-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.status-buttons button {
     padding: 10px 20px;
     border: none;
     border-radius: 5px;
-    background-color: #004085;
-    color: white;
     cursor: pointer;
+    background-color: #004085; /* Match the button color */
+    color: white;
 }
 
-.action-buttons button:hover {
-    background-color: #0056b3;
+.status-buttons button:hover {
+    background-color: #0056b3; /* Match the hover color */
+}
+
+#accepted {
+    background-color: #004085; /* Update to match the button color */
+}
+
+#accepted:hover {
+    background-color: #0056b3; /* Update to match the hover color */
+}
+
+#cancel {
+    background-color: red;
+    color: white;
 }
 
 .confirmscreen h3 {
@@ -144,35 +167,25 @@ body {
     text-decoration: underline;
 }
 
+/* Additional styles for the membership review page */
+#applicant-information {
+    background-color: #3b3b3b;
+    padding: 15px;
+    border-radius: 5px;
+    color: white;
+    border: 1px solid #555;
+    margin-bottom: 20px;
+}
+
+#applicant-information p {
+    margin: 5px 0;
+    color: white;
+}
+
 .printwindow {
-    display: none;
-}
-
-.printwindow.visible {
-    display: block;
-}
-
-/* Status colors */
-.status-under-review {
-    color: green;
-}
-
-.status-printed {
-    color: yellow;
-}
-
-.status-en-route {
-    color: blue;
-}
-
-.status-shipped {
-    color: orange;
-}
-
-.status-rejected {
-    color: red;
-}
-
-.status-unknown {
-    color: grey;
+    background: var(--dark-bg); /* Updated background color */
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    color: var(--text-color); /* Updated text color */
 }
