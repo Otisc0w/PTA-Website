@@ -388,8 +388,6 @@
 
     function submitPasswordChange() {
       if (validatePassword()) {
-        // Perform password change logic here
-        // For example, send an AJAX request to your server to change the password
         const currentPassword = document.getElementById('currentPassword').value;
         const newPassword = document.getElementById('newPassword').value;
         fetch('/change-password', {

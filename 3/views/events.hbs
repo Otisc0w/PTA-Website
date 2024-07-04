@@ -1,151 +1,158 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>PTA | Events</title>
-    <link rel="icon" type="image/x-icon" href="../images/favicon.ico" />
-    <link rel="stylesheet" type="text/css" href="../stylesheets/home.css" />
-    <link rel="stylesheet" type="text/css" href="../stylesheets/navbar.css" />
-    <link rel="stylesheet" type="text/css" href="../stylesheets/events.css" />
+  <meta charset="UTF-8">
+  <title>PTA | Events</title>
+  <link rel="icon" type="image/x-icon" href="../images/favicon.ico" />
+  <link rel="stylesheet" type="text/css" href="../stylesheets/home.css" />
+  <link rel="stylesheet" type="text/css" href="../stylesheets/navbar.css" />
+  <link rel="stylesheet" type="text/css" href="../stylesheets/events.css" />
 </head>
 <body class="container">
-    <div class="header">
-        <div class="navbar">
-            <a href="home"><img src="/images/logo.png" class="logo" alt="Logo"></a>
-            <ul class="tabs">
-                <li class="home"><a href="home">Home</a></li>
-                <li class="athletes"><a href="athletes">Athletes</a></li>
-                <li class="clubs"><a href="clubs">Clubs</a></li>
-                <li class="events"><a href="events">Events</a></li>
-                <li class="membership"><a href="membership">Membership</a></li>
-                <li class="forum"><a href="forum">Forum</a></li>
-                <li class="notifications">
-                    <a href="notifications">Notifications <span class="badge">3</span></a>
-                </li>
-                <li class="profile-pic">
-                    {{#if user.profilepic}}
-                        <a href="#" onclick="toggleDropdown()"><img src="{{user.profilepic}}" alt="Profile Picture" class="profile-picture"></a>
-                    {{else}}
-                        <a href="#" onclick="toggleDropdown()" class="profile-picture"><img src="/images/none.jpg" alt="Profile Picture" class="profile-picture"></a>
-                    {{/if}}
-                    <div id="dropdown" class="dropdown-content">
-                        <a href="profile">Profile</a>
-                        <a href="settings">Settings</a>
-                        <a href="help-center">FAQs</a>
-                        <a href="/">Logout</a>
-                    </div>
-                </li>
-            </ul>
-        </div>
+  <div class="header">
+    <div class="navbar">
+      <a href="home"><img src="/images/logo.png" class="logo" alt="Logo"></a>
+      <ul class="tabs">
+        <li class="home"><a href="home">Home</a></li>
+        <li class="athletes"><a href="athletes">Athletes</a></li>
+        <li class="clubs"><a href="clubs">Clubs</a></li>
+        <li class="events"><a href="events">Events</a></li>
+        <li class="membership"><a href="membership">Membership</a></li>
+        <li class="forum"><a href="forum">Forum</a></li>
+        <li class="notifications">
+          <a href="notifications">Notifications <span class="badge">3</span></a>
+        </li>
+        <li class="profile-pic">
+          {{#if user.profilepic}}
+            <a href="#" onclick="toggleDropdown()"><img src="{{user.profilepic}}" alt="Profile Picture" class="profile-picture"></a>
+          {{else}}
+            <a href="#" onclick="toggleDropdown()" class="profile-picture"><img src="/images/none.jpg" alt="Profile Picture" class="profile-picture"></a>
+          {{/if}}
+          <div id="dropdown" class="dropdown-content">
+            <a href="profile">Profile</a>
+            <a href="settings">Settings</a>
+            <a href="help-center">FAQs</a>
+            <a href="/">Logout</a>
+          </div>
+        </li>
+      </ul>
     </div>
+  </div>
 
-    <div class="events-container">
-        <div class="search-create-container">
-            <div class="search-container">
-                <input type="text" id="search-input" placeholder="Search event...">
-                <button onclick="searchEvents()">Search</button>
-            </div>
-            <button class="create-event-button">Create Event</button>
-        </div>
-        <div class="main-panel">
-            <!-- upcoming events -->
-            <div class="news">
-                <h2 class="left-align-title">Upcoming Events</h2>
-                <div id="events" class="horizontal-container">
-                    {{#each events}}
-                    <div class="event event-card">
-                        <img src="{{eventpicture}}" alt="Event {{id}}">
-                        <h3 class="event-title">{{title}} - {{date}} {{time}}</h3>
-                        <p>{{description}}</p>
-                        <a href="#" onclick="showEventDetails('{{title}}', '{{description}}', '{{date}}', '{{time}}', '{{location}}', '{{eventpicture}}')">Read More</a>
-                    </div>
-                    {{/each}}
-                </div>
-            </div>
-
-            <!-- promotion tests -->
-            <div class="news">
-                <h2 class="left-align-title">Promotion Tests</h2>
-                <div id="promotion-tests" class="horizontal-container">
-                    {{#each promotionTests}}
-                    <div class="event event-card">
-                        <img src="{{eventpicture}}" alt="Promotion Test {{id}}">
-                        <h3 class="event-title">{{title}} - {{date}} {{time}}</h3>
-                        <p>{{description}}</p>
-                        <a href="#" onclick="showEventDetails('{{title}}', '{{description}}', '{{date}}', '{{time}}', '{{location}}', '{{eventpicture}}')">Read More</a>
-                    </div>
-                    {{/each}}
-                </div>
-            </div>
-        </div>
+  <div class="events-container">
+    <div class="search-create-container">
+      <div class="search-container">
+        <input type="text" id="search-input" placeholder="Search event...">
+        <button onclick="searchEvents()">Search</button>
+      </div>
+      {{#if (eq user.usertype 'pta')}}
+        <a href="events-create" class="create-event-button">Create Event</a>
+      {{/if}}
     </div>
-
-    <!-- Modal for event details -->
-    <div id="eventModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeEventDetails()">&times;</span>
-            <div class="modal-body">
-                <div class="event-detail">
-                    <img id="eventDetailImage" src="" alt="Event Detail Image">
-                    <div class="event-info">
-                        <h3 id="eventDetailTitle">Event Title</h3>
-                        <p id="eventDetailDescription">Event Description</p>
-                        <p id="eventDetailDate">Event Date</p>
-                        <p id="eventDetailTime">Event Time</p>
-                        <p id="eventDetailLocation">Event Location</p>
-                        <button class="register-button">Register Now!</button>
-                    </div>
-                </div>
-            </div>
+    <div class="main-panel">
+      <!-- upcoming events -->
+      <div class="news">
+        <h2 class="left-align-title">Upcoming Events</h2>
+        <div id="events" class="horizontal-container">
+          {{#each events}}
+          <div class="event event-card">
+            <img src="{{eventpicture}}" alt="Event {{id}}">
+            <h3 class="event-title">{{name}} - {{date}} {{time}}</h3>
+            <p>{{description}}</p>
+            <a href="#" onclick="showEventDetails('{{name}}', '{{description}}', '{{date}}', '{{time}}', '{{location}}', '{{eventpicture}}')">Read More</a>
+          </div>
+          {{/each}}
         </div>
+      </div>
+
+      <!-- promotion tests -->
+      <div class="news">
+        <h2 class="left-align-title">Promotion Tests</h2>
+        <div id="promotion-tests" class="horizontal-container">
+          {{#each promotionTests}}
+          <div class="event event-card">
+            <img src="{{eventpicture}}" alt="Promotion Test {{id}}">
+            <h3 class="event-title">{{title}} - {{date}} {{time}}</h3>
+            <p>{{description}}</p>
+            <a href="#" onclick="showEventDetails('{{title}}', '{{description}}', '{{date}}', '{{time}}', '{{location}}', '{{eventpicture}}')">Read More</a>
+          </div>
+          {{/each}}
+        </div>
+      </div>
     </div>
+  </div>
 
-    <script>
-        function toggleDropdown() {
-            document.getElementById("dropdown").classList.toggle("show");
+  <!-- Modal for event details -->
+  <div id="eventModal" class="modal" style="display: none;">
+    <div class="modal-content">
+      <span class="close" onclick="closeEventDetails()">&times;</span>
+      <div class="modal-body">
+        <div class="event-detail">
+          <img id="eventDetailImage" src="" alt="Event Detail Image">
+          <div class="event-info">
+            <h3 id="eventDetailTitle">Event Title</h3>
+            <p id="eventDetailDescription">Event Description</p>
+            <p id="eventDetailDate">Event Date</p>
+            <p id="eventDetailTime">Event Time</p>
+            <p id="eventDetailLocation">Event Location</p>
+            {{#if user.registered}}
+              <a class="register-button" href="/events-registration">Register Now!</a>
+            {{else}}
+              <a class="grayed-register-button">Not Registered</a>
+            {{/if}}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function toggleDropdown() {
+      document.getElementById("dropdown").classList.toggle("show");
+    }
+
+    window.onclick = function(event) {
+      if (!event.target.matches('.profile-pic img')) {
+        var dropdowns = document.getElementsByClassName("dropdown-content");
+        for (var i = 0; i < dropdowns.length; i++) {
+          var openDropdown = dropdowns[i];
+          if (openDropdown.classList.contains('show')) {
+            openDropdown.classList.remove('show');
+          }
         }
+      }
+    }
 
-        window.onclick = function(event) {
-            if (!event.target.matches('.profile-pic img')) {
-                var dropdowns = document.getElementsByClassName("dropdown-content");
-                for (var i = 0; i < dropdowns.length; i++) {
-                    var openDropdown = dropdowns[i];
-                    if (openDropdown.classList.contains('show')) {
-                        openDropdown.classList.remove('show');
-                    }
-                }
-            }
+    function searchEvents() {
+      const searchTerm = document.getElementById('search-input').value.toLowerCase();
+      const eventCards = document.querySelectorAll('.event-card');
+      
+      eventCards.forEach(card => {
+        const eventTitle = card.querySelector('.event-title').innerText.toLowerCase();
+        const eventDescription = card.querySelector('p').innerText.toLowerCase();
+        if (eventTitle.includes(searchTerm) || eventDescription.includes(searchTerm)) {
+          card.style.display = 'block';
+        } else {
+          card.style.display = 'none';
         }
+      });
+    }
 
-        function searchEvents() {
-            const searchTerm = document.getElementById('search-input').value.toLowerCase();
-            const eventCards = document.querySelectorAll('.event-card');
-            
-            eventCards.forEach(card => {
-                const eventTitle = card.querySelector('.event-title').innerText.toLowerCase();
-                const eventDescription = card.querySelector('p').innerText.toLowerCase();
-                if (eventTitle.includes(searchTerm) || eventDescription.includes(searchTerm)) {
-                    card.style.display = 'block';
-                } else {
-                    card.style.display = 'none';
-                }
-            });
-        }
+    function showEventDetails(title, description, date, time, location, eventpicture) {
+      document.getElementById('eventDetailTitle').innerText = title;
+      document.getElementById('eventDetailDescription').innerText = description;
+      document.getElementById('eventDetailDate').innerText = date;
+      document.getElementById('eventDetailTime').innerText = time;
+      document.getElementById('eventDetailLocation').innerText = location;
+      document.getElementById('eventDetailImage').src = eventpicture;
 
-        function showEventDetails(title, description, date, time, location, eventpicture) {
-            document.getElementById('eventDetailTitle').innerText = title;
-            document.getElementById('eventDetailDescription').innerText = description;
-            document.getElementById('eventDetailDate').innerText = date;
-            document.getElementById('eventDetailTime').innerText = time;
-            document.getElementById('eventDetailLocation').innerText = location;
-            document.getElementById('eventDetailImage').src = eventpicture;
+      // Show the modal
+      document.getElementById('eventModal').style.display = 'block';
+    }
 
-            // Show the modal
-            document.getElementById('eventModal').style.display = 'block';
-        }
-
-        function closeEventDetails() {
-            document.getElementById('eventModal').style.display = 'none';
-        }
-    </script>
+    function closeEventDetails() {
+      document.getElementById('eventModal').style.display = 'none';
+    }
+  </script>
 </body>
 </html>

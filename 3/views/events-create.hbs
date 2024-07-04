@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>PTA | Membership</title>
+  <title>PTA | Events</title>
   <link rel="icon" type="image/x-icon" href="../images/favicon.ico" />
-  <link rel="stylesheet" type="text/css" href="../stylesheets/membership.css" />
+  <link rel="stylesheet" type="text/css" href="../stylesheets/home.css" />
   <link rel="stylesheet" type="text/css" href="../stylesheets/navbar.css" />
+  <link rel="stylesheet" type="text/css" href="../stylesheets/events.css" />
 </head>
-
 <body class="container">
   <div class="header">
     <div class="navbar">
@@ -23,9 +23,9 @@
         </li>
         <li class="profile-pic">
           {{#if user.profilepic}}
-          <a href="#" onclick="toggleDropdown()"><img src="{{user.profilepic}}" alt="Profile Picture" class="profile-picture"></a>
+            <a href="#" onclick="toggleDropdown()"><img src="{{user.profilepic}}" alt="Profile Picture" class="profile-picture"></a>
           {{else}}
-          <a href="#" onclick="toggleDropdown()" class="profile-picture"><img src="/images/none.jpg" alt="Profile Picture" class="profile-picture"></a>
+            <a href="#" onclick="toggleDropdown()" class="profile-picture"><img src="/images/none.jpg" alt="Profile Picture" class="profile-picture"></a>
           {{/if}}
           <div id="dropdown" class="dropdown-content">
             <a href="profile">Profile</a>
@@ -38,26 +38,30 @@
     </div>
   </div>
 
-  <div class="content-container">
-    <div class="leftside">
-      <div class="forumtitle">
-        <h1 class="forumname"></h1>
-        <h3 class="forumdesc">Membership Registration Center</h3>
-      </div>
-    </div>
-
-    <div class="rightside">
-      <div class="registration">
-        <ul>
-          <li class="status"><a href="membership-status">Registration Status</a></li>
-          <li class="ncc"><a href="membership-ncc">Apply for NCC ID</a></li>
-          <li class="instructor"><a href="membership-instructor">Apply for Instructor's License</a></li>
-          {{#notAthleteAndRegistered user.usertype user.registered}}
-            <li class="club"><a href="membership-club">Register Club</a></li>
-          {{/notAthleteAndRegistered}}
-        </ul>
-      </div>
-    </div>
+  <div class="events-container">
+    <form id="create-event-form" action="/create-event" method="post" enctype="multipart/form-data">
+			<div>
+				<label for="name">Event Name:</label>
+				<input type="text" id="name" name="name" required>
+			</div>
+			<div>
+				<label for="description">Event Description:</label>
+				<textarea id="description" name="description" required></textarea>
+			</div>
+			<div>
+				<label for="eventpicture">Event Picture:</label>
+				<input type="file" id="eventpicture" name="eventpicture" accept="image/*" required>
+			</div>
+			<div>
+				<label for="eventtype">Event Type:</label>
+				<input type="text" id="eventtype" name="eventtype" required>
+			</div>
+			<div>
+				<label for="registrationcap">Registration Cap:</label>
+				<input type="number" id="registrationcap" name="registrationcap" required>
+			</div>
+				<button type="submit">Create Event</button>
+  	</form>
   </div>
 
   <script>
@@ -65,7 +69,7 @@
       document.getElementById("dropdown").classList.toggle("show");
     }
 
-    window.onclick = function (event) {
+    window.onclick = function(event) {
       if (!event.target.matches('.profile-pic img')) {
         var dropdowns = document.getElementsByClassName("dropdown-content");
         for (var i = 0; i < dropdowns.length; i++) {
