@@ -43,9 +43,10 @@
       <div class="dropdown-container">
                 <button onclick="toggleDropdown(this)" class="dropbtn">...</button>
                 <div class="dropdown-content">
-                  <a href="#">Save</a>
+                  <a href="#">Pin</a>
+                 <!-- <a href="#">Save</a>
                   <a href="#">Hide</a>
-                  <a href="#">Report</a>
+                  <a href="#">Report</a> -->
                 </div>
               </div>
        <div class="back-btn"><h2><a href="/forum">Back</a></h2>
@@ -96,7 +97,7 @@
       <h2>Comments</h2>
       {{#if comments.length}}
       {{#renderComments comments}}
-        <div class="comment">
+        
           <div class="comment-content">
             <div class="comment-header">
               <span class="comment-user">{{commenter}}</span>
@@ -114,7 +115,7 @@
               </form>
             </div>
           </div>
-        </div>
+        
       {{/renderComments}}
       {{else}}
         <p>No comments yet.</p>
