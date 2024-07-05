@@ -207,3 +207,11 @@ body {
     margin-top: 20px;
     width: 100px;
 }
+
+.event-poster{
+    width: 500px;
+}
+
+.registration-container {
+    margin-top: 60px;
+}

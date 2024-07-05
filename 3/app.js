@@ -73,18 +73,11 @@ hbs.registerHelper('reverseEach', function(context, options) {
   }
   return out;
 });
-
 hbs.registerHelper('eq', function (a, b) {
   return a === b;
 });
 hbs.registerHelper('ne', function (a, b) {
   return a !== b;
-});
-hbs.registerHelper('notAthleteAndRegistered', function (usertype, registered, options) {
-  if (usertype !== 'athlete' && registered === true) {
-    return options.fn(this);
-  }
-  return options.inverse(this);
 });
 hbs.registerHelper('arraySize', function(array) {
   return array.length;
@@ -106,8 +99,6 @@ hbs.registerHelper('renderComments', function(comments, options) {
 
   return renderNestedComments(comments, null);
 });
-
-// Register the formatStatus helper
 hbs.registerHelper('formatStatus', function(status) {
   switch (status) {
       case 1:
@@ -125,8 +116,6 @@ hbs.registerHelper('formatStatus', function(status) {
   }
 });
 
-
-// Configure express-session
 app.use(session({
   secret: 'your_secret_key', // Replace with a secure secret key
   resave: false,
@@ -238,7 +227,7 @@ app.post('/submit-login', async (req, res) => {
 });
 
 app.post('/submit-signup', async (req, res) => {
-  const { username, password, confpassword } = req.body; // Capture user input from the form
+  const { username, password, confpassword, usertype } = req.body; // Capture user input from the form
 
   // Validate the input
   if (password !== confpassword) {
@@ -248,11 +237,13 @@ app.post('/submit-signup', async (req, res) => {
     });
   }
 
+  const registered = false;
+
   try {
     // Insert the new user into the database
     const { data, error } = await supabase
       .from('users') // Replace 'users' with your actual table name if different
-      .insert([{ username, password }]);
+      .insert([{ username, password, usertype, registered }]);
 
     if (error) {
       // Handle any errors that occur during the insert
@@ -283,7 +274,6 @@ app.post('/submit-ncc', upload.fields([{ name: 'birthcert', maxCount: 1 }, { nam
     lastpromo,
     promolocation,
     clubregion,
-    clubname,
     beltlevel,
     instructorfirstname,
     instructormi,
@@ -296,7 +286,7 @@ app.post('/submit-ncc', upload.fields([{ name: 'birthcert', maxCount: 1 }, { nam
     return res.status(401).send('Unauthorized: No user logged in');
   }
 
-  const submittedby = req.session.user.username; // Get the current user's username from the session
+  const submittedby = req.session.user.id; // Get the current user's username from the session
   const status = 1;
 
   let birthcertUrl = null;
@@ -359,7 +349,6 @@ app.post('/submit-ncc', upload.fields([{ name: 'birthcert', maxCount: 1 }, { nam
         lastpromo,
         promolocation,
         clubregion,
-        clubname,
         beltlevel,
         instructorfirstname,
         instructormi,
@@ -669,7 +658,6 @@ app.post('/change-password', async (req, res) => {
   }
 });
 
-
 app.post('/update-nccstatus', async (req, res) => {
   if (!req.session.user) {
     return res.status(401).send('Unauthorized: No user logged in');
@@ -692,13 +680,16 @@ app.post('/update-nccstatus', async (req, res) => {
     }
 
     console.log('Registration updated:', registration);
+    
+    
 
     // Check if status is 4, indicating the need to update the user's registered column and insert into athletes table
     if (status == 4) {
-      const { submittedby, firstname, middlename, lastname, gender, bday, 
-        phonenum, email, lastpromo, promolocation, clubregion, clubname, 
-        beltlevel, instructorfirstname, instructormi, instructorlastname, 
-        instructormobile, instructoremail, portrait } = registration;
+      const {
+        firstname, middlename, lastname, gender, bday, clubregion, club,
+        beltlevel, portrait, division,
+        height, weight, submittedby, instructorfirstname, instructorlastname
+      } = registration;
 
       console.log('Updating user with username:', submittedby);
 
@@ -706,7 +697,7 @@ app.post('/update-nccstatus', async (req, res) => {
       const { data: user, error: updateUserError } = await supabase
         .from('users')
         .update({ registered: true })
-        .eq('username', submittedby)
+        .eq('id', submittedby)
         .select('*')
         .single();
 
@@ -714,31 +705,20 @@ app.post('/update-nccstatus', async (req, res) => {
         console.error('Error updating user:', updateUserError.message);
         return res.status(500).send('Error updating user');
       }
-
+      
       console.log('User updated:', user);
+      const name= firstname + ' ' + middlename + ' ' + lastname;
+      const instructor = instructorfirstname + ' ' + instructorlastname;
+      
+      userid = submittedby;
 
       // Insert the relevant data into the athletes table
       const { error: insertAthleteError } = await supabase
         .from('athletes')
         .insert([{
-          firstname,
-          middlename,
-          lastname,
-          gender,
-          bday,
-          phonenum,
-          email,
-          lastpromo,
-          promolocation,
-          clubregion,
-          clubname,
-          beltlevel,
-          instructorfirstname,
-          instructormi,
-          instructorlastname,
-          instructormobile,
-          instructoremail,
-          portrait
+          name, gender, bday, clubregion, club,
+          beltlevel, portrait, division,
+          height, weight, instructor, userid
         }]);
 
       if (insertAthleteError) {
@@ -747,6 +727,13 @@ app.post('/update-nccstatus', async (req, res) => {
       }
 
       console.log('Athlete inserted successfully');
+
+      // Store athlete data in session
+      req.session.athlete = {
+        firstname, middlename, lastname, gender, bday, clubregion, club,
+          beltlevel, portrait, division,
+          height, weight,
+      };
     }
 
     res.redirect(`/membership-review/${applicationId}`); // Redirect back to the review page
@@ -1158,7 +1145,6 @@ app.post('/vote', async (req, res) => {
   }
 });
 
-
 app.post('/create-event', upload.single('eventpicture'), async (req, res) => {
   const {
     name,
@@ -1218,6 +1204,52 @@ app.post('/create-event', upload.single('eventpicture'), async (req, res) => {
     console.log('Event created successfully:', data);
 
     res.redirect('/events-create'); // Redirect to a success page or another appropriate route
+  } catch (error) {
+    console.error('Server error:', error.message);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.post('/submit-player', async (req, res) => {
+  const {
+    athleteid,
+    eventid,
+    email,
+    playername,
+    club,
+    age,
+    bday,
+    division,
+    belt,
+    height,
+    weight,
+    instructor
+  } = req.body; // Capture user input from the form
+
+  try {
+    // Insert the new registration into the database
+    const { data, error } = await supabase
+      .from('events_registrations')
+      .insert([{
+        athleteid,
+        eventid,
+        email,
+        playername,
+        club,
+        age,
+        bday,
+        division,
+        belt,
+        height,
+        weight,
+        instructor
+      }]);
+
+    if (error) {
+      console.error('Error creating registration:', error.message);
+      return res.status(500).send('Error creating registration.');
+    }
+    res.redirect('/events');
   } catch (error) {
     console.error('Server error:', error.message);
     res.status(500).json({ error: error.message });
@@ -1429,28 +1461,111 @@ app.get('/events-create', async function (req, res) {
   }
 });
 
-app.get('/events-registration', async function (req, res) {
+app.get('/events-registration/:id', async function (req, res) {
   if (!req.session.user) {
     return res.redirect('/');
   }
-  
-  try {
-    const { data, error } = await supabase
-      .from('events')
-      .select('*');
 
-    if (error) {
-      return res.status(400).json({ error: error.message });
+  const { id } = req.params; // Get the event ID from the URL
+  const userId = req.session.user.id; // Get the user ID from the session
+
+  try {
+    // Fetch the event data
+    const { data: event, error: eventError } = await supabase
+      .from('events')
+      .select('*')
+      .eq('id', id)
+      .single();
+
+    if (eventError) {
+      return res.status(400).json({ error: eventError.message });
     }
 
-    console.log("Fetched data:", data); // Log the data to the console 
+    // Fetch the athlete data
+    const { data: athlete, error: athleteError } = await supabase
+      .from('athletes')
+      .select('*')
+      .eq('userid', userId)
+      .single();
 
-    // Render the athletes.hbs template with the fetched data
-    res.render('events-registration', { events: data, user: req.session.user });
+    if (athleteError) {
+      return res.status(400).json({ error: athleteError.message });
+    }
+
+    // Fetch the event registrations data
+    const { data: registrations, error: registrationsError } = await supabase
+      .from('events_registrations')
+      .select('*')
+      .eq('eventid', id);
+
+    if (registrationsError) {
+      return res.status(400).json({ error: registrationsError.message });
+    }
+
+    console.log("Fetched event data:", event); // Log the event data to the console
+    console.log("Fetched athlete data:", athlete); // Log the athlete data to the console
+    console.log("Fetched registrations data:", registrations); // Log the registrations data to the console
+
+    // Render the events-registration.hbs template with the fetched data
+    res.render('events-registration', { event, athlete, registrations, user: req.session.user });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
+
+app.get('/events-details/:id', async function (req, res) {
+  if (!req.session.user) {
+    return res.redirect('/');
+  }
+
+  const { id } = req.params; // Get the event ID from the URL
+
+  try {
+    // Fetch the event details from the events table
+    const { data: event, error: eventError } = await supabase
+      .from('events')
+      .select('*')
+      .eq('id', id)
+      .single();
+
+    if (eventError) {
+      return res.status(400).json({ error: eventError.message });
+    }
+
+    // Fetch the event registrations for the specific event
+    const { data: eventRegistrations, error: eventRegistrationsError } = await supabase
+      .from('events_registrations')
+      .select('athleteid')
+      .eq('eventid', id);
+
+    if (eventRegistrationsError) {
+      return res.status(400).json({ error: eventRegistrationsError.message });
+    }
+
+    // Extract all athlete IDs from the event registrations
+    const athleteIds = eventRegistrations.map(registration => registration.athleteid);
+
+    // Fetch the athlete details for all the extracted athlete IDs
+    const { data: athletes, error: athletesError } = await supabase
+      .from('athletes')
+      .select('name, id')
+      .in('id', athleteIds);
+
+    if (athletesError) {
+      return res.status(400).json({ error: athletesError.message });
+    }
+
+    console.log("Fetched event data:", event); // Log the event data to the console
+    console.log("Fetched athletes data:", athletes); // Log the athletes data to the console
+
+    // Render the events-details.hbs template with the fetched data
+    res.render('events-details', { event, athletes, user: req.session.user });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+
 
 app.get('/profile', async function (req, res) {
   if (!req.session.user) {
@@ -1623,7 +1738,7 @@ app.get('/membership-status', async function (req, res) {
     return res.redirect('/');
   }
 
-  const username = req.session.user.username; // Or use a unique identifier like user ID
+  const userid = req.session.user.id; // Or use a unique identifier like user ID
   const usertype = req.session.user.usertype;
 
   try {
@@ -1644,12 +1759,12 @@ app.get('/membership-status', async function (req, res) {
       ({ data: nccData, error: nccError } = await supabase
         .from('ncc_registrations')
         .select('*')
-        .eq('submittedby', username));
+        .eq('submittedby', userid));
 
       ({ data: clubData, error: clubError } = await supabase
         .from('club_registrations')
         .select('*')
-        .eq('submittedby', username));
+        .eq('submittedby', userid));
     }
 
     if (nccError) {

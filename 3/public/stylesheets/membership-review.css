@@ -91,6 +91,14 @@ body {
     color: var(--text-color); /* Updated text color */
 }
 
+.review-details div{
+    display:inline-block;
+}
+
+.review-details img{
+    width: 200px;
+}
+
 .review-details p {
     margin: 5px 0;
 }

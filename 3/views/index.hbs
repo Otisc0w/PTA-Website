@@ -25,8 +25,9 @@
 					</div><br>
 					
 					<div class ="login-input">
-					
+	
 						<form id="loginform" action="/submit-login" method="post">
+
 							<label class="username-input" for="username">Email/ Username</label><br>
 							<input type="text" id="username" name="username" required><br><br>
 							
@@ -39,7 +40,6 @@
 							<button class="button" type="submit">Log in</button>
 							<p id="error-message" style="color:red;"></p>
 						</form>
-
 					</div>
 				</div>
 
@@ -52,6 +52,12 @@
 					<div class ="login-input">
 					
 						<form id="loginform" action="/submit-signup" method="post">
+							<label class="usertype-input" for="usertype">Im signing up as an:</label><br>
+								<input type="radio" id="usertype" name="usertype" value="athlete" required>
+								<label class="usertype-input" for="usertype">Athlete</label>
+								<input type="radio" id="usertype" name="usertype" value="instructor" required>
+								<label class="usertype-input" for="usertype">Instructor</label><br><br>
+
 							<label class="username-input" for="username">Email/ Username</label><br>
 							<input type="text" id="username" name="username" required><br><br>
 							

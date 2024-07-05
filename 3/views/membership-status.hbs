@@ -36,8 +36,8 @@
                     <h2>NCC ID's</h2>
                     {{#reverseEach ncc_registrations}}
                         <div class='post-content'>
-                            <span class='community'>{{id}} •</span>
-                            <span class='small'>by {{apptype}} {{firstname}} {{lastname}} on {{created_at}}</span>
+                            <span class='community'>•</span>
+                            <span class='small'>by <h2>{{firstname}} {{lastname}}</h2> on {{created_at}}</span>
                             <span><h3>Status: {{{formatStatus status}}}</h3></span>
                             <a href="/membership-review/{{id}}">Review</a>
                         </div><br>
