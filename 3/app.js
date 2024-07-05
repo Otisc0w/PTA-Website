@@ -863,7 +863,7 @@ app.post('/submit-club', upload.fields([
     return res.status(401).send('Unauthorized: No user logged in');
   }
 
-  const submittedby = req.session.user.username; // Get the current user's username from the session
+  const submittedby = req.session.user.id; // Get the current user's username from the session
 
   let idfileUrl = '';
   let proofdocUrl = '';
@@ -1847,7 +1847,7 @@ app.get('/membership-club', async (req, res) => {
     }
 
     // Render the membership-review.hbs template with the fetched data
-    res.render('membership-review', { registration: data , user: req.session.user });
+    res.render('membership-club', { registration: data , user: req.session.user });
   } catch (error) {
     console.error('Server error:', error.message);
     res.status(500).send('Server error');

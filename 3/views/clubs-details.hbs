@@ -48,7 +48,7 @@
         <li>{{this.username}}</li>
       {{/each}}
     </div>
-    {{#if (eq club.registeredby user.username)}}
+    {{#if (eq club.registeredby user.id)}}
       <form action="/invite-user" method="post">
         <input type="hidden" name="clubname" value="{{club.clubname}}">
         <input type="hidden" name="club_id" value="{{club.id}}">
