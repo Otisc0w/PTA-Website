@@ -2,86 +2,86 @@
 
 	<head>
 	  <title>PTA | Register Club</title>
-      <link rel="icon" type="image/x-icon" href="../images/favicon.ico" />
+    <link rel="icon" type="image/x-icon" href="../images/favicon.ico" />
 	  <link rel="stylesheet" type="text/css" href="../stylesheets/membership-status.css" />
-      <link rel="stylesheet" type="text/css" href="../stylesheets/navbar.css" />
+    <link rel="stylesheet" type="text/css" href="../stylesheets/navbar.css" />
 	</head>
 	
 	<body style="margin:0;" class="container">
-        <div class="membership-header">
-            <div class="membership-navbar">
+    <div class="membership-header">
+      <div class="membership-navbar">
 				<img src="/images/logo.png" class="membership-logo" href="home"></img>   
-                    {{#if user.profilepic}}
-                        <a href="#" onclick="toggleDropdown()" class="memprofile-pic"><img src="{{user.profilepic}}" alt="Profile Picture" class="profile-picture"></a>
-                    {{else}}
-                        <a href="#" onclick="toggleDropdown()" class="memprofile-pic"><img src="/images/none.jpg" alt="Profile Picture" class="profile-picture"></a>
-                    {{/if}}
-                    <div id="dropdown" class="dropdown-content">
-                        <a href="profile">Profile</a>
-                        <a href="settings">Settings</a>
-                        <a href="help-center">FAQs</a>
-                        <a href="/">Logout</a>
-                    </div>
-            </div>
-        </div>
-        <div class="membership-container">
+          {{#if user.profilepic}}
+            <a href="#" onclick="toggleDropdown()" class="memprofile-pic"><img src="{{user.profilepic}}" alt="Profile Picture" class="profile-picture"></a>
+          {{else}}
+            <a href="#" onclick="toggleDropdown()" class="memprofile-pic"><img src="/images/none.jpg" alt="Profile Picture" class="profile-picture"></a>
+          {{/if}}
+          <div id="dropdown" class="dropdown-content">
+            <a href="profile">Profile</a>
+            <a href="settings">Settings</a>
+            <a href="help-center">FAQs</a>
+            <a href="/">Logout</a>
+          </div>
+      </div>
+    </div>
+    <div class="membership-container">
 			<div class="membership-leftside">
 				<div class="forumtitle">
 					<h1 class= "forumname"> <span class="logo"> </span></h1>
-                    <h3 class = "forumdesc">Register Club</h3>
+          <h3 class = "forumdesc">Register Club</h3>
 				</div>
 			</div>
 		
-			<div class="membership-rightside">                                                                                             
-                <div class="formcontainer">
-                    <form id="clubform" action="/submit-club" method="post" enctype="multipart/form-data">
-                        <div>
-                        <label for="firstname">Firstname:</label><br>
-                        <input type="text" id="firstname" name="firstname" required><br>
+			<div class="membership-rightside">                                               
+        <div class="formcontainer">
+          <form id="clubform" action="/submit-club" method="post" enctype="multipart/form-data">
+            <div>
+            <label for="firstname">Firstname:</label><br>
+            <input type="text" id="firstname" name="firstname" required><br>
 
-                        <label for="lastname">Lastname:</label><br>
-                        <input type="text" id="lastname" name="lastname" required><br>
+            <label for="lastname">Lastname:</label><br>
+            <input type="text" id="lastname" name="lastname" required><br>
 
-                        <label for="phonenum">Mobile Number:</label><br>
-                        <input type="text" id="phonenum" name="phonenum" required><br>
+            <label for="phonenum">Mobile Number:</label><br>
+            <input type="text" id="phonenum" name="phonenum" required><br>
 
-                        <label for="email">Email:</label><br>
-                        <input type="email" id="email" name="email" required><br>
+            <label for="email">Email:</label><br>
+            <input type="email" id="email" name="email" required><br>
 
-                        <label for="clubname">Club Name:</label><br>
-                        <input type="text" id="clubname" name="clubname" required><br>
+            <label for="clubname">Club Name:</label><br>
+            <input type="text" id="clubname" name="clubname" required><br>
 
-                        <label for="clubaddress">Club Address:</label><br>
-                        <input type="text" id="clubaddress" name="clubaddress" required><br>
+            <label for="clubaddress">Club Address:</label><br>
+            <input type="text" id="clubaddress" name="clubaddress" required><br>
 
-                        <label for="province">Province:</label><br>
-                        <input type="text" id="province" name="province" required><br>
+            <label for="province">Province:</label><br>
+            <input type="text" id="province" name="province" required><br>
 
-                        <label for="idfile">ID File (PDF):</label><br>
-                        <input type="file" id="idfile" name="idfile" accept="application/pdf" required><br>
+            <label for="idfile">ID File (PDF):</label><br>
+            <input type="file" id="idfile" name="idfile" accept="application/pdf" required><br>
 
-                        <label for="proofdoc">Proof Document (PDF):</label><br>
-                        <input type="file" id="proofdoc" name="proofdoc" accept="application/pdf" required><br>
+            <label for="proofdoc">Proof Document (PDF):</label><br>
+            <input type="file" id="proofdoc" name="proofdoc" accept="application/pdf" required><br>
 
-                        <label for="clubpic">Club Picture:</label><br>
-                        <input type="file" id="clubpic" name="clubpic" accept="jpg/png/jpeg" required><br>
+            <label for="clubpic">Club Picture:</label><br>
+            <input type="file" id="clubpic" name="clubpic" accept="jpg/png/jpeg" required><br>
 
-                        <button type="submit">Submit</button>
-                        </div>
-                    </form>
-                </div>
-                <div class="backtomembership">
-                    <a href="/membership"><-Back </a>
-                </div>
-                <script>
-                    document.addEventListener("DOMContentLoaded", function() {
-                        const form = document.getElementById("clubform");
-
-                        const nccstep1 = document.getElementById("nccstep1");
-                        
-                    });
-  		        </script>
-			</div>
+            <button type="submit">Submit</button>
+            </div>
+          </form>
         </div>
-    </body>
+        <div class="backtomembership">
+          <a href="/membership"><-Back </a>
+        </div>
+        <script>
+          document.addEventListener("DOMContentLoaded", function() {
+            const form = document.getElementById("clubform");
+
+            const nccstep1 = document.getElementById("nccstep1");
+            
+          });
+  		    </script>
+			</div>
+    </div>
+  </body>
 </html>

@@ -172,7 +172,7 @@ body {
 }
 
 .event-detail img {
-    max-width: 150px;
+    max-width: 250px;
     border-radius: 8px;
     margin-right: 20px;
 }
@@ -192,4 +192,26 @@ body {
     cursor: pointer;
     text-decoration: none;
     margin-top: 20px;
+    width: 100px;
+}
+
+.grayed-register-button {
+    background-color: #a0a0a0;
+    color: white;
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    text-decoration: none;
+    margin-top: 20px;
+    width: 100px;
+}
+
+.event-poster{
+    width: 500px;
+}
+
+.registration-container {
+    margin-top: 60px;
 }

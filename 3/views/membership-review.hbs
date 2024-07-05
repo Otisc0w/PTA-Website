@@ -1,130 +1,166 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 
-	<head>
-	  <title>PTA | Membership Review</title>
-    <link rel="icon" type="image/x-icon" href="../images/favicon.ico" />
-	  <link rel="stylesheet" type="text/css" href="../stylesheets/membership-ncc.css" />
-    <link rel="stylesheet" type="text/css" href="../stylesheets/navbar.css" />
-	</head>
-	
-	<body style="margin:0;" class="container">
-    <div class="membership-header">
-      <div class="membership-navbar">
-				<img src="/images/logo.png" class="membership-logo" href="home"></img>
-          {{#if user.profilepic}}
-            <a href="#" onclick="toggleDropdown()" class="memprofile-pic"><img src="{{user.profilepic}}" alt="Profile Picture" class="profile-picture"></a>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PTA | Membership Review</title>
+  <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
+  <link rel="stylesheet" type="text/css" href="../stylesheets/membership-review.css">
+  <link rel="stylesheet" type="text/css" href="../stylesheets/navbar.css">
+</head>
+
+<body class="container">
+  <header class="membership-header">
+    <nav class="membership-navbar">
+      <a href="home">
+        <img src="/images/logo.png" class="membership-logo" alt="PTA Logo">
+      </a>
+      <div class="profile-menu">
+        {{#if user.profilepic}}
+        <a href="#" onclick="toggleDropdown()" class="memprofile-pic">
+          <img src="{{user.profilepic}}" alt="Profile Picture" class="profile-picture">
+        </a>
+        {{else}}
+        <a href="#" onclick="toggleDropdown()" class="memprofile-pic">
+          <p>:(</p>
+        </a>
+        {{/if}}
+        <div id="dropdown" class="dropdown-content">
+          <a href="profile">Profile</a>
+          <a href="settings">Settings</a>
+          <a href="help-center">FAQs</a>
+          <a href="/">Logout</a>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <main class="membership-container">
+    <section class="review-header">
+      <h1>Review Membership Application</h1>
+    </section>
+    <form action="/update-nccstatus" method="post" class="review-form">
+      <section class="review-details">
+        <h2>Applicant Information</h2>
+
+        <input type="hidden" name="applicationId" value="{{registration.id}}">
+				<div>
+					<img src="{{registration.portrait}}">
+				</div>
+				<div>
+					<p><strong>ID:</strong> {{registration.id}}</p>
+					<p><strong>First Name:</strong> {{registration.firstname}}</p>
+					<p><strong>Middle Initial:</strong> {{registration.mi}}</p>
+					<p><strong>Last Name:</strong> {{registration.lastname}}</p>
+					<p><strong>Gender:</strong> {{registration.gender}}</p>
+					<p><strong>Birthday:</strong> {{registration.bday}}</p>
+					<p><strong>Phone Number:</strong> {{registration.phonenum}}</p>
+					<p><strong>Email:</strong> {{registration.email}}</p>
+					<p><strong>Last Promotion:</strong> {{registration.lastpromo}}</p>
+					<p><strong>Promotion Location:</strong> {{registration.promolocation}}</p>
+					<p><strong>Region:</strong> {{registration.region}}</p>
+					<p><strong>Club:</strong> {{registration.clubname}}</p>
+					<p><strong>Belt Level:</strong> {{registration.beltlevel}}</p>
+					<p><strong>Instructor First Name:</strong> {{registration.instructorfirstname}}</p>
+					<p><strong>Instructor Middle Initial:</strong> {{registration.instructormi}}</p>
+					<p><strong>Instructor Last Name:</strong> {{registration.instructorlastname}}</p>
+					<p><strong>Instructor Mobile:</strong> {{registration.instructormobile}}</p>
+					<p><strong>Instructor Email:</strong> {{registration.instructoremail}}</p>
+					<p>submitted by: {{registration.submittedby}}</p>
+					<a href="{{registration.birthcert}}" target="_blank" download> Birth Certificate</a>
+				</div>
+				
+      </section>
+
+      <section class="application-actions">
+        <h1 class="status">
+          {{#if (eq registration.status 1)}}
+            <span class="status-under-review">Under Review</span>
+          {{else if (eq registration.status 2)}}
+            <span class="status-printed">Printed</span>
+          {{else if (eq registration.status 3)}}
+            <span class="status-en-route">En-route to Regional Office</span>
+          {{else if (eq registration.status 4)}}
+            <span class="status-shipped">ID Shipped</span>
+          {{else if (eq registration.status 0)}}
+            <span class="status-rejected">Rejected</span>
           {{else}}
-            <a href="#" onclick="toggleDropdown()" class="memprofile-pic"><p>:(</p></a>
+            <span class="status-unknown">Unknown Status</span>
           {{/if}}
-          <div id="dropdown" class="dropdown-content">
-            <a href="profile">Profile</a>
-            <a href="settings">Settings</a>
-            <a href="help-center">FAQs</a>
-            <a href="/">Logout</a>
+        </h1>
+        {{#if (eq user.usertype "pta")}}
+          <div class="action-buttons"> <!-- TYPES NAMES ID'S CLASSES VALUES NEED TO STAY THE SAME -->
+            <button type="button" onclick="printDiv('printableArea')">Print</button>
+            <button type="submit" name="status" value="1">Under Review</button>
+            <button type="submit" name="status" value="2">Printed</button>
+            <button type="submit" name="status" value="3">En-route to Regional Office</button>
+            <button type="button" id="idshipped" class="idshipped">ID Shipped</button>
+            <button type="submit" name="status" value="0">Reject Application</button>
           </div>
-      </div>
-    </div>
-    <div class="membership-container">
-			<div class="review-header">
-        <h1>Review Membership Application</h1>
-      </div>
-        <form action="/update-nccstatus" method="post">
-          <div class="review-details" >
-            <h2>Applicant Information</h2>                          {{!-- use '{{registration.something}}' to get the data --}}
-            <input type="hidden" name="applicationId" value="{{registration.id}}">
-            <p><strong>ID:</strong> {{registration.id}}</p>
-            <p><strong>First Name:</strong> {{registration.firstname}}</p>
-            <p><strong>Middle Initial:</strong> {{registration.mi}}</p>
-            <p><strong>Last Name:</strong> {{registration.lastname}}</p>
-            <a href="{{registration.birthcert}}" target="_blank" download> Birth Certificate</a>
-            {{!-- <p><strong>Gender:</strong> {{registration.gender}}</p>
-            <p><strong>Birthday:</strong> {{registration.bday}}</p>
-            <p><strong>Phone Number:</strong> {{registration.phonenum}}</p>
-            <p><strong>Email:</strong> {{registration.email}}</p>
-            <p><strong>Last Promotion:</strong> {{registration.lastpromo}}</p>
-            <p><strong>Promotion Location:</strong> {{registration.promolocation}}</p>
-            <p><strong>Region:</strong> {{registration.region}}</p>
-            <p><strong>Club:</strong> {{registration.clubname}}</p>
-            <p><strong>Belt Level:</strong> {{registration.beltlevel}}</p>
-            <p><strong>Instructor First Name:</strong> {{registration.instructorfirstname}}</p>
-            <p><strong>Instructor Middle Initial:</strong> {{registration.instructormi}}</p>
-            <p><strong>Instructor Last Name:</strong> {{registration.instructorlastname}}</p>
-            <p><strong>Instructor Mobile:</strong> {{registration.instructormobile}}</p>
-            <p><strong>Instructor Email:</strong> {{registration.instructoremail}}</p> --}}
-            submittedby: {{registration.submittedby}}
-            <!-- Add any other relevant details here -->
+
+          <div class="confirmscreen" id="confirmscreen" style="display: none;">
+            <h3>Are you sure? The player will be notified that his ID is ready. This registration will also disappear after a few days.</h3>
+            <button type="button" class="cancel" id="cancel">Cancel</button>
+            <button type="submit" value="4" name="status" id="confirm">Confirm</button>
           </div>
-          <div class="application-actions">
-            <h1>{{registration.status}}</h1>
-            {{#if (eq user.usertype "pta")}}
-              <div>
-                <button onclick="printDiv('printableArea')">Print</button>
-              </div>
-              <div class="status-buttons" id="status-buttons">                {{!-- TYPES NAMES ID'S CLASSES VALUES NEED TO STAY THE SAME --}}
-                <button type="submit" name="status" value="1">Under Review</button>
-                <button type="submit" name="status" value="2">Printed</button>
-                <button type="submit" name="status" value="3">En-route to Regional Office</button>
-                <button type="button" id="idshipped" class="idshipped">ID Shipped</button>
-                <button type="submit" name="status" value="0">Reject Application</button>
-              </div>
-              <div class="confirmscreen" id="confirmscreen" style="display: none;">
-                <h3>Are you sure? The player will be notified that his ID is ready. This registration will also disappear after a few days.</h3>
-                <button class="cancel" id="cancel">Cancel</button>
-                <button  type="submit" value="4" name="status">Confirm</button>
-              </div>
-              <div class="backtolist">
-                <a href="/membership-status">Back to list</a>
-              </div>
-            {{/if}}
-          </div>
-        </form>
-      <div class="printwindow" id="printableArea" >
+        {{/if}}
+        <div class="backtolist">
+          <a href="/membership-status">Back to list</a>
+        </div>
+        
+      </section>
+
+      <div class="printwindow" id="printableArea">
         <p><strong>ID:</strong> {{registration.id}}</p>
         <p><strong>First Name:</strong> {{registration.firstname}}</p>
         <p><strong>Middle Initial:</strong> {{registration.mi}}</p>
         <p><strong>Last Name:</strong> {{registration.lastname}}</p>
+        <a href="{{registration.birthcert}}" target="_blank" download>Birth Certificate</a>
+        <p>submitted by: {{registration.submittedby}}</p>
       </div>
 
-        <script>
-          const confirmscreen = document.getElementById("confirmscreen");
-          const statuses = document.getElementById("status-buttons");
-          const cancel = document.getElementById("cancel");
-          const idshipped = document.getElementById("idshipped");
-          const statusForm = document.getElementById("statusForm");
-          const confirmButton = document.getElementById("confirm");
+      <div class="confirmscreen" id="confirmscreen" style="display: none;">
+        <h3>Are you sure? The player will be notified that his ID is ready. This registration will also disappear after a few days.</h3>
+        <button type="button" class="cancel" id="cancel">Cancel</button>
+        <button type="submit" value="4" name="status" id="confirm">Confirm</button>
+      </div>
+    </form>
+  </main>
+  
+  <script>
+    const confirmscreen = document.getElementById("confirmscreen");
+    const actionButtons = document.querySelector(".action-buttons");
+    const cancel = document.getElementById("cancel");
+    const idshipped = document.getElementById("idshipped");
 
-          cancel.addEventListener("click", function (event) {
-            event.preventDefault();
-            confirmscreen.style.display = "none";
-            statuses.style.display = "block";
-          });
+    cancel.addEventListener("click", function(event) {
+      event.preventDefault();
+      confirmscreen.style.display = "none";
+      actionButtons.style.display = "block";
+    });
 
-          idshipped.addEventListener("click", function (event) {
-            event.preventDefault();
-            confirmscreen.style.display = "block";
-            statuses.style.display = "none";
-            // Set the status value in the confirm button data attribute
-            confirmButton.value = idshipped.getAttribute("data-status");
-          });
+    idshipped.addEventListener("click", function(event) {
+      event.preventDefault();
+      confirmscreen.style.display = "block";
+      actionButtons.style.display = "none";
+    });
 
-          confirmButton.addEventListener("click", function (event) {
-            event.preventDefault();
-            const status = confirmButton.value;
-            const applicationId = document.querySelector('input[name="applicationId"]').value;
-          });
+    function printDiv(divName) {
+      var printContents = document.getElementById(divName).innerHTML;
+      var originalContents = document.body.innerHTML;
+      document.getElementById(divName).classList.add('visible');
+      document.body.innerHTML = printContents;
+      window.print();
+      document.body.innerHTML = originalContents;
+      document.getElementById(divName).classList.remove('visible');
+      window.location.reload(); // Reload to reset the page state
+    }
 
-          function printDiv(divName) {
-            var printContents = document.getElementById(divName).innerHTML;
-            var originalContents = document.body.innerHTML;
+    function toggleDropdown() {
+      document.getElementById("dropdown").classList.toggle("show");
+    }
+  </script>
+</body>
 
-            document.body.innerHTML = printContents;
-
-            window.print();
-
-            document.body.innerHTML = originalContents;
-          }
-  		    </script>
-			</div>
-    </div>
-  </body>
-</html
+</html>

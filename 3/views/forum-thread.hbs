@@ -19,7 +19,7 @@
         <li class="membership"><a href="/membership">Membership</a></li>
         <li class="forum"><a href="/forum">Forum</a></li>
         <li class="notifications">
-          <a href="notifications">Notifications <span class="badge">3</span></a>
+          <a href="/notifications">Notifications <span class="badge">3</span></a>
         </li>
         <li class="profile-pic">
           {{#if user.profilepic}}
@@ -43,9 +43,10 @@
       <div class="dropdown-container">
                 <button onclick="toggleDropdown(this)" class="dropbtn">...</button>
                 <div class="dropdown-content">
-                  <a href="#">Save</a>
+                  <a href="#">Pin</a>
+                 <!-- <a href="#">Save</a>
                   <a href="#">Hide</a>
-                  <a href="#">Report</a>
+                  <a href="#">Report</a> -->
                 </div>
               </div>
        <div class="back-btn"><h2><a href="/forum">Back</a></h2>
@@ -64,24 +65,22 @@
       </div>
       </div> 
       <div class="post-vote">
-        {{!-- <div class="vote-button upvote">
-          <button onclick="vote('upvote', threadId)">
-            <img src="/images/thumbs up.png" alt="Upvote">
-					</button>
-            <span class="upvote-count">{{thread.upvotes}}</span>
-        </div>
-        <div class="vote-button downvote">
-          <button onclick="vote('downvote', threadId)">
-            <img src="/images/thumbs down.png" alt="Downvote">
-            <span class="downvote-count">{{thread.downvotes}}</span>
-          </button>
-        </div> --}}
-
-				<form action="/vote" method="post">
-					<input type="hidden" name="threadId" value="{{thread.id}}">
-					<button type="submit" name="type" value="upvote">Upvote</button>
-					<button type="submit" name="type" value="downvote">Downvote</button>
-				</form>
+        <form action="/vote" method="post">
+          <input type="hidden" name="threadId" value="{{thread.id}}">
+          <div class="vote-button upvote">
+            <button type="submit" name="type" value="upvote">
+              <img src="/images/thumbs up.png" alt="Upvote">
+              <span class="upvote-count">{{arraySize thread.upvotes}}</span>
+            </button>
+              
+          </div>
+          <div class="vote-button downvote">
+            <button type="submit" name="type" value="downvote">
+              <img src="/images/thumbs down.png" alt="Downvote">
+              <span class="downvote-count">{{arraySize thread.downvotes}}</span>
+            </button>
+          </div>
+        </form>
 
       </div>
     </div>
@@ -98,7 +97,7 @@
       <h2>Comments</h2>
       {{#if comments.length}}
       {{#renderComments comments}}
-        <div class="comment">
+        
           <div class="comment-content">
             <div class="comment-header">
               <span class="comment-user">{{commenter}}</span>
@@ -116,7 +115,7 @@
               </form>
             </div>
           </div>
-        </div>
+        
       {{/renderComments}}
       {{else}}
         <p>No comments yet.</p>
