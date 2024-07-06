@@ -89,7 +89,7 @@
             <span class="status-unknown">Unknown Status</span>
           {{/if}}
         </h1>
-        {{#if (eq user.usertype "pta")}}
+        {{#if user.ptaverified}}
           <div class="action-buttons"> <!-- TYPES NAMES ID'S CLASSES VALUES NEED TO STAY THE SAME -->
             <button type="button" onclick="printDiv('printableArea')">Print</button>
             <button type="submit" name="status" value="1">Under Review</button>
