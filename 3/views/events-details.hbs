@@ -42,7 +42,7 @@
   <div class="events-container">
 		<img class="event-poster"src="{{event.eventpicture}}">
 		<h2>{{event.name}}</h2>
-      {{#if user.registered}}
+      {{#if (or user.athleteverified user.instructorverified)}}
         <a class="register-button" href="/events-registration/{{event.id}}">Register</a>
       {{else}}
         <a class="grayed-register-button">Not Registered</a>
