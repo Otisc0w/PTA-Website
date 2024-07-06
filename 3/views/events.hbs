@@ -45,7 +45,7 @@
         <input type="text" id="search-input" placeholder="Search event...">
         <button onclick="searchEvents()">Search</button>
       </div>
-      {{#if (eq user.usertype 'pta')}}
+      {{#if user.ptaverified}}
         <a href="events-create" class="create-event-button">Create Event</a>
       {{/if}}
     </div>

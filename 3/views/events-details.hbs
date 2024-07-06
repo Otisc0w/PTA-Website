@@ -40,11 +40,14 @@
   </div>
 
   <div class="events-container">
+
     <div class="event-content">
-      <img class="event-poster" src="{{event.eventpicture}}" alt="Event Poster">
-      <h2>{{event.name}}</h2>
-      {{#if user.registered}}
-        <a class="register-button" href="#" id="openModal">Register</a>
+
+		<img class="event-poster"src="{{event.eventpicture}}">
+		<h2>{{event.name}}</h2>
+      {{#if (or user.athleteverified user.instructorverified)}}
+        <a class="register-button" href="/events-registration/{{event.id}}">Register</a>
+
       {{else}}
         <a class="grayed-register-button">Not Registered</a>
       {{/if}}

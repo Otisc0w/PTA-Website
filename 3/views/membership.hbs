@@ -52,9 +52,11 @@
           <li class="status"><a href="membership-status">Registration Status</a></li>
           <li class="ncc"><a href="membership-ncc">Apply for NCC ID</a></li>
             
-          {{#if (ne user.usertype 'athlete')}}
+          {{#if user.athleteverified}}
             <li class="instructor"><a href="membership-instructor">Apply for Instructor's License</a></li>
-            <li class="club"><a href="membership-club">Register Club</a></li>
+            {{#if user.instructorverified}}
+              <li class="club"><a href="membership-club">Register Club</a></li>
+            {{/if}}
           {{/if}}
         </ul>
       </div>

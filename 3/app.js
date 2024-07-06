@@ -79,6 +79,9 @@ hbs.registerHelper('eq', function (a, b) {
 hbs.registerHelper('ne', function (a, b) {
   return a !== b;
 });
+hbs.handlebars.registerHelper('or', function (a, b) {
+  return a || b;
+});
 hbs.registerHelper('arraySize', function(array) {
   return array.length;
 });
@@ -212,11 +215,12 @@ app.post('/submit-login', async (req, res) => {
       username: data.username,
       email: data.email,
       password: data.password,
-      usertype: data.usertype,
       club: data.club,
       region: data.region,
-      registered: data.registered,
-      profilepic: data.profilepic
+      profilepic: data.profilepic,
+      athleteverified: data.athleteverified,
+      instructorverified: data.instructorverified,
+      ptaverified: data.ptaverified
     };
 
     // Successful login
@@ -227,7 +231,7 @@ app.post('/submit-login', async (req, res) => {
 });
 
 app.post('/submit-signup', async (req, res) => {
-  const { username, password, confpassword, usertype } = req.body; // Capture user input from the form
+  const { username, password, confpassword } = req.body; // Capture user input from the form
 
   // Validate the input
   if (password !== confpassword) {
@@ -237,13 +241,16 @@ app.post('/submit-signup', async (req, res) => {
     });
   }
 
-  const registered = false;
+  const athleteverified = false;
+  const instructorverified = false;
+  const ptaverified = false;
+  
 
   try {
     // Insert the new user into the database
     const { data, error } = await supabase
       .from('users') // Replace 'users' with your actual table name if different
-      .insert([{ username, password, usertype, registered }]);
+      .insert([{ username, password, athleteverified, instructorverified, ptaverified }]);
 
     if (error) {
       // Handle any errors that occur during the insert
@@ -375,7 +382,190 @@ app.post('/submit-ncc', upload.fields([{ name: 'birthcert', maxCount: 1 }, { nam
   }
 });
 
-app.post('/submit-instructor', upload.fields([{ name: 'birthcert', maxCount: 1 }, { name: 'portrait', maxCount: 1 }]), async (req, res) => {
+// app.post('/submit-instructor', upload.fields([
+//   { name: 'birthcert', maxCount: 1 },
+//   { name: 'portrait', maxCount: 1 },
+//   { name: 'educproof', maxCount: 1 },
+//   { name: 'poomsaecert', maxCount: 1 },
+//   { name: 'kukkiwoncert', maxCount: 1 },
+//   { name: 'ptablackbeltcert', maxCount: 1 }
+// ]), async (req, res) => {
+//   const {
+//     apptype,
+//     firstname,
+//     middlename,
+//     lastname,
+//     gender,
+//     bday,
+//     phonenum,
+//     email,
+//     clubregion
+//   } = req.body; // Capture user input from the form
+
+//   if (!req.session.user) {
+//     return res.status(401).send('Unauthorized: No user logged in');
+//   }
+
+//   const submittedby = req.session.user.id; // Get the current user's ID from the session
+//   const status = 1;
+
+//   let birthcertUrl = null;
+//   let portraitUrl = null;
+//   let educproofUrl = null;
+//   let poomsaecertUrl = null;
+//   let kukkiwoncertUrl = null;
+//   let ptablackbeltcertUrl = null;
+
+//   if (req.files) {
+//     try {
+//       if (req.files.birthcert) {
+//         const birthcertPath = `documents/${Date.now()}-${req.files.birthcert[0].originalname}`;
+//         const { error: birthcertUploadError } = await supabase
+//           .storage
+//           .from('documents')
+//           .upload(birthcertPath, req.files.birthcert[0].buffer, {
+//             contentType: req.files.birthcert[0].mimetype,
+//           });
+
+//         if (birthcertUploadError) {
+//           console.error('Error uploading birth certificate:', birthcertUploadError.message);
+//           return res.status(500).send('Error uploading birth certificate');
+//         }
+
+//         birthcertUrl = `${supabaseUrl}/storage/v1/object/public/documents/${birthcertPath}`;
+//       }
+
+//       if (req.files.portrait) {
+//         const portraitPath = `documents/${Date.now()}-${req.files.portrait[0].originalname}`;
+//         const { error: portraitUploadError } = await supabase
+//           .storage
+//           .from('documents')
+//           .upload(portraitPath, req.files.portrait[0].buffer, {
+//             contentType: req.files.portrait[0].mimetype,
+//           });
+
+//         if (portraitUploadError) {
+//           console.error('Error uploading portrait:', portraitUploadError.message);
+//           return res.status(500).send('Error uploading portrait');
+//         }
+
+//         portraitUrl = `${supabaseUrl}/storage/v1/object/public/documents/${portraitPath}`;
+//       }
+
+//       if (req.files.educproof) {
+//         const educproofPath = `documents/${Date.now()}-${req.files.educproof[0].originalname}`;
+//         const { error: educproofUploadError } = await supabase
+//           .storage
+//           .from('documents')
+//           .upload(educproofPath, req.files.educproof[0].buffer, {
+//             contentType: req.files.educproof[0].mimetype,
+//           });
+
+//         if (educproofUploadError) {
+//           console.error('Error uploading education proof:', educproofUploadError.message);
+//           return res.status(500).send('Error uploading education proof');
+//         }
+
+//         educproofUrl = `${supabaseUrl}/storage/v1/object/public/documents/${educproofPath}`;
+//       }
+
+//       if (req.files.poomsaecert) {
+//         const poomsaecertPath = `documents/${Date.now()}-${req.files.poomsaecert[0].originalname}`;
+//         const { error: poomsaecertUploadError } = await supabase
+//           .storage
+//           .from('documents')
+//           .upload(poomsaecertPath, req.files.poomsaecert[0].buffer, {
+//             contentType: req.files.poomsaecert[0].mimetype,
+//           });
+
+//         if (poomsaecertUploadError) {
+//           console.error('Error uploading poomsae certificate:', poomsaecertUploadError.message);
+//           return res.status(500).send('Error uploading poomsae certificate');
+//         }
+
+//         poomsaecertUrl = `${supabaseUrl}/storage/v1.object/public/documents/${poomsaecertPath}`;
+//       }
+
+//       if (req.files.kukkiwoncert) {
+//         const kukkiwoncertPath = `documents/${Date.now()}-${req.files.kukkiwoncert[0].originalname}`;
+//         const { error: kukkiwoncertUploadError } = await supabase
+//           .storage
+//           .from('documents')
+//           .upload(kukkiwoncertPath, req.files.kukkiwoncert[0].buffer, {
+//             contentType: req.files.kukkiwoncert[0].mimetype,
+//           });
+
+//         if (kukkiwoncertUploadError) {
+//           console.error('Error uploading kukkiwon certificate:', kukkiwoncertUploadError.message);
+//           return res.status(500).send('Error uploading kukkiwon certificate');
+//         }
+
+//         kukkiwoncertUrl = `${supabaseUrl}/storage/v1/object/public/documents/${kukkiwoncertPath}`;
+//       }
+
+//       if (req.files.ptablackbeltcert) {
+//         const ptablackbeltcertPath = `documents/${Date.now()}-${req.files.ptablackbeltcert[0].originalname}`;
+//         const { error: ptablackbeltcertUploadError } = await supabase
+//           .storage
+//           .from('documents')
+//           .upload(ptablackbeltcertPath, req.files.ptablackbeltcert[0].buffer, {
+//             contentType: req.files.ptablackbeltcert[0].mimetype,
+//           });
+
+//         if (ptablackbeltcertUploadError) {
+//           console.error('Error uploading PTA black belt certificate:', ptablackbeltcertUploadError.message);
+//           return res.status(500).send('Error uploading PTA black belt certificate');
+//         }
+
+//         ptablackbeltcertUrl = `${supabaseUrl}/storage/v1/object/public/documents/${ptablackbeltcertPath}`;
+//       }
+//     } catch (error) {
+//       console.error('Server error during file upload:', error.message);
+//       return res.status(500).json({ error: error.message });
+//     }
+//   }
+
+//   try {
+//     // Insert the new user into the database
+//     const { data, error } = await supabase
+//       .from('instructor_registrations')
+//       .insert([{
+//         apptype,
+//         firstname,
+//         middlename,
+//         lastname,
+//         gender,
+//         bday,
+//         phonenum,
+//         email,
+//         clubregion,
+//         status,
+//         submittedby,
+//         birthcert: birthcertUrl, // Include the birth certificate URL
+//         portrait: portraitUrl, // Include the portrait URL
+//         educproof: educproofUrl, // Include the education proof URL
+//         poomsaecert: poomsaecertUrl, // Include the poomsae certificate URL
+//         kukkiwoncert: kukkiwoncertUrl, // Include the kukkiwon certificate URL
+//         ptablackbeltcert: ptablackbeltcertUrl // Include the PTA black belt certificate URL
+//       }]);
+
+//     if (error) {
+//       console.error('Error creating registration:', error.message);
+//       console.error('Full error object:', error);
+//       return res.status(500).render('membership', {
+//         error: 'Error creating registration.',
+//         users: [] // Optionally pass users array if you need it in the view
+//       });
+//     }
+//     console.log('Registration created successfully:', data);
+//     res.redirect('/membership');
+//   } catch (error) {
+//     console.error('Server error:', error.message);
+//     res.status(500).json({ error: error.message });
+//   }
+// });
+
+app.post('/submit-instructor', upload.fields([{ name: 'birthcert', maxCount: 1 }, { name: 'portrait', maxCount: 1 }, { name: 'educproof', maxCount: 1 }, { name: 'poomsaecert', maxCount: 1 }, { name: 'kukkiwoncert', maxCount: 1 }, { name: 'ptablackbeltcert', maxCount: 1 }]), async (req, res) => {
   const {
     apptype,
     firstname,
@@ -385,27 +575,22 @@ app.post('/submit-instructor', upload.fields([{ name: 'birthcert', maxCount: 1 }
     bday,
     phonenum,
     email,
-    lastpromo,
-    promolocation,
     clubregion,
-    clubname,
-    beltlevel,
-    instructorfirstname,
-    instructormi,
-    instructorlastname,
-    instructormobile,
-    instructoremail
   } = req.body; // Capture user input from the form
 
   if (!req.session.user) {
     return res.status(401).send('Unauthorized: No user logged in');
   }
 
-  const submittedby = req.session.user.username; // Get the current user's username from the session
+  const submittedby = req.session.user.id; // Get the current user's username from the session
   const status = 1;
 
   let birthcertUrl = null;
   let portraitUrl = null;
+  let educproofUrl = null;
+  let poomsaecertUrl = null;
+  let kukkiwoncertUrl = null;
+  let ptablackbeltcertUrl = null;
 
   if (req.files) {
     try {
@@ -442,6 +627,74 @@ app.post('/submit-instructor', upload.fields([{ name: 'birthcert', maxCount: 1 }
 
         portraitUrl = `${supabaseUrl}/storage/v1/object/public/documents/${portraitPath}`;
       }
+
+      if (req.files.educproof) {
+        const educproofPath = `documents/${Date.now()}-${req.files.educproof[0].originalname}`;
+        const { error: educproofUploadError } = await supabase
+          .storage
+          .from('documents')
+          .upload(educproofPath, req.files.educproof[0].buffer, {
+            contentType: req.files.educproof[0].mimetype,
+          });
+
+        if (educproofUploadError) {
+          console.error('Error uploading educproof:', educproofUploadError.message);
+          return res.status(500).send('Error uploading educproof');
+        }
+
+        educproofUrl = `${supabaseUrl}/storage/v1/object/public/documents/${educproofPath}`;
+      }
+
+      if (req.files.poomsaecert) {
+        const poomsaecertPath = `documents/${Date.now()}-${req.files.poomsaecert[0].originalname}`;
+        const { error: poomsaecertUploadError } = await supabase
+          .storage
+          .from('documents')
+          .upload(poomsaecertPath, req.files.poomsaecert[0].buffer, {
+            contentType: req.files.poomsaecert[0].mimetype,
+          });
+
+        if (poomsaecertUploadError) {
+          console.error('Error uploading poomsaecert:', poomsaecertUploadError.message);
+          return res.status(500).send('Error uploading poomsaecert');
+        }
+
+        poomsaecertUrl = `${supabaseUrl}/storage/v1/object/public/documents/${poomsaecertPath}`;
+      }
+
+      if (req.files.kukkiwoncert) {
+        const kukkiwoncertPath = `documents/${Date.now()}-${req.files.kukkiwoncert[0].originalname}`;
+        const { error: kukkiwoncertUploadError } = await supabase
+          .storage
+          .from('documents')
+          .upload(kukkiwoncertPath, req.files.kukkiwoncert[0].buffer, {
+            contentType: req.files.kukkiwoncert[0].mimetype,
+          });
+
+        if (kukkiwoncertUploadError) {
+          console.error('Error uploading kukkiwoncert:', kukkiwoncertUploadError.message);
+          return res.status(500).send('Error uploading kukkiwoncert');
+        }
+
+        kukkiwoncertUrl = `${supabaseUrl}/storage/v1/object/public/documents/${kukkiwoncertPath}`;
+      }
+
+      if (req.files.ptablackbeltcert) {
+        const ptablackbeltcertPath = `documents/${Date.now()}-${req.files.ptablackbeltcert[0].originalname}`;
+        const { error: ptablackbeltcertUploadError } = await supabase
+          .storage
+          .from('documents')
+          .upload(ptablackbeltcertPath, req.files.ptablackbeltcert[0].buffer, {
+            contentType: req.files.ptablackbeltcert[0].mimetype,
+          });
+
+        if (ptablackbeltcertUploadError) {
+          console.error('Error uploading ptablackbeltcert:', ptablackbeltcertUploadError.message);
+          return res.status(500).send('Error uploading ptablackbeltcert');
+        }
+
+        ptablackbeltcertUrl = `${supabaseUrl}/storage/v1/object/public/documents/${ptablackbeltcertPath}`;
+      }
     } catch (error) {
       console.error('Server error during file upload:', error.message);
       return res.status(500).json({ error: error.message });
@@ -451,7 +704,7 @@ app.post('/submit-instructor', upload.fields([{ name: 'birthcert', maxCount: 1 }
   try {
     // Insert the new user into the database
     const { data, error } = await supabase
-      .from('ncc_registrations')
+      .from('instructor_registrations')
       .insert([{
         apptype,
         firstname,
@@ -461,20 +714,15 @@ app.post('/submit-instructor', upload.fields([{ name: 'birthcert', maxCount: 1 }
         bday,
         phonenum,
         email,
-        lastpromo,
-        promolocation,
         clubregion,
-        clubname,
-        beltlevel,
-        instructorfirstname,
-        instructormi,
-        instructorlastname,
-        instructormobile,
-        instructoremail,
         status,
         submittedby,
         birthcert: birthcertUrl, // Include the birth certificate URL
-        portrait: portraitUrl // Include the portrait URL
+        portrait: portraitUrl, // Include the portrait URL
+        educproof: educproofUrl,
+        poomsaecert: poomsaecertUrl,
+        kukkiwoncert: kukkiwoncertUrl,
+        ptablackbeltcert: ptablackbeltcertUrl
       }]);
 
     if (error) {
@@ -543,10 +791,11 @@ app.post('/save-profile-changes', upload.single('file'), async (req, res) => {
     username,
     email,
     password,
-    usertype,
     region,
     club,
-    registered,
+    athleteverified,
+    instructorverified,
+    ptaverified,
   } = req.body; // Capture user input from the form
 
   if (!req.session.user) {
@@ -589,10 +838,10 @@ app.post('/save-profile-changes', upload.single('file'), async (req, res) => {
         username,
         email,
         password,
-        usertype,
         region,
         club,
-        registered,
+        athleteverified,
+        instructorverified,
         profilepic
       })
       .eq('id', id); // Ensure the correct id is used in the eq method
@@ -683,7 +932,7 @@ app.post('/update-nccstatus', async (req, res) => {
     
     
 
-    // Check if status is 4, indicating the need to update the user's registered column and insert into athletes table
+    // Check if status is 4, indicating the need to update the user's athleteverified column and insert into athletes table
     if (status == 4) {
       const {
         firstname, middlename, lastname, gender, bday, clubregion, club,
@@ -696,7 +945,7 @@ app.post('/update-nccstatus', async (req, res) => {
       // Update the corresponding user's registered column to true
       const { data: user, error: updateUserError } = await supabase
         .from('users')
-        .update({ registered: true })
+        .update({ athleteverified: true })
         .eq('id', submittedby)
         .select('*')
         .single();
@@ -766,7 +1015,7 @@ app.post('/update-clubstatus', async (req, res) => {
 
     console.log('Registration updated:', clubregistration);
 
-    // Check if status is 4, indicating the need to update the user's registered column and insert into athletes table
+    // Check if status is 4, indicating the need to update the user's athleteverified column and insert into athletes table
     if (status == 4) {
       const { firstname,
         lastname,
@@ -1255,7 +1504,7 @@ app.post('/submit-player', async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
-                                             
+                                       
 
                                                                         // VIEWS BELOW
 
@@ -1387,6 +1636,43 @@ app.get('/clubs', async function (req, res) {
 
     // Render the forum.hbs template with the fetched data
     res.render('clubs', { clubs: data, user: req.session.user });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.get('/clubs-details/:id', async function (req, res) {
+  const { id } = req.params;
+
+  if (!req.session.user) {
+    return res.redirect('/');
+  }
+  
+  try {
+    const { data: club, error: clubsError } = await supabase
+      .from('clubs')
+      .select('*')
+      .eq('id', id)
+      .single();
+
+    if (clubsError) {
+      return res.status(400).json({ clubsError: clubsError.message });
+    }
+
+    const { data: allUsers, error: allUsersError } = await supabase
+      .from('users')
+      .select('*')
+      .eq('athleteverified', true)
+      .eq('instructorverified', true);
+
+    if (allUsersError) {
+      return res.status(400).json({ allUsersError: allUsersError.message });
+    }
+
+    const clubMembers = allUsers.filter(user => user.club === club.clubname);
+
+    // Render the clubs-details.hbs template with the fetched data
+    res.render('clubs-details', { club, allUsers, clubMembers, user: req.session.user });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -1565,8 +1851,6 @@ app.get('/events-details/:id', async function (req, res) {
   }
 });
 
-
-
 app.get('/profile', async function (req, res) {
   if (!req.session.user) {
     return res.redirect('/');
@@ -1648,41 +1932,6 @@ app.get('/help-center', async function (req, res) {
   }
 });
 
-app.get('/clubs-details/:id', async function (req, res) {
-  const { id } = req.params;
-
-  if (!req.session.user) {
-    return res.redirect('/');
-  }
-  
-  try {
-    const { data: club, error: clubsError } = await supabase
-      .from('clubs')
-      .select('*')
-      .eq('id', id)
-      .single();
-
-    if (clubsError) {
-      return res.status(400).json({ clubsError: clubsError.message });
-    }
-
-    const { data: allUsers, error: allUsersError } = await supabase
-      .from('users')
-      .select('*');
-
-    if (allUsersError) {
-      return res.status(400).json({ allUsersError: allUsersError.message });
-    }
-
-    const clubMembers = allUsers.filter(user => user.club === club.clubname);
-
-    // Render the clubs-details.hbs template with the fetched data
-    res.render('clubs-details', { club, allUsers, clubMembers, user: req.session.user });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
 
                                                                         //MEMBERSHIP PAGES
 
@@ -1739,13 +1988,13 @@ app.get('/membership-status', async function (req, res) {
   }
 
   const userid = req.session.user.id; // Or use a unique identifier like user ID
-  const usertype = req.session.user.usertype;
+  const ptaverified = req.session.user.ptaverified;
 
   try {
     let nccData, clubData;
     let nccError, clubError;
 
-    if (usertype === 'pta') {
+    if (ptaverified) {
       // Fetch all rows if user is 'pta'
       ({ data: nccData, error: nccError } = await supabase
         .from('ncc_registrations')
