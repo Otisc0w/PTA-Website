@@ -51,12 +51,9 @@
         <ul>
           <li class="status"><a href="membership-status">Registration Status</a></li>
           <li class="ncc"><a href="membership-ncc">Apply for NCC ID</a></li>
-            
-          {{#if user.athleteverified}}
-            <li class="instructor"><a href="membership-instructor">Apply for Instructor's License</a></li>
-            {{#if user.instructorverified}}
-              <li class="club"><a href="membership-club">Register Club</a></li>
-            {{/if}}
+          <li class="instructor"><a href="membership-instructor">Apply for Instructor's License</a></li>
+          {{#if user.instructorverified}}
+            <li class="club"><a href="membership-club">Register Club</a></li>
           {{/if}}
         </ul>
       </div>

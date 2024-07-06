@@ -381,8 +381,6 @@ app.post('/submit-ncc', upload.fields([{ name: 'birthcert', maxCount: 1 }, { nam
     res.status(500).json({ error: error.message });
   }
 });
-
-// app.post('/submit-instructor', upload.fields([
 //   { name: 'birthcert', maxCount: 1 },
 //   { name: 'portrait', maxCount: 1 },
 //   { name: 'educproof', maxCount: 1 },
@@ -1020,9 +1018,7 @@ app.post('/update-instructorstatus', async (req, res) => {
     // Check if status is 4, indicating the need to update the user's athleteverified column and insert into athletes table
     if (status == 4) {
       const {
-        firstname, middlename, lastname, gender, bday, clubregion, club,
-        beltlevel, portrait, division,
-        height, weight, submittedby, instructorfirstname, instructorlastname
+         submittedby
       } = registration;
 
       console.log('Updating user with username:', submittedby);
@@ -1039,38 +1035,11 @@ app.post('/update-instructorstatus', async (req, res) => {
         console.error('Error updating user:', updateUserError.message);
         return res.status(500).send('Error updating user');
       }
-      
-      console.log('User updated:', user);
-      const name= firstname + ' ' + middlename + ' ' + lastname;
-      const instructor = instructorfirstname + ' ' + instructorlastname;
-      
-      userid = submittedby;
-
-      // Insert the relevant data into the athletes table
-      const { error: insertAthleteError } = await supabase
-        .from('athletes')
-        .insert([{
-          name, gender, bday, clubregion, club,
-          beltlevel, portrait, division,
-          height, weight, instructor, userid
-        }]);
-
-      if (insertAthleteError) {
-        console.error('Error inserting athlete:', insertAthleteError.message);
-        return res.status(500).send('Error inserting athlete');
-      }
 
       console.log('Athlete inserted successfully');
-
-      // Store athlete data in session
-      req.session.athlete = {
-        firstname, middlename, lastname, gender, bday, clubregion, club,
-          beltlevel, portrait, division,
-          height, weight,
-      };
     }
 
-    res.redirect(`/membership-review/${applicationId}`); // Redirect back to the review page
+    res.redirect(`/instructor-review/${applicationId}`); // Redirect back to the review page
   } catch (error) {
     console.error('Server error:', error.message);
     res.status(500).json({ error: error.message });
@@ -2149,6 +2118,30 @@ app.get('/membership-review/:id', async (req, res) => {
 
     // Render the membership-review.hbs template with the fetched data
     res.render('membership-review', { registration: data , user: req.session.user });
+  } catch (error) {
+    console.error('Server error:', error.message);
+    res.status(500).send('Server error');
+  }
+});
+
+app.get('/instructor-review/:id', async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    // Fetch the specific registration data
+    const { data, error } = await supabase
+      .from('instructor_registrations')
+      .select('*')
+      .eq('id', id)
+      .single();
+
+    if (error) {
+      console.error('Error fetching registration:', error.message);
+      return res.status(500).send('Error fetching registration');
+    }
+
+    // Render the membership-review.hbs template with the fetched data
+    res.render('instructor-review', { registration: data , user: req.session.user });
   } catch (error) {
     console.error('Server error:', error.message);
     res.status(500).send('Server error');
