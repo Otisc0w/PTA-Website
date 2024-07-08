@@ -58,6 +58,19 @@
             {{else}}
             <img src="/images/none.jpg" alt="Profile Picture" class="profile-picture">
             {{/if}}
+            
+            <div>
+              {{#if user.ptaverified}}
+                <span class="tag">ADMIN</span>
+              {{else}}
+                {{#if user.instructorverified}}
+                  <span class="tag">INSTRUCTOR</span>
+                {{/if}}
+                {{#if user.athleteverified}}
+                  <span class="tag">ATHLETE</span>
+                {{/if}}
+              {{/if}}
+            </div>
             <input type="file" id="file-input" name="file" class="edit-profile-pic">
           </div>
           <div class="form-group">
@@ -89,12 +102,9 @@
             <input type="text" id="club" name="club" value="{{user.club}}" readonly>
           </div>
           <div class="form-group">
-            <label for="registered">Athlete Verified?:</label>
-            <input type="text" id="athleteverified" name="athleteverified" value="{{user.athleteverified}}" readonly>
-            <label for="registered">Instructor Verified?:</label>
-            <input type="text" id="instructorverified" name="instructorverified" value="{{user.instructorverified}}" readonly>
-            <label for="registered">PTA Verified?:</label>
-            <input type="text" id="ptaverified" name="ptaverified" value="{{user.ptaverified}}" readonly>
+            <input type="hidden" id="athleteverified" name="athleteverified" value="{{user.athleteverified}}" readonly>
+            <input type="hidden" id="instructorverified" name="instructorverified" value="{{user.instructorverified}}" readonly>
+            <input type="hidden" id="ptaverified" name="ptaverified" value="{{user.ptaverified}}" readonly>
           </div>
           <div class="form-actions">
             <button class="cancel-button" onclick="window.location.href='profile'">Cancel</button>
@@ -106,12 +116,24 @@
       <div id="viewProfile" class="profile-section" style="display:none;">
         <h2>View Profile</h2>
         <div class="profile-pic-section">
-          {{#if user.profilepic}}
+            {{#if user.profilepic}}
             <img src="{{user.profilepic}}" alt="Profile Picture" class="profile-picture">
-          {{else}}
+            {{else}}
             <img src="/images/none.jpg" alt="Profile Picture" class="profile-picture">
-          {{/if}}
-        </div>
+            {{/if}}
+            <div>
+              {{#if user.ptaverified}}
+                <span class="tag">ADMIN</span>
+              {{else}}
+                {{#if user.instructorverified}}
+                  <span class="tag">INSTRUCTOR</span>
+                {{/if}}
+                {{#if user.athleteverified}}
+                  <span class="tag">ATHLETE</span>
+                {{/if}}
+              {{/if}}
+            </div><br>
+          </div>
         <form>
           <div class="form-group">
             <label for="firstname">First Name:</label>
@@ -141,13 +163,10 @@
             <label for="club">Club:</label>
             <input type="text" id="club" name="club" value="{{user.club}}" readonly>
           </div>
-          <div class="form-group">
-            <label for="registered">Athlete Verified?:</label>
-            <input type="text" id="athleteverified" name="athleteverified" value="{{user.athleteverified}}" readonly>
-            <label for="registered">Instructor Verified?:</label>
-            <input type="text" id="instructorverified" name="instructorverified" value="{{user.instructorverified}}" readonly>
-            <label for="registered">PTA Verified?:</label>
-            <input type="text" id="ptaverified" name="ptaverified" value="{{user.ptaverified}}" readonly>
+          <div class="form-group" >
+            <input type="hidden" id="athleteverified" name="athleteverified" value="{{user.athleteverified}}" readonly>
+            <input type="hidden" id="instructorverified" name="instructorverified" value="{{user.instructorverified}}" readonly>
+            <input type="hidden" id="ptaverified" name="ptaverified" value="{{user.ptaverified}}" readonly>
           </div>
         </form>
       </div>

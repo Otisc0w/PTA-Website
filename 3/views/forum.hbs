@@ -64,12 +64,30 @@
                 </div>
               </div>
               <div class='post-info'>
-                <img class="dp" src="{{profilepic}}"></img>
+                <div class="poster">
+                  <img class="dp" src="{{profilepic}}"></img>
+                  <div class="dets">
+                    <span class="op">{{originalposter}}</span>
+                    <span class="tag">
+                      {{!-- {{#if this.user.ptaverified}}
+                        <span class="tag">ADMIN</span>
+                      {{else}}
+                        {{#if this.user.instructorverified}}
+                          <span class="tag">INSTRUCTOR</span>
+                        {{/if}}
+                        {{#if this.user.athleteverified}}
+                          <span class="tag">ATHLETE</span>
+                        {{/if}}
+                      {{/if}} --}}
+                    </span>
+                  </div>
+                </div><br>
+                
                 <span class='community'>
                   <a class='post-community' href='/community?community={{topic}}'>#{{topic}}</a> •
                 </span>
                 <span class='small'>
-                  by <a class='post-user' href='/profile?username={{originalposter}}'>{{originalposter}}</a> on {{created_at}}
+                  on {{created_at}}
                 </span>
               </div>
               <h2 class='post-title'>{{title}}</h2>
@@ -84,18 +102,19 @@
                   <li class="vote-buttons">
                    <form action="/vote" method="post">
           <input type="hidden" name="threadId" value="{{id}}">
-          <div class="vote-button upvote">
-            <button type="submit" name="type" value="upvote" onclick="event.stopPropagation()">
-              <img src="/images/thumbs up.png" alt="Upvote">
-              <span class="upvote-count">{{arraySize upvotes}}</span>
-            </button>
-              
-          </div>
-          <div class="vote-button downvote">
-              <button type="submit" name="type" value="downvote" onclick="event.stopPropagation()">
-              <img src="/images/thumbs down.png" alt="Downvote">
-              <span class="downvote-count">{{arraySize downvotes}}</span>
-            </button>
+          <div class="buttons-div">
+            <div class="vote-button upvote">
+              <button type="submit" name="type" value="upvote" onclick="event.stopPropagation()">
+                <img src="/images/thumbs up.png" alt="Upvote">
+                <span class="upvote-count">{{arraySize upvotes}}</span>
+              </button>
+            </div>
+            <div class="vote-button downvote">
+                <button type="submit" name="type" value="downvote" onclick="event.stopPropagation()">
+                <img src="/images/thumbs down.png" alt="Downvote">
+                <span class="downvote-count">{{arraySize downvotes}}</span>
+              </button>
+            </div>
           </div>
         </form>
                   </li>

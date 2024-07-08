@@ -37,6 +37,11 @@
     list-style-type: none;
     padding: 0;
   }
+
+  .athletes-list img {
+    border-radius: 30px;
+    width: 40px;
+  }
   
   .athletes-list li {
     font-size: 1.2em;

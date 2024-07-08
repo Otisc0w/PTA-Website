@@ -332,3 +332,28 @@ li {
     display: block;
 }
 
+.buttons-div div{
+    display: inline;
+}
+
+.poster {
+    display: flex;
+    align-items: center;
+}
+  
+.dets {
+    display: flex;
+    flex-direction: column;
+    margin-left: 8px; /* Adjust the spacing between the image and the text */
+}
+
+.op {
+    font-weight: bold;
+}
+
+.tag {
+    font-size: 12px; /* Adjust the font size as needed */
+    color: gray; /* Adjust the color as needed */
+}
+
+
