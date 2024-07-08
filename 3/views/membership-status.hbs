@@ -1,97 +1,128 @@
+<!DOCTYPE html>
+<html>
+
 <head>
-    <title>PTA | Membership Status</title>
-    <link rel="icon" type="image/x-icon" href="../images/favicon.ico" />
-    <link rel="stylesheet" type="text/css" href="../stylesheets/membership-status.css" />
-    <link rel="stylesheet" type="text/css" href="../stylesheets/navbar.css" />
+  <title>PTA | Membership Status</title>
+  <link rel="icon" type="image/x-icon" href="../images/favicon.ico" />
+  <link rel="stylesheet" type="text/css" href="../stylesheets/membership-status.css" />
+  <link rel="stylesheet" type="text/css" href="../stylesheets/navbar.css" />
 </head>
 
 <body style="margin:0;" class="container">
-    <div class="membership-header">
-        <div class="membership-navbar">
-            <a href="home"><img src="/images/logo.png" class="membership-logo" alt="Logo"></a>
-            {{#if user.profilepic}}
-                <a href="#" onclick="toggleDropdown()" class="memprofile-pic"><img src="{{user.profilepic}}" alt="Profile Picture" class="profile-picture"></a>
-            {{else}}
-                <a href="#" onclick="toggleDropdown()" class="memprofile-pic"><p>:(</p></a>
-            {{/if}}
-            <div id="dropdown" class="dropdown-content">
-                <a href="profile">Profile</a>
-                <a href="settings">Settings</a>
-                <a href="help-center">FAQs</a>
-                <a href="/">Logout</a>
-            </div>
-        </div>
+    <div class="navbar">
+      <a href="/home"><img src="/images/logo.png" class="logo" alt="Logo"></a>
+      <ul class="tabs">
+        <li class="home"><a href="/home">Home</a></li>
+        <li class="athletes"><a href="/athletes">Athletes</a></li>
+        <li class="clubs"><a href="/clubs">Clubs</a></li>
+        <li class="events"><a href="/events">Events</a></li>
+        <li class="membership"><a href="/membership">Membership</a></li>
+        <li class="forum"><a href="/forum">Forum</a></li>
+        <li class="notifications">
+          <a href="/notifications">Notifications <span class="badge">3</span></a>
+        </li>
+        <li class="profile-pic">
+          {{#if user.profilepic}}
+            <a href="#" onclick="toggleDropdown()"><img src="{{user.profilepic}}" alt="Profile Picture" class="profile-picture"></a>
+          {{else}}
+            <a href="#" onclick="toggleDropdown()" class="profile-picture"><img src="/images/none.jpg" alt="Profile Picture" class="profile-picture"></a>
+          {{/if}}
+          <div id="dropdown" class="dropdown-content">
+            <a href="/profile">Profile</a>
+            <a href="/settings">Settings</a>
+            <a href="/help-center">FAQs</a>
+            <a href="/">Logout</a>
+          </div>
+        </li>
+      </ul>
     </div>
-    <div class="membership-container">
-        <div class="membership-leftside">
-            <div class="forumtitle">
-                <h1 class="forumname"><span class="logo"></span></h1>
-                <h3 class="forumdesc">Membership Status</h3>
-            </div>
-        </div>
-    
-        <div class="membership-rightside">
-            <div class="membership-statuses">
-                {{#if ncc_registrations}}
-                    <h2>NCC ID's</h2>
-                    {{#reverseEach ncc_registrations}}
-                        <div class='post-content'>
-                            <span class='community'>•</span>
-                            <span class='small'>by <h2>{{firstname}} {{lastname}}</h2> on {{created_at}}</span>
-                            <span><h3>Status: {{{formatStatus status}}}</h3></span>
-                            <a href="/membership-review/{{id}}">Review</a>
-                        </div><br>
-                    {{/reverseEach}}
-                {{else}}
-                    No pending NCC applications
-                {{/if}}
-
-                {{#if club_registrations}}
-                    <h2>Club Registrations</h2>
-                    {{#reverseEach club_registrations}}
-                        <div class='post-content'>
-                            <span class='community'>{{id}} •</span>
-                            <span class='small'>by {{firstname}} {{lastname}} on {{created_at}}</span>
-                            <span><h3>Status: {{{formatStatus status}}}</h3></span>
-                            <a href="/clubreg-review/{{id}}">Review</a>
-                        </div><br>
-                    {{/reverseEach}}
-                {{else}}
-                    No pending club registrations
-                {{/if}}
-            </div>
-            <div class="backtomembership">
-                <a href="/membership">Back</a>
-            </div>
-        </div>
+  <div class="membership-container">
+    <div class="membership-leftside">
+      <div class="forumtitle">
+        <h1 class="forumname"><span class="logo"></span></h1>
+        <h3 class="forumdesc">Membership Status</h3>
+      </div>
     </div>
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const form = document.getElementById("nccform");
+  
+    <div class="membership-rightside">
+      <div class="membership-statuses">
+        {{#if ncc_registrations}}
+          <h2>NCC ID's</h2>
+          {{#reverseEach ncc_registrations}}
+            <div class='post-content'>
+              <span class='community'>•</span>
+              <span class='small'>by <h2>{{firstname}} {{lastname}}</h2> on {{created_at}}</span>
+              <span><h3>Status: {{{formatStatus status}}}</h3></span>
+              <a href="/membership-review/{{id}}">Review</a>
+            </div><br>
+          {{/reverseEach}}
+        {{else}}
+          No pending NCC applications
+        {{/if}}
 
-            const nccstep1 = document.getElementById("nccstep1");
-            const ncc1 = document.querySelector(".ncc1");
-        });
+				{{#if instructor_registrations}}
+          <h2>Instructor ID's</h2>
+          {{#reverseEach instructor_registrations}}
+            <div class='post-content'>
+              <span class='community'>•</span>
+              <span class='small'>by <h2>{{firstname}} {{lastname}}</h2> on {{created_at}}</span>
+              <span><h3>Status: {{{formatStatus status}}}</h3></span>
+              <a href="/instructor-review/{{id}}">Review</a>
+            </div><br>
+          {{/reverseEach}}
+        {{else}}
+          No pending instructor applications
+        {{/if}}
 
-        function toggleDropdown() {
-            document.getElementById("dropdown").classList.toggle("show");
-        }
+        {{#if club_registrations}}
+          <h2>Club Registrations</h2>
+          {{#reverseEach club_registrations}}
+            <div class='post-content'>
+              <span class='community'>{{id}} •</span>
+              <span class='small'>by {{firstname}} {{lastname}} on {{created_at}}</span>
+              <span><h3>Status: {{{formatStatus status}}}</h3></span>
+              <a href="/clubreg-review/{{id}}">Review</a>
+            </div><br>
+          {{/reverseEach}}
+        {{else}}
+          No pending club registrations
+        {{/if}}
+      </div>
+      <div class="backtomembership">
+        <a href="/membership">Back</a>
+      </div>
+    </div>
+  </div>
+  <div class="footer">
+    <p>&copy; 2024 Philippine Taekwondo Association. All rights reserved.</p>
+  </div>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      const form = document.getElementById("nccform");
 
-        function formatStatus(status) {
-            switch (status) {
-                case 1:
-                    return 'Under Review';
-                case 2:
-                    return 'Printed';
-                case 3:
-                    return 'En-route to Regional Office';
-                case 4:
-                    return 'ID Shipped';
-                case 5:
-                    return 'Reject Application';
-                default:
-                    return 'Unknown Status';
-            }
-        }
-    </script>
+      const nccstep1 = document.getElementById("nccstep1");
+      const ncc1 = document.querySelector(".ncc1");
+    });
+
+    function toggleDropdown() {
+      document.getElementById("dropdown").classList.toggle("show");
+    }
+
+    function formatStatus(status) {
+      switch (status) {
+        case 1:
+          return 'Under Review';
+        case 2:
+          return 'Printed';
+        case 3:
+          return 'En-route to Regional Office';
+        case 4:
+          return 'ID Shipped';
+        case 5:
+          return 'Reject Application';
+        default:
+          return 'Unknown Status';
+      }
+    }
+  </script>
 </body>

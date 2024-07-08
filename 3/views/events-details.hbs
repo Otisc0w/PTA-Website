@@ -6,7 +6,7 @@
   <link rel="icon" type="image/x-icon" href="../images/favicon.ico" />
   <link rel="stylesheet" type="text/css" href="../stylesheets/home.css" />
   <link rel="stylesheet" type="text/css" href="../stylesheets/navbar.css" />
-  <link rel="stylesheet" type="text/css" href="../stylesheets/events.css" />
+  <link rel="stylesheet" type="text/css" href="../stylesheets/events-details.css" />
 </head>
 <body class="container">
   <div class="header">
@@ -29,9 +29,9 @@
             <a href="#" onclick="toggleDropdown()" class="profile-picture"><img src="/images/none.jpg" alt="Profile Picture" class="profile-picture"></a>
           {{/if}}
           <div id="dropdown" class="dropdown-content">
-            <a href="profile">Profile</a>
-            <a href="settings">Settings</a>
-            <a href="help-center">FAQs</a>
+            <a href="/profile">Profile</a>
+            <a href="/settings">Settings</a>
+            <a href="/help-center">FAQs</a>
             <a href="/">Logout</a>
           </div>
         </li>
@@ -40,28 +40,44 @@
   </div>
 
   <div class="events-container">
-		<img class="event-poster"src="{{event.eventpicture}}">
-		<h2>{{event.name}}</h2>
-      {{#if user.registered}}
-        <a class="register-button" href="/events-registration/{{event.id}}">Register</a>
-      {{else}}
-        <a class="grayed-register-button">Not Registered</a>
-      {{/if}}
-      <br><br>
 
-
-		Athletes Joined:
-		{{#each athletes}}
-			<h3>{{name}}</h3><br>
-		{{/each}}
+    <div class="event-content">
+      <img class="event-poster"src="{{event.eventpicture}}">
+      <h2>{{event.name}}</h2>
+        {{#if (or user.athleteverified user.instructorverified)}}
+          <a class="register-button" href="/events-registration/{{event.id}}">Register</a>
+        {{!-- {{else if (and -user.athleteverified user.instructorverified)}}
+          <a class="register-button" href="/events-registration/{{event.id}}">Register for an Athlete</a>
+        {{else if (and user.athleteverified user.instructorverified)}}
+          <a class="register-button" href="/events-registration/{{event.id}}">Register for myself</a>
+          <a class="register-button" href="/events-registration/{{event.id}}">Register for an Athlete</a> --}}
+        {{else}}
+          <a class="grayed-register-button">Not Verified</a>
+        {{/if}}
+        <br><br>
+        <h3>Participating Athletes:</h3>
+        <ul class="athletes-list">
+          {{#each athletes}}
+            <img src="{{portrait}}"><li>{{name}}</li>
+          {{/each}}
+        </ul>
+    </div>
   </div>
+
+  {{!-- <div class="else-athletes">
+    <ul>
+      {{#each athletes}}
+        <li>{{name}}</li>
+      {{/each}}
+    </ul>
+  </div> --}}
 
   <script>
     function toggleDropdown() {
       document.getElementById("dropdown").classList.toggle("show");
     }
 
-    window.onclick = function(event) {
+    window.onclick = function (event) {
       if (!event.target.matches('.profile-pic img')) {
         var dropdowns = document.getElementsByClassName("dropdown-content");
         for (var i = 0; i < dropdowns.length; i++) {
@@ -71,8 +87,7 @@
           }
         }
       }
-    }
-
+    }    
   </script>
 </body>
 </html>

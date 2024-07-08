@@ -38,9 +38,9 @@
 
   <main class="membership-container">
     <section class="review-header">
-      <h1>Review NCC Application</h1>
+      <h1>Review Instructor Application</h1>
     </section>
-    <form action="/update-nccstatus" method="post" class="review-form">
+    <form action="/update-instructorstatus" method="post" class="review-form">
       <section class="review-details">
         <h2>Applicant Information</h2>
 
@@ -57,18 +57,14 @@
 					<p><strong>Birthday:</strong> {{registration.bday}}</p>
 					<p><strong>Phone Number:</strong> {{registration.phonenum}}</p>
 					<p><strong>Email:</strong> {{registration.email}}</p>
-					<p><strong>Last Promotion:</strong> {{registration.lastpromo}}</p>
-					<p><strong>Promotion Location:</strong> {{registration.promolocation}}</p>
 					<p><strong>Region:</strong> {{registration.region}}</p>
 					<p><strong>Club:</strong> {{registration.clubname}}</p>
-					<p><strong>Belt Level:</strong> {{registration.beltlevel}}</p>
-					<p><strong>Instructor First Name:</strong> {{registration.instructorfirstname}}</p>
-					<p><strong>Instructor Middle Initial:</strong> {{registration.instructormi}}</p>
-					<p><strong>Instructor Last Name:</strong> {{registration.instructorlastname}}</p>
-					<p><strong>Instructor Mobile:</strong> {{registration.instructormobile}}</p>
-					<p><strong>Instructor Email:</strong> {{registration.instructoremail}}</p>
 					<p>submitted by: {{registration.submittedby}}</p>
-					<a href="{{registration.birthcert}}" target="_blank" download> Birth Certificate</a>
+					<a href="{{registration.birthcert}}" target="_blank" download> Birth Certificate</a><br>
+					<a href="{{registration.educproof}}" target="_blank" download> Proof of Education</a><br>
+					<a href="{{registration.poomsaecert}}" target="_blank" download> Poomsae Certificate</a><br>
+					<a href="{{registration.kukkiwoncert}}" target="_blank" download> Kukkiwon Certificate</a><br>
+					<a href="{{registration.ptablackbeltcert}}" target="_blank" download> PTA Black-Belt Certificate</a><br>
 				</div>
 				
       </section>
@@ -90,7 +86,7 @@
           {{/if}}
         </h1>
         {{#if user.ptaverified}}
-          <div class="action-buttons"> <!-- TYPES NAMES ID'S CLASSES VALUES NEED TO STAY THE SAME -->
+          <div class="action-buttons"> 
             <button type="button" onclick="printDiv('printableArea')">Print</button>
             <button type="submit" name="status" value="1">Under Review</button>
             <button type="submit" name="status" value="2">Printed</button>
@@ -100,7 +96,7 @@
           </div>
 
           <div class="confirmscreen" id="confirmscreen" style="display: none;">
-            <h3>Are you sure? The player will be notified that his ID is ready. This registration will also disappear after a few days.</h3>
+            <h3>Are you sure? The applicant will be notified that his ID is ready. This registration will also disappear after a few days.</h3>
             <button type="button" class="cancel" id="cancel">Cancel</button>
             <button type="submit" value="4" name="status" id="confirm">Confirm</button>
           </div>
@@ -116,7 +112,6 @@
         <p><strong>First Name:</strong> {{registration.firstname}}</p>
         <p><strong>Middle Initial:</strong> {{registration.mi}}</p>
         <p><strong>Last Name:</strong> {{registration.lastname}}</p>
-        <a href="{{registration.birthcert}}" target="_blank" download>Birth Certificate</a>
         <p>submitted by: {{registration.submittedby}}</p>
       </div>
 

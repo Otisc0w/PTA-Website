@@ -58,8 +58,20 @@
             {{else}}
             <img src="/images/none.jpg" alt="Profile Picture" class="profile-picture">
             {{/if}}
+            
+            <div>
+              {{#if user.ptaverified}}
+                <span class="tag">ADMIN</span>
+              {{else}}
+                {{#if user.instructorverified}}
+                  <span class="tag">INSTRUCTOR</span>
+                {{/if}}
+                {{#if user.athleteverified}}
+                  <span class="tag">ATHLETE</span>
+                {{/if}}
+              {{/if}}
+            </div>
             <input type="file" id="file-input" name="file" class="edit-profile-pic">
-            {{!-- <button class="edit-profile-pic">Edit</button> --}}
           </div>
           <div class="form-group">
             <label for="firstname">First Name:</label>
@@ -82,10 +94,6 @@
             <input type="email" id="email" name="email" value="{{user.email}}">
           </div>
           <div class="form-group">
-            <label for="usertype">User Type:</label>
-            <input type="text" id="usertype" name="usertype" value="{{user.usertype}}" readonly>
-          </div>
-          <div class="form-group">
             <label for="region">Region:</label>
             <input type="text" id="region" name="region" value="{{user.region}}" readonly>
           </div>
@@ -94,8 +102,9 @@
             <input type="text" id="club" name="club" value="{{user.club}}" readonly>
           </div>
           <div class="form-group">
-            <label for="registered">Registered?:</label>
-            <input type="text" id="registered" name="registered" value="{{user.registered}}" readonly>
+            <input type="hidden" id="athleteverified" name="athleteverified" value="{{user.athleteverified}}" readonly>
+            <input type="hidden" id="instructorverified" name="instructorverified" value="{{user.instructorverified}}" readonly>
+            <input type="hidden" id="ptaverified" name="ptaverified" value="{{user.ptaverified}}" readonly>
           </div>
           <div class="form-actions">
             <button class="cancel-button" onclick="window.location.href='profile'">Cancel</button>
@@ -103,39 +112,48 @@
           </div>
         </form>
       </div>
+
       <div id="viewProfile" class="profile-section" style="display:none;">
         <h2>View Profile</h2>
         <div class="profile-pic-section">
-          {{#if user.profilepic}}
+            {{#if user.profilepic}}
             <img src="{{user.profilepic}}" alt="Profile Picture" class="profile-picture">
-          {{else}}
+            {{else}}
             <img src="/images/none.jpg" alt="Profile Picture" class="profile-picture">
-          {{/if}}
-        </div>
+            {{/if}}
+            <div>
+              {{#if user.ptaverified}}
+                <span class="tag">ADMIN</span>
+              {{else}}
+                {{#if user.instructorverified}}
+                  <span class="tag">INSTRUCTOR</span>
+                {{/if}}
+                {{#if user.athleteverified}}
+                  <span class="tag">ATHLETE</span>
+                {{/if}}
+              {{/if}}
+            </div><br>
+          </div>
         <form>
           <div class="form-group">
-            <label for="viewFirstName">First Name:</label>
-            <input type="text" id="viewFirstName" value="{{user.firstname}}" readonly>
-          </div>
-           <div class="form-group">
-            <label for="middlename">M.I.:</label>
-            <input type="text" id="middlename" value="{{user.middlename}}" readonly>
+            <label for="firstname">First Name:</label>
+            <input type="text" id="firstname" name="firstname" value="{{user.firstname}}" readonly>
           </div>
           <div class="form-group">
-            <label for="viewLastName">Last Name:</label>
-            <input type="text" id="viewLastName" value="{{user.lastname}}" readonly>
+            <label for="middlename">M.I.:</label>
+            <input type="text" id="middlename" name="middlename" value="{{user.middlename}}" readonly>
+          </div>
+          <div class="form-group">
+            <label for="lastname">Last Name:</label>
+            <input type="text" id="lastname" name="lastname" value="{{user.lastname}}" readonly>
           </div>
           <div class="form-group">
             <label for="username">Username:</label>
-            <input type="text" id="username" name="username" value="{{user.username}}" readonly> 
+            <input type="text" id="username" name="username" value="{{user.username}}" readonly>
           </div>
           <div class="form-group">
-            <label for="viewEmail">Email:</label>
-            <input type="email" id="viewEmail" value="{{user.email}}" readonly>
-          </div>
-          <div class="form-group">
-            <label for="usertype">User Type:</label>
-            <input type="text" id="usertype" name="usertype" value="{{user.usertype}}" readonly>
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" value="{{user.email}}" readonly>
           </div>
           <div class="form-group">
             <label for="region">Region:</label>
@@ -145,12 +163,14 @@
             <label for="club">Club:</label>
             <input type="text" id="club" name="club" value="{{user.club}}" readonly>
           </div>
-          <div class="form-group">
-            <label for="registered">Registered?:</label>
-            <input type="text" id="registered" name="registered" value="{{user.registered}}" readonly>
+          <div class="form-group" >
+            <input type="hidden" id="athleteverified" name="athleteverified" value="{{user.athleteverified}}" readonly>
+            <input type="hidden" id="instructorverified" name="instructorverified" value="{{user.instructorverified}}" readonly>
+            <input type="hidden" id="ptaverified" name="ptaverified" value="{{user.ptaverified}}" readonly>
           </div>
         </form>
       </div>
+
       <div id="notificationSettings" class="profile-section" style="display:none;">
         <h2>Notification Settings</h2>
         <form id="notificationSettingsForm" onsubmit="return saveNotificationSettings()">
@@ -216,6 +236,7 @@
           </div>
         </form>
       </div>
+
       <div id="securitySettings" class="profile-section" style="display:none;">
         <h2>Security Settings</h2>
         <div class="change-password-section">

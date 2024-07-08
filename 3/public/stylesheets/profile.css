@@ -52,8 +52,8 @@
 }
 
 .profile-pic-section img {
-    width: 100px;
-    height: 100px;
+    width: 150px;
+    height: 150px;
     border-radius: 50%;
 }
 
@@ -186,3 +186,33 @@
     font-size: 14px;
     margin-top: 10px;
 }
+
+body {
+    background-color: #2C2F33;
+    font-family: Arial, sans-serif;
+  }
+  
+  .tag {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 6px;
+    background-color: #5a81ec;
+    color: white;
+    border-radius: 3px;
+    font-size: 13px;
+    font-weight: bold;
+  }
+  
+  .tag::before {
+    content: "\2713";
+    display: inline-block;
+    margin-right: 4px;
+    font-size: 10px;
+  }
+  
+  .tag span {
+    display: flex;
+    align-items: center;
+  }
+  
+  
