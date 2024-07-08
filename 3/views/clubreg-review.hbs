@@ -2,109 +2,110 @@
 
 	<head>
 	  <title>PTA | Club Application Review</title>
-      <link rel="icon" type="image/x-icon" href="../images/favicon.ico" />
+    <link rel="icon" type="image/x-icon" href="../images/favicon.ico" />
 	  <link rel="stylesheet" type="text/css" href="../stylesheets/clubreg-review.css" />
-      <link rel="stylesheet" type="text/css" href="../stylesheets/navbar.css" />
+    <link rel="stylesheet" type="text/css" href="../stylesheets/navbar.css" />
 	</head>
 	
 	<body style="margin:0;" class="container">
-        <div class="membership-header">
-            <div class="membership-navbar">
+    <div class="membership-header">
+      <div class="membership-navbar">
 				<img src="/images/logo.png" class="membership-logo" href="home"></img>
-                    {{#if user.profilepic}}
-                        <a href="#" onclick="toggleDropdown()" class="memprofile-pic"><img src="{{user.profilepic}}" alt="Profile Picture" class="profile-picture"></a>
-                    {{else}}
-                        <a href="#" onclick="toggleDropdown()" class="memprofile-pic"><p>:(</p></a>
-                    {{/if}}
-                    <div id="dropdown" class="dropdown-content">
-                        <a href="profile">Profile</a>
-                        <a href="settings">Settings</a>
-                        <a href="help-center">FAQs</a>
-                        <a href="/">Logout</a>
-                    </div>
-            </div>
-        </div>
-        <div class="membership-container">
+          {{#if user.profilepic}}
+            <a href="#" onclick="toggleDropdown()" class="memprofile-pic"><img src="{{user.profilepic}}" alt="Profile Picture" class="profile-picture"></a>
+          {{else}}
+            <a href="#" onclick="toggleDropdown()" class="memprofile-pic"><p>:(</p></a>
+          {{/if}}
+          <div id="dropdown" class="dropdown-content">
+            <a href="profile">Profile</a>
+            <a href="settings">Settings</a>
+            <a href="help-center">FAQs</a>
+            <a href="/">Logout</a>
+          </div>
+      </div>
+    </div>
+    <div class="membership-container">
 			<div class="review-header">
-                <h1>Review Club Application</h1>
-            </div>
-                <form action="/update-clubstatus" method="post">
-                    <div class="review-details" >
-                        <h2>Club Application Information</h2>
-                        <input type="hidden" name="applicationId" value="{{clubregistration.id}}"> 
-                                                                                                    {{!-- use '{{clubregistration.something}}' to get the data --}}
-                        <h2>{{clubregistration.clubname}}</h2>
-                        submittedby: {{clubregistration.firstname}} {{clubregistration.lastname}}
-                        <a href="{{clubregistration.idfile}}" target="_blank" download> ID</a>
-                        <a href="{{clubregistration.proofdoc}}" target="_blank" download> Proof Document </a>
+        <h1>Review Club Application</h1>
+      </div>
+        <form action="/update-clubstatus" method="post">
+          <div class="review-details" >
+            <h2>Club Application Information</h2>
+            <input type="hidden" name="applicationId" value="{{clubregistration.id}}"> 
+                                                  {{!-- use '{{clubregistration.something}}' to get the data --}}
+            <h2>{{clubregistration.clubname}}</h2>
+						<img class='clubpic' src="{{clubregistration.clubpic}}">
+            submittedby: {{clubregistration.firstname}} {{clubregistration.lastname}}
+            <a href="{{clubregistration.idfile}}" target="_blank" download> ID</a>
+            <a href="{{clubregistration.proofdoc}}" target="_blank" download> Proof Document </a>
 
-                        <!-- Add any other relevant details here -->
-                    </div>
-                    <div class="application-actions">
-                        <h1>{{registration.status}}</h1>
-                        {{#if (eq user.usertype "pta")}}
-                            <div class="status-buttons" id="status-buttons">                        {{!-- VALUES NAMES AND TYPES NEED TO STAY THE SAME --}}
-                                <button type="submit" name="status" value="1">Processing Application</button>
-                                <button type="button" id="accepted" class="accepted">Accepted and Registered</button>
-                                <button type="submit" name="status" value="0">Reject Application</button>
-                            </div>
-                            <div class="confirmscreen" id="confirmscreen" style="display: none;">
-                                <h3>Are you sure? This will be added to the clubs page for the public to see.</h3>
-                                <button class="cancel" id="cancel">Cancel</button>
-                                <button  type="submit" value="4" name="status">Confirm</button>
-                            </div>
-                            <div class="backtolist">
-                                <a href="/membership-status">Back to list</a>
-                            </div>
-                        {{/if}}
-                    </div>
-                </form>
-            <div class="printwindow" id="printableArea" >
-                <p><strong>ID:</strong> {{clubregistration.id}}</p>
-                <p><strong>First Name:</strong> {{clubregistration.firstname}}</p>
-                <p><strong>Last Name:</strong> {{clubregistration.lastname}}</p>
-            </div>
+            <!-- Add any other relevant details here -->
+          </div>
+          <div class="application-actions">
+            <h1>{{registration.status}}</h1>
+            {{#if user.ptaverified}}
+              <div class="status-buttons" id="status-buttons">            {{!-- VALUES NAMES AND TYPES NEED TO STAY THE SAME --}}
+                <button type="submit" name="status" value="1">Processing Application</button>
+                <button type="button" id="accepted" class="accepted">Accepted and Registered</button>
+                <button type="submit" name="status" value="0">Reject Application</button>
+              </div>
+              <div class="confirmscreen" id="confirmscreen" style="display: none;">
+                <h3>Are you sure? This will be added to the clubs page for the public to see.</h3>
+                <button class="cancel" id="cancel">Cancel</button>
+                <button  type="submit" value="4" name="status">Confirm</button>
+              </div>
+              <div class="backtolist">
+                <a href="/membership-status">Back to list</a>
+              </div>
+            {{/if}}
+          </div>
+        </form>
+      <div class="printwindow" id="printableArea" >
+        <p><strong>ID:</strong> {{clubregistration.id}}</p>
+        <p><strong>First Name:</strong> {{clubregistration.firstname}}</p>
+        <p><strong>Last Name:</strong> {{clubregistration.lastname}}</p>
+      </div>
 
-                <script>
-                    const confirmscreen = document.getElementById("confirmscreen");
-                    const statuses = document.getElementById("status-buttons");
-                    const cancel = document.getElementById("cancel");
-                    const accepted = document.getElementById("accepted");
-                    const statusForm = document.getElementById("statusForm");
-                    const confirmButton = document.getElementById("confirm");
+        <script>
+          const confirmscreen = document.getElementById("confirmscreen");
+          const statuses = document.getElementById("status-buttons");
+          const cancel = document.getElementById("cancel");
+          const accepted = document.getElementById("accepted");
+          const statusForm = document.getElementById("statusForm");
+          const confirmButton = document.getElementById("confirm");
 
-                    cancel.addEventListener("click", function (event) {
-                        event.preventDefault();
-                        confirmscreen.style.display = "none";
-                        statuses.style.display = "block";
-                    });
+          cancel.addEventListener("click", function (event) {
+            event.preventDefault();
+            confirmscreen.style.display = "none";
+            statuses.style.display = "block";
+          });
 
-                    accepted.addEventListener("click", function (event) {
-                        event.preventDefault();
-                        confirmscreen.style.display = "block";
-                        statuses.style.display = "none";
-                        // Set the status value in the confirm button data attribute
-                        confirmButton.value = accepted.getAttribute("data-status");
-                    });
+          accepted.addEventListener("click", function (event) {
+            event.preventDefault();
+            confirmscreen.style.display = "block";
+            statuses.style.display = "none";
+            // Set the status value in the confirm button data attribute
+            confirmButton.value = accepted.getAttribute("data-status");
+          });
 
-                    confirmButton.addEventListener("click", function (event) {
-                        event.preventDefault();
-                        const status = confirmButton.value;
-                        const applicationId = document.querySelector('input[name="applicationId"]').value;
-                    });
+          confirmButton.addEventListener("click", function (event) {
+            event.preventDefault();
+            const status = confirmButton.value;
+            const applicationId = document.querySelector('input[name="applicationId"]').value;
+          });
 
-                    function printDiv(divName) {
-                        var printContents = document.getElementById(divName).innerHTML;
-                        var originalContents = document.body.innerHTML;
+          function printDiv(divName) {
+            var printContents = document.getElementById(divName).innerHTML;
+            var originalContents = document.body.innerHTML;
 
-                        document.body.innerHTML = printContents;
+            document.body.innerHTML = printContents;
 
-                        window.print();
+            window.print();
 
-                        document.body.innerHTML = originalContents;
-                    }
-  		        </script>
+            document.body.innerHTML = originalContents;
+          }
+  		    </script>
 			</div>
-        </div>
-    </body>
+    </div>
+  </body>
 </html>
