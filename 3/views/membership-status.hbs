@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+
 <head>
   <title>PTA | Membership Status</title>
   <link rel="icon" type="image/x-icon" href="../images/favicon.ico" />
@@ -6,22 +9,33 @@
 </head>
 
 <body style="margin:0;" class="container">
-  <div class="membership-header">
-    <div class="membership-navbar">
-      <a href="home"><img src="/images/logo.png" class="membership-logo" alt="Logo"></a>
-      {{#if user.profilepic}}
-        <a href="#" onclick="toggleDropdown()" class="memprofile-pic"><img src="{{user.profilepic}}" alt="Profile Picture" class="profile-picture"></a>
-      {{else}}
-        <a href="#" onclick="toggleDropdown()" class="memprofile-pic"><p>:(</p></a>
-      {{/if}}
-      <div id="dropdown" class="dropdown-content">
-        <a href="profile">Profile</a>
-        <a href="settings">Settings</a>
-        <a href="help-center">FAQs</a>
-        <a href="/">Logout</a>
-      </div>
+    <div class="navbar">
+      <a href="/home"><img src="/images/logo.png" class="logo" alt="Logo"></a>
+      <ul class="tabs">
+        <li class="home"><a href="/home">Home</a></li>
+        <li class="athletes"><a href="/athletes">Athletes</a></li>
+        <li class="clubs"><a href="/clubs">Clubs</a></li>
+        <li class="events"><a href="/events">Events</a></li>
+        <li class="membership"><a href="/membership">Membership</a></li>
+        <li class="forum"><a href="/forum">Forum</a></li>
+        <li class="notifications">
+          <a href="/notifications">Notifications <span class="badge">3</span></a>
+        </li>
+        <li class="profile-pic">
+          {{#if user.profilepic}}
+            <a href="#" onclick="toggleDropdown()"><img src="{{user.profilepic}}" alt="Profile Picture" class="profile-picture"></a>
+          {{else}}
+            <a href="#" onclick="toggleDropdown()" class="profile-picture"><img src="/images/none.jpg" alt="Profile Picture" class="profile-picture"></a>
+          {{/if}}
+          <div id="dropdown" class="dropdown-content">
+            <a href="/profile">Profile</a>
+            <a href="/settings">Settings</a>
+            <a href="/help-center">FAQs</a>
+            <a href="/">Logout</a>
+          </div>
+        </li>
+      </ul>
     </div>
-  </div>
   <div class="membership-container">
     <div class="membership-leftside">
       <div class="forumtitle">
@@ -78,6 +92,9 @@
         <a href="/membership">Back</a>
       </div>
     </div>
+  </div>
+  <div class="footer">
+    <p>&copy; 2024 Philippine Taekwondo Association. All rights reserved.</p>
   </div>
   <script>
     document.addEventListener("DOMContentLoaded", function() {

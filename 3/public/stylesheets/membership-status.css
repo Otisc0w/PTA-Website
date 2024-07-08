@@ -52,8 +52,9 @@ a:hover {
 }
 
 .membership-container {
+  margin-top: 60px;
   display: flex;
-  height: calc(100vh - 60px);
+  height: calc(96vh - 60px);
 }
 
 .membership-leftside {
@@ -91,8 +92,11 @@ a:hover {
 }
 
 .membership-statuses {
-  width: 100%;
-  max-width: 600px;
+  width: 100%; /* Set the desired width */
+  height: 1000px; /* Set the desired height */
+  overflow: auto; /* Enable both horizontal and vertical scrolling */
+  border: 1px solid #ccc; /* Optional: Add a border for visibility */
+  padding: 10px; /* Optional: Add padding */
 }
 
 .post-content {
@@ -184,3 +188,13 @@ a:hover {
   color: grey;
 }
 
+.footer {
+  background-color: var(--light-bg);
+  padding: 10px 20px;
+  text-align: center;
+}
+
+.footer p {
+  margin: 0;
+  color: var(--text-color);
+}
