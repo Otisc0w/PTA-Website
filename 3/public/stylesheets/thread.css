@@ -1,17 +1,28 @@
-.container {
+body {
+    font-family: 'SF Pro Display', sans-serif;
+    margin: 0;
+    padding: 0;
     display: flex;
-    justify-content: center;
-    padding: 20px;
-    background-color: #3a3a3a;
+    flex-direction: column;
+    min-height: 100vh;
+    background-image: url('/images/homepage/ptabg-gray.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    
 }
 
-.forum-container {
-    
-    width: 60%;
+
+.forum-container { 
+    width: 50%;
     background-color: #2c2c2c;
     padding: 20px;
     border-radius: 8px;
-    color: #d7dadc;
+    color: #d7dadc; 
+    justify-content: center; 
+    margin: auto;
+    
 }
 
 .post-container, .comment {
@@ -122,6 +133,7 @@
     border-radius: 4px;
     color: #fff;
     padding: 0.5rem;
+    resize: vertical;
 }
 
 .comment-form button {
