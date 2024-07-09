@@ -112,9 +112,9 @@ body {
 
 .notifications {
     position: relative;
-  }
+}
   
-  .notifications .badge {
+.notifications .badge {
     background-color: red;
     color: white;
     border-radius: 50%;
@@ -123,4 +123,4 @@ body {
     position: absolute;
     top: -10px;
     right: -10px;
-  }
+}

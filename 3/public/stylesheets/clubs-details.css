@@ -1,7 +1,3 @@
-body {
-  font-family: Arial, sans-serif;
-}
-
 .clubdetails-container {
   margin-top: 60px;
   display: flex;
@@ -90,23 +86,92 @@ body {
   border-radius: 10px;
 }
 
-.memberlist {
-  width: 69%;
+.leftside {
+  width: 55%;
   text-align: left;
+  height: 50%;
 }
 
-.invitediv{
-  width:30%;
+.rightside{
+  width: 30%;
+  height: 50%;
 }
 
 .main-panel div{
   display: inline-block;
 }
 
-.invite-button img{
+.manage-button img{
   width:20px;
   height:20px;
   margin-right: 5px; /* Adjust margin for better spacing */
   margin-top: 4px;
   margin-left: -5px;
+}
+
+.manage-button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  margin-left: 15px;
+}
+
+.manage-button:hover {
+  background-color: #0056b3;
+}
+
+.clubtabs li{
+  display: inline;
+  margin: 0 15px;
+  float: left;
+}
+
+.clubtabs{
+  width: 100%;
+}
+
+.clubtabs ul{
+  margin-left: 150px;
+}
+
+.clubtabs a{
+  text-decoration: none;
+  color: white;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  padding: 10px 15px;
+}
+
+.clubtabs a:hover{
+  background-color: #0c0c0c;
+    border-radius: 15%;
+}
+
+.clubtabs a:active{
+    background-color: #0c0c0c;
+    border-radius: 15%;
+}
+
+.intro{
+  margin-top: 20px;
+  margin-left: 50px;
+  padding: 10px 20px;
+  background-color: #222;
+  border-radius: 10px;
+  width: 300px;
+  height: 300px;
+}
+
+.sides{
+  width: 1600px;
+  height: 900px;
+}
+
+.sides div{
+  display: inline-block;
 }
