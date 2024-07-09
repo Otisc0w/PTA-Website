@@ -3,7 +3,7 @@
 <head>
   <title>PTA | Club Details</title>
   <link rel="icon" type="image/x-icon" href="../images/favicon.ico" />
-  <link rel="stylesheet" type="text/css" href="../stylesheets/clubs-details.css" />
+  <link rel="stylesheet" type="text/css" href="../stylesheets/club-details.css" />
   <link rel="stylesheet" type="text/css" href="../stylesheets/navbar.css" />
 </head>
 
@@ -38,17 +38,46 @@
     </div>
   </div>
 
-  {{!-- <div class="clubdetails-container">
+
+ <div class="home-container">
+
     <div class="left-panel"></div>
 
     <div class="main-panel">
-      <img src="{{club.clubpic}}">
-      {{club.clubname}}
-      Members: 
-      {{#each clubMembers}}
-        <li>{{this.username}}</li>
-      {{/each}}
+        <div class="details">
+            <img src="{{club.clubpic}}" alt="Club Picture">
+            <div class="text-details">
+                <h3>{{club.clubname}}</h3>
+                <p><strong>Province:</strong> {{club.province}}</p>
+                <p><strong>Address:</strong> {{club.clubaddress}}</p>
+                <p><strong>Email:</strong> {{club.email}}</p>
+                <p><strong>Phone Number:</strong> {{club.phonenum}}</p>
+                <h4>Members:</h4>
+                <ul>
+                    {{#each clubMembers}}
+                        <li>{{this.username}}</li>
+                    {{/each}}
+                </ul>
+            </div>
+        </div>
+        {{#if (eq club.registeredby user.id)}}
+        <div class="invite-section">
+            <form action="/invite-user" method="post">
+                <input type="hidden" name="clubname" value="{{club.clubname}}">
+                <input type="hidden" name="club_id" value="{{club.id}}">
+                <label for="invited_user">Invite User:</label>
+                <select name="invited_user" id="invited_user">
+                    {{#each allUsers}}
+                        <option value="{{username}}">{{username}}</option>
+                    {{/each}}
+                </select>
+                <button type="submit">Invite</button>
+            </form>
+        </div>
+        {{/if}}
     </div>
+</div>
+
     {{#if (eq club.registeredby user.id)}}
       <form action="/invite-user" method="post">
         <input type="hidden" name="clubname" value="{{club.clubname}}">
@@ -106,7 +135,7 @@
     </div>
   </div>
 
-  <footer>
+   <footer>
     <div class="footer-content">
       <div class="pta-logo">
         <img src="/images/logo.png" alt="PTA Logo">
