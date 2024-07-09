@@ -52,8 +52,10 @@
 
 .event img, .news-item img {
     width: 100%;
-    height: auto;
-    border-radius: 10px 10px 0 0;
+    height: 70%;
+    object-fit: cover; /* Ensure the image covers the container */
+    object-position: center; /* Center the image within the container */
+    border-radius: 4px 4px 4px 4px;
 }
 
 .event h3, .news-item h3 {
@@ -135,17 +137,5 @@
     height: 30px;
 }
 
-.notifications {
-    position: relative;
-}
 
-.notifications .badge {
-    background-color: red;
-    color: white;
-    border-radius: 50%;
-    padding: 2px 6px;
-    font-size: 12px;
-    position: absolute;
-    top: -10px;
-    right: -10px;
-}
+

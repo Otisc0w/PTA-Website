@@ -38,7 +38,11 @@
     </div>
   </div>
 
+
  <div class="home-container">
+
+    <div class="left-panel"></div>
+
     <div class="main-panel">
         <div class="details">
             <img src="{{club.clubpic}}" alt="Club Picture">
@@ -74,8 +78,62 @@
     </div>
 </div>
 
+    {{#if (eq club.registeredby user.id)}}
+      <form action="/invite-user" method="post">
+        <input type="hidden" name="clubname" value="{{club.clubname}}">
+        <input type="hidden" name="club_id" value="{{club.id}}">
+        <label for="invited_user">Invite User:</label>
+        <select name="invited_user" id="invited_user">
+        {{#each allUsers}}
+          <option value="{{username}}">{{username}}</option>
+        {{/each}}
+        </select>
+        <button type="submit">Invite</button>
+      </form>
+    {{/if}}
+  </div> --}}
 
-
+  <div class="clubdetails-container">
+    <div class="main-panel">
+      <img src="{{club.clubpic}}" alt="Club Picture" class="club-pic">
+      <h1 class="club-name">{{club.clubname}}</h1>
+      <div class="hosted-by">
+        <p>Hosted by {{club.host}}</p>
+      </div>
+      <div class="club-description">
+        <p>{{club.description}}</p>
+      </div>
+      <div class="club-members-count">
+        <p>Members: {{clubMembers.length}}</p>
+      </div>
+      <div class="members-list">
+        <h2>Club Members</h2>
+        <ul>
+          {{#each clubMembers}}
+            <li>{{this.username}}</li>
+          {{/each}}
+        </ul>
+      </div>
+      {{#if (eq club.registeredby user.id)}}
+        <div class="invite-section">
+          <h2>Invite Athlete</h2>
+          <form action="/invite-user" method="post">
+            <input type="hidden" name="clubname" value="{{club.clubname}}">
+            <input type="hidden" name="club_id" value="{{club.id}}">
+            <label for="invited_user">Select User:</label>
+            <select name="invited_user" id="invited_user">
+              {{#each allUsers}}
+                {{#if this.registered}}
+                  <option value="{{this.username}}">{{this.username}}</option>
+                {{/if}}
+              {{/each}}
+            </select>
+            <button type="submit" class="invite-button">Invite</button>
+          </form>
+        </div>
+      {{/if}}
+    </div>
+  </div>
 
    <footer>
     <div class="footer-content">
