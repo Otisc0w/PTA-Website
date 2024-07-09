@@ -42,17 +42,19 @@
     <div class="main-panel">
         <div class="details">
             <img src="{{club.clubpic}}" alt="Club Picture">
-            <h3>{{club.clubname}}</h3>
-            <p><strong>Province:</strong> {{club.province}}</p>
-            <p><strong>Address:</strong> {{club.clubaddress}}</p>
-            <p><strong>Email:</strong> {{club.email}}</p>
-            <p><strong>Phone Number:</strong> {{club.phonenum}}</p>
-            <h4>Members:</h4>
-            <ul>
-                {{#each clubMembers}}
-                    <li>{{this.username}}</li>
-                {{/each}}
-            </ul>
+            <div class="text-details">
+                <h3>{{club.clubname}}</h3>
+                <p><strong>Province:</strong> {{club.province}}</p>
+                <p><strong>Address:</strong> {{club.clubaddress}}</p>
+                <p><strong>Email:</strong> {{club.email}}</p>
+                <p><strong>Phone Number:</strong> {{club.phonenum}}</p>
+                <h4>Members:</h4>
+                <ul>
+                    {{#each clubMembers}}
+                        <li>{{this.username}}</li>
+                    {{/each}}
+                </ul>
+            </div>
         </div>
         {{#if (eq club.registeredby user.id)}}
         <div class="invite-section">
@@ -71,6 +73,7 @@
         {{/if}}
     </div>
 </div>
+
 
 
 
