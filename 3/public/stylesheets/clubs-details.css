@@ -1,157 +1,112 @@
-/* Reset default margin and padding */
+body {
+  font-family: Arial, sans-serif;
+}
 
-  
-  .clubdetails-container {
-    display: flex;
-    justify-content: center;
-    padding: 20px;
-    margin-top: 60px;
-  }
-  
-  .main-panel {
-    background-color: #292929;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    width: 70%;
-  }
-  
-  .club-pic {
-    object-fit: cover; /* Ensure the image covers the container */
+.clubdetails-container {
+  margin-top: 60px;
+  display: flex;
+  justify-content: center;
+  height: 100vh;
+  background-color: #333;
+  color: white;
+}
+
+.main-panel {
+  text-align: center;
+  padding: 20px;
+  border-radius: 10px;
+}
+
+.main-panel img {
+  width: 1300px;
+  height: 400px;
+  border-radius: 10px;
+  object-fit: cover; /* Ensure the image covers the container */
     object-position: center; /* Center the image within the container */
-    width: 100%;
-    height: 400px;
-    border-radius: 10px;
-    margin-bottom: 20px;
-  }
-  
-  .club-name {
-    font-size: 32px;
-    margin-bottom: 10px;
-  }
-  
-  .hosted-by {
-    display: flex;
-    align-items: center;
-    margin-bottom: 20px;
-  }
-  
-  .host-pic {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    margin-right: 10px;
-  }
-  
-  .club-description {
-    font-size: 16px;
-    margin-bottom: 20px;
-  }
-  
-  .club-members-count {
-    font-size: 16px;
-    margin-bottom: 20px;
-  }
-  
-  .members-list {
-    margin-bottom: 20px;
-  }
-  
-  .members-list h2 {
-    font-size: 20px;
-    margin-bottom: 10px;
-  }
-  
-  .members-list ul {
-    list-style-type: none;
-    padding: 0;
-  }
-  
-  .members-list li {
-    padding: 5px 0;
-  }
-  
-  .invite-section {
-    margin-top: 20px;
-  }
-  
-  .invite-section h2 {
-    font-size: 20px;
-    margin-bottom: 10px;
-  }
-  
-  .invite-section form {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-  }
-  
-  .invite-section label {
-    margin-bottom: 5px;
-  }
-  
-  .invite-section select {
-    padding: 5px;
-    margin-bottom: 10px;
-  }
-  
-  .invite-button {
-    padding: 10px 20px;
-    background-color: #007BFF;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  
-  .invite-button:hover {
-    background-color: #0056b3;
-  }
-  
-  .footer-content {
-    background-color: #333;
-    color: #fff;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 20px;
-    height: 100px;
-    margin-top: auto; 
 }
 
-.footer-content .pta-logo img {
-    height: 100%; 
+.invite-button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
 }
 
-.footer-content .contact-info {
-    flex: 1;
-    text-align: center;
-    padding: 0 20px;
+.invite-button:hover {
+  background-color: #0056b3;
 }
 
-.footer-content .contact-info p {
-    margin: 5px 0;
+/* Modal Styles */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgba(0, 0, 0, 0.8); /* Black w/ opacity */
+  backdrop-filter: blur(10px); /* Blur the background */
 }
 
-.footer-content .social-media {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
+.modal-content {
+  background-color: #222;
+  margin: 15% auto; /* 15% from the top and centered */
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%; /* Could be more or less, depending on screen size */
+  max-width: 500px;
+  border-radius: 10px;
+  color: white;
 }
 
-.footer-content .social-media p {
-    margin-bottom: 5px;
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
 }
 
-.footer-content .social-media .icons {
-    display: flex;
-    align-items: center;
+.close:hover,
+.close:focus {
+  color: white;
+  text-decoration: none;
+  cursor: pointer;
 }
 
-.footer-content .social-media a {
-    margin-left: 10px;
+.clubname{
+  width: 100%;
+  display: inline-block;
 }
 
-.footer-content .social-media img {
-    height: 30px;
+.clubname .name{
+  font-size: 32px;
+  font-weight: bold;
+  color: #ffffff;
+  border-radius: 10px;
+}
+
+.memberlist {
+  width: 69%;
+  text-align: left;
+}
+
+.invitediv{
+  width:30%;
+}
+
+.main-panel div{
+  display: inline-block;
+}
+
+.invite-button img{
+  width:20px;
+  height:20px;
+  margin-right: 5px; /* Adjust margin for better spacing */
+  margin-top: 4px;
+  margin-left: -5px;
 }

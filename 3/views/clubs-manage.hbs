@@ -38,49 +38,8 @@
     </div>
   </div>
 
-  <div class="clubdetails-container">
-    <div class="left-panel"></div>
-
-    <div class="main-panel">
-      
-      <img src="{{club.clubpic}}" alt="Club Picture">
-      <div class="clubname">
-        <span class="name">{{club.clubname}}</span>
-        {{#if (eq club.registeredby user.id)}}
-          <span><a href="/clubs-manage" class="invite-button" ><img src="/images/settings.png">Manage</a></span>
-        {{/if}}
-      </div>
-      <div class="memberlist">
-        <p>Members:</p>
-        <ul>
-          {{#each clubMembers}}
-            <li>{{name}}</li>
-          {{/each}}
-        </ul>
-      </div>
-      <div class="invitediv">
-        {{#if (eq club.registeredby user.id)}}
-          <button class="invite-button" onclick="openModal()">+ Invite Members</button>
-        {{/if}}
-      </div>
-    </div>
-  </div>
-
-  <div id="inviteModal" class="modal">
-    <div class="modal-content">
-      <span class="close" onclick="closeModal()">&times;</span>
-      <form action="/invite-user" method="post">
-        <input type="hidden" name="clubname" value="{{club.clubname}}">
-        <input type="hidden" name="club_id" value="{{club.id}}">
-        <label for="invited_user">Invite User:</label>
-        <select name="invited_user" id="invited_user">
-          {{#each athletes}}
-            <option value="{{userid}}">{{name}}</option>
-          {{/each}}
-        </select>
-        <button type="submit">Invite</button>
-      </form>
-    </div>
+  <div class="clubdetails-container"><br>
+		manage ur club
   </div>
 
   <script>
