@@ -105,8 +105,8 @@
         <input type="hidden" name="club_id" value="{{club.id}}">
         <label for="invited_user">Invite User:</label>
         <select name="invited_user" id="invited_user">
-          {{#each athletes}}
-            <option value="{{userid}}">{{name}}</option>
+          {{#each allUsers}}
+            <option value="{{id}}">{{firstname}}</option>
           {{/each}}
         </select>
         <button type="submit">Invite</button>
