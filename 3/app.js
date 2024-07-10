@@ -1804,49 +1804,36 @@ app.get('/clubs', async function (req, res) {
   }
 });
 
-app.get('/events-details/:id', async function (req, res) {
+app.get('/clubs-details/:id', async function (req, res) {
+  const { id } = req.params;
+
   if (!req.session.user) {
     return res.redirect('/');
   }
-
-  const { id } = req.params; // Get the event ID from the URL
-
+  
   try {
-    // Fetch the event details from the events table
-    const { data: event, error: eventError } = await supabase
-      .from('events')
+    const { data: club, error: clubsError } = await supabase
+      .from('clubs')
       .select('*')
       .eq('id', id)
       .single();
 
-    if (eventError) {
-      return res.status(400).json({ error: eventError.message });
+    if (clubsError) {
+      return res.status(400).json({ clubsError: clubsError.message });
     }
 
-    // Fetch the event registrations for the specific event
-    const { data: eventRegistrations, error: eventRegistrationsError } = await supabase
-      .from('events_registrations')
-      .select('*')
-      .eq('eventid', id);
+    const { data: allUsers, error: allUsersError } = await supabase
+      .from('users')
+      .select('*');
 
-    if (eventRegistrationsError) {
-      return res.status(400).json({ error: eventRegistrationsError.message });
+    if (allUsersError) {
+      return res.status(400).json({ allUsersError: allUsersError.message });
     }
 
-    const { data: participants, error: participantsError } = await supabase
-      .from('events_registrations')
-      .select('*')
-      .eq('registered', 'true');
+    const clubMembers = allUsers.filter(user => user.club === club.clubname && user.registered === true);
 
-    if (participantsError) {
-      return res.status(400).json({ error: participantsError.message });
-    }
-
-    console.log("Fetched event data:", event); // Log the event data to the console
-    console.log("Fetched event registrations data:", eventRegistrations); // Log the event registrations data to the console
-
-    // Render the events-details.hbs template with the fetched data
-    res.render('events-details', { event, eventRegistrations, participants, user: req.session.user });
+    // Render the clubs-details.hbs template with the fetched data
+    res.render('clubs-details', { club, allUsers, clubMembers, user: req.session.user });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -2067,18 +2054,20 @@ app.get('/events-details/:id', async function (req, res) {
       return res.status(400).json({ error: eventRegistrationsError.message });
     }
 
-    // Log to verify the data
-    console.log("Fetched event data:", event);
-    console.log("Fetched event registrations data:", eventRegistrations);
+    const { data: participants, error: participantsError } = await supabase
+      .from('events_registrations')
+      .select('*')
+      .eq('registered', 'true');
 
-    // Combine the event and eventRegistrations data for easier template rendering
-    const eventRegistrationsWithEvent = eventRegistrations.map(registration => ({
-      ...registration,
-      event
-    }));
+    if (participantsError) {
+      return res.status(400).json({ error: participantsError.message });
+    }
+
+    console.log("Fetched event data:", event); // Log the event data to the console
+    console.log("Fetched event registrations data:", eventRegistrations); // Log the event registrations data to the console
 
     // Render the events-details.hbs template with the fetched data
-    res.render('events-details', { event, eventRegistrations: eventRegistrationsWithEvent, user: req.session.user });
+    res.render('events-details', { event, eventRegistrations, participants, user: req.session.user });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
