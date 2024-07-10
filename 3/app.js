@@ -776,6 +776,40 @@ app.post('/create-post', async (req, res) => {
         users: [] // Optionally pass users array if you need it in the view
       });
     }
+    
+
+    res.redirect('/forum');
+  } catch (error) {
+    // Handle any server-side errors
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.post('/create-topic', async (req, res) => {
+  const {
+    topic,
+  } = req.body; // Capture user input from the form
+
+  if (!req.session.user) {
+    return res.status(401).send('Unauthorized: No user logged in');
+  }
+
+  try {
+    // Update the user in the database
+    const { data, error } = await supabase
+      .from('forum_topics') 
+      .insert([{
+        topic
+      }]);
+
+    if (error) {
+      // Handle any errors that occur during the update
+      return res.status(500).render('forum', {
+        error: 'Error updating profile.',
+        users: [] // Optionally pass users array if you need it in the view
+      });
+    }
+    
 
     res.redirect('/forum');
   } catch (error) {
@@ -793,7 +827,6 @@ app.post('/save-profile-changes', upload.single('file'), async (req, res) => {
     email,
     password,
     region,
-    club,
     athleteverified,
     instructorverified,
     ptaverified,
@@ -840,7 +873,6 @@ app.post('/save-profile-changes', upload.single('file'), async (req, res) => {
         email,
         password,
         region,
-        club,
         athleteverified,
         instructorverified,
         profilepic
@@ -1532,6 +1564,8 @@ app.post('/submit-player', async (req, res) => {
     instructor
   } = req.body; // Capture user input from the form
 
+  const registered ='false';
+
   try {
     // Insert the new registration into the database
     const { data, error } = await supabase
@@ -1548,7 +1582,8 @@ app.post('/submit-player', async (req, res) => {
         belt,
         height,
         weight,
-        instructor
+        instructor,
+        registered
       }]);
 
     if (error) {
@@ -1556,6 +1591,36 @@ app.post('/submit-player', async (req, res) => {
       return res.status(500).send('Error creating registration.');
     }
     res.redirect('/events');
+  } catch (error) {
+    console.error('Server error:', error.message);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.post('/update-eventreg-status', async (req, res) => {
+  if (!req.session.user) {
+    return res.status(401).send('Unauthorized: No user logged in');
+  }
+
+  const { applicationId, registered } = req.body; // Capture application ID and new status from the form
+
+  try {
+    // Update the status of the specific registration in the database
+    const { data: registration, error: updateStatusError } = await supabase
+      .from('events_registrations')
+      .update({ registered })
+      .eq('id', applicationId)
+      .single();
+
+    if (updateStatusError) {
+      console.error('Error updating status:', updateStatusError.message);
+      return res.status(500).send('Error updating status');
+    }
+
+    // Optionally, handle post-acceptance actions, like notifying the user or updating other related tables
+
+    console.log('Registration updated:', registration);
+    res.redirect(`/events-review-registration/${applicationId}`);
   } catch (error) {
     console.error('Server error:', error.message);
     res.status(500).json({ error: error.message });
@@ -1650,18 +1715,27 @@ app.get('/forum-create', async function (req, res) {
   }
 
   try {
-    const { data, error } = await supabase
+    const { data: threads, error: threadsError } = await supabase
       .from('forum_threads')
       .select('*');
 
-    if (error) {
-      return res.status(400).json({ error: error.message });
+    if (threadsError) {
+      return res.status(400).json({ error: threadsError.message });
     }
 
-    console.log("Fetched data:", data); // Log the data to the console 
+    const { data: topics, error: topicsError } = await supabase
+      .from('forum_topics')
+      .select('*');
 
-    // Render the forum.hbs template with the fetched data
-    res.render('forum-create', { forum_threads: data, user: req.session.user });
+    if (topicsError) {
+      return res.status(400).json({ error: topicsError.message });
+    }
+
+    console.log("Fetched threads data:", threads); // Log the threads data to the console 
+    console.log("Fetched topics data:", topics); // Log the topics data to the console 
+
+    // Render the forum-create.hbs template with the fetched data
+    res.render('forum-create', { forum_threads: threads, forum_topics: topics, user: req.session.user });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -1730,46 +1804,49 @@ app.get('/clubs', async function (req, res) {
   }
 });
 
-app.get('/clubs-details/:id', async function (req, res) {
-  const { id } = req.params;
-
+app.get('/events-details/:id', async function (req, res) {
   if (!req.session.user) {
     return res.redirect('/');
   }
-  
+
+  const { id } = req.params; // Get the event ID from the URL
+
   try {
-    const { data: club, error: clubsError } = await supabase
-      .from('clubs')
+    // Fetch the event details from the events table
+    const { data: event, error: eventError } = await supabase
+      .from('events')
       .select('*')
       .eq('id', id)
       .single();
 
-    if (clubsError) {
-      return res.status(400).json({ clubsError: clubsError.message });
+    if (eventError) {
+      return res.status(400).json({ error: eventError.message });
     }
 
-    const { data: allUsers, error: allUsersError } = await supabase
-      .from('users')
+    // Fetch the event registrations for the specific event
+    const { data: eventRegistrations, error: eventRegistrationsError } = await supabase
+      .from('events_registrations')
       .select('*')
-      .eq('athleteverified', true)
-      .eq('instructorverified', true);
+      .eq('eventid', id);
 
-    if (allUsersError) {
-      return res.status(400).json({ allUsersError: allUsersError.message });
+    if (eventRegistrationsError) {
+      return res.status(400).json({ error: eventRegistrationsError.message });
     }
 
-    const { data: athletes, error: athletesError } = await supabase
-      .from('athletes')
+    const { data: participants, error: participantsError } = await supabase
+      .from('events_registrations')
       .select('*')
+      .eq('registered', 'true');
 
-    if (athletesError) {
-      return res.status(400).json({ athletesError: athletesError.message });
+    if (participantsError) {
+      return res.status(400).json({ error: participantsError.message });
     }
 
-    const clubMembers = athletes.filter(user => user.club === club.clubname);
+    console.log("Fetched event data:", event); // Log the event data to the console
+    console.log("Fetched event registrations data:", eventRegistrations); // Log the event registrations data to the console
 
-    // Render the clubs-details.hbs template with the fetched data
-    res.render('clubs-details', { club, allUsers, clubMembers, athletes, user: req.session.user });
+    // Render the events-details.hbs template with the fetched data
+    res.render('events-details', { event, eventRegistrations, participants, user: req.session.user });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -1908,6 +1985,59 @@ app.get('/events-registration/:id', async function (req, res) {
   }
 });
 
+app.get('/events-review-registration/:id', async function (req, res) {
+  if (!req.session.user) {
+    return res.redirect('/');
+  }
+
+  const { id } = req.params; // Get the event registration ID from the URL
+  const userId = req.session.user.id; // Get the user ID from the session
+
+  try {
+    // Fetch the event registration details
+    const { data: eventregistration, error: eventregError } = await supabase
+      .from('events_registrations')
+      .select('*')
+      .eq('id', id)
+      .single();
+
+    if (eventregError) {
+      return res.status(400).json({ error: eventregError.message });
+    }
+
+    // Fetch the event details using the eventid from the event registration
+    const { data: event, error: eventError } = await supabase
+      .from('events')
+      .select('*')
+      .eq('id', eventregistration.eventid)
+      .single();
+
+    if (eventError) {
+      return res.status(400).json({ error: eventError.message });
+    }
+
+    // Fetch the athlete details for the current user
+    const { data: athlete, error: athleteError } = await supabase
+      .from('athletes')
+      .select('*')
+      .eq('userid', userId)
+      .single();
+
+    if (athleteError) {
+      return res.status(400).json({ error: athleteError.message });
+    }
+
+    res.render('events-review-registration', {
+      eventregistration,
+      event,
+      athlete,
+      user: req.session.user
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 app.get('/events-details/:id', async function (req, res) {
   if (!req.session.user) {
     return res.redirect('/');
@@ -1930,30 +2060,25 @@ app.get('/events-details/:id', async function (req, res) {
     // Fetch the event registrations for the specific event
     const { data: eventRegistrations, error: eventRegistrationsError } = await supabase
       .from('events_registrations')
-      .select('athleteid')
+      .select('*')
       .eq('eventid', id);
 
     if (eventRegistrationsError) {
       return res.status(400).json({ error: eventRegistrationsError.message });
     }
 
-    // Extract all athlete IDs from the event registrations
-    const athleteIds = eventRegistrations.map(registration => registration.athleteid);
+    // Log to verify the data
+    console.log("Fetched event data:", event);
+    console.log("Fetched event registrations data:", eventRegistrations);
 
-    // Fetch the athlete details for all the extracted athlete IDs
-    const { data: athletes, error: athletesError } = await supabase
-      .from('athletes')
-      .select('*')
-
-    if (athletesError) {
-      return res.status(400).json({ error: athletesError.message });
-    }
-
-    console.log("Fetched event data:", event); // Log the event data to the console
-    console.log("Fetched athletes data:", athletes); // Log the athletes data to the console
+    // Combine the event and eventRegistrations data for easier template rendering
+    const eventRegistrationsWithEvent = eventRegistrations.map(registration => ({
+      ...registration,
+      event
+    }));
 
     // Render the events-details.hbs template with the fetched data
-    res.render('events-details', { event, athletes, user: req.session.user });
+    res.render('events-details', { event, eventRegistrations: eventRegistrationsWithEvent, user: req.session.user });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -1964,7 +2089,27 @@ app.get('/profile', async function (req, res) {
     return res.redirect('/');
   }
 
-  res.render('profile', { user: req.session.user });
+  const userId = req.session.user.id;
+
+  try {
+    // Fetch the athlete's data
+    const { data: athlete, error: athleteError } = await supabase
+      .from('athletes')
+      .select('*')
+      .eq('userid', userId)
+      .single();
+
+    if (athleteError) {
+      console.error('Error fetching athlete data:', athleteError.message);
+      return res.status(500).json({ error: athleteError.message });
+    }
+
+    // Render the profile template with the user session data and athlete data
+    res.render('profile', { user: req.session.user, athlete });
+  } catch (error) {
+    console.error('Server error:', error.message);
+    res.status(500).json({ error: error.message });
+  }
 });
 
 app.get('/athletes', async function (req, res) {

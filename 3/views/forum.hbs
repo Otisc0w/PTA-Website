@@ -48,6 +48,19 @@
             <button id="createPostButton" class="create-post-button" href="/create-post">
               <span class="plus-icon">+</span> Create a post
             </button>
+            <button id="createtopicButton" class="create-topic-button" >
+              <span class="plus-icon">+</span> Create a #topic
+            </button>
+          </div>
+          <div id="topicModal" class="modal">
+            <div class="modal-content">
+              <span class="close">&times;</span>
+              <form action="/create-topic" method="post">
+                <label for="topic">Topic:</label>
+                <input type="text" id="topic" name="topic" required>
+                <button type="submit">Create Topic</button>
+              </form>
+            </div>
           </div>
         </div>
         {{#reverseEach forum_threads}}
@@ -217,32 +230,58 @@
         }
       }
 
-function submitVote(event) {
-  event.preventDefault();
-  event.stopPropagation();
-  
-  const form = event.target;
-  const formData = new FormData(form);
-  
-  fetch(form.action, {
-    method: form.method,
-    body: formData
-  }).then(response => {
-    if (response.ok) {
-      return response.json();
-    } else {
-      throw new Error('Something went wrong');
+    function submitVote(event) {
+      event.preventDefault();
+      event.stopPropagation();
+      
+      const form = event.target;
+      const formData = new FormData(form);
+      
+      fetch(form.action, {
+        method: form.method,
+        body: formData
+      }).then(response => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          throw new Error('Something went wrong');
+        }
+      }).then(data => {
+        // Handle successful vote submission
+        console.log('Vote submitted successfully', data);
+        // Optionally, update the vote count in the UI
+      }).catch(error => {
+        console.error('Error:', error);
+      });
     }
-  }).then(data => {
-    // Handle successful vote submission
-    console.log('Vote submitted successfully', data);
-    // Optionally, update the vote count in the UI
-  }).catch(error => {
-    console.error('Error:', error);
-  });
-}
 
+    document.addEventListener('DOMContentLoaded', function () {
+      // Get the modal
+      var modal = document.getElementById('topicModal');
 
+      // Get the button that opens the modal
+      var btn = document.getElementById('createtopicButton');
+
+      // Get the <span> element that closes the modal
+      var span = document.getElementsByClassName('close')[0];
+
+      // When the user clicks the button, open the modal
+      btn.onclick = function () {
+        modal.style.display = 'block';
+      };
+
+      // When the user clicks on <span> (x), close the modal
+      span.onclick = function () {
+        modal.style.display = 'none';
+      };
+
+      // When the user clicks anywhere outside of the modal, close it
+      window.onclick = function (event) {
+        if (event.target == modal) {
+          modal.style.display = 'none';
+        }
+      };
+    });
 
 </script>
 

@@ -2,12 +2,12 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Club Details</title>
-  <link rel="icon" type="image/x-icon" href="../images/favicon.ico" /> 
+  <title>PTA | Events</title>
+  <link rel="icon" type="image/x-icon" href="../images/favicon.ico" />
   <link rel="stylesheet" type="text/css" href="../stylesheets/navbar.css" />
   <link rel="stylesheet" type="text/css" href="../stylesheets/clubs-details.css" />
 </head>
-<body>
+<body class="container">
   <div class="header">
     <div class="navbar">
       <a href="/home"><img src="/images/logo.png" class="logo" alt="Logo"></a>
@@ -38,53 +38,66 @@
     </div>
   </div>
 
-  <div class="clubdetails-container">
-
-    <div class="main-panel">
-      <img src="{{club.clubpic}}" alt="Club Picture">
+  <div class="events-container">
+      <img src="{{club.clubpic}}" alt="event Picture">
       <div class="clubname">
         <span class="name">{{club.clubname}}</span>
-        {{#if (eq club.registeredby user.id)}}
+        {{#if (eq -club.registeredby user.id)}}
           <span><a href="/clubs-manage" class="manage-button" ><img src="/images/settings.png">Manage</a></span>
         {{/if}}
       </div>
 
       <div class="clubtabs">
         <ul>
-          <li><a>Details</a></li>
-          <li><a>Members</a></li>
+          <li><a href="#">Details</a></li>
+          <li><a href="#">Members</a></li>
         </ul>
       </div><br>
       <div class="sides">
         <div class="leftside">
           <div class="intro">
-            <h3>Intro</h3>
-            <p>{{club.phonenum}}</p>
-            <p>{{club.email}}</p>
+            <h3>Details</h3>
             <p>{{club.clubaddress}}</p>
+            <p>{{club.email}}</p>
+            <p>{{club.phonenum}}</p>
           </div>
-          {{!-- <div class="membersdiv" >
-            <p>Members:</p>
-            <ul>
-              {{#each clubMembers}}
-                <li>{{name}}</li>
-              {{/each}}
-            </ul>
-          </div> --}}
         </div>
 
         <div class="rightside">
-          <div class="invitediv">
-            {{#if (eq club.registeredby user.id)}}
-              <button class="invite-button" onclick="openModal()">+ Invite Members</button>
-            {{/if}}
-          </div>
+					{{#if (eq club.registeredby user.id)}}
+						<button class="invite-button" onclick="openModal()">+ Invite Members</button>
+					{{/if}}
         </div>
       </div>
-    </div>
   </div>
 
-  <div id="inviteModal" class="modal">
+	<div class="participants-container">
+		<div class="participants-title">Participants</div>
+		<table class="participants-table">
+			<thead>
+				<tr>
+          <th>Picture</th>
+					<th>Player</th>
+					<th>Club</th>
+					<th>Height (cm)</th>
+					<th>Weight (kg)</th>
+				</tr>
+			</thead>
+			<tbody>
+				{{#each athletes}}
+					<tr>
+            <th><img src="{{this.portrait}}"></th>
+						<td>{{this.name}}</td>
+						<td>{{this.club}}</td>
+						<td>{{this.height}}</td>
+						<td>{{this.weight}}</td>
+					</tr>
+				{{/each}}
+			</tbody>
+		</table>
+	</div>
+
+	<div id="inviteModal" class="modal">
     <div class="modal-content">
       <span class="close" onclick="closeModal()">&times;</span>
       <form action="/invite-user" method="post">
@@ -106,7 +119,7 @@
       document.getElementById("dropdown").classList.toggle("show");
     }
 
-    window.onclick = function(event) {
+    window.onclick = function (event) {
       if (!event.target.matches('.profile-pic img')) {
         var dropdowns = document.getElementsByClassName("dropdown-content");
         for (var i = 0; i < dropdowns.length; i++) {
@@ -118,14 +131,49 @@
       }
     }
 
-    function openModal() {
+    document.addEventListener('DOMContentLoaded', function () {
+    // Get references to the elements
+    const participantsTab = document.querySelector('.clubtabs ul li:nth-child(2) a');
+    const detailsTab = document.querySelector('.clubtabs ul li:nth-child(1) a');
+    const leftside = document.querySelector('.leftside');
+    const rightside = document.querySelector('.rightside');
+    const participantsContainer = document.querySelector('.participants-container');
+
+    // Hide participants container by default
+    participantsContainer.style.display = 'none';
+
+    // Function to show participants container and hide sides
+    function showParticipants() {
+      leftside.style.display = 'none';
+      rightside.style.display = 'none';
+      participantsContainer.style.display = 'block';
+    }
+
+    // Function to show sides and hide participants container
+    function showDetails() {
+      leftside.style.display = 'block';
+      rightside.style.display = 'block';
+      participantsContainer.style.display = 'none';
+    }
+
+    // Add event listener for the Participants tab
+    participantsTab.addEventListener('click', function () {
+      showParticipants();
+    });
+
+    // Add event listener for the Details tab
+    detailsTab.addEventListener('click', function () {
+      showDetails();
+    });
+  });    
+
+  function openModal() {
       document.getElementById('inviteModal').style.display = 'block';
     }
 
     function closeModal() {
       document.getElementById('inviteModal').style.display = 'none';
     }
-
   </script>
 </body>
 </html>

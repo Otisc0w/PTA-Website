@@ -6,9 +6,10 @@
 
 .dp{
     width: 40px;
-    height: auto;
+    height: 40px;
     border-radius: 50px;
     margin-left: -7px;  
+    object-fit: cover;
 }
 
 .community {
@@ -174,7 +175,7 @@ li {
     margin: 20px 0;
 }
 
-.create-post-button {
+.create-post-button, .create-topic-button {
     background-color: transparent;
     border: 1px solid #ffffff;
     border-radius: 20px;
@@ -187,12 +188,16 @@ li {
     transition: background-color 0.3s, color 0.3s;
 }
 
+.create-topic-button{
+    margin-left: 10px;
+}
+
 .create-post-button .plus-icon {
     margin-right: 5px;
     font-size: 20px;
 }
 
-.create-post-button:hover {
+.create-post-button:hover ,.create-topic-button:hover {
     background-color: #4e4d4d;
     color: #ffffff;
     transition: background-color 0.3s, color 0.3s;
@@ -354,6 +359,54 @@ li {
 .tag {
     font-size: 12px; /* Adjust the font size as needed */
     color: gray; /* Adjust the color as needed */
+}
+  
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgb(0, 0, 0);
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modal-content {
+    background-color: #3a3a3a;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 400px;
+    border-radius: 5px;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.modal-content form {
+    display: flex;
+    flex-direction: column;
+}
+
+.modal-content form label,
+.modal-content form input,
+.modal-content form button {
+    margin: 10px 0;
 }
 
 
