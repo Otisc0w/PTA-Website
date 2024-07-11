@@ -100,7 +100,7 @@
 	<div id="inviteModal" class="modal">
     <div class="modal-content">
       <span class="close" onclick="closeModal()">&times;</span>
-      <form action="/invite-user" method="post">
+      <form action="/invite-user" method="post" class="inviteform">
         <input type="hidden" name="clubname" value="{{club.clubname}}">
         <input type="hidden" name="club_id" value="{{club.id}}">
         <label for="invited_user">Invite User:</label>
@@ -109,7 +109,7 @@
             <option value="{{id}}">{{firstname}}</option>
           {{/each}}
         </select>
-        <button type="submit">Invite</button>
+        <button type="submit" class="submit-invite">Invite</button>
       </form>
     </div>
   </div>
@@ -163,11 +163,11 @@
 
     // Add event listener for the Details tab
     detailsTab.addEventListener('click', function () {
-      showDetails();
-    });
-  });    
+        showDetails();
+      });
+    });    
 
-  function openModal() {
+    function openModal() {
       document.getElementById('inviteModal').style.display = 'block';
     }
 

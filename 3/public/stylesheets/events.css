@@ -215,3 +215,79 @@ body {
 .registration-container {
     margin-top: 60px;
 }
+
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgba(0, 0, 0, 0.8); /* Black w/ opacity */
+    backdrop-filter: blur(10px); /* Blur the background */
+}
+  
+.modal-content {
+    background-color: #222;
+    margin: 15% auto; /* 15% from the top and centered */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%; /* Could be more or less, depending on screen size */
+    max-width: 770px;
+    border-radius: 10px;
+    color: white;
+}
+
+.modal ul li{
+    display: inline-block;
+    margin: 30px;
+    
+}
+
+.modal a{
+    text-decoration: none;
+    color: white;
+}
+
+.modal ul li .type{
+    height: 40px;
+    font-style: bold;
+}
+
+.modal ul div{
+    height: 200px;
+    width: 140px;
+    padding: 15px;
+}
+
+.modal ul div:hover{
+    background-color: #0c0c0c;
+    border-radius: 7%;
+    padding: 15px;
+}
+  
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+  
+.close:hover,
+.close:focus {
+    color: white;
+    text-decoration: none;
+    cursor: pointer;
+}
+  
+.participants-table img{
+    width: 40px;
+    height: 40px;
+    border-radius: 30px;
+}
+  
+.name{
+    margin-left: 400px;
+}

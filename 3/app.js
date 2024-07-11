@@ -1483,12 +1483,15 @@ app.post('/vote', async (req, res) => {
   }
 });
 
-app.post('/create-event', upload.single('eventpicture'), async (req, res) => {userid
+app.post('/create-event', upload.single('eventpicture'), async (req, res) => {
   const {
     name,
     description,
     eventtype,
-    registrationcap
+    registrationcap,
+    date,
+    time,
+    location
   } = req.body; // Capture user input from the form
 
   if (!req.session.user) {
@@ -1530,7 +1533,10 @@ app.post('/create-event', upload.single('eventpicture'), async (req, res) => {us
         eventpicture: eventpictureUrl,
         eventtype,
         createdby,
-        registrationcap
+        registrationcap,
+        date,
+        time,
+        location
       }])
       .select(); // Ensure the data is returned
 
@@ -1541,7 +1547,7 @@ app.post('/create-event', upload.single('eventpicture'), async (req, res) => {us
 
     console.log('Event created successfully:', data);
 
-    res.redirect('/events-create'); // Redirect to a success page or another appropriate route
+    res.redirect('/events'); // Redirect to a success page or another appropriate route
   } catch (error) {
     console.error('Server error:', error.message);
     res.status(500).json({ error: error.message });
@@ -1590,7 +1596,7 @@ app.post('/submit-player', async (req, res) => {
       console.error('Error creating registration:', error.message);
       return res.status(500).send('Error creating registration.');
     }
-    res.redirect('/events');
+    res.redirect(`/events-details/${eventid}`);
   } catch (error) {
     console.error('Server error:', error.message);
     res.status(500).json({ error: error.message });
@@ -1908,7 +1914,9 @@ app.get('/events', async function (req, res) {
   }
 });
 
-app.get('/events-create', async function (req, res) {
+app.get('/events-create/:type', async function (req, res) {
+  const { type } = req.params; // Correctly capture the type parameter
+
   if (!req.session.user) {
     return res.redirect('/');
   }
@@ -1924,12 +1932,13 @@ app.get('/events-create', async function (req, res) {
 
     console.log("Fetched data:", data); // Log the data to the console 
 
-    // Render the athletes.hbs template with the fetched data
-    res.render('events-create', { events: data, user: req.session.user });
+    // Render the events-create.hbs template with the fetched data
+    res.render('events-create', { events: data, user: req.session.user, eventtype: type });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
+
 
 app.get('/events-registration/:id', async function (req, res) {
   if (!req.session.user) {
@@ -2057,7 +2066,8 @@ app.get('/events-details/:id', async function (req, res) {
     const { data: participants, error: participantsError } = await supabase
       .from('events_registrations')
       .select('*')
-      .eq('registered', 'true');
+      .eq('registered', 'true')
+      .eq('eventid', id);
 
     if (participantsError) {
       return res.status(400).json({ error: participantsError.message });
