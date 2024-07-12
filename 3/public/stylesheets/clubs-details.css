@@ -54,14 +54,13 @@
 .clubtabs ul li a {
   text-decoration: none;
   color: #fff;
-  font-size: 18px;
+  font-size: 22px;
   padding: 10px 20px;
 }
 
 .clubtabs ul li a:active {
   text-decoration: none;
   color: #fff;
-  font-size: 18px;
   padding: 10px 20px;
   background-color: #333;
   border-radius: 5px;
@@ -70,30 +69,30 @@
 .clubtabs ul li a:hover {
   text-decoration: none;
   color: #fff;
-  font-size: 18px;
   padding: 10px 20px;
   background-color: #333;
   border-radius: 5px;
+
 }
 
 .sides {
   display: flex;
   justify-content: space-between;
-  width: 100%;
+  width: 70%;
 }
 
 .leftside,
 .rightside {
-  width: 48%;
+  width: 30%;
+  position: relative
 }
 
 .intro {
-  background-color: #333;
+  background-color: #2e2e2e;
   padding: 20px;
   border-radius: 10px;
   width: 300px;
   height: 200px;
-  margin-left: 420px;
 }
 
 .intro h3 {
@@ -199,7 +198,7 @@
 }
 
 .name{
-  margin-left: 400px;
+  margin-left: 380px;
 }
 
 .modal select{
@@ -217,4 +216,55 @@
     border-radius: 5px;
     cursor: pointer;
     margin-top: 20px;
+}
+
+.registercodediv{
+  width: 400px;
+  height: 150px;
+  margin: auto;
+  margin-top: 30px;
+  background: #2e2e2e;
+  border-radius: 10px;
+}
+
+.register-button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  text-decoration: none;
+  /*margin-left: 145px;
+  margin-top: 65px; */
+}
+
+.register-button:hover {
+  background-color: #0056b3;
+}
+
+.buttondiv{
+  padding: 20px 10px;
+}
+
+.buttondiv p, h1{
+  text-align: center;
+}
+
+.grayed-register-button{
+  background-color: gray;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  text-decoration: none;
+  margin-left: 145px;
+  margin-top: 65px;
+}
+
+.pending{
+  color: rgb(214, 190, 84);
 }

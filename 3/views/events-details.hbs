@@ -67,9 +67,24 @@
         </div>
 
         <div class="rightside">
-            {{#if user.athleteverified}}
-              <a href="/events-registration/{{event.id}}" class="invite-button">Register</a>
-            {{/if}}
+          <div class="registercodediv">
+            <div class="buttondiv">
+              {{#if user.athleteverified}}
+                {{#unless currentregistrant}}
+                    <a href="/events-registration/{{event.id}}" class="register-button">Register</a>
+                {{else}}
+                  <p>Your check-in code is:</p>
+                  {{#if currentregistrant.registered}}
+                    <h1 class="code">{{currentregistrant.id}}</h1>
+                  {{else}}
+                    <h1 class="pending">pending</h1>
+                  {{/if}}
+                {{/unless}}
+              {{else}}
+                <a class="grayed-register-button">Not Registered</a>
+              {{/if}}
+            </div>
+          </div>
         </div>
       </div>
   </div>
@@ -112,7 +127,7 @@
         </tr>
       </thead>
       <tbody>
-        {{#each eventRegistrations}}
+        {{#each eventregistrations}}
           <tr>
             <td>{{this.playername}}</td>
             <td>{{this.club}}</td>

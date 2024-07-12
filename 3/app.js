@@ -1571,6 +1571,7 @@ app.post('/submit-player', async (req, res) => {
   } = req.body; // Capture user input from the form
 
   const registered ='false';
+  const userid= req.session.user.id;
 
   try {
     // Insert the new registration into the database
@@ -1578,6 +1579,7 @@ app.post('/submit-player', async (req, res) => {
       .from('events_registrations')
       .insert([{
         athleteid,
+        userid,
         eventid,
         email,
         playername,
@@ -1939,7 +1941,6 @@ app.get('/events-create/:type', async function (req, res) {
   }
 });
 
-
 app.get('/events-registration/:id', async function (req, res) {
   if (!req.session.user) {
     return res.redirect('/');
@@ -2040,6 +2041,7 @@ app.get('/events-details/:id', async function (req, res) {
   }
 
   const { id } = req.params; // Get the event ID from the URL
+  const userId = req.session.user.id; // Get the user ID from the session
 
   try {
     // Fetch the event details from the events table
@@ -2054,15 +2056,16 @@ app.get('/events-details/:id', async function (req, res) {
     }
 
     // Fetch the event registrations for the specific event
-    const { data: eventRegistrations, error: eventRegistrationsError } = await supabase
+    const { data: eventregistrations, error: eventregistrationsError } = await supabase
       .from('events_registrations')
       .select('*')
       .eq('eventid', id);
 
-    if (eventRegistrationsError) {
-      return res.status(400).json({ error: eventRegistrationsError.message });
+    if (eventregistrationsError) {
+      return res.status(400).json({ error: eventregistrationsError.message });
     }
 
+    // Fetch the participants for the specific event
     const { data: participants, error: participantsError } = await supabase
       .from('events_registrations')
       .select('*')
@@ -2073,11 +2076,31 @@ app.get('/events-details/:id', async function (req, res) {
       return res.status(400).json({ error: participantsError.message });
     }
 
+    // Check if the current user is already registered for the event
+    const { data: currentregistrant, error: currentregistrantError } = await supabase
+      .from('events_registrations')
+      .select('*')
+      .eq('userid', userId)
+      .eq('eventid', id)
+      .single(); // Use .single() since we're checking for a specific user's registration
+
+    if (currentregistrantError && currentregistrantError.code !== 'PGRST116') { // PGRST116 indicates no rows found, which is okay in this context
+      return res.status(400).json({ error: currentregistrantError.message });
+    }
+
     console.log("Fetched event data:", event); // Log the event data to the console
-    console.log("Fetched event registrations data:", eventRegistrations); // Log the event registrations data to the console
+    console.log("Fetched event registrations data:", eventregistrations); // Log the event registrations data to the console
+    console.log("Fetched participants data:", participants); // Log the participants data to the console
+    console.log("Fetched current registrant data:", currentregistrant); // Log the current registrant data to the console
 
     // Render the events-details.hbs template with the fetched data
-    res.render('events-details', { event, eventRegistrations, participants, user: req.session.user });
+    res.render('events-details', {
+      event,
+      eventregistrations,
+      participants,
+      currentregistrant,
+      user: req.session.user
+    });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
