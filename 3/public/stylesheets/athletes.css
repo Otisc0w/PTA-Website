@@ -119,12 +119,15 @@ body {
     background-color: #333;
     padding: 20px;
     border-radius: 10px;
-    margin-top: 20px;
+    width:85%;
+    margin: auto;
+    margin-top: 40px;
 }
 
 .athlete-header {
     display: flex;
     align-items: center;
+    position: relative;
 }
 
 .athlete-header img {
@@ -219,4 +222,21 @@ body {
 .footer-content .social-media img {
     height: 30px;
     width: 30px;
+}
+
+.moredets a{
+    padding: 10px 20px;
+    background-color: #007BFF;
+    color: white;
+    text-decoration: none;
+    border-radius: 10px;
+}
+
+.moredets a:hover{
+    background-color: #0056b3;
+}
+
+.moredets{
+    margin: auto;
+    margin-right: 15px;
 }

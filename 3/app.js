@@ -2157,6 +2157,29 @@ app.get('/athletes', async function (req, res) {
   }
 });
 
+app.get('/athletes-profile', async function (req, res) {
+  if (!req.session.user) {
+    return res.redirect('/');
+  }
+  
+  try {
+    const { data, error } = await supabase
+      .from('athletes')
+      .select('*');
+
+    if (error) {
+      return res.status(400).json({ error: error.message });
+    }
+
+    console.log("Fetched data:", data); // Log the data to the console 
+
+    // Render the athletes.hbs template with the fetched data
+    res.render('athletes-profile', { athletes: data, user: req.session.user });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 app.get('/notifications', async function (req, res) {
   if (!req.session.user) {
     return res.redirect('/');
