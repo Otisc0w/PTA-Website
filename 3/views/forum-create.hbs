@@ -49,10 +49,11 @@
         <input type="text" id="title" name="title" placeholder="Title" required>
       </div>
       <div class="form-group">
+        
         <label for="topic">Topic<span class="required-asterisk">*</span></label>
-        <select id="topic" name="topic" rows="2" placeholder="Topic" required>
+        <select id="topic" name="topicid" rows="2" placeholder="Topic" required>
           {{#each forum_topics}}
-            <option value="{{topic}}">{{topic}}</option>
+            <option value="{{id}}">{{topic}}</option>
           {{/each}}
         </select> 
       </div>

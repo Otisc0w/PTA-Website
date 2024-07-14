@@ -743,7 +743,7 @@ app.post('/submit-instructor', upload.fields([{ name: 'birthcert', maxCount: 1 }
 app.post('/create-post', async (req, res) => {
   const {
     title,
-    topic,
+    topicid,
     body,
     profilepic
   } = req.body; // Capture user input from the form
@@ -756,13 +756,29 @@ app.post('/create-post', async (req, res) => {
   const upvotes = [], downvotes =[];
 
   try {
-    // Update the user in the database
+    // Fetch the topic from the forum_topics table using the topicid
+    const { data: topicData, error: topicError } = await supabase
+      .from('forum_topics')
+      .select('topic')
+      .eq('id', topicid)
+      .single();
+
+    if (topicError) {
+      // Handle any errors that occur during the topic fetch
+      console.error('Error fetching topic:', topicError.message);
+      return res.status(500).send('Error fetching topic');
+    }
+
+    const topic = topicData.topic; // Extract the topic value
+
+    // Insert the new forum thread into the forum_threads table
     const { data, error } = await supabase
       .from('forum_threads') 
       .insert([{
         title,
         originalposter,
         topic,
+        topicid,
         body,
         upvotes,
         downvotes,
@@ -770,17 +786,18 @@ app.post('/create-post', async (req, res) => {
       }]);
 
     if (error) {
-      // Handle any errors that occur during the update
+      // Handle any errors that occur during the insert
+      console.error('Error creating post:', error.message);
       return res.status(500).render('forum', {
-        error: 'Error updating profile.',
+        error: 'Error creating post.',
         users: [] // Optionally pass users array if you need it in the view
       });
     }
-    
 
     res.redirect('/forum');
   } catch (error) {
     // Handle any server-side errors
+    console.error('Server error:', error.message);
     res.status(500).json({ error: error.message });
   }
 });
@@ -1634,6 +1651,88 @@ app.post('/update-eventreg-status', async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+
+app.post('/follow-topic/:id', async (req, res) => {
+  if (!req.session.user) {
+    return res.status(401).send('Unauthorized: No user logged in');
+  }
+
+  const userId = req.session.user.id;
+  const topicId = req.params.id;
+
+  try {
+    // Fetch the current followers array
+    const { data: topic, error: fetchError } = await supabase
+      .from('forum_topics')
+      .select('followers')
+      .eq('id', topicId)
+      .single();
+
+    if (fetchError) {
+      return res.status(500).send('Error fetching topic followers');
+    }
+
+    // Add the current user to the followers array if not already in it
+    const updatedFollowers = topic.followers || [];
+    if (!updatedFollowers.includes(userId)) {
+      updatedFollowers.push(userId);
+    }
+
+    // Update the topic with the new followers array
+    const { data, error: updateError } = await supabase
+      .from('forum_topics')
+      .update({ followers: updatedFollowers })
+      .eq('id', topicId);
+
+    if (updateError) {
+      return res.status(500).send('Error following topic');
+    }
+
+    res.redirect('/forum');
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.post('/unfollow-topic/:id', async (req, res) => {
+  if (!req.session.user) {
+    return res.status(401).send('Unauthorized: No user logged in');
+  }
+
+  const userId = req.session.user.id;
+  const topicId = req.params.id;
+
+  try {
+    // Fetch the current followers array
+    const { data: topic, error: fetchError } = await supabase
+      .from('forum_topics')
+      .select('followers')
+      .eq('id', topicId)
+      .single();
+
+    if (fetchError) {
+      return res.status(500).send('Error fetching topic followers');
+    }
+
+    // Remove the current user from the followers array if present
+    const updatedFollowers = (topic.followers || []).filter(follower => follower !== userId);
+
+    // Update the topic with the new followers array
+    const { data, error: updateError } = await supabase
+      .from('forum_topics')
+      .update({ followers: updatedFollowers })
+      .eq('id', topicId);
+
+    if (updateError) {
+      return res.status(500).send('Error unfollowing topic');
+    }
+
+    res.redirect('/forum');
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
                                        
 
                                                                         // VIEWS BELOW
@@ -1667,55 +1766,45 @@ app.get('/forum', async function (req, res) {
     return res.redirect('/');
   }
 
+  const userId = req.session.user.id; // Assuming user ID is stored in the session
+
   try {
-    const { data, error } = await supabase
-      .from('forum_threads')
+    // Fetch all topics
+    const { data: topics, error: topicsError } = await supabase
+      .from('forum_topics')
       .select('*');
 
-    if (error) {
-      return res.status(400).json({ error: error.message });
+    if (topicsError) {
+      return res.status(400).json({ error: topicsError.message });
     }
 
-    console.log("Fetched data:", data); // Log the data to the console 
+    // Mark topics as followed or not followed by the current user
+    const markedTopics = topics.map(topic => {
+      const followers = topic.followers || []; // Ensure followers is an array
+      topic.followed = followers.includes(userId);
+      return topic;
+    });
+
+    // Fetch threads that belong to the followed topics
+    const followedTopicIds = markedTopics.filter(topic => topic.followed).map(topic => topic.id);
+    const { data: threads, error: threadsError } = await supabase
+      .from('forum_threads')
+      .select('*')
+      .in('topicid', followedTopicIds);
+
+    if (threadsError) {
+      return res.status(400).json({ error: threadsError.message });
+    }
+
+    console.log("Fetched threads:", threads); // Log the threads data to the console 
+    console.log("Fetched topics:", markedTopics); // Log the topics data to the console
 
     // Render the forum.hbs template with the fetched data
-    res.render('forum', { forum_threads: data, user: req.session.user });
+    res.render('forum', { forum_threads: threads, forum_topics: markedTopics, user: req.session.user });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
-
-// app.get('/forum', async function (req, res) {
-//   if (!req.session.user) {
-//     return res.redirect('/');
-//   }
-
-//   try {
-//     // Fetch posts with related user data
-//     const { data: forum_threads, error: forum_threadsError } = await supabase
-//       .from('forum_threads')
-//       .select(`
-//         *,
-//         user:users (
-//           id,
-//           username,
-//           profilepic,
-//           adminverified,
-//           instructorverified,
-//           athleteverified
-//         )
-//       `);
-
-//     if (forum_threadsError) {
-//       return res.status(400).json({ error: forum_threadsError.message });
-//     }
-
-//     // Render the forum template with the fetched data
-//     res.render('forum', { forum_threads, user: req.session.user });
-//   } catch (error) {
-//     res.status(500).json({ error: error.message });
-//   }
-// });
 
 app.get('/forum-create', async function (req, res) {
   if (!req.session.user) {
@@ -2434,6 +2523,8 @@ app.get('/membership-club', async (req, res) => {
     res.status(500).send('Server error');
   }
 });
+
+
 
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);

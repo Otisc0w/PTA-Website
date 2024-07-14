@@ -34,6 +34,66 @@
     justify-content: center; /* Center the content */
 }
 
+.topicsh2{
+    margin-left: 30px;
+}
+
+.topics-container{
+    width: 19%;
+}
+
+.list{
+    overflow-x: auto;
+    height: 600px;
+}
+
+.topics-container ul li{
+    list-style-type: none;
+    margin: 10px 5px;
+}
+
+.notfollowedtopic{
+    padding: 8px 8px;
+    border-radius: 11px;
+    margin: 7px 0;
+    position: relative;
+}
+
+.followedtopic{
+    background-color: #444;
+    padding: 8px 8px;
+    border-radius: 11px;
+    margin: 7px 0;
+    position: relative;
+}
+
+.notfollowedtopic:hover{
+    background-color: #444;
+}
+
+.followbtn{
+    background: none;
+    border: none;
+    color: inherit;
+    font: inherit;
+    cursor: pointer;
+    padding: 0;
+    float: right;
+    margin-right: 10px;
+}
+
+.topicname{
+    margin-left: 10px;
+}
+
+.followbtn:hover{
+    text-decoration: none;
+}
+
+.plus{
+    margin-left: 10px;
+}
+
 .main-content {
     width: 60%; /* Adjust the width as needed */
     height: auto;
@@ -41,14 +101,12 @@
     background-color: #2c2c2c;
     border-radius: 8px;
     color: #F0F0F0;
+    margin: auto;
+    margin-left: 40px;
 }
 
 .commentpic{
     margin-left: 8px;
-}
-
-li {
-    float: left;
 }
 
 .main-content h2 {
