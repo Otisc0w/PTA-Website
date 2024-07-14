@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Athlete Details</title>
+  <link rel="stylesheet" href="/stylesheets/navbar.css">
+  <link rel="stylesheet" href="/stylesheets/athletes-profile.css">
+</head>
+<body>
+  <div class="header">
+    <div class="navbar">
+      <a href="home"><img src="/images/logo.png" class="logo" alt="Logo"></a>
+      <ul class="tabs">
+        <li class="home"><a href="home">Home</a></li>
+        <li class="athletes"><a href="athletes">Athletes</a></li>
+        <li class="clubs"><a href="clubs">Clubs</a></li>
+        <li class="events"><a href="events">Events</a></li>
+        <li class="membership"><a href="membership">Membership</a></li>
+        <li class="forum"><a href="forum">Forum</a></li>
+        <li class="notifications">
+          <a href="notifications">Notifications <span class="badge">3</span></a>
+        </li>
+        <li class="profile-pic">
+          {{#if user.profilepic}}
+            <a href="#" onclick="toggleDropdown()"><img src="{{user.profilepic}}" alt="Profile Picture" class="profile-picture"></a>
+          {{else}}
+            <a href="#" onclick="toggleDropdown()" class="profile-picture"><img src="/images/none.jpg" alt="Profile Picture" class="profile-picture"></a>
+          {{/if}}
+          <div id="dropdown" class="dropdown-content">
+            <a href="profile">Profile</a>
+            <a href="settings">Settings</a>
+            <a href="help-center">FAQs</a>
+            <a href="/">Logout</a>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <main>
+    <div class="athlete-header">
+      <img src="athlete.jpg" alt="Athlete Picture" class="athlete-pic">
+      <div class="athlete-info">
+        <h1>Xaivian Lee</h1>
+        <p class="team">Princeton Tigers - #1 - Guard</p>
+        <button class="follow-button">Follow</button>
+      </div>
+      <div class="athlete-stats">
+        <div class="stat">
+          <span class="label">PTS</span>
+          <span class="value">17.1</span>
+        </div>
+        <div class="stat">
+          <span class="label">REB</span>
+          <span class="value">5.7</span>
+        </div>
+        <div class="stat">
+          <span class="label">AST</span>
+          <span class="value">3.7</span>
+        </div>
+        <div class="stat">
+          <span class="label">FG%</span>
+          <span class="value">45.1</span>
+        </div>
+      </div>
+    </div>
+    <div class="athlete-details">
+      <div class="switch-player">
+        <label for="team">Team</label>
+        <select id="team">
+          <option>Princeton</option>
+        </select>
+        <label for="position">Position</label>
+        <select id="position">
+          <option>Guard</option>
+        </select>
+        <ul class="player-list">
+          <li><img src="player1.jpg" alt="Player 1"><span>Xaivian Lee</span></li>
+          <li><img src="player2.jpg" alt="Player 2"><span>Matt Allocco</span></li>
+          <li><img src="player3.jpg" alt="Player 3"><span>Deven Austin</span></li>
+          <li><img src="player4.jpg" alt="Player 4"><span>Dalen Davis</span></li>
+        </ul>
+      </div>
+      <div class="previous-game">
+        <h2>Previous Game</h2>
+        <div class="game-summary">
+          <span class="team">UNLV</span>
+          <span class="score">84</span>
+          <span class="vs">Final</span>
+          <span class="team">Princeton</span>
+          <span class="score">77</span>
+        </div>
+        <table class="game-stats">
+          <thead>
+            <tr>
+              <th>PTS</th>
+              <th>REB</th>
+              <th>AST</th>
+              <th>MIN</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>10</td>
+              <td>2</td>
+              <td>6</td>
+              <td>32</td>
+            </tr>
+          </tbody>
+        </table>
+        <h2>Career Stats</h2>
+        <table class="career-stats">
+          <thead>
+            <tr>
+              <th>STAT</th>
+              <th>GP</th>
+              <th>MIN</th>
+              <th>FG%</th>
+              <th>3P%</th>
+              <th>FT%</th>
+              <th>REB</th>
+              <th>AST</th>
+              <th>BLK</th>
+              <th>STL</th>
+              <th>PF</th>
+              <th>TO</th>
+              <th>PTS</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>2023-24</td>
+              <td>29</td>
+              <td>31.1</td>
+              <td>45.1</td>
+              <td>33.8</td>
+              <td>79.8</td>
+              <td>5.7</td>
+              <td>3.7</td>
+              <td>0.5</td>
+              <td>1.0</td>
+              <td>2.1</td>
+              <td>1.4</td>
+              <td>17.1</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="latest-videos">
+        <h2>Latest Videos</h2>
+        <ul>
+          <li><a href="#">UNLV Rebels vs. Princeton Tigers: Game Highlights</a></li>
+          <li><a href="#">Xaivian Lee has too much range with this deep 3</a></li>
+          <li><a href="#">Princeton Tigers vs. Pennsylvania Quakers: Game Highlights</a></li>
+        </ul>
+      </div>
+    </div>
+  </main>
+</body>
+</html>

@@ -224,7 +224,7 @@ body {
     width: 30px;
 }
 
-.moredets a{
+.moredets a, .invite-button a{
     padding: 10px 20px;
     background-color: #007BFF;
     color: white;
@@ -232,7 +232,7 @@ body {
     border-radius: 10px;
 }
 
-.moredets a:hover{
+.moredets a:hover, .invite-button a:hover{
     background-color: #0056b3;
 }
 
@@ -240,3 +240,8 @@ body {
     margin: auto;
     margin-right: 15px;
 }
+
+.invite-button{
+    margin-left: 20px;
+}
+
