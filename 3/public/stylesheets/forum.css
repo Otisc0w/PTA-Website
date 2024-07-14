@@ -334,9 +334,7 @@ li {
 }
 
 /* Show the dropdown content when the dropdown button is clicked */
-.show {
-    display: block;
-}
+
 
 .buttons-div div{
     display: inline;
