@@ -51,6 +51,7 @@
         <ul>
           <li><a href="#">Details</a></li>
           <li><a href="#">Members</a></li>
+          <li><a href="#">Announcements</a></li>
         </ul>
       </div><br>
       <div class="sides">
@@ -97,6 +98,44 @@
 		</table>
 	</div>
 
+  <div class="announcements" hidden>
+    <h2>Announcements</h2>
+    <div class="makeannouncement">
+      {{#if (eq club.registeredby user.id)}}
+      <button class="newannounce" onclick="openModal()">+ Announce</button>
+      {{/if}}
+    </div>
+    {{#reverseEach announcements}}
+      <div class="oneannouncement">
+        <h2>{{title}}</h2>
+        <p>{{subject}}</p>
+        <p>{{body}}</p>
+      </div>
+    {{/reverseEach}}
+  </div>
+
+  <div id="announceModal" class="modal" style="display:none;">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal()">&times;</span>
+      <form action="/create-announcement" method="post" class="announceform">
+        <input type="hidden" name="originalposter" value="{{user.username}}">
+        <input type="hidden" name="profilepic" value="{{user.profilepic}}">
+        <input type="hidden" name="clubid" value="{{club.id}}">
+        
+        <label for="title">Title:</label>
+        <input type="text" id="title" name="title" required>
+
+        <label for="subject">Subject:</label>
+        <input type="text" id="subject" name="subject" required>
+
+        <label for="body">Body:</label>
+        <textarea id="body" name="body" rows="4" required></textarea>
+
+        <button type="submit" class="submit-announce">Post Announcement</button>
+      </form>
+    </div>
+  </div>
+
 	<div id="inviteModal" class="modal">
     <div class="modal-content">
       <span class="close" onclick="closeModal()">&times;</span>
@@ -135,9 +174,11 @@
     // Get references to the elements
     const participantsTab = document.querySelector('.clubtabs ul li:nth-child(2) a');
     const detailsTab = document.querySelector('.clubtabs ul li:nth-child(1) a');
+    const announcementsTab = document.querySelector('.clubtabs ul li:nth-child(3) a');
     const leftside = document.querySelector('.leftside');
     const rightside = document.querySelector('.rightside');
     const participantsContainer = document.querySelector('.participants-container');
+    const announcements = document.querySelector('.announcements');
 
     // Hide participants container by default
     participantsContainer.style.display = 'none';
@@ -147,6 +188,7 @@
       leftside.style.display = 'none';
       rightside.style.display = 'none';
       participantsContainer.style.display = 'block';
+      announcements.style.display = 'none';
     }
 
     // Function to show sides and hide participants container
@@ -154,6 +196,14 @@
       leftside.style.display = 'block';
       rightside.style.display = 'block';
       participantsContainer.style.display = 'none';
+      announcements.style.display = 'none';
+    }
+
+    function showAnnouncements() {
+      leftside.style.display = 'none';
+      rightside.style.display = 'none';
+      participantsContainer.style.display = 'none';
+      announcements.style.display = 'block';
     }
 
     // Add event listener for the Participants tab
@@ -165,7 +215,12 @@
     detailsTab.addEventListener('click', function () {
         showDetails();
       });
-    });    
+
+    announcementsTab.addEventListener('click', function () {
+        showAnnouncements();
+      });
+    }); 
+      
 
     function openModal() {
       document.getElementById('inviteModal').style.display = 'block';
@@ -173,6 +228,20 @@
 
     function closeModal() {
       document.getElementById('inviteModal').style.display = 'none';
+    }
+
+    function openModal() {
+      document.getElementById('announceModal').style.display = 'block';
+    }
+
+    function closeModal() {
+      document.getElementById('announceModal').style.display = 'none';
+    }
+
+    window.onclick = function(event) {
+      if (event.target == document.getElementById('announceModal')) {
+        closeModal();
+      }
     }
   </script>
 </body>

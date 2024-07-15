@@ -1733,6 +1733,46 @@ app.post('/unfollow-topic/:id', async (req, res) => {
   }
 });
 
+app.post('/create-announcement', async (req, res) => {
+  const {
+    title,
+    subject,
+    body,
+    originalposter,
+    profilepic,
+    clubid
+  } = req.body;
+
+  if (!req.session.user) {
+    return res.status(401).send('Unauthorized: No user logged in');
+  }
+
+  try {
+    const { data, error } = await supabase
+      .from('club_announcements')
+      .insert([{
+        title,
+        subject,
+        body,
+        originalposter,
+        profilepic,
+        clubid
+      }]);
+
+    if (error) {
+      return res.status(500).render('announcements', {
+        error: 'Error creating announcement.',
+        user: req.session.user
+      });
+    }
+
+    res.redirect(`/clubs-details/${clubid}`);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+
                                        
 
                                                                         // VIEWS BELOW
@@ -1929,16 +1969,25 @@ app.get('/clubs-details/:id', async function (req, res) {
 
     const { data: athletes, error: athleteserror } = await supabase
       .from('athletes')
-      .select('*')
+      .select('*');
 
     if (athleteserror) {
       return res.status(400).json({ athleteserror: athleteserror.message });
     }
 
+    const { data: announcements, error: announcementserror } = await supabase
+      .from('club_announcements')
+      .select('*')
+      .eq('clubid', id);
+
+    if (announcementserror) {
+      return res.status(400).json({ announcementserror: announcementserror.message });
+    }
+
     const clubMembers = athletes.filter(athlete => athlete.club === club.clubname);
 
     // Render the clubs-details.hbs template with the fetched data
-    res.render('clubs-details', { club, allUsers, clubMembers, user: req.session.user });
+    res.render('clubs-details', { club, allUsers, clubMembers, announcements, user: req.session.user });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
