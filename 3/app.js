@@ -1927,7 +1927,15 @@ app.get('/clubs-details/:id', async function (req, res) {
       return res.status(400).json({ allUsersError: allUsersError.message });
     }
 
-    const clubMembers = allUsers.filter(user => user.club === club.clubname && user.registered === true);
+    const { data: athletes, error: athleteserror } = await supabase
+      .from('athletes')
+      .select('*')
+
+    if (athleteserror) {
+      return res.status(400).json({ athleteserror: athleteserror.message });
+    }
+
+    const clubMembers = athletes.filter(athlete => athlete.club === club.clubname);
 
     // Render the clubs-details.hbs template with the fetched data
     res.render('clubs-details', { club, allUsers, clubMembers, user: req.session.user });

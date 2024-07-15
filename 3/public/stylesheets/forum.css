@@ -398,6 +398,14 @@
     display: inline;
 }
 
+.buttons-div button{
+    background:none;
+    border:none;
+    margin:0;
+    padding:0;
+    cursor: pointer;
+}
+
 .poster {
     display: flex;
     align-items: center;
