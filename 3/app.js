@@ -2260,25 +2260,34 @@ app.get('/profile', async function (req, res) {
   const userId = req.session.user.id;
 
   try {
-    // Fetch the athlete's data
-    const { data: athlete, error: athleteError } = await supabase
-      .from('athletes')
-      .select('*')
-      .eq('userid', userId)
-      .single();
+    // Check if the user is athlete verified
+    const athleteVerified = req.session.user.athleteverified;
 
-    if (athleteError) {
-      console.error('Error fetching athlete data:', athleteError.message);
-      return res.status(500).json({ error: athleteError.message });
+    let athlete = null;
+    if (athleteVerified) {
+      // Fetch the athlete's data
+      const { data, error } = await supabase
+        .from('athletes')
+        .select('*')
+        .eq('userid', userId)
+        .single();
+
+      if (error) {
+        console.error('Error fetching athlete data:', error.message);
+        return res.status(500).json({ error: error.message });
+      }
+
+      athlete = data;
     }
 
-    // Render the profile template with the user session data and athlete data
+    // Render the profile template with the user session data and athlete data (if applicable)
     res.render('profile', { user: req.session.user, athlete });
   } catch (error) {
     console.error('Server error:', error.message);
     res.status(500).json({ error: error.message });
   }
 });
+
 
 app.get('/athletes', async function (req, res) {
   if (!req.session.user) {
