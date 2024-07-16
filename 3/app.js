@@ -1663,6 +1663,55 @@ app.post('/submit-player', async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+// old submit player above ^
+app.post('/submit-player', async (req, res) => {
+  const { eventid, athleteid } = req.body;
+
+  if (!req.session.user) {
+    return res.status(401).send('Unauthorized: No user logged in');
+  }
+
+  try {
+    // Register the athlete for the event
+    const { data, error } = await supabase
+      .from('events_registrations')
+      .insert([{ eventid, athleteid, registered: true }]);
+
+    if (error) {
+      return res.status(500).json({ error: error.message });
+    }
+
+    // Check if registration cap is reached
+    const { data: event, error: eventError } = await supabase
+      .from('events')
+      .select('*')
+      .eq('id', eventid)
+      .single();
+
+    if (eventError) {
+      return res.status(500).json({ error: eventError.message });
+    }
+
+    const { data: registrations, error: registrationsError } = await supabase
+      .from('events_registrations')
+      .select('*')
+      .eq('eventid', eventid)
+      .eq('registered', true);
+
+    if (registrationsError) {
+      return res.status(500).json({ error: registrationsError.message });
+    }
+
+    if (registrations.length >= event.registrationcap) {
+      // Schedule matches if cap is reached
+      scheduleMatches(eventid, registrations);
+    }
+
+    res.redirect('/events/' + eventid);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
 
 app.post('/update-eventreg-status', async (req, res) => {
   if (!req.session.user) {
@@ -1813,8 +1862,6 @@ app.post('/create-announcement', async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
-
-
                                        
 
                                                                         // VIEWS BELOW
