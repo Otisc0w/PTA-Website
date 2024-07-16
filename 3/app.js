@@ -743,7 +743,7 @@ app.post('/submit-instructor', upload.fields([{ name: 'birthcert', maxCount: 1 }
 app.post('/create-post', async (req, res) => {
   const {
     title,
-    topic,
+    topicid,
     body,
     profilepic
   } = req.body; // Capture user input from the form
@@ -756,17 +756,67 @@ app.post('/create-post', async (req, res) => {
   const upvotes = [], downvotes =[];
 
   try {
-    // Update the user in the database
+    // Fetch the topic from the forum_topics table using the topicid
+    const { data: topicData, error: topicError } = await supabase
+      .from('forum_topics')
+      .select('topic')
+      .eq('id', topicid)
+      .single();
+
+    if (topicError) {
+      // Handle any errors that occur during the topic fetch
+      console.error('Error fetching topic:', topicError.message);
+      return res.status(500).send('Error fetching topic');
+    }
+
+    const topic = topicData.topic; // Extract the topic value
+
+    // Insert the new forum thread into the forum_threads table
     const { data, error } = await supabase
       .from('forum_threads') 
       .insert([{
         title,
         originalposter,
         topic,
+        topicid,
         body,
         upvotes,
         downvotes,
         profilepic
+      }]);
+
+    if (error) {
+      // Handle any errors that occur during the insert
+      console.error('Error creating post:', error.message);
+      return res.status(500).render('forum', {
+        error: 'Error creating post.',
+        users: [] // Optionally pass users array if you need it in the view
+      });
+    }
+
+    res.redirect('/forum');
+  } catch (error) {
+    // Handle any server-side errors
+    console.error('Server error:', error.message);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.post('/create-topic', async (req, res) => {
+  const {
+    topic,
+  } = req.body; // Capture user input from the form
+
+  if (!req.session.user) {
+    return res.status(401).send('Unauthorized: No user logged in');
+  }
+
+  try {
+    // Update the user in the database
+    const { data, error } = await supabase
+      .from('forum_topics') 
+      .insert([{
+        topic
       }]);
 
     if (error) {
@@ -776,6 +826,7 @@ app.post('/create-post', async (req, res) => {
         users: [] // Optionally pass users array if you need it in the view
       });
     }
+    
 
     res.redirect('/forum');
   } catch (error) {
@@ -793,7 +844,6 @@ app.post('/save-profile-changes', upload.single('file'), async (req, res) => {
     email,
     password,
     region,
-    club,
     athleteverified,
     instructorverified,
     ptaverified,
@@ -840,7 +890,6 @@ app.post('/save-profile-changes', upload.single('file'), async (req, res) => {
         email,
         password,
         region,
-        club,
         athleteverified,
         instructorverified,
         profilepic
@@ -1312,7 +1361,7 @@ app.post('/accept-invitation/:id', async (req, res) => {
     return res.status(401).send('Unauthorized: No user logged in');
   }
 
-  const username = req.session.user.username;
+  const userid = req.session.user.id;
 
   try {
     // Fetch the invitation details to get the clubname
@@ -1320,7 +1369,7 @@ app.post('/accept-invitation/:id', async (req, res) => {
       .from('club_invitations')
       .select('*')
       .eq('id', id)
-      .eq('invited_user', username)
+      .eq('invited_user', userid)
       .single();
 
     if (fetchError || !invitation) {
@@ -1335,7 +1384,7 @@ app.post('/accept-invitation/:id', async (req, res) => {
       .from('club_invitations')
       .update({ status: 'accepted' })
       .eq('id', id)
-      .eq('invited_user', username);
+      .eq('invited_user', userid);
 
     if (updateInvitationError) {
       console.error('Error accepting invitation:', updateInvitationError.message);
@@ -1344,9 +1393,9 @@ app.post('/accept-invitation/:id', async (req, res) => {
 
     // Update the club column in the users table
     const { error: updateUserError } = await supabase
-      .from('users')
+      .from('athletes')
       .update({ club: clubname })
-      .eq('username', username);
+      .eq('userid', userid);
 
     if (updateUserError) {
       console.error('Error updating user club:', updateUserError.message);
@@ -1370,21 +1419,21 @@ app.post('/reject-invitation/:id', async (req, res) => {
     return res.status(401).send('Unauthorized: No user logged in');
   }
 
-  const username = req.session.user.username;
+  const userid = req.session.user.id;
 
   try {
     const { data, error } = await supabase
       .from('club_invitations')
       .update({ status: 'rejected' })
       .eq('id', id)
-      .eq('invited_user', username);
+      .eq('invited_user', userid);
 
     if (error) {
       console.error('Error rejecting invitation:', error.message);
       return res.status(500).send('Error rejecting invitation');
     }
 
-    res.redirect('/profile');
+    res.redirect('/notifications');
   } catch (error) {
     console.error('Server error:', error.message);
     res.status(500).json({ error: error.message });
@@ -1456,7 +1505,10 @@ app.post('/create-event', upload.single('eventpicture'), async (req, res) => {
     name,
     description,
     eventtype,
-    registrationcap
+    registrationcap,
+    date,
+    time,
+    location
   } = req.body; // Capture user input from the form
 
   if (!req.session.user) {
@@ -1498,7 +1550,10 @@ app.post('/create-event', upload.single('eventpicture'), async (req, res) => {
         eventpicture: eventpictureUrl,
         eventtype,
         createdby,
-        registrationcap
+        registrationcap,
+        date,
+        time,
+        location
       }])
       .select(); // Ensure the data is returned
 
@@ -1509,7 +1564,7 @@ app.post('/create-event', upload.single('eventpicture'), async (req, res) => {
 
     console.log('Event created successfully:', data);
 
-    res.redirect('/events-create'); // Redirect to a success page or another appropriate route
+    res.redirect('/events'); // Redirect to a success page or another appropriate route
   } catch (error) {
     console.error('Server error:', error.message);
     res.status(500).json({ error: error.message });
@@ -1532,12 +1587,16 @@ app.post('/submit-player', async (req, res) => {
     instructor
   } = req.body; // Capture user input from the form
 
+  const registered ='false';
+  const userid= req.session.user.id;
+
   try {
     // Insert the new registration into the database
     const { data, error } = await supabase
       .from('events_registrations')
       .insert([{
         athleteid,
+        userid,
         eventid,
         email,
         playername,
@@ -1548,19 +1607,172 @@ app.post('/submit-player', async (req, res) => {
         belt,
         height,
         weight,
-        instructor
+        instructor,
+        registered
       }]);
 
     if (error) {
       console.error('Error creating registration:', error.message);
       return res.status(500).send('Error creating registration.');
     }
-    res.redirect('/events');
+    res.redirect(`/events-details/${eventid}`);
   } catch (error) {
     console.error('Server error:', error.message);
     res.status(500).json({ error: error.message });
   }
 });
+
+app.post('/update-eventreg-status', async (req, res) => {
+  if (!req.session.user) {
+    return res.status(401).send('Unauthorized: No user logged in');
+  }
+
+  const { applicationId, registered } = req.body; // Capture application ID and new status from the form
+
+  try {
+    // Update the status of the specific registration in the database
+    const { data: registration, error: updateStatusError } = await supabase
+      .from('events_registrations')
+      .update({ registered })
+      .eq('id', applicationId)
+      .single();
+
+    if (updateStatusError) {
+      console.error('Error updating status:', updateStatusError.message);
+      return res.status(500).send('Error updating status');
+    }
+
+    // Optionally, handle post-acceptance actions, like notifying the user or updating other related tables
+
+    console.log('Registration updated:', registration);
+    res.redirect(`/events-review-registration/${applicationId}`);
+  } catch (error) {
+    console.error('Server error:', error.message);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.post('/follow-topic/:id', async (req, res) => {
+  if (!req.session.user) {
+    return res.status(401).send('Unauthorized: No user logged in');
+  }
+
+  const userId = req.session.user.id;
+  const topicId = req.params.id;
+
+  try {
+    // Fetch the current followers array
+    const { data: topic, error: fetchError } = await supabase
+      .from('forum_topics')
+      .select('followers')
+      .eq('id', topicId)
+      .single();
+
+    if (fetchError) {
+      return res.status(500).send('Error fetching topic followers');
+    }
+
+    // Add the current user to the followers array if not already in it
+    const updatedFollowers = topic.followers || [];
+    if (!updatedFollowers.includes(userId)) {
+      updatedFollowers.push(userId);
+    }
+
+    // Update the topic with the new followers array
+    const { data, error: updateError } = await supabase
+      .from('forum_topics')
+      .update({ followers: updatedFollowers })
+      .eq('id', topicId);
+
+    if (updateError) {
+      return res.status(500).send('Error following topic');
+    }
+
+    res.redirect('/forum');
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.post('/unfollow-topic/:id', async (req, res) => {
+  if (!req.session.user) {
+    return res.status(401).send('Unauthorized: No user logged in');
+  }
+
+  const userId = req.session.user.id;
+  const topicId = req.params.id;
+
+  try {
+    // Fetch the current followers array
+    const { data: topic, error: fetchError } = await supabase
+      .from('forum_topics')
+      .select('followers')
+      .eq('id', topicId)
+      .single();
+
+    if (fetchError) {
+      return res.status(500).send('Error fetching topic followers');
+    }
+
+    // Remove the current user from the followers array if present
+    const updatedFollowers = (topic.followers || []).filter(follower => follower !== userId);
+
+    // Update the topic with the new followers array
+    const { data, error: updateError } = await supabase
+      .from('forum_topics')
+      .update({ followers: updatedFollowers })
+      .eq('id', topicId);
+
+    if (updateError) {
+      return res.status(500).send('Error unfollowing topic');
+    }
+
+    res.redirect('/forum');
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.post('/create-announcement', async (req, res) => {
+  const {
+    title,
+    subject,
+    body,
+    originalposter,
+    profilepic,
+    clubid
+  } = req.body;
+
+  if (!req.session.user) {
+    return res.status(401).send('Unauthorized: No user logged in');
+  }
+
+  try {
+    const { data, error } = await supabase
+      .from('club_announcements')
+      .insert([{
+        title,
+        subject,
+        body,
+        originalposter,
+        profilepic,
+        clubid
+      }]);
+
+    if (error) {
+      return res.status(500).render('announcements', {
+        error: 'Error creating announcement.',
+        user: req.session.user
+      });
+    }
+
+    res.redirect(`/clubs-details/${clubid}`);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+
                                        
 
                                                                         // VIEWS BELOW
@@ -1594,55 +1806,45 @@ app.get('/forum', async function (req, res) {
     return res.redirect('/');
   }
 
+  const userId = req.session.user.id; // Assuming user ID is stored in the session
+
   try {
-    const { data, error } = await supabase
-      .from('forum_threads')
+    // Fetch all topics
+    const { data: topics, error: topicsError } = await supabase
+      .from('forum_topics')
       .select('*');
 
-    if (error) {
-      return res.status(400).json({ error: error.message });
+    if (topicsError) {
+      return res.status(400).json({ error: topicsError.message });
     }
 
-    console.log("Fetched data:", data); // Log the data to the console 
+    // Mark topics as followed or not followed by the current user
+    const markedTopics = topics.map(topic => {
+      const followers = topic.followers || []; // Ensure followers is an array
+      topic.followed = followers.includes(userId);
+      return topic;
+    });
+
+    // Fetch threads that belong to the followed topics
+    const followedTopicIds = markedTopics.filter(topic => topic.followed).map(topic => topic.id);
+    const { data: threads, error: threadsError } = await supabase
+      .from('forum_threads')
+      .select('*')
+      .in('topicid', followedTopicIds);
+
+    if (threadsError) {
+      return res.status(400).json({ error: threadsError.message });
+    }
+
+    console.log("Fetched threads:", threads); // Log the threads data to the console 
+    console.log("Fetched topics:", markedTopics); // Log the topics data to the console
 
     // Render the forum.hbs template with the fetched data
-    res.render('forum', { forum_threads: data, user: req.session.user });
+    res.render('forum', { forum_threads: threads, forum_topics: markedTopics, user: req.session.user });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
-
-// app.get('/forum', async function (req, res) {
-//   if (!req.session.user) {
-//     return res.redirect('/');
-//   }
-
-//   try {
-//     // Fetch posts with related user data
-//     const { data: forum_threads, error: forum_threadsError } = await supabase
-//       .from('forum_threads')
-//       .select(`
-//         *,
-//         user:users (
-//           id,
-//           username,
-//           profilepic,
-//           adminverified,
-//           instructorverified,
-//           athleteverified
-//         )
-//       `);
-
-//     if (forum_threadsError) {
-//       return res.status(400).json({ error: forum_threadsError.message });
-//     }
-
-//     // Render the forum template with the fetched data
-//     res.render('forum', { forum_threads, user: req.session.user });
-//   } catch (error) {
-//     res.status(500).json({ error: error.message });
-//   }
-// });
 
 app.get('/forum-create', async function (req, res) {
   if (!req.session.user) {
@@ -1650,18 +1852,27 @@ app.get('/forum-create', async function (req, res) {
   }
 
   try {
-    const { data, error } = await supabase
+    const { data: threads, error: threadsError } = await supabase
       .from('forum_threads')
       .select('*');
 
-    if (error) {
-      return res.status(400).json({ error: error.message });
+    if (threadsError) {
+      return res.status(400).json({ error: threadsError.message });
     }
 
-    console.log("Fetched data:", data); // Log the data to the console 
+    const { data: topics, error: topicsError } = await supabase
+      .from('forum_topics')
+      .select('*');
 
-    // Render the forum.hbs template with the fetched data
-    res.render('forum-create', { forum_threads: data, user: req.session.user });
+    if (topicsError) {
+      return res.status(400).json({ error: topicsError.message });
+    }
+
+    console.log("Fetched threads data:", threads); // Log the threads data to the console 
+    console.log("Fetched topics data:", topics); // Log the topics data to the console 
+
+    // Render the forum-create.hbs template with the fetched data
+    res.render('forum-create', { forum_threads: threads, forum_topics: topics, user: req.session.user });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -1750,20 +1961,58 @@ app.get('/clubs-details/:id', async function (req, res) {
 
     const { data: allUsers, error: allUsersError } = await supabase
       .from('users')
-      .select('*')
-      .eq('athleteverified', true)
-      .eq('instructorverified', true);
+      .select('*');
 
     if (allUsersError) {
       return res.status(400).json({ allUsersError: allUsersError.message });
     }
 
-    const clubMembers = allUsers.filter(user => user.club === club.clubname);
+    const { data: athletes, error: athleteserror } = await supabase
+      .from('athletes')
+      .select('*');
+
+    if (athleteserror) {
+      return res.status(400).json({ athleteserror: athleteserror.message });
+    }
+
+    const { data: announcements, error: announcementserror } = await supabase
+      .from('club_announcements')
+      .select('*')
+      .eq('clubid', id);
+
+    if (announcementserror) {
+      return res.status(400).json({ announcementserror: announcementserror.message });
+    }
+
+    const clubMembers = athletes.filter(athlete => athlete.club === club.clubname);
 
     // Render the clubs-details.hbs template with the fetched data
-    res.render('clubs-details', { club, allUsers, clubMembers, user: req.session.user });
+    res.render('clubs-details', { club, allUsers, clubMembers, announcements, user: req.session.user });
   } catch (error) {
     res.status(500).json({ error: error.message });
+  }
+});
+
+app.get('/clubs-manage', async function (req, res) {
+  if (!req.session.user) {
+    return res.redirect('/');
+  }
+
+  try {
+    const { data, error } = await supabase
+      .from('clubs')                                            //need to change to clubs after
+      .select('*');
+
+    if (error) {
+      return res.status(400).json({ error: error.message });
+    }
+
+    console.log("Fetched data:", data); // Log the data to the console 
+
+    // Render the forum.hbs template with the fetched data
+    res.render('clubs-manage', { clubs: data, user: req.session.user });
+  } catch (error) {
+    res.status(500).json({ error: error.message, user: req.session.user });
   }
 });
 
@@ -1813,7 +2062,9 @@ app.get('/events', async function (req, res) {
   }
 });
 
-app.get('/events-create', async function (req, res) {
+app.get('/events-create/:type', async function (req, res) {
+  const { type } = req.params; // Correctly capture the type parameter
+
   if (!req.session.user) {
     return res.redirect('/');
   }
@@ -1829,8 +2080,8 @@ app.get('/events-create', async function (req, res) {
 
     console.log("Fetched data:", data); // Log the data to the console 
 
-    // Render the athletes.hbs template with the fetched data
-    res.render('events-create', { events: data, user: req.session.user });
+    // Render the events-create.hbs template with the fetched data
+    res.render('events-create', { events: data, user: req.session.user, eventtype: type });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -1877,12 +2128,66 @@ app.get('/events-registration/:id', async function (req, res) {
   }
 });
 
+app.get('/events-review-registration/:id', async function (req, res) {
+  if (!req.session.user) {
+    return res.redirect('/');
+  }
+
+  const { id } = req.params; // Get the event registration ID from the URL
+  const userId = req.session.user.id; // Get the user ID from the session
+
+  try {
+    // Fetch the event registration details
+    const { data: eventregistration, error: eventregError } = await supabase
+      .from('events_registrations')
+      .select('*')
+      .eq('id', id)
+      .single();
+
+    if (eventregError) {
+      return res.status(400).json({ error: eventregError.message });
+    }
+
+    // Fetch the event details using the eventid from the event registration
+    const { data: event, error: eventError } = await supabase
+      .from('events')
+      .select('*')
+      .eq('id', eventregistration.eventid)
+      .single();
+
+    if (eventError) {
+      return res.status(400).json({ error: eventError.message });
+    }
+
+    // Fetch the athlete details for the current user
+    const { data: athlete, error: athleteError } = await supabase
+      .from('athletes')
+      .select('*')
+      .eq('userid', userId)
+      .single();
+
+    if (athleteError) {
+      return res.status(400).json({ error: athleteError.message });
+    }
+
+    res.render('events-review-registration', {
+      eventregistration,
+      event,
+      athlete,
+      user: req.session.user
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 app.get('/events-details/:id', async function (req, res) {
   if (!req.session.user) {
     return res.redirect('/');
   }
 
   const { id } = req.params; // Get the event ID from the URL
+  const userId = req.session.user.id; // Get the user ID from the session
 
   try {
     // Fetch the event details from the events table
@@ -1897,32 +2202,51 @@ app.get('/events-details/:id', async function (req, res) {
     }
 
     // Fetch the event registrations for the specific event
-    const { data: eventRegistrations, error: eventRegistrationsError } = await supabase
+    const { data: eventregistrations, error: eventregistrationsError } = await supabase
       .from('events_registrations')
-      .select('athleteid')
+      .select('*')
       .eq('eventid', id);
 
-    if (eventRegistrationsError) {
-      return res.status(400).json({ error: eventRegistrationsError.message });
+    if (eventregistrationsError) {
+      return res.status(400).json({ error: eventregistrationsError.message });
     }
 
-    // Extract all athlete IDs from the event registrations
-    const athleteIds = eventRegistrations.map(registration => registration.athleteid);
-
-    // Fetch the athlete details for all the extracted athlete IDs
-    const { data: athletes, error: athletesError } = await supabase
-      .from('athletes')
+    // Fetch the participants for the specific event
+    const { data: participants, error: participantsError } = await supabase
+      .from('events_registrations')
       .select('*')
+      .eq('registered', 'true')
+      .eq('eventid', id);
 
-    if (athletesError) {
-      return res.status(400).json({ error: athletesError.message });
+    if (participantsError) {
+      return res.status(400).json({ error: participantsError.message });
+    }
+
+    // Check if the current user is already registered for the event
+    const { data: currentregistrant, error: currentregistrantError } = await supabase
+      .from('events_registrations')
+      .select('*')
+      .eq('userid', userId)
+      .eq('eventid', id)
+      .single(); // Use .single() since we're checking for a specific user's registration
+
+    if (currentregistrantError && currentregistrantError.code !== 'PGRST116') { // PGRST116 indicates no rows found, which is okay in this context
+      return res.status(400).json({ error: currentregistrantError.message });
     }
 
     console.log("Fetched event data:", event); // Log the event data to the console
-    console.log("Fetched athletes data:", athletes); // Log the athletes data to the console
+    console.log("Fetched event registrations data:", eventregistrations); // Log the event registrations data to the console
+    console.log("Fetched participants data:", participants); // Log the participants data to the console
+    console.log("Fetched current registrant data:", currentregistrant); // Log the current registrant data to the console
 
     // Render the events-details.hbs template with the fetched data
-    res.render('events-details', { event, athletes, user: req.session.user });
+    res.render('events-details', {
+      event,
+      eventregistrations,
+      participants,
+      currentregistrant,
+      user: req.session.user
+    });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -1933,7 +2257,27 @@ app.get('/profile', async function (req, res) {
     return res.redirect('/');
   }
 
-  res.render('profile', { user: req.session.user });
+  const userId = req.session.user.id;
+
+  try {
+    // Fetch the athlete's data
+    const { data: athlete, error: athleteError } = await supabase
+      .from('athletes')
+      .select('*')
+      .eq('userid', userId)
+      .single();
+
+    if (athleteError) {
+      console.error('Error fetching athlete data:', athleteError.message);
+      return res.status(500).json({ error: athleteError.message });
+    }
+
+    // Render the profile template with the user session data and athlete data
+    res.render('profile', { user: req.session.user, athlete });
+  } catch (error) {
+    console.error('Server error:', error.message);
+    res.status(500).json({ error: error.message });
+  }
 });
 
 app.get('/athletes', async function (req, res) {
@@ -1959,18 +2303,41 @@ app.get('/athletes', async function (req, res) {
   }
 });
 
+app.get('/athletes-profile', async function (req, res) {
+  if (!req.session.user) {
+    return res.redirect('/');
+  }
+  
+  try {
+    const { data, error } = await supabase
+      .from('athletes')
+      .select('*');
+
+    if (error) {
+      return res.status(400).json({ error: error.message });
+    }
+
+    console.log("Fetched data:", data); // Log the data to the console 
+
+    // Render the athletes.hbs template with the fetched data
+    res.render('athletes-profile', { athletes: data, user: req.session.user });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 app.get('/notifications', async function (req, res) {
   if (!req.session.user) {
     return res.redirect('/');
   }
   
-  const username = req.session.user.username; // Get the current user's username from the session
+  const userid = req.session.user.id; // Get the current user's username from the session
 
   try {
     const { data, error } = await supabase
       .from('club_invitations')
       .select('*')
-      .eq('invited_user', username)
+      .eq('invited_user', userid)
       .is('status', null);
 
     if (error) {
@@ -2213,6 +2580,8 @@ app.get('/membership-club', async (req, res) => {
     res.status(500).send('Server error');
   }
 });
+
+
 
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);

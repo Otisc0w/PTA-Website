@@ -1,0 +1,70 @@
+.events-create-container {
+  background-color: #444;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  margin: auto;
+  width: 70%;
+  color: #fff;
+}
+
+.form-group {
+  margin-bottom: 15px;
+  margin-right: 15px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.event-details {
+  margin-top: 20px;
+}
+
+button[type="submit"]{
+  background-color: #4CAF50;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button[type="submit"]:hover{
+  background-color: #45a049;
+}
+
+.cancel{
+  background-color: #a00202;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.event-form textarea{
+  width: 100%;
+}
+
+.cancel:hover{
+  background-color: #a00707;
+}
+
+.eventpic{
+  height: 100px;
+  padding: 0 10px;
+  background-color: #333;
+  border-radius: 10px;
+  margin-bottom: 25px;
+}
+

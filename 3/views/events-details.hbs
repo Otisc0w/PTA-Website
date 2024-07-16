@@ -4,9 +4,8 @@
   <meta charset="UTF-8">
   <title>PTA | Events</title>
   <link rel="icon" type="image/x-icon" href="../images/favicon.ico" />
-  <link rel="stylesheet" type="text/css" href="../stylesheets/home.css" />
   <link rel="stylesheet" type="text/css" href="../stylesheets/navbar.css" />
-  <link rel="stylesheet" type="text/css" href="../stylesheets/events-details.css" />
+  <link rel="stylesheet" type="text/css" href="../stylesheets/clubs-details.css" />
 </head>
 <body class="container">
   <div class="header">
@@ -40,37 +39,107 @@
   </div>
 
   <div class="events-container">
-
-    <div class="event-content">
-      <img class="event-poster"src="{{event.eventpicture}}">
-      <h2>{{event.name}}</h2>
-        {{#if (or user.athleteverified user.instructorverified)}}
-          <a class="register-button" href="/events-registration/{{event.id}}">Register</a>
-        {{!-- {{else if (and -user.athleteverified user.instructorverified)}}
-          <a class="register-button" href="/events-registration/{{event.id}}">Register for an Athlete</a>
-        {{else if (and user.athleteverified user.instructorverified)}}
-          <a class="register-button" href="/events-registration/{{event.id}}">Register for myself</a>
-          <a class="register-button" href="/events-registration/{{event.id}}">Register for an Athlete</a> --}}
-        {{else}}
-          <a class="grayed-register-button">Not Verified</a>
+      <img src="{{event.eventpicture}}" alt="Event Picture">
+      <div class="clubname">
+        <span class="name">{{event.name}}</span>
+        {{#if (eq club.registeredby user.id)}}
+          <span><a href="/clubs-manage" class="manage-button" ><img src="/images/settings.png">Manage</a></span>
         {{/if}}
-        <br><br>
-        <h3>Participating Athletes:</h3>
-        <ul class="athletes-list">
-          {{#each athletes}}
-            <img src="{{portrait}}"><li>{{name}}</li>
-          {{/each}}
+      </div>
+
+      <div class="clubtabs">
+        <ul>
+          <li><a href="#" id="details-tab">Details</a></li>
+          <li><a href="#" id="participants-tab">Participants</a></li>
+          {{#if user.ptaverified}}
+            <li><a href="#" id="registrations-tab">Registrations</a></li>
+          {{/if}}
         </ul>
-    </div>
+      </div><br>
+      <div class="sides">
+        <div class="leftside">
+          <div class="intro">
+            <h3>Details</h3>
+            <p>{{event.description}}</p>
+            <p>{{event.datetime}}</p>
+            <p>{{event.eventtype}}</p>
+          </div>
+        </div>
+
+        <div class="rightside">
+          <div class="registercodediv">
+            <div class="buttondiv">
+              {{#if user.athleteverified}}
+                {{#unless currentregistrant}}
+                    <a href="/events-registration/{{event.id}}" class="register-button">Register</a>
+                {{else}}
+                  <p>Your check-in code is:</p>
+                  {{#if currentregistrant.registered}}
+                    <h1 class="code">{{currentregistrant.id}}</h1>
+                  {{else}}
+                    <h1 class="pending">pending</h1>
+                  {{/if}}
+                {{/unless}}
+              {{else}}
+                <a class="grayed-register-button">Not Registered</a>
+              {{/if}}
+            </div>
+          </div>
+        </div>
+      </div>
   </div>
 
-  {{!-- <div class="else-athletes">
-    <ul>
-      {{#each athletes}}
-        <li>{{name}}</li>
-      {{/each}}
-    </ul>
-  </div> --}}
+  <div class="participants-container">
+    <div class="participants-title">Participants</div>
+    <table class="participants-table">
+      <thead>
+        <tr>
+          <th>Player</th>
+          <th>Club</th>
+          <th>Height</th>
+          <th>Weight</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each participants}}
+          <tr>
+            <td>{{this.playername}}</td>
+            <td>{{this.club}}</td>
+            <td>{{this.height}}</td>
+            <td>{{this.weight}}</td>
+          </tr>
+        {{/each}}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="registrations-container">
+    <div class="registrations-title">Pending Registrations</div>
+    <table class="registrations-table">
+      <thead>
+        <tr>
+          <th>Player</th>
+          <th>Club</th>
+          <th>Height</th>
+          <th>Weight</th>
+          <th>Registered?</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each eventregistrations}}
+          <tr>
+            <td>{{this.playername}}</td>
+            <td>{{this.club}}</td>
+            <td>{{this.height}}</td>
+            <td>{{this.weight}}</td>
+            <td>{{this.registered}}</td>
+            <td><a href="/events-review-registration/{{this.id}}">review</a></td>
+          </tr>
+        {{/each}}
+      </tbody>
+    </table>
+  </div>
 
   <script>
     function toggleDropdown() {
@@ -87,7 +156,53 @@
           }
         }
       }
-    }    
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+      const participantsTab = document.getElementById('participants-tab');
+      const detailsTab = document.getElementById('details-tab');
+      const registrationsTab = document.getElementById('registrations-tab');
+      const leftside = document.querySelector('.leftside');
+      const rightside = document.querySelector('.rightside');
+      const participantsContainer = document.querySelector('.participants-container');
+      const registrationsContainer = document.querySelector('.registrations-container');
+
+      participantsContainer.style.display = 'none';
+      registrationsContainer.style.display = 'none';
+
+      function showParticipants() {
+        leftside.style.display = 'none';
+        rightside.style.display = 'none';
+        participantsContainer.style.display = 'block';
+        registrationsContainer.style.display = 'none';
+      }
+
+      function showDetails() {
+        leftside.style.display = 'block';
+        rightside.style.display = 'block';
+        participantsContainer.style.display = 'none';
+        registrationsContainer.style.display = 'none';
+      }
+
+      function showRegistrations() {
+        leftside.style.display = 'none';
+        rightside.style.display = 'none';
+        participantsContainer.style.display = 'none';
+        registrationsContainer.style.display = 'block';
+      }
+
+      participantsTab.addEventListener('click', function () {
+        showParticipants();
+      });
+
+      detailsTab.addEventListener('click', function () {
+        showDetails();
+      });
+
+      registrationsTab.addEventListener('click', function () {
+        showRegistrations();
+      });
+    });
   </script>
 </body>
 </html>

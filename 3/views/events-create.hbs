@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
   <title>PTA | Events</title>
   <link rel="icon" type="image/x-icon" href="../images/favicon.ico" />
-  <link rel="stylesheet" type="text/css" href="../stylesheets/home.css" />
   <link rel="stylesheet" type="text/css" href="../stylesheets/navbar.css" />
-  <link rel="stylesheet" type="text/css" href="../stylesheets/events.css" />
+  <link rel="stylesheet" type="text/css" href="../stylesheets/events-create.css" />
 </head>
 <body class="container">
   <div class="header">
@@ -38,30 +38,42 @@
     </div>
   </div>
 
-  <div class="events-container">
-    <form id="create-event-form" action="/create-event" method="post" enctype="multipart/form-data">
-			<div>
-				<label for="name">Event Name:</label>
-				<input type="text" id="name" name="name" required>
-			</div>
-			<div>
-				<label for="description">Event Description:</label>
-				<textarea id="description" name="description" required></textarea>
-			</div>
-			<div>
-				<label for="eventpicture">Event Picture:</label>
-				<input type="file" id="eventpicture" name="eventpicture" accept="image/*" required>
-			</div>
-			<div>
-				<label for="eventtype">Event Type:</label>
-				<input type="text" id="eventtype" name="eventtype" required>
-			</div>
-			<div>
-				<label for="registrationcap">Registration Cap:</label>
-				<input type="number" id="registrationcap" name="registrationcap" required>
-			</div>
-				<button type="submit">Create Event</button>
-  	</form>
+  <div class="events-create-container">
+      <form id="eventform" class="event-form" action="/create-event" method="post" enctype="multipart/form-data">
+        {{#if (eq eventtype 'kyurogi')}}
+          <h3>Create Kyurogi Event</h3>
+        {{else if (eq eventtype 'poomsae')}}
+          <h3>Create Kyurogi Event</h3>
+        {{else if (eq eventtype 'promo')}}
+          <h3>Create Promotion Test Event</h3>
+        {{/if}}
+        <input type="hidden" value="{{eventtype}}" name="eventtype">
+        <div class="eventpic">
+          <input type="file" name="eventpicture">
+        </div>
+        <div class="form-group">
+          <label for="name">Event Name:</label>
+          <input type="text" id="name" name="name" required>
+        </div>
+        <div class="form-group">
+          <label for="description">Event Description:</label>
+          <textarea id="description" name="description" rows="4" required></textarea>
+        </div>
+        <div class="form-group">
+          <label for="date">Event Date:</label>
+          <input type="date" id="date" name="date" required>
+        </div>
+        <div class="form-group">
+          <label for="time">Event Time:</label>
+          <input type="time" id="time" name="time" required>
+        </div>
+        <div class="form-group">
+          <label for="location">Location:</label>
+          <input type="text" id="location" name="location" required>
+        </div>
+        <a href="/events" class="cancel">Cancel</a>
+        <button type="submit">Create Kyurogi Event</button>
+      </form>
   </div>
 
   <script>

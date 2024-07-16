@@ -1,157 +1,297 @@
-/* Reset default margin and padding */
+.events-container{
+  margin-top: 80px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 
-  
-  .clubdetails-container {
-    display: flex;
-    justify-content: center;
-    padding: 20px;
-    margin-top: 60px;
-  }
-  
-  .main-panel {
-    background-color: #292929;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    width: 70%;
-  }
-  
-  .club-pic {
-    object-fit: cover; /* Ensure the image covers the container */
-    object-position: center; /* Center the image within the container */
+.events-container img {
+  width: 1200px;
+  height: 400px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  object-fit: cover;
+}
+
+.clubname {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.clubname .name {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.manage-button {
+  display: flex;
+  align-items: center;
+  background-color: #007BFF;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 5px;
+  text-decoration: none;
+}
+
+.manage-button img {
+  margin-right: 5px;
+  height: 20px;
+}
+
+
+.clubtabs ul {
+  list-style: none;
+  display: flex;
+  padding: 0;
+}
+
+.clubtabs ul li {
+  margin-right: 20px;
+}
+
+.clubtabs ul li a {
+  text-decoration: none;
+  color: #fff;
+  font-size: 22px;
+  padding: 10px 20px;
+}
+
+.clubtabs ul li a:active {
+  text-decoration: none;
+  color: #fff;
+  padding: 10px 20px;
+  background-color: #333;
+  border-radius: 5px;
+}
+
+.clubtabs ul li a:hover {
+  text-decoration: none;
+  color: #fff;
+  padding: 10px 20px;
+  background-color: #333;
+  border-radius: 5px;
+
+}
+
+.sides {
+  display: flex;
+  justify-content: space-between;
+  width: 70%;
+}
+
+.leftside,
+.rightside {
+  width: 30%;
+  position: relative
+}
+
+.intro {
+  background-color: #2e2e2e;
+  padding: 20px;
+  border-radius: 10px;
+  width: 300px;
+  height: 200px;
+}
+
+.intro h3 {
+  margin-top: 0;
+}
+
+.participants-container, .registrations-container {
+  display: none;
+  margin-top: 20px;
+  padding: 0 300px;
+}
+
+.participants-title, .registrations-title  {
+  font-size: 1.5em;
+  margin-bottom: 10px;
+}
+
+.participants-table, .registrations-table  {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.participants-table th, .participants-table td, .registrations-table th, .registrations-table td  {
+  padding: 10px;
+  border-bottom: 1px solid #333;
+}
+
+.participants-table th, .registrations-table th {
+  background-color: #444;
+  color: white;
+}
+
+.participants-table tr:nth-child(even), .registrations-table tr:nth-child(even) {
+  background-color: #2e2e2e;
+}
+
+.participants-table tr:hover, .registrations-table tr:hover {
+  background-color: #3e3e3e;
+}
+
+.participants-table td, .registrations-table td {
+  color: #fff;
+}
+
+.invite-button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.invite-button:hover {
+  background-color: #0056b3;
+}
+
+/* Modal Styles */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgba(0, 0, 0, 0.8); /* Black w/ opacity */
+  backdrop-filter: blur(10px); /* Blur the background */
+}
+
+.modal-content {
+  background-color: #222;
+  margin: 15% auto; /* 15% from the top and centered */
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%; /* Could be more or less, depending on screen size */
+  max-width: 500px;
+  border-radius: 10px;
+  color: white;
+}
+
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: white;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.participants-table img{
+  width: 40px;
+  height: 40px;
+  border-radius: 30px;
+}
+
+.name{
+  margin-left: 380px;
+}
+
+.modal select{
     width: 100%;
-    height: 400px;
-    border-radius: 10px;
-    margin-bottom: 20px;
-  }
-  
-  .club-name {
-    font-size: 32px;
-    margin-bottom: 10px;
-  }
-  
-  .hosted-by {
-    display: flex;
-    align-items: center;
-    margin-bottom: 20px;
-  }
-  
-  .host-pic {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    margin-right: 10px;
-  }
-  
-  .club-description {
-    font-size: 16px;
-    margin-bottom: 20px;
-  }
-  
-  .club-members-count {
-    font-size: 16px;
-    margin-bottom: 20px;
-  }
-  
-  .members-list {
-    margin-bottom: 20px;
-  }
-  
-  .members-list h2 {
-    font-size: 20px;
-    margin-bottom: 10px;
-  }
-  
-  .members-list ul {
-    list-style-type: none;
-    padding: 0;
-  }
-  
-  .members-list li {
-    padding: 5px 0;
-  }
-  
-  .invite-section {
-    margin-top: 20px;
-  }
-  
-  .invite-section h2 {
-    font-size: 20px;
-    margin-bottom: 10px;
-  }
-  
-  .invite-section form {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-  }
-  
-  .invite-section label {
-    margin-bottom: 5px;
-  }
-  
-  .invite-section select {
-    padding: 5px;
-    margin-bottom: 10px;
-  }
-  
-  .invite-button {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.modal .submit-invite{
+  background-color: #4CAF50;
+    color: white;
     padding: 10px 20px;
-    background-color: #007BFF;
-    color: #fff;
     border: none;
     border-radius: 5px;
     cursor: pointer;
-  }
-  
-  .invite-button:hover {
-    background-color: #0056b3;
-  }
-  
-  .footer-content {
-    background-color: #333;
-    color: #fff;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 20px;
-    height: 100px;
-    margin-top: auto; 
+    margin-top: 20px;
 }
 
-.footer-content .pta-logo img {
-    height: 100%; 
+.registercodediv{
+  width: 400px;
+  height: 150px;
+  margin: auto;
+  margin-top: 30px;
+  background: #2e2e2e;
+  border-radius: 10px;
 }
 
-.footer-content .contact-info {
-    flex: 1;
-    text-align: center;
-    padding: 0 20px;
+.register-button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  text-decoration: none;
+  /*margin-left: 145px;
+  margin-top: 65px; */
 }
 
-.footer-content .contact-info p {
-    margin: 5px 0;
+.register-button:hover {
+  background-color: #0056b3;
 }
 
-.footer-content .social-media {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
+.buttondiv{
+  padding: 20px 10px;
 }
 
-.footer-content .social-media p {
-    margin-bottom: 5px;
+.buttondiv p, h1{
+  text-align: center;
 }
 
-.footer-content .social-media .icons {
-    display: flex;
-    align-items: center;
+.grayed-register-button{
+  background-color: gray;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  text-decoration: none;
+  margin-left: 145px;
+  margin-top: 65px;
 }
 
-.footer-content .social-media a {
-    margin-left: 10px;
+.pending{
+  color: rgb(214, 190, 84);
 }
 
-.footer-content .social-media img {
-    height: 30px;
+.announcements{
+  margin: auto;
+  margin-top: 10px;
+  margin-left: 20%;
+  position: relative;
+}
+
+.oneannouncement{
+  width: 900px;
+  padding: 10px 10px;
+  background-color: #444;
+  border-radius: 10px;
+  margin: 20px 20px;
+  margin-left: 130px;
+}
+
+.newannounce{
+  background-color: #007BFF;
+  border-radius: 4px;
+  border:none;
+  margin:0;
+  padding:0;
+  cursor: pointer;
+  color: white;
+  padding: 10px 10px;
 }

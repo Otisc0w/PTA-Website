@@ -8,38 +8,39 @@
 </head>
 
 <body style="margin:0;" class="container">
-  <div class="header">
-    <div class="navbar">
-      <a href="/home"><img src="/images/logo.png" class="logo" alt="Logo"></a>
-      <ul class="tabs">
-        <li class="home"><a href="/home">Home</a></li>
-        <li class="athletes"><a href="/athletes">Athletes</a></li>
-        <li class="clubs"><a href="/clubs">Clubs</a></li>
-        <li class="events"><a href="/events">Events</a></li>
-        <li class="membership"><a href="/membership">Membership</a></li>
-        <li class="forum"><a href="/forum">Forum</a></li>
-        <li class="notifications">
-          <a href="/notifications">Notifications <span class="badge">3</span></a>
-        </li>
-        <li class="profile-pic">
-          {{#if user.profilepic}}
-            <a href="#" onclick="toggleDropdown()"><img src="{{user.profilepic}}" alt="Profile Picture" class="profile-picture"></a>
-          {{else}}
-            <a href="#" onclick="toggleDropdown()" class="profile-picture"><img src="/images/none.jpg" alt="Profile Picture" class="profile-picture"></a>
-          {{/if}}
-          <div id="dropdown" class="dropdown-content">
-            <a href="/profile">Profile</a>
-            <a href="/settings">Settings</a>
-            <a href="/help-center">FAQs</a>
-            <a href="/">Logout</a>
-          </div>
-        </li>
-      </ul>
-    </div>
+  <div class="navbar">
+    <a href="/home"><img src="/images/logo.png" class="logo" alt="Logo"></a>
+    <ul class="tabs">
+      <li class="home"><a href="/home">Home</a></li>
+      <li class="athletes"><a href="/athletes">Athletes</a></li>
+      <li class="clubs"><a href="/clubs">Clubs</a></li>
+      <li class="events"><a href="/events">Events</a></li>
+      <li class="membership"><a href="/membership">Membership</a></li>
+      <li class="forum"><a href="/forum">Forum</a></li>
+      <li class="notifications">
+        <a href="/notifications">Notifications <span class="badge">3</span></a>
+      </li>
+      <li class="profile-pic">
+        {{#if user.profilepic}}
+          <a href="#" onclick="toggleDropdown()"><img src="{{user.profilepic}}" alt="Profile Picture" class="profile-picture"></a>
+        {{else}}
+          <a href="#" onclick="toggleDropdown()" class="profile-picture"><img src="/images/none.jpg" alt="Profile Picture" class="profile-picture"></a>
+        {{/if}}
+        <div id="dropdown" class="dropdown-content">
+          <a href="/profile">Profile</a>
+          <a href="/settings">Settings</a>
+          <a href="/help-center">FAQs</a>
+          <a href="/">Logout</a>
+        </div>
+      </li>
+    </ul>
   </div>
 
+  <div class="back-button">
+    <a href="/forum">&larr;</a>
+  </div> 
 
-   <div class="forum-container">
+  <div class="forum-container">
     <div class="post-container">
       <div class="dropdown-container">
                 <button onclick="toggleDropdown(this)" class="dropbtn">...</button>
@@ -50,20 +51,16 @@
                   <a href="#">Report</a> -->
                 </div>
               </div>
-       <div class="back-btn"><h2><a href="/forum">Back</a></h2>
-      <div class="post-content">
-        <h1 class="post-title">{{thread.title}}</h1>
-        <div class="post-info">
-          <span>Posted by <a href="profile?username={{thread.originalposter}}">{{thread.originalposter}}</a> on {{thread.created_at}}</span>
+        <div class="back-btn">
+          <div class="post-content">
+          <h1 class="post-title">{{thread.title}}</h1>
+          <div class="post-info">
+            <span>Posted by <a href="profile?username={{thread.originalposter}}">{{thread.originalposter}}</a> on {{thread.created_at}}</span>
+          </div>
+          <div class="post-body">
+            <p>{{thread.body}}</p>
+          </div>
         </div>
-        <div class="post-body">
-          <p>{{thread.body}}</p>
-        </div>
-
-        <div class="post-buttons">
-
-        </div>
-      </div>
       </div> 
       <div class="post-vote">
         <form action="/vote" method="post">
@@ -123,7 +120,7 @@
       {{/if}}
     </div>
   </div>
-<footer>
+  <footer>
     <div class="footer-content">
       <div class="pta-logo">
         <img src="/images/logo.png" alt="PTA Logo">

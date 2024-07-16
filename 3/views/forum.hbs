@@ -9,36 +9,66 @@
 </head>
 <body class="container">
   <div class="header">
-			<div class="navbar">
-				<a href="home"><img src="/images/logo.png" class="logo" alt="Logo"></a>
-				<ul class="tabs">
-					<li class="home"><a href="home">Home</a></li>
-					<li class="athletes"><a href="athletes">Athletes</a></li>
-					<li class="clubs"><a href="clubs">Clubs</a></li>
-					<li class="events"><a href="events">Events</a></li>
-					<li class="membership"><a href="membership">Membership</a></li>
-					<li class="forum"><a href="forum">Forum</a></li>
-					<li class="notifications">
-							<a href="notifications">Notifications <span class="badge">3</span></a>
-					</li>
-					<li class="profile-pic">
-							{{#if user.profilepic}}
-									<a href="#" onclick="toggleDropdown()"><img src="{{user.profilepic}}" alt="Profile Picture" class="profile-picture"></a>
-							{{else}}
-									<a href="#" onclick="toggleDropdown()" class="profile-picture"><img src="/images/none.jpg" alt="Profile Picture" class="profile-picture"></a>
-							{{/if}}
-							<div id="dropdown" class="dropdown-content">
-									<a href="profile">Profile</a>
-									<a href="settings">Settings</a>
-									<a href="help-center">FAQs</a>
-									<a href="/">Logout</a>
-							</div>
-					</li>
-				</ul>
-			</div>
+    <div class="navbar">
+      <a href="home"><img src="/images/logo.png" class="logo" alt="Logo"></a>
+      <ul class="tabs">
+        <li class="home"><a href="home">Home</a></li>
+        <li class="athletes"><a href="athletes">Athletes</a></li>
+        <li class="clubs"><a href="clubs">Clubs</a></li>
+        <li class="events"><a href="events">Events</a></li>
+        <li class="membership"><a href="membership">Membership</a></li>
+        <li class="forum"><a href="forum">Forum</a></li>
+        <li class="notifications">
+            <a href="notifications">Notifications <span class="badge">3</span></a>
+        </li>
+        <li class="profile-pic">
+            {{#if user.profilepic}}
+                <a href="#" onclick="toggleDropdown()"><img src="{{user.profilepic}}" alt="Profile Picture" class="profile-picture"></a>
+            {{else}}
+                <a href="#" onclick="toggleDropdown()" class="profile-picture"><img src="/images/none.jpg" alt="Profile Picture" class="profile-picture"></a>
+            {{/if}}
+            <div id="dropdown" class="dropdown-content">
+                <a href="profile">Profile</a>
+                <a href="settings">Settings</a>
+                <a href="help-center">FAQs</a>
+                <a href="/">Logout</a>
+            </div>
+        </li>
+      </ul>
     </div>
+  </div>
 
   <div class="forum-container">
+
+    <div class="topics-container">
+      <h2 class="topicsh2">Topics</h2>
+      <div class="list">
+        <ul>
+          {{#each forum_topics}}
+            <li>
+                {{#if this.followed}}
+                  <div class="followedtopic">
+                    <form action="/unfollow-topic/{{this.id}}" method="post" class="unfollow-form">
+                      <span class="topicname">#{{this.topic}}</span>
+                      <button class="followbtn" type="submit">-</button>
+                    </form>
+                  </div>
+                {{else}}
+                  <div class="notfollowedtopic">
+                    <form action="/follow-topic/{{this.id}}" method="post" class="follow-form">
+                      <span class="topicname">#{{this.topic}}</span>
+                      <button class="followbtn" type="submit">+</button>
+                    </form>
+                  </div>
+                {{/if}}
+            </li>
+          {{/each}}
+        </ul>
+        {{!-- <button id="followButton" onclick="followTopic('{{1}}')">Follow</button>
+            <button id="unfollowButton" onclick="unfollowTopic('{{1}}')" style="display:none;">Unfollow</button> --}}
+      </div>
+    </div>
+
     <div class="main-content">
       <div class="content">
         <h2>Recent Threads</h2>
@@ -48,7 +78,22 @@
             <button id="createPostButton" class="create-post-button" href="/create-post">
               <span class="plus-icon">+</span> Create a post
             </button>
+            <button id="createtopicButton" class="create-topic-button" >
+              <span class="plus-icon">+</span> Create a #topic
+            </button>
           </div>
+
+          <div id="topicModal" class="modal">
+            <div class="modal-content">
+              <span class="close">&times;</span>
+              <form action="/create-topic" method="post">
+                <label for="topic">Topic:</label>
+                <input type="text" id="topic" name="topic" required>
+                <button type="submit">Create Topic</button>
+              </form>
+            </div>
+          </div>
+
         </div>
         {{#reverseEach forum_threads}}
         <div class='post-link' data-href='/forum-thread/{{id}}'>
@@ -110,7 +155,7 @@
               </button>
             </div>
             <div class="vote-button downvote">
-                <button type="submit" name="type" value="downvote" onclick="event.stopPropagation()">
+              <button type="submit" name="type" value="downvote" onclick="event.stopPropagation()">
                 <img src="/images/thumbs down.png" alt="Downvote">
                 <span class="downvote-count">{{arraySize downvotes}}</span>
               </button>
@@ -148,6 +193,7 @@
       </div>
     </div>
   </footer>
+
   <script>
     function toggleDropdown() {
       document.getElementById("dropdown").classList.toggle("show");
@@ -217,35 +263,51 @@
         }
       }
 
-function submitVote(event) {
-  event.preventDefault();
-  event.stopPropagation();
-  
-  const form = event.target;
-  const formData = new FormData(form);
-  
-  fetch(form.action, {
-    method: form.method,
-    body: formData
-  }).then(response => {
-    if (response.ok) {
-      return response.json();
-    } else {
-      throw new Error('Something went wrong');
+    function submitVote(event) {
+      event.preventDefault();
+      event.stopPropagation();
+      
+      const form = event.target;
+      const formData = new FormData(form);
+      
+      fetch(form.action, {
+        method: form.method,
+        body: formData
+      }).then(response => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          throw new Error('Something went wrong');
+        }
+      }).then(data => {
+        // Handle successful vote submission
+        console.log('Vote submitted successfully', data);
+        // Optionally, update the vote count in the UI
+      }).catch(error => {
+        console.error('Error:', error);
+      });
     }
-  }).then(data => {
-    // Handle successful vote submission
-    console.log('Vote submitted successfully', data);
-    // Optionally, update the vote count in the UI
-  }).catch(error => {
-    console.error('Error:', error);
-  });
-}
 
 
+    document.addEventListener('DOMContentLoaded', function () {
+      const modal = document.getElementById("topicModal");
+      const btn = document.getElementById("createtopicButton");
+      const span = document.getElementsByClassName("close")[0];
 
-</script>
+      btn.onclick = function () {
+        modal.style.display = "block";
+      }
 
+      span.onclick = function () {
+        modal.style.display = "none";
+      }
 
+      window.onclick = function (event) {
+        if (event.target == modal) {
+          modal.style.display = "none";
+        }
+      }
+    });
+  </script>
 </body>
 </html>

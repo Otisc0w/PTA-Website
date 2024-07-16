@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PTA | Player Registration Review</title>
+  <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
+  <link rel="stylesheet" type="text/css" href="../stylesheets/membership-review.css">
+  <link rel="stylesheet" type="text/css" href="../stylesheets/navbar.css">
+</head>
+
+<body class="container">
+  <header class="membership-header">
+    <nav class="membership-navbar">
+      <a href="home">
+        <img src="/images/logo.png" class="membership-logo" alt="PTA Logo">
+      </a>
+      <div class="profile-menu">
+        {{#if user.profilepic}}
+        <a href="#" onclick="toggleDropdown()" class="memprofile-pic">
+          <img src="{{user.profilepic}}" alt="Profile Picture" class="profile-picture">
+        </a>
+        {{else}}
+        <a href="#" onclick="toggleDropdown()" class="memprofile-pic">
+          <p>:(</p>
+        </a>
+        {{/if}}
+        <div id="dropdown" class="dropdown-content">
+          <a href="profile">Profile</a>
+          <a href="settings">Settings</a>
+          <a href="help-center">FAQs</a>
+          <a href="/">Logout</a>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <main class="membership-container">
+    <section class="review-header">
+      <h1>Review Player Application for {{event.name}}</h1>
+    </section>
+    <form action="/update-eventreg-status " method="post" class="review-form">
+      <section class="review-details">
+        <h2>Player Applicant Information</h2>
+
+        <input type="hidden" name="applicationId" value="{{eventregistration.id}}">
+				<div>
+					<img src="{{registration.portrait}}">
+				</div>
+				<div>
+					<p><strong>ID:</strong> {{eventregistration.id}}</p>
+					<p><strong>First Name:</strong> {{eventregistration.playername}}</p>
+					<p><strong>Middle Initial:</strong> {{eventregistration.mi}}</p>
+					<p><strong>Last Name:</strong> {{eventregistration.club}}</p>
+					<p><strong>Gender:</strong> {{eventregistration.age}}</p>
+					<p><strong>Birthday:</strong> {{eventregistration.bday}}</p>
+				</div>
+				
+      </section>
+
+      <section class="application-actions">
+        <h1 class="status">
+          {{#if eventregistration.registered}}
+            <span class="status-shipped">Accepted</span>
+          {{else}}
+            <span class="status-rejected">Rejected</span>
+          {{/if}}
+        </h1>
+        {{#if user.ptaverified}}
+          <div class="action-buttons"> <!-- TYPES NAMES ID'S CLASSES VALUES NEED TO STAY THE SAME -->
+            <button type="button" id="idshipped" class="idshipped">Accept</button>
+            <button type="submit" name="registered" value="false">Reject</button>
+          </div>
+
+          <div class="confirmscreen" id="confirmscreen" style="display: none;">
+            <h3>Are you sure? The player will be notified that his ID is ready. This registration will also disappear after a few days.</h3>
+            <button type="button" class="cancel" id="cancel">Cancel</button>
+            <button type="submit" value="true" name="registered" id="confirm">Confirm</button>
+          </div>
+        {{/if}}
+        <div class="backtolist">
+          <a href="/events-details/{{event.id}}">Back to list</a>
+        </div>
+        
+      </section>
+
+      <div class="printwindow" id="printableArea">
+        <p><strong>ID:</strong> {{registration.id}}</p>
+        <p><strong>First Name:</strong> {{registration.firstname}}</p>
+        <p><strong>Middle Initial:</strong> {{registration.mi}}</p>
+        <p><strong>Last Name:</strong> {{registration.lastname}}</p>
+        <a href="{{registration.birthcert}}" target="_blank" download>Birth Certificate</a>
+        <p>submitted by: {{registration.submittedby}}</p>
+      </div>
+    </form>
+  </main>
+  
+  <script>
+    const confirmscreen = document.getElementById("confirmscreen");
+    const actionButtons = document.querySelector(".action-buttons");
+    const cancel = document.getElementById("cancel");
+    const idshipped = document.getElementById("idshipped");
+
+    cancel.addEventListener("click", function(event) {
+      event.preventDefault();
+      confirmscreen.style.display = "none";
+      actionButtons.style.display = "block";
+    });
+
+    idshipped.addEventListener("click", function(event) {
+      event.preventDefault();
+      confirmscreen.style.display = "block";
+      actionButtons.style.display = "none";
+    });
+
+    function printDiv(divName) {
+      var printContents = document.getElementById(divName).innerHTML;
+      var originalContents = document.body.innerHTML;
+      document.getElementById(divName).classList.add('visible');
+      document.body.innerHTML = printContents;
+      window.print();
+      document.body.innerHTML = originalContents;
+      document.getElementById(divName).classList.remove('visible');
+      window.location.reload(); // Reload to reset the page state
+    }
+
+    function toggleDropdown() {
+      document.getElementById("dropdown").classList.toggle("show");
+    }
+  </script>
+</body>
+
+</html>

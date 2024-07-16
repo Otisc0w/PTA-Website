@@ -6,9 +6,10 @@
 
 .dp{
     width: 40px;
-    height: auto;
+    height: 40px;
     border-radius: 50px;
     margin-left: -7px;  
+    object-fit: cover;
 }
 
 .community {
@@ -27,9 +28,70 @@
 }
 
 .forum-container {
-    margin-top: 60px;
+    margin-top: 80px;
+    margin-bottom: 60px;
     display: flex;
     justify-content: center; /* Center the content */
+}
+
+.topicsh2{
+    margin-left: 30px;
+}
+
+.topics-container{
+    width: 19%;
+}
+
+.list{
+    overflow-x: auto;
+    height: 600px;
+}
+
+.topics-container ul li{
+    list-style-type: none;
+    margin: 10px 5px;
+}
+
+.notfollowedtopic{
+    padding: 8px 8px;
+    border-radius: 11px;
+    margin: 7px 0;
+    position: relative;
+}
+
+.followedtopic{
+    background-color: #444;
+    padding: 8px 8px;
+    border-radius: 11px;
+    margin: 7px 0;
+    position: relative;
+}
+
+.notfollowedtopic:hover{
+    background-color: #444;
+}
+
+.followbtn{
+    background: none;
+    border: none;
+    color: inherit;
+    font: inherit;
+    cursor: pointer;
+    padding: 0;
+    float: right;
+    margin-right: 10px;
+}
+
+.topicname{
+    margin-left: 10px;
+}
+
+.followbtn:hover{
+    text-decoration: none;
+}
+
+.plus{
+    margin-left: 10px;
 }
 
 .main-content {
@@ -39,14 +101,12 @@
     background-color: #2c2c2c;
     border-radius: 8px;
     color: #F0F0F0;
+    margin: auto;
+    margin-left: 40px;
 }
 
 .commentpic{
     margin-left: 8px;
-}
-
-li {
-    float: left;
 }
 
 .main-content h2 {
@@ -174,7 +234,7 @@ li {
     margin: 20px 0;
 }
 
-.create-post-button {
+.create-post-button, .create-topic-button {
     background-color: transparent;
     border: 1px solid #ffffff;
     border-radius: 20px;
@@ -187,12 +247,16 @@ li {
     transition: background-color 0.3s, color 0.3s;
 }
 
+.create-topic-button{
+    margin-left: 10px;
+}
+
 .create-post-button .plus-icon {
     margin-right: 5px;
     font-size: 20px;
 }
 
-.create-post-button:hover {
+.create-post-button:hover ,.create-topic-button:hover {
     background-color: #4e4d4d;
     color: #ffffff;
     transition: background-color 0.3s, color 0.3s;
@@ -328,12 +392,18 @@ li {
 }
 
 /* Show the dropdown content when the dropdown button is clicked */
-.show {
-    display: block;
-}
+
 
 .buttons-div div{
     display: inline;
+}
+
+.buttons-div button{
+    background:none;
+    border:none;
+    margin:0;
+    padding:0;
+    cursor: pointer;
 }
 
 .poster {
@@ -354,6 +424,54 @@ li {
 .tag {
     font-size: 12px; /* Adjust the font size as needed */
     color: gray; /* Adjust the color as needed */
+}
+  
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgb(0, 0, 0);
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modal-content {
+    background-color: #3a3a3a;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 400px;
+    border-radius: 5px;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.modal-content form {
+    display: flex;
+    flex-direction: column;
+}
+
+.modal-content form label,
+.modal-content form input,
+.modal-content form button {
+    margin: 10px 0;
 }
 
 

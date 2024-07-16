@@ -46,7 +46,7 @@
         <button onclick="searchEvents()">Search</button>
       </div>
       {{#if user.ptaverified}}
-        <a href="events-create" class="create-event-button">Create Event</a>
+        <a onclick="openModal()" class="create-event-button">+ Create Event</a>
       {{/if}}
     </div>
     <div class="main-panel">
@@ -58,7 +58,7 @@
           <div class="event event-card">
             <img src="{{eventpicture}}" alt="Event {{id}}">
             <h3 class="event-title">{{name}} - {{date}} {{time}}</h3>
-            <p>{{description}}</p>
+            <p>{{eventtype}}</p>
             <a href="/events-details/{{id}}">Read More</a>
           </div>
           {{/each}}
@@ -66,51 +66,61 @@
       </div>
 
       <!-- promotion tests -->
-      <div class="news">
+      {{!-- <div class="news">
         <h2 class="left-align-title">Promotion Tests</h2>
         <div id="promotion-tests" class="horizontal-container">
           {{#each promotionTests}}
-          <div class="event event-card">
-            <img src="{{eventpicture}}" alt="Promotion Test {{id}}">
-            <h3 class="event-title">{{title}} - {{date}} {{time}}</h3>
-            <p>{{description}}</p>
-            <a href="/events-details/{{id}}">Read More</a>
-            {{#if user.registered}}
-              <a href="/events-registration/{{id}}">Register</a>
-            {{else}}
-              <a class="grayed-register-button">Not Registered</a>
-            {{/if}}
-          </div>
+            <div class="event event-card">
+              <img src="{{eventpicture}}" alt="Promotion Test {{id}}">
+              <h3 class="event-title">{{name}} - {{date}} {{time}}</h3>
+              <p>{{eventtype}}</p>
+              <a href="/events-details/{{id}}">Read More</a>
+              {{#if user.registered}}
+                <a href="/events-registration/{{id}}">Register</a>
+              {{else}}
+                <a class="grayed-register-button">Not Registered</a>
+              {{/if}}
+            </div>
           {{/each}}
         </div>
-      </div>
+      </div> --}}
     </div>
   </div>
 
-  <!-- Modal for event details -->
-  {{!-- <div id="eventModal" class="modal" style="display: none;">
+  <div id="createmodal" class="modal">
     <div class="modal-content">
-      <span class="close" onclick="closeEventDetails()">&times;</span>
-      <div class="modal-body">
-        <div class="event-detail">
-          <img id="eventDetailImage" src="" alt="Event Detail Image">
-          <div class="event-info">
-            <h3 id="eventDetailTitle">Event Title</h3>
-            <p id="eventDetailDescription">Event Description</p>
-            <p id="eventDetailDate">Event Date</p>
-            <p id="eventDetailTime">Event Time</p>
-            <p id="eventDetailLocation">Event Location</p>
-            <a class="register-button" id="detailsButton" href="#">More Details</a>
-            {{#if user.registered}}
-              <a class="register-button" id="registerButton" href="#">Register Now!</a>
-            {{else}}
-              <a class="grayed-register-button">Not Registered</a>
-            {{/if}}
+      <span class="close" onclick="closeModal()">&times;</span>
+      <ul>
+        <li>
+          <div>
+            <a href="/events-create/Kyurogi">
+              <h2 class="type">Kyurogi Competition</h2><br>
+              <p>create a sparring competition</p>
+              <p>&rarr;</p>
+            </a>
           </div>
-        </div>
-      </div>
+        </li>
+        <li>
+          <div>
+            <a href="/events-create/Poomsae">
+              <h2 class="type">Poomsae Competition</h2><br>
+              <p>create a forms competition</p>
+              <p>&rarr;</p>
+            </a>
+          </div>
+        </li>
+        <li>
+          <div>
+            <a href="/events-create/Promotion">
+              <h2 class="type">Promotion Test</h2><br>
+              <p>create an event for belt color promotion</p>
+              <p>&rarr;</p>
+            </a>
+          </div>
+        </li>
+      </ul>
     </div>
-  </div> --}}
+  </div>
 
   <script>
     function toggleDropdown() {
@@ -142,6 +152,14 @@
           card.style.display = 'none';
         }
       });
+    }
+
+    function openModal() {
+      document.getElementById('createmodal').style.display = 'block';
+    }
+
+    function closeModal() {
+      document.getElementById('createmodal').style.display = 'none';
     }
   </script>
 </body>

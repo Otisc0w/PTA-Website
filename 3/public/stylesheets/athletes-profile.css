@@ -1,0 +1,198 @@
+/* athletes-profile */
+
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #3a3a3a;
+}
+
+.header {
+  background-color: #333;
+  color: black;
+  padding: 15px;
+}
+
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.navbar .logo {
+  height: 40px;
+}
+
+.navbar nav a {
+  color: black;
+  text-decoration: none;
+  margin: 0 15px;
+}
+
+.navbar .profile {
+  display: flex;
+  align-items: center;
+}
+
+.navbar .profile a {
+  color: black;
+  text-decoration: none;
+  margin: 0 10px;
+}
+
+.navbar .profile .profile-pic {
+  height: 30px;
+  border-radius: 50%;
+  margin-left: 10px;
+}
+
+.athlete-header {
+  display: flex;
+  align-items: center;
+  background-color: black;
+  padding: 20px;
+  margin: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  margin-top: 80px;
+}
+
+.athlete-pic {
+  height: 100px;
+  border-radius: 50%;
+  margin-right: 20px;
+}
+
+.athlete-info {
+  flex: 1;
+}
+
+.athlete-info h1 {
+  margin: 0;
+  font-size: 24px;
+}
+
+.athlete-info .team {
+  color: gray;
+}
+
+.follow-button {
+  background-color: #0074d9;
+  color: black;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.follow-button:hover {
+  background-color: #005fa3;
+}
+
+.athlete-stats {
+  display: flex;
+}
+
+.stat {
+  background-color: gray;
+  padding: 10px;
+  margin: 0 10px;
+  text-align: center;
+  border-radius: 5px;
+}
+
+.stat .label {
+  display: block;
+  color: gray;
+}
+
+.stat .value {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.athlete-details {
+  display: flex;
+  margin: 20px;
+}
+
+.switch-player, .previous-game, .latest-videos {
+  background-color: black;
+  padding: 20px;
+  margin: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  flex: 1;
+}
+
+.switch-player ul {
+  list-style: none;
+  padding: 0;
+}
+
+.switch-player ul li {
+  display: flex;
+  align-items: center;
+  padding: 10px 0;
+}
+
+.switch-player ul li img {
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.switch-player label, .switch-player select {
+  display: block;
+  margin: 10px 0;
+}
+
+.previous-game .game-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: 10px 0;
+  font-size: 18px;
+}
+
+.previous-game .game-summary .team {
+  font-weight: bold;
+}
+
+.previous-game .game-summary .score {
+  font-size: 24px;
+}
+
+.previous-game .game-summary .vs {
+  color: gray;
+}
+
+.previous-game .game-stats, .career-stats {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.previous-game .game-stats th, .previous-game .game-stats td, .career-stats th, .career-stats td {
+  padding: 10px;
+  text-align: center;
+  border: 1px solid #ddd;
+}
+
+.latest-videos ul {
+  list-style: none;
+  padding: 0;
+}
+
+.latest-videos ul li {
+  padding: 10px 0;
+}
+
+.latest-videos ul li a {
+  text-decoration: none;
+  color: #0074d9;
+}
+
+.latest-videos ul li a:hover {
+  text-decoration: underline;
+}

@@ -50,36 +50,33 @@
           <h2>NCC ID's</h2>
           {{#reverseEach ncc_registrations}}
             <div class='post-content'>
-              <span class='community'>•</span>
-              <span class='small'>by <h2>{{firstname}} {{lastname}}</h2> on {{created_at}}</span>
+              <span class='small'>Applicant: <h2>{{firstname}} {{lastname}}</h2> on {{created_at}}</span>
               <span><h3>Status: {{{formatStatus status}}}</h3></span>
               <a href="/membership-review/{{id}}">Review</a>
             </div><br>
           {{/reverseEach}}
         {{else}}
-          No pending NCC applications
+          No pending NCC applications <br>
         {{/if}}
 
 				{{#if instructor_registrations}}
           <h2>Instructor ID's</h2>
           {{#reverseEach instructor_registrations}}
             <div class='post-content'>
-              <span class='community'>•</span>
               <span class='small'>by <h2>{{firstname}} {{lastname}}</h2> on {{created_at}}</span>
               <span><h3>Status: {{{formatStatus status}}}</h3></span>
               <a href="/instructor-review/{{id}}">Review</a>
             </div><br>
           {{/reverseEach}}
         {{else}}
-          No pending instructor applications
+          No pending instructor applications <br>
         {{/if}}
 
         {{#if club_registrations}}
           <h2>Club Registrations</h2>
           {{#reverseEach club_registrations}}
             <div class='post-content'>
-              <span class='community'>{{id}} •</span>
-              <span class='small'>by {{firstname}} {{lastname}} on {{created_at}}</span>
+              <span class='small'>Applicant: <h2>{{firstname}} {{lastname}}</h2> on {{created_at}}</span>
               <span><h3>Status: {{{formatStatus status}}}</h3></span>
               <a href="/clubreg-review/{{id}}">Review</a>
             </div><br>
