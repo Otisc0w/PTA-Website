@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>PTA | Profile</title>
+  <link rel="icon" type="image/x-icon" href="../images/favicon.ico" />
+  <link rel="stylesheet" type="text/css" href="../stylesheets/profile.css" />
+  <link rel="stylesheet" type="text/css" href="../stylesheets/navbar.css" />
+	<link rel="stylesheet" type="text/css" href="../stylesheets/faqs.css" />
+</head>
+<body class="container">
+  <div class="header">
+    <div class="navbar">
+      <a href="home"><img src="/images/logo.png" class="logo" alt="Logo"></a>
+      <ul class="tabs">
+        <li class="home"><a href="home">Home</a></li>
+        <li class="athletes"><a href="athletes">Athletes</a></li>
+        <li class="clubs"><a href="clubs">Clubs</a></li>
+        <li class="events"><a href="events">Events</a></li>
+        <li class="membership"><a href="membership">Membership</a></li>
+        <li class="forum"><a href="forum">Forum</a></li>
+        <li class="notifications">
+          <a href="notifications">Notifications <span class="badge">3</span></a>
+        </li>
+        <li class="profile-pic">
+          {{#if user.profilepic}}
+            <a href="#" onclick="toggleDropdown()"><img src="{{user.profilepic}}" alt="Profile Picture" class="profile-picture"></a>
+          {{else}}
+            <a href="#" onclick="toggleDropdown()" class="profile-picture"><img src="/images/none.jpg" alt="Profile Picture" class="profile-picture"></a>
+          {{/if}}
+          <div id="dropdown" class="dropdown-content">
+            <a href="profile?tab=viewProfile">Profile</a>
+            <a href="settings">Settings</a>
+            <a href="help-center">FAQs</a>
+            <a href="/">Logout</a>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="profile-container">
+    <div class="side-nav">
+      <ul>
+        <li><a href="profile?tab=viewProfile" id="viewProfileLink">View Profile</a></li>
+        <li><a href="profile?tab=editProfile" id="editProfileLink">Edit Profile</a></li>
+        <li><a href="profile?tab=notificationSettings" id="notificationSettingsLink">Notification Settings</a></li>
+        <li><a href="profile?tab=securitySettings" id="securitySettingsLink">Security Settings</a></li>
+        <li><a href="profile?tab=helpCenter" id="helpcenter">Help Center</a></li>
+      </ul>
+    </div>
+    <div class="profile-content">
+      <div id="editProfile" class="profile-section" >
+        <h2>Edit Profile</h2>
+        <form id="editprofile" action="/save-profile-changes" method="post" enctype="multipart/form-data">
+          <div class="profile-pic-section">
+            {{#if user.profilepic}}
+            <img src="{{user.profilepic}}" alt="Profile Picture" class="profile-picture">
+            {{else}}
+            <img src="/images/none.jpg" alt="Profile Picture" class="profile-picture">
+            {{/if}}
+            
+            <div>
+              {{#if user.ptaverified}}
+                <span class="tag">ADMIN</span>
+              {{else}}
+                {{#if user.instructorverified}}
+                  <span class="tag">INSTRUCTOR</span>
+                {{/if}}
+                {{#if user.athleteverified}}
+                  <span class="tag">ATHLETE</span>
+                {{/if}}
+              {{/if}}
+            </div>
+            <input type="file" id="file-input" name="file" class="edit-profile-pic">
+          </div>
+          <div class="form-group">
+            <label for="firstname">First Name:</label>
+            <input type="text" id="firstname" name="firstname" value="{{user.firstname}}">
+          </div>
+          <div class="form-group">
+            <label for="middlename">M.I.:</label>
+            <input type="text" id="middlename" name="middlename" value="{{user.middlename}}">
+          </div>
+          <div class="form-group">
+            <label for="lastname">Last Name:</label>
+            <input type="text" id="lastname" name="lastname" value="{{user.lastname}}">
+          </div>
+          <div class="form-group">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" value="{{user.username}}">
+          </div>
+          <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" value="{{user.email}}">
+          </div>
+          <div class="form-group">
+            <label for="region">Region:</label>
+            <input type="text" id="region" name="region" value="{{user.region}}" readonly>
+          </div>
+          <div class="form-group">
+            <label for="club">Club:</label>
+            <input type="text" id="club" name="club" value="{{athlete.club}}" readonly>
+          </div>
+          <div class="form-group">
+            <input type="hidden" id="athleteverified" name="athleteverified" value="{{user.athleteverified}}" readonly>
+            <input type="hidden" id="instructorverified" name="instructorverified" value="{{user.instructorverified}}" readonly>
+            <input type="hidden" id="ptaverified" name="ptaverified" value="{{user.ptaverified}}" readonly>
+          </div>
+          <div class="form-actions">
+            <button class="cancel-button" onclick="window.location.href='profile'">Cancel</button>
+            <button class="save-button" type="submit">Save Changes</button>
+          </div>
+        </form>
+      </div>
+
+      <div id="viewProfile" class="profile-section" style="display:none;">
+        <h2>View Profile</h2>
+        <div class="profile-pic-section">
+            {{#if user.profilepic}}
+            <img src="{{user.profilepic}}" alt="Profile Picture" class="profile-picture">
+            {{else}}
+            <img src="/images/none.jpg" alt="Profile Picture" class="profile-picture">
+            {{/if}}
+            <div>
+              {{#if user.ptaverified}}
+                <span class="tag">ADMIN</span>
+              {{else}}
+                {{#if user.instructorverified}}
+                  <span class="tag">INSTRUCTOR</span>
+                {{/if}}
+                {{#if user.athleteverified}}
+                  <span class="tag">ATHLETE</span>
+                {{/if}}
+              {{/if}}
+            </div><br>
+          </div>
+        <form>
+          <div class="form-group">
+            <label for="firstname">First Name:</label>
+            <input type="text" id="firstname" name="firstname" value="{{user.firstname}}" readonly>
+          </div>
+          <div class="form-group">
+            <label for="middlename">M.I.:</label>
+            <input type="text" id="middlename" name="middlename" value="{{user.middlename}}" readonly>
+          </div>
+          <div class="form-group">
+            <label for="lastname">Last Name:</label>
+            <input type="text" id="lastname" name="lastname" value="{{user.lastname}}" readonly>
+          </div>
+          <div class="form-group">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" value="{{user.username}}" readonly>
+          </div>
+          <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" value="{{user.email}}" readonly>
+          </div>
+          <div class="form-group">
+            <label for="region">Region:</label>
+            <input type="text" id="region" name="region" value="{{user.region}}" readonly>
+          </div>
+          <div class="form-group">
+            <label for="club">Club:</label>
+            <input type="text" id="club" name="club" value="{{athlete.club}}" readonly>
+          </div>
+          <div class="form-group" >
+            <input type="hidden" id="athleteverified" name="athleteverified" value="{{user.athleteverified}}" readonly>
+            <input type="hidden" id="instructorverified" name="instructorverified" value="{{user.instructorverified}}" readonly>
+            <input type="hidden" id="ptaverified" name="ptaverified" value="{{user.ptaverified}}" readonly>
+          </div>
+        </form>
+      </div>
+
+      <div id="notificationSettings" class="profile-section" style="display:none;">
+        <h2>Notification Settings</h2>
+        <form id="notificationSettingsForm" onsubmit="return saveNotificationSettings()">
+          <div class="notification-category">
+            <h3>Notifications from us</h3>
+            <label>
+              <input type="checkbox" name="notifications" value="newsUpdates">
+              News and updates
+            </label>
+            <label>
+              <input type="checkbox" name="notifications" value="tipsTutorials">
+              Tips and tutorials
+            </label>
+            <label>
+              <input type="checkbox" name="notifications" value="userResearch">
+              User research
+            </label>
+          </div>
+          <div class="notification-category">
+            <h3>Comments</h3>
+            <label>
+              <input type="radio" name="comments" value="none">
+              Do not notify me
+            </label>
+            <label>
+              <input type="radio" name="comments" value="mentionsOnly">
+              Mentions only
+            </label>
+            <label>
+              <input type="radio" name="comments" value="all">
+              All comments
+            </label>
+          </div>
+          <div class="notification-category">
+            <h3>Reminders</h3>
+            <label>
+              <input type="radio" name="reminders" value="none">
+              Do not notify me
+            </label>
+            <label>
+              <input type="radio" name="reminders" value="importantOnly">
+              Important reminders only
+            </label>
+            <label>
+              <input type="radio" name="reminders" value="all">
+              All reminders
+            </label>
+          </div>
+          <div class="notification-category">
+            <h3>More activity about you</h3>
+            <label>
+              <input type="radio" name="moreActivity" value="none">
+              Do not notify me
+            </label>
+            <label>
+              <input type="radio" name="moreActivity" value="all">
+              Notify me for all other activity
+            </label>
+          </div>
+          <div class="form-actions">
+            <button class="save-button" type="submit">Save</button>
+            <button class="cancel-button" type="button" onclick="window.location.href='profile'">Cancel</button>
+          </div>
+        </form>
+      </div>
+
+      <div id="securitySettings" class="profile-section" style="display:none;">
+        <h2>Security Settings</h2>
+        <div class="change-password-section">
+          <h3>Change Password</h3>
+          <form id="changePasswordForm" onsubmit="return submitPasswordChange()">
+            <div class="form-group">
+              <label for="currentPassword">Current Password:</label>
+              <input type="password" id="currentPassword" required>
+            </div>
+            <div class="form-group">
+              <label for="newPassword">New Password:</label>
+              <input type="password" id="newPassword" oninput="validatePassword()" required>
+            </div>
+            <div class="form-group">
+              <label for="confirmPassword">Confirm New Password:</label>
+              <input type="password" id="confirmPassword" oninput="validatePassword()" required>
+            </div>
+            <div id="passwordError" class="error-message" style="display:none; color: red;">Passwords do not match</div>
+            <div class="form-actions">
+              <button class="save-button" type="submit">Save</button>
+              <button class="cancel-button" type="button" onclick="window.location.href='profile'">Cancel</button>
+            </div>
+          </form>
+          <div class="password-requirements">
+            <h4>Passwords must contain:</h4>
+            <ul>
+              <li id="char-length">✔ At least 6 characters</li>
+              <li id="uppercase-letter">✔ At least 1 uppercase letter (A-Z)</li>
+              <li id="lowercase-letter">✔ At least 1 lowercase letter (a-z)</li>
+              <li id="number">✔ At least 1 number (0-9)</li>
+              <li id="symbol">✔ At least 1 symbol (!@#$%^&* etc.)</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div id="helpCenter" class="profile-section" style="display:none;">
+        <h1>Questions?</h1>
+        <p>If you have questions, we have answers for you here. In case we don't, please feel free to reach out to us here contact@linin.com</p>
+
+        <h2>General questions</h2>
+
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)">
+            <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</span>
+            <span class="faq-toggle">+</span>
+          </div>
+          <div class="faq-answer">
+            <p>Urna duis convallis convallis tellus id interdum velit. Morbi tristique senectus et netus. Consectetur purus ut faucibus pulvinar elementum integer enim. Vulputate eu scelerisque felis imperdiet.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)">
+            <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</span>
+            <span class="faq-toggle">+</span>
+          </div>
+          <div class="faq-answer">
+            <p>Nec ultrices dui sapien eget mi proin. Pharetra pharetra massa massa ultricies mi quis hendrerit dolor magna. Orci a scelerisque purus semper eget duis at tellus at. Facilisi morbi tempus iaculis urna id volutpat.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)">
+            <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</span>
+            <span class="faq-toggle">+</span>
+          </div>
+          <div class="faq-answer">
+            <p>Diam in arcu cursus euismod quis. Nunc sed blandit libero volutpat sed cras. Quis auctor elit sed vulputate mi. Odio aenean sed adipiscing diam donec adipiscing tristique.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)">
+            <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</span>
+            <span class="faq-toggle">+</span>
+          </div>
+          <div class="faq-answer">
+            <p>Ullamcorper sit amet risus nullam eget felis eget nunc. Commodo sed egestas egestas fringilla phasellus faucibus scelerisque. Faucibus vitae aliquet nec ullamcorper sit. Lorem ipsum dolor sit amet consectetur adipiscing.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)">
+            <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</span>
+            <span class="faq-toggle">+</span>
+          </div>
+          <div class="faq-answer">
+            <p>Proin fermentum leo vel orci porta. Cum sociis natoque penatibus et magnis. Eget est lorem ipsum dolor. Interdum velit euismod in pellentesque.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)">
+            <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</span>
+            <span class="faq-toggle">+</span>
+          </div>
+          <div class="faq-answer">
+            <p>Pellentesque sit amet porttitor eget dolor morbi non arcu. Vel quam elementum pulvinar etiam non quam. Est sit amet facilisis magna etiam tempor orci eu lobortis.</p>
+          </div> 
+        </div>
+
+        
+
+      {{!-- <div class="chatbot-window" id="chatbotWindow" style="hidden">
+        <div class="chatbot-header">
+            <h2>Chatbot</h2>
+            <span class="close-chatbot" onclick="toggleChatbot()">x</span>
+        </div>
+        <div class="chatbot-body">
+            <p>Hi! How can I help you today?</p>
+        </div>
+        <div class="chatbot-footer">
+            <input type="text" placeholder="Type your message here..." disabled>
+            <button disabled>Send</button>
+        </div>
+      </div> --}}
+
+    </div>
+  </div>
+  <script>
+    function toggleDropdown() {
+      document.getElementById("dropdown").classList.toggle("show");
+    }
+
+    window.onclick = function(event) {
+      if (!event.target.matches('.profile-pic img')) {
+        var dropdowns = document.getElementsByClassName("dropdown-content");
+        for (var i = 0; i < dropdowns.length; i++) {
+          var openDropdown = dropdowns[i];
+          if (openDropdown.classList.contains('show')) {
+            openDropdown.classList.remove('show');
+          }
+        }
+      }
+    }
+
+    function setActiveTab() {
+      const params = new URLSearchParams(window.location.search);
+      const tab = params.get('tab') || 'viewProfile';
+      document.querySelectorAll('.profile-section').forEach(section => {
+        section.style.display = 'none';
+      });
+      document.getElementById(tab).style.display = 'block';
+      document.querySelectorAll('.side-nav ul li a').forEach(link => {
+        link.classList.remove('active');
+      });
+      document.getElementById(tab + 'Link').classList.add('active');
+    }
+
+    window.onload = setActiveTab;
+
+    function validatePassword() {
+      const newPassword = document.getElementById('newPassword').value;
+      const confirmPassword = document.getElementById('confirmPassword').value;
+      let isValid = true;
+      // Validation criteria
+      const criteria = {
+        charLength: newPassword.length >= 6,
+        uppercaseLetter: /[A-Z]/.test(newPassword),
+        lowercaseLetter: /[a-z]/.test(newPassword),
+        number: /[0-9]/.test(newPassword),
+        symbol: /[!@#$%^&*(),.?":{}|<>]/.test(newPassword)
+      };
+      // Update UI for criteria
+      for (const criterion in criteria) {
+        const element = document.getElementById(criterion.replace(/[A-Z]/g, letter => '-' + letter.toLowerCase()));
+        if (criteria[criterion]) {
+          element.classList.add('valid');
+          element.classList.remove('invalid');
+        } else {
+          element.classList.add('invalid');
+          element.classList.remove('valid');
+          isValid = false;
+        }
+      }
+      // Confirm password match
+      if (newPassword !== confirmPassword) {
+        isValid = false;
+        document.getElementById('passwordError').style.display = 'block';
+      } else {
+        document.getElementById('passwordError').style.display = 'none';
+      }
+      return isValid;
+    }
+
+    function submitPasswordChange() {
+      if (validatePassword()) {
+        const currentPassword = document.getElementById('currentPassword').value;
+        const newPassword = document.getElementById('newPassword').value;
+        fetch('/change-password', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ currentPassword, newPassword })
+        }).then(response => {
+          if (response.ok) {
+            alert('Password changed successfully');
+            window.location.href = 'profile';
+          } else {
+            alert('Failed to change password');
+          }
+        }).catch(error => {
+          console.error('Error:', error);
+          alert('Failed to change password');
+        });
+        return false; // Prevent form submission
+      }
+      return false; // Prevent form submission if validation fails
+    }
+
+    function saveNotificationSettings() {
+      // Implement saving logic here
+      const formData = new FormData(document.getElementById('notificationSettingsForm'));
+      const settings = {};
+      formData.forEach((value, key) => {
+        if (!settings[key]) {
+          settings[key] = [];
+        }
+        settings[key].push(value);
+      });
+      fetch('/save-notification-settings', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(settings)
+      }).then(response => {
+        if (response.ok) {
+          alert('Notification settings saved successfully');
+        } else {
+          alert('Failed to save notification settings');
+        }
+      }).catch(error => {
+        console.error('Error:', error);
+        alert('Failed to save notification settings');
+      });
+      return false; // Prevent form submission
+    }
+
+		function toggleFaq(element) {
+        const answer = element.nextElementSibling;
+        const toggle = element.querySelector('.faq-toggle');
+        
+        if (answer.style.display === "block") {
+            answer.style.display = "none";
+            toggle.textContent = "+";
+        } else {
+            answer.style.display = "block";
+            toggle.textContent = "x";
+        }
+    }
+
+  
+  </script>
+  <script src="https://cdn.botpress.cloud/webchat/v1/inject.js"></script>
+<script src="https://mediafiles.botpress.cloud/28a4809e-d421-4549-b02c-8dd82392211b/webchat/config.js" defer></script>
+</body>
+</html>
