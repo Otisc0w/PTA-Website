@@ -49,11 +49,17 @@
     <div class="rightside">
       <div class="registration">
         <ul>
-          <li class="status"><a href="membership-status">Registration Status</a></li>
-          <li class="ncc"><a href="membership-ncc">Apply for NCC ID</a></li>
-          <li class="instructor"><a href="membership-instructor">Apply for Instructor's License</a></li>
+          <li class="available"><a href="membership-status">Registration Status &rarr;</a></li>
+          {{#if user.club}}
+            <li class="available"><a href="membership-ncc">Apply for NCC ID &rarr;</a></li>
+          {{else}}
+            <li class="grayedout"><a >Apply for NCC ID &rarr;</a></li>
+          {{/if}}
+          <li class="available"><a href="membership-instructor">Apply for Instructor's License &rarr;</a></li>
           {{#if user.instructorverified}}
-            <li class="club"><a href="membership-club">Register Club</a></li>
+            <li class="available"><a href="membership-club">Register Club &rarr;</a></li>
+          {{else}}
+            <li class="grayedout"><a>Register Club</a></li>
           {{/if}}
         </ul>
       </div>

@@ -51,8 +51,10 @@
         <ul>
           <li><a href="#" id="details-tab">Details</a></li>
           <li><a href="#" id="participants-tab">Participants</a></li>
+          <li><a>Announcements</a></li>
           {{#if user.ptaverified}}
             <li><a href="#" id="registrations-tab">Registrations</a></li>
+            <li><a>Discussion</a></li>
           {{/if}}
         </ul>
       </div><br>
@@ -63,6 +65,7 @@
             <p>{{event.description}}</p>
             <p>{{event.datetime}}</p>
             <p>{{event.eventtype}}</p>
+            <p>Yellow belt cap: 10</p>
           </div>
         </div>
 
@@ -98,6 +101,7 @@
           <th>Club</th>
           <th>Height</th>
           <th>Weight</th>
+          <th>Scoresheet</th>
         </tr>
       </thead>
       <tbody>
@@ -107,6 +111,7 @@
             <td>{{this.club}}</td>
             <td>{{this.height}}</td>
             <td>{{this.weight}}</td>
+            <td><a href="google.com">Go to scoresheet</a></td>
           </tr>
         {{/each}}
       </tbody>

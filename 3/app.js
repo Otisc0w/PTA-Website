@@ -1335,7 +1335,7 @@ app.post('/invite-user', async (req, res) => {
     return res.status(401).send('Unauthorized: No user logged in');
   }
 
-  const inviter_user = req.session.user.username;
+  const inviter_user = req.session.user.id;
 
   try {
     const { data, error } = await supabase
@@ -1353,6 +1353,50 @@ app.post('/invite-user', async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+
+app.post('/invite-player', async (req, res) => {
+  const { userid } = req.body;
+
+  if (!req.session.user) {
+    return res.status(401).send('Unauthorized: No user logged in');
+  }
+
+  const username = req.session.user.username; // Get the current user's ID
+  const invited_user = userid;
+  const inviter_user = username;
+
+  try {
+    // Fetch the club ID where registeredby is the current user
+    const { data: clubData, error: clubError } = await supabase
+      .from('clubs')
+      .select('id')
+      .select('clubname')
+      .eq('registeredby', myid)
+      .single();
+
+    if (clubError) {
+      return res.status(500).json({ error: clubError.message });
+    }
+
+    const club_id = clubData.id; // Get the club ID
+    const clubname = clubData.name;
+
+    // Insert the invitation into the invitations table
+    const { data, error } = await supabase
+      .from('club_invitations')
+      .insert([{ invited_user, inviter_user, club_id, clubname }]);
+
+    if (error) {
+      return res.status(500).json({ error: error.message });
+    }
+
+    res.redirect('/athletes'); // Redirect back to the athletes page after inviting
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+
 
 app.post('/accept-invitation/:id', async (req, res) => {
   const { id } = req.params;
@@ -2260,19 +2304,27 @@ app.get('/profile', async function (req, res) {
   const userId = req.session.user.id;
 
   try {
-    // Fetch the athlete's data
-    const { data: athlete, error: athleteError } = await supabase
-      .from('athletes')
-      .select('*')
-      .eq('userid', userId)
-      .single();
+    // Check if the user is athlete verified
+    const athleteVerified = req.session.user.athleteverified;
 
-    if (athleteError) {
-      console.error('Error fetching athlete data:', athleteError.message);
-      return res.status(500).json({ error: athleteError.message });
+    let athlete = null;
+    if (athleteVerified) {
+      // Fetch the athlete's data
+      const { data, error } = await supabase
+        .from('athletes')
+        .select('*')
+        .eq('userid', userId)
+        .single();
+
+      if (error) {
+        console.error('Error fetching athlete data:', error.message);
+        return res.status(500).json({ error: error.message });
+      }
+
+      athlete = data;
     }
 
-    // Render the profile template with the user session data and athlete data
+    // Render the profile template with the user session data and athlete data (if applicable)
     res.render('profile', { user: req.session.user, athlete });
   } catch (error) {
     console.error('Server error:', error.message);
@@ -2303,28 +2355,60 @@ app.get('/athletes', async function (req, res) {
   }
 });
 
-app.get('/athletes-profile', async function (req, res) {
+app.get('/athletes-profile/:athleteid', async function (req, res) {
+  const { athleteid } = req.params;
+
   if (!req.session.user) {
     return res.redirect('/');
   }
-  
-  try {
-    const { data, error } = await supabase
-      .from('athletes')
-      .select('*');
 
-    if (error) {
-      return res.status(400).json({ error: error.message });
+  try {
+    // Fetch athlete data
+    const { data: athlete, error: athleteError } = await supabase
+      .from('athletes')
+      .select('*')
+      .eq('id', athleteid)
+      .single();
+
+    if (athleteError) {
+      return res.status(400).json({ error: athleteError.message });
     }
 
-    console.log("Fetched data:", data); // Log the data to the console 
+    // Fetch match data
+    const { data: matchdata, error: matchError } = await supabase
+      .from('kyurogi_history')
+      .select('*')
+      .eq('athleteid', athleteid);
 
-    // Render the athletes.hbs template with the fetched data
-    res.render('athletes-profile', { athletes: data, user: req.session.user });
+    if (matchError) {
+      return res.status(400).json({ error: matchError.message });
+    }
+
+    // Fetch the most recent match data
+    const { data: recentmatch, error: recentmatchError } = await supabase
+      .from('kyurogi_history')
+      .select('*')
+      .eq('athleteid', athleteid)
+      .order('created_at', { ascending: false })
+      .limit(1);
+
+    if (recentmatchError) {
+      return res.status(400).json({ error: recentmatchError.message });
+    }
+
+    console.log("Fetched athlete data:", athlete); // Log athlete data to the console 
+    console.log("Fetched match data:", matchdata); // Log match data to the console 
+    console.log("Fetched recent match data:", recentmatch); // Log recent match data to the console 
+
+    // Render the athletes-profile.hbs template with the fetched data
+    res.render('athletes-profile', { athlete, matchdata, recentmatch, user: req.session.user });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
+
+
+
 
 app.get('/notifications', async function (req, res) {
   if (!req.session.user) {

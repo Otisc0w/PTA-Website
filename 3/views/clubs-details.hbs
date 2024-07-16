@@ -79,7 +79,6 @@
 				<tr>
           <th>Picture</th>
 					<th>Player</th>
-					<th>Club</th>
 					<th>Height (cm)</th>
 					<th>Weight (kg)</th>
 				</tr>
@@ -89,7 +88,6 @@
 					<tr>
             <th><img src="{{this.portrait}}"></th>
 						<td>{{this.name}}</td>
-						<td>{{this.club}}</td>
 						<td>{{this.height}}</td>
 						<td>{{this.weight}}</td>
 					</tr>
@@ -102,7 +100,7 @@
     <h2>Announcements</h2>
     <div class="makeannouncement">
       {{#if (eq club.registeredby user.id)}}
-      <button class="newannounce" onclick="openModal()">+ Announce</button>
+      <button class="newannounce" onclick="openannounceModal()">+ Announce</button>
       {{/if}}
     </div>
     {{#reverseEach announcements}}
@@ -116,7 +114,7 @@
 
   <div id="announceModal" class="modal" style="display:none;">
     <div class="modal-content">
-      <span class="close" onclick="closeModal()">&times;</span>
+      <span class="close" onclick="closeannounceModal()">&times;</span>
       <form action="/create-announcement" method="post" class="announceform">
         <input type="hidden" name="originalposter" value="{{user.username}}">
         <input type="hidden" name="profilepic" value="{{user.profilepic}}">
@@ -230,11 +228,11 @@
       document.getElementById('inviteModal').style.display = 'none';
     }
 
-    function openModal() {
+    function openannounceModal() {
       document.getElementById('announceModal').style.display = 'block';
     }
 
-    function closeModal() {
+    function closeannounceModal() {
       document.getElementById('announceModal').style.display = 'none';
     }
 
