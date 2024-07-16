@@ -10,16 +10,16 @@
 <body class="container">
   <div class="header">
     <div class="navbar">
-      <a href="home"><img src="/images/logo.png" class="logo" alt="Logo"></a>
+      <a href="/home"><img src="/images/logo.png" class="logo" alt="Logo"></a>
       <ul class="tabs">
-        <li class="home"><a href="home">Home</a></li>
-        <li class="athletes"><a href="athletes">Athletes</a></li>
-        <li class="clubs"><a href="clubs">Clubs</a></li>
-        <li class="events"><a href="events">Events</a></li>
-        <li class="membership"><a href="membership">Membership</a></li>
-        <li class="forum"><a href="forum">Forum</a></li>
+        <li class="home"><a href="/home">Home</a></li>
+        <li class="athletes"><a href="/athletes">Athletes</a></li>
+        <li class="clubs"><a href="/clubs">Clubs</a></li>
+        <li class="events"><a href="/events">Events</a></li>
+        <li class="membership"><a href="/membership">Membership</a></li>
+        <li class="forum"><a href="/forum">Forum</a></li>
         <li class="notifications">
-          <a href="notifications">Notifications <span class="badge">3</span></a>
+          <a href="/notifications">Notifications <span class="badge">3</span></a>
         </li>
         <li class="profile-pic">
           {{#if user.profilepic}}
@@ -28,9 +28,9 @@
             <a href="#" onclick="toggleDropdown()" class="profile-picture"><img src="/images/none.jpg" alt="Profile Picture" class="profile-picture"></a>
           {{/if}}
           <div id="dropdown" class="dropdown-content">
-            <a href="profile">Profile</a>
-            <a href="settings">Settings</a>
-            <a href="help-center">FAQs</a>
+            <a href="/profile">Profile</a>
+            <a href="/settings">Settings</a>
+            <a href="/help-center">FAQs</a>
             <a href="/">Logout</a>
           </div>
         </li>
@@ -43,49 +43,19 @@
       <div class="filter-group">
         <label for="belt-color">Belt Color</label>
         <select id="belt-color">
-          <option value="White Belt">White Belt</option>
-          <option value="Low Yellow Belt">Low Yellow Belt</option>
-          <option value="High Yellow Belt">High Yellow Belt</option>
-          <option value="Low Blue Belt">Low Blue Belt</option>
-          <option value="High Blue Belt">High Blue Belt</option>
-          <option value="Low Red Belt">Low Red Belt</option>
-          <option value="High Red Belt">High Red Belt</option>
-          <option value="Low Brown Belt">Low Brown Belt</option>
-          <option value="High Brown Belt">High Brown Belt</option>
-          <option value="Junior/Poom Black Belt">Junior/Poom Black Belt</option>
-          <option value="Black/Dan Belt">Black/Dan Belt</option>
+          <!-- Add options here -->
         </select>
       </div>
       <div class="filter-group">
         <label for="sub-category">Sub Category</label>
         <select id="sub-category">
-          <option value="Toddlers Division">Toddlers Division</option>
-          <option value="Gradeschool Division">Gradeschool Division</option>
-          <option value="Cadet Division">Cadet Division</option>
-          <option value="Junior Division">Junior Division</option>
-          <option value="Senior Division">Senior Division</option>
+          <!-- Add options here -->
         </select>
       </div>
       <div class="filter-group">
-        <label for="club-region">Club Region</label>
+        <label for="club-region">Club Province</label>
         <select id="club-region">
-          <option value="Region I – Ilocos Region">Region I – Ilocos Region</option>
-          <option value="Region II – Cagayan Valley">Region II – Cagayan Valley</option>
-          <option value="Region III – Central Luzon">Region III – Central Luzon</option>
-          <option value="Region IV‑A – CALABARZON">Region IV‑A – CALABARZON</option>
-          <option value="MIMAROPA Region">MIMAROPA Region</option>
-          <option value="Region V – Bicol Region">Region V – Bicol Region</option>
-          <option value="Region VI – Western Visayas">Region VI – Western Visayas</option>
-          <option value="Region VII – Central Visayas">Region VII – Central Visayas</option>
-          <option value="Region VIII – Eastern Visayas">Region VIII – Eastern Visayas</option>
-          <option value="Region IX – Zamboanga Peninsula">Region IX – Zamboanga Peninsula</option>
-          <option value="Region X – Northern Mindanao">Region X – Northern Mindanao</option>
-          <option value="Region XI – Davao Region">Region XI – Davao Region</option>
-          <option value="Region XII – SOCCSKSARGEN">Region XII – SOCCSKSARGEN</option>
-          <option value="Region XIII – Caraga">Region XIII – Caraga</option>
-          <option value="NCR – National Capital Region">NCR – National Capital Region</option>
-          <option value="CAR – Cordillera Administrative Region">CAR – Cordillera Administrative Region</option>
-          <option value="BARMM – Bangsamoro Autonomous Region in Muslim Mindanao">BARMM – Bangsamoro Autonomous Region in Muslim Mindanao</option>
+          <!-- Add options here -->
         </select>
       </div>
       <div class="filter-group">
@@ -108,8 +78,8 @@
         </thead>
         <tbody>
           {{#each athletes}}
-          <tr onclick="showAthleteDetails('{{name}}', '{{class}}', '{{height}}', '{{weight}}', '{{birthplace}}', '{{club}}', '{{portrait}}')">
-            <td>1</td>
+          <tr onclick="showAthleteDetails('{{id}}', '{{name}}', '{{class}}', '{{height}}', '{{weight}}', '{{clubregion}}', '{{club}}', '{{portrait}}', '{{userid}}')">
+            <td>{{@index}}</td>
             <td>{{name}}</td>
             <td>{{club}}</td>
             <td>{{beltlevel}}</td>
@@ -130,28 +100,14 @@
           <p id="athlete-club">Club</p>
         </div>
         <div class="invite-button">
-          <a action="invite-player">+ Invite this player to your club</a>
+          <form action="/invite-player" method="POST">
+            <input type="hidden" name="userid" id="userid" value="">
+            <button type="submit">Invite to Club</button>
+          </form>
         </div>
         <div class="moredets">
-          <a href="athletes-profile">More Details &rarr;</a>
+          <a id="more-details-link" href="athletes-profile/">More Details &rarr;</a>
         </div>
-      </div>
-      <div class="athlete-stats">
-        <h3>Overview</h3>
-        <p>Career Stats</p>
-        <table>
-          <thead>
-            <tr>
-              <th>Year</th>
-              <th>GP</th>
-              <th>MIN</th>
-              <th>PTS</th>
-            </tr>
-          </thead>
-          <tbody id="career-stats">
-            <!-- Stats will be populated here -->
-          </tbody>
-        </table>
       </div>
     </div>
   </div>
@@ -195,30 +151,15 @@
       }
     }
 
-    function showAthleteDetails(name, athleteClass, height, weight, birthplace, club, image) {
+    function showAthleteDetails(id, name, athleteClass, height, weight, birthplace, club, image, userid) {
       document.getElementById("athlete-name").textContent = name;
       document.getElementById("athlete-class").textContent = "Class: " + athleteClass;
-      document.getElementById("athlete-height-weight").textContent = "HT/WT: " + height + " ft/in, " + weight + " kg";
-      document.getElementById("athlete-birthplace").textContent = "Birthplace: " + birthplace;
+      document.getElementById("athlete-height-weight").textContent = "HT/WT: " + height + " cm, " + weight + " kg";
+      document.getElementById("athlete-birthplace").textContent = "Location: " + birthplace;
       document.getElementById("athlete-club").textContent = "Club: " + club;
       document.getElementById("athlete-image").src = image;
-
-      // Example stats - you will need to load real data
-      const stats = [
-        { year: 2024, gp: 20, min: 200, pts: 300 },
-        { year: 2023, gp: 25, min: 250, pts: 350 },
-        { year: 2022, gp: 22, min: 220, pts: 320 },
-        { year: 2021, gp: 23, min: 230, pts: 330 },
-      ];
-
-      const statsTable = document.getElementById("career-stats");
-      statsTable.innerHTML = ""; // Clear existing rows
-
-      stats.forEach(stat => {
-        const row = document.createElement("tr");
-        row.innerHTML = `<td>${stat.year}</td><td>${stat.gp}</td><td>${stat.min}</td><td>${stat.pts}</td>`;
-        statsTable.appendChild(row);
-      });
+      document.getElementById("more-details-link").href = "athletes-profile/" + id;
+      document.getElementById("userid").value = userid;
 
       document.getElementById("athlete-details").style.display = "block"; // Show the athlete details
     }

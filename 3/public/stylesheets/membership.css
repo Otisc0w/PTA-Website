@@ -80,7 +80,7 @@ body {
 }
 
 .registration li {
-  background-color: var(--accent-bg);
+  background-color: #444;
   margin-bottom: 15px;
   padding: 20px;
   border-radius: 10px;
@@ -96,9 +96,14 @@ body {
   text-decoration: none;
 }
 
-.registration li:hover {
-  background-color: gray;
+.registration .available:hover {
+  background-color: #007BFF;
   border-radius: 10px;
+}
+
+.registration .grayedout:hover{
+  background-color: gray;
+
 }
 
 .dropdown-content {
