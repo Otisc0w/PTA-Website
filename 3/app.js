@@ -1335,12 +1335,13 @@ app.post('/invite-user', async (req, res) => {
     return res.status(401).send('Unauthorized: No user logged in');
   }
 
-  const inviter_user = req.session.user.id;
+  const inviter_user = req.session.user.username;
+  const invitername = req.session.user.firstname + req.session.user.lastname;
 
   try {
     const { data, error } = await supabase
       .from('club_invitations')
-      .insert([{ club_id, clubname, invited_user, inviter_user }]);
+      .insert([{ club_id, clubname, invited_user, inviter_user, invitername}]);
 
     if (error) {
       console.error('Error inviting user:', error.message);
@@ -1355,36 +1356,35 @@ app.post('/invite-user', async (req, res) => {
 });
 
 app.post('/invite-player', async (req, res) => {
-  const { userid } = req.body;
+  const { userid, clubid } = req.body;
 
   if (!req.session.user) {
     return res.status(401).send('Unauthorized: No user logged in');
   }
 
-  const username = req.session.user.username; // Get the current user's ID
+  const inviter_user = req.session.user.id; // Get the current user's ID
+  const invitername = req.session.user.firstname + req.session.user.lastname;
   const invited_user = userid;
-  const inviter_user = username;
 
   try {
-    // Fetch the club ID where registeredby is the current user
+    // Fetch the club name where the club ID is provided
     const { data: clubData, error: clubError } = await supabase
       .from('clubs')
-      .select('id')
       .select('clubname')
-      .eq('registeredby', myid)
+      .eq('id', clubid)
       .single();
 
     if (clubError) {
       return res.status(500).json({ error: clubError.message });
     }
 
-    const club_id = clubData.id; // Get the club ID
-    const clubname = clubData.name;
+    const clubname = clubData.clubname;
+    const club_id = clubid;
 
     // Insert the invitation into the invitations table
     const { data, error } = await supabase
       .from('club_invitations')
-      .insert([{ invited_user, inviter_user, club_id, clubname }]);
+      .insert([{ invited_user, inviter_user, club_id, clubname, invitername }]);
 
     if (error) {
       return res.status(500).json({ error: error.message });
@@ -1395,8 +1395,6 @@ app.post('/invite-player', async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
-
-
 
 app.post('/accept-invitation/:id', async (req, res) => {
   const { id } = req.params;
@@ -2336,24 +2334,39 @@ app.get('/athletes', async function (req, res) {
   if (!req.session.user) {
     return res.redirect('/');
   }
-  
+
+  const userId = req.session.user.id;
+
   try {
-    const { data, error } = await supabase
+    // Fetch athletes data
+    const { data: athletes, error: athletesError } = await supabase
       .from('athletes')
       .select('*');
 
-    if (error) {
-      return res.status(400).json({ error: error.message });
+    if (athletesError) {
+      return res.status(400).json({ error: athletesError.message });
     }
 
-    console.log("Fetched data:", data); // Log the data to the console 
+    // Fetch clubs data
+    const { data: clubs, error: clubsError } = await supabase
+      .from('clubs')
+      .select('*')
+      .eq('registeredby', userId);
+
+    if (clubsError) {
+      return res.status(400).json({ error: clubsError.message });
+    }
+
+    console.log("Fetched athletes data:", athletes); // Log the athletes data to the console
+    console.log("Fetched clubs data:", clubs); // Log the clubs data to the console
 
     // Render the athletes.hbs template with the fetched data
-    res.render('athletes', { athletes: data, user: req.session.user });
+    res.render('athletes', { athletes, clubs, user: req.session.user });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
+
 
 app.get('/athletes-profile/:athleteid', async function (req, res) {
   const { athleteid } = req.params;

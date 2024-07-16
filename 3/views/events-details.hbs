@@ -51,10 +51,13 @@
         <ul>
           <li><a href="#" id="details-tab">Details</a></li>
           <li><a href="#" id="participants-tab">Participants</a></li>
-          <li><a>Announcements</a></li>
+          
           {{#if user.ptaverified}}
             <li><a href="#" id="registrations-tab">Registrations</a></li>
             <li><a>Discussion</a></li>
+          {{/if}}
+          {{#if currentregistrant}}
+            <li><a>Announcements</a></li>
           {{/if}}
         </ul>
       </div><br>

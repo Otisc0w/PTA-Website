@@ -5,6 +5,7 @@
   <link rel="icon" type="image/x-icon" href="../images/favicon.ico" />
   <link rel="stylesheet" type="text/css" href="../stylesheets/athletes.css" />
   <link rel="stylesheet" type="text/css" href="../stylesheets/navbar.css" />
+  <link rel="stylesheet" type="text/css" href="../stylesheets/modal.css" />
 </head>
 
 <body class="container">
@@ -99,16 +100,31 @@
           <p id="athlete-birthplace">Birthplace</p>
           <p id="athlete-club">Club</p>
         </div>
+        {{#if clubs}}
         <div class="invite-button">
-          <form action="/invite-player" method="POST">
-            <input type="hidden" name="userid" id="userid" value="">
-            <button type="submit">Invite to Club</button>
-          </form>
+          <button onclick="openModal()">Invite to Club</button>
         </div>
+        {{/if}}
         <div class="moredets">
           <a id="more-details-link" href="athletes-profile/">More Details &rarr;</a>
         </div>
       </div>
+    </div>
+  </div>
+
+  <div id="inviteModal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <form action="/invite-player" method="POST">
+        <input type="hidden" name="userid" id="modal-userid" value="">
+        <label for="club">Select Club:</label>
+        <select id="clubid" name="clubid">
+          {{#each clubs}}
+            <option value="{{id}}">{{clubname}}</option>
+          {{/each}}
+        </select>
+        <button type="submit">Invite</button>
+      </form>
     </div>
   </div>
 
@@ -159,9 +175,27 @@
       document.getElementById("athlete-club").textContent = "Club: " + club;
       document.getElementById("athlete-image").src = image;
       document.getElementById("more-details-link").href = "athletes-profile/" + id;
-      document.getElementById("userid").value = userid;
+      document.getElementById("modal-userid").value = userid;
 
       document.getElementById("athlete-details").style.display = "block"; // Show the athlete details
+    }
+
+    // Modal functionality
+    var modal = document.getElementById("inviteModal");
+    var span = document.getElementsByClassName("close")[0];
+
+    function openModal() {
+      modal.style.display = "block";
+    }
+
+    span.onclick = function() {
+      modal.style.display = "none";
+    }
+
+    window.onclick = function(event) {
+      if (event.target == modal) {
+        modal.style.display = "none";
+      }
     }
   </script>
 </body>
