@@ -55,6 +55,7 @@
           {{#if user.ptaverified}}
             <li><a href="#" id="registrations-tab">Registrations</a></li>
             <li><a>Discussion</a></li>
+            <li><a href="/create-matches/{{event.id}}">Matches</a></li>
           {{/if}}
           {{#if currentregistrant}}
             <li><a>Announcements</a></li>
@@ -66,9 +67,10 @@
           <div class="intro">
             <h3>Details</h3>
             <p>{{event.description}}</p>
-            <p>{{event.datetime}}</p>
-            <p>{{event.eventtype}}</p>
-            <p>Yellow belt cap: 10</p>
+            <p>Date: {{event.date}} </p>
+            <p>Time:  {{event.starttime}}  - {{event.endtime}}</p>
+            <p>Event Type: {{event.eventtype}}</p>
+            <p>Registration Cap: {{registrationcount}} / {{event.registrationcap}}</p>
           </div>
         </div>
 
@@ -76,15 +78,16 @@
           <div class="registercodediv">
             <div class="buttondiv">
               {{#if user.athleteverified}}
-                {{#unless currentregistrant}}
-                    <a href="/events-registration/{{event.id}}" class="register-button">Register</a>
-                {{else}}
+                {{#unless (or currentregistrant (me registrationcount event.registrationcap))}}
+                  <a href="/events-registration/{{event.id}}" class="register-button">Register</a>
+                {{else if currentregistrant.registered}}
                   <p>Your check-in code is:</p>
-                  {{#if currentregistrant.registered}}
-                    <h1 class="code">{{currentregistrant.id}}</h1>
-                  {{else}}
-                    <h1 class="pending">pending</h1>
-                  {{/if}}
+                  <h1 class="code">{{currentregistrant.id}}</h1>
+                {{else if -currentregistrant.registered}}
+                  <p>Your check-in code is:</p>
+                  <h1 class="pending">pending</h1>
+                {{else}}
+                  <h1 class="pending">Registration Limit Reached</h1>
                 {{/unless}}
               {{else}}
                 <a class="grayed-register-button">Not Registered</a>

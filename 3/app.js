@@ -30,41 +30,6 @@ app.use(express.urlencoded({ extended: true })); // Middleware to parse URL-enco
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
-async function checkAndRemoveOldRegistrations() {
-  const fourHoursAgo = new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString(); // 4 hours ago in ISO format
-  const oneSecondAgo = new Date(Date.now() - 1 * 1000).toISOString();
-
-  try {
-    // Fetch registrations with status '4' older than 4 hours
-    const { data: registrations, error: fetchError } = await supabase
-      .from('ncc_registrations')
-      .select('*')
-      .eq('status', 4)
-      .lt('updated_at', fourHoursAgo);
-
-    if (fetchError) {
-      console.error('Error fetching registrations:', fetchError.message);
-      return;
-    }
-
-    for (const registration of registrations) {
-      // Delete the registration from the 'ncc_registrations' table
-      const { error: deleteRegError } = await supabase
-        .from('ncc_registrations')
-        .delete()
-        .eq('id', registration.id);
-
-      if (deleteRegError) {
-        console.error('Error deleting registration:', deleteRegError.message);
-      } else {
-        console.log(`Deleted registration with ID: ${registration.id}`);
-      }
-    }
-  } catch (error) {
-    console.error('Server error:', error.message);
-  }
-}
-cron.schedule('0 * * * *', checkAndRemoveOldRegistrations);
 
 hbs.registerHelper('reverseEach', function(context, options) {
   let out = '';
@@ -75,6 +40,9 @@ hbs.registerHelper('reverseEach', function(context, options) {
 });
 hbs.registerHelper('eq', function (a, b) {
   return a === b;
+});
+hbs.registerHelper('me', function (a, b) {
+  return a >= b;
 });
 hbs.registerHelper('ne', function (a, b) {
   return a !== b;
@@ -1663,55 +1631,57 @@ app.post('/submit-player', async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+
 // old submit player above ^
-app.post('/submit-player', async (req, res) => {
-  const { eventid, athleteid } = req.body;
 
-  if (!req.session.user) {
-    return res.status(401).send('Unauthorized: No user logged in');
-  }
+// app.post('/submit-player', async (req, res) => {
+//   const { eventid, athleteid } = req.body;
 
-  try {
-    // Register the athlete for the event
-    const { data, error } = await supabase
-      .from('events_registrations')
-      .insert([{ eventid, athleteid, registered: true }]);
+//   if (!req.session.user) {
+//     return res.status(401).send('Unauthorized: No user logged in');
+//   }
 
-    if (error) {
-      return res.status(500).json({ error: error.message });
-    }
+//   try {
+//     // Register the athlete for the event
+//     const { data, error } = await supabase
+//       .from('events_registrations')
+//       .insert([{ eventid, athleteid, registered: true }]);
 
-    // Check if registration cap is reached
-    const { data: event, error: eventError } = await supabase
-      .from('events')
-      .select('*')
-      .eq('id', eventid)
-      .single();
+//     if (error) {
+//       return res.status(500).json({ error: error.message });
+//     }
 
-    if (eventError) {
-      return res.status(500).json({ error: eventError.message });
-    }
+//     // Check if registration cap is reached
+//     const { data: event, error: eventError } = await supabase
+//       .from('events')
+//       .select('*')
+//       .eq('id', eventid)
+//       .single();
 
-    const { data: registrations, error: registrationsError } = await supabase
-      .from('events_registrations')
-      .select('*')
-      .eq('eventid', eventid)
-      .eq('registered', true);
+//     if (eventError) {
+//       return res.status(500).json({ error: eventError.message });
+//     }
 
-    if (registrationsError) {
-      return res.status(500).json({ error: registrationsError.message });
-    }
+//     const { data: registrations, error: registrationsError } = await supabase
+//       .from('events_registrations')
+//       .select('*')
+//       .eq('eventid', eventid)
+//       .eq('registered', true);
 
-    if (registrations.length >= event.registrationcap) {
-      // Schedule matches if cap is reached
-      scheduleMatches(eventid, registrations);
-    }
+//     if (registrationsError) {
+//       return res.status(500).json({ error: registrationsError.message });
+//     }
 
-    res.redirect('/events/' + eventid);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
+//     if (registrations.length >= event.registrationcap) {
+//       // Schedule matches if cap is reached
+//       scheduleMatches(eventid, registrations);
+//     }
+
+//     res.redirect('/events/' + eventid);
+//   } catch (error) {
+//     res.status(500).json({ error: error.message });
+//   }
+// });
 
 app.post('/update-eventreg-status', async (req, res) => {
   if (!req.session.user) {
@@ -2323,6 +2293,9 @@ app.get('/events-details/:id', async function (req, res) {
       return res.status(400).json({ error: currentregistrantError.message });
     }
 
+    // Calculate the number of registrations
+    const registrationcount = eventregistrations.length;
+
     console.log("Fetched event data:", event); // Log the event data to the console
     console.log("Fetched event registrations data:", eventregistrations); // Log the event registrations data to the console
     console.log("Fetched participants data:", participants); // Log the participants data to the console
@@ -2334,12 +2307,65 @@ app.get('/events-details/:id', async function (req, res) {
       eventregistrations,
       participants,
       currentregistrant,
+      registrationcount,
+      registrationcap: event.registration_cap, // Assuming the registration cap is stored in the event table
       user: req.session.user
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
+
+app.get('/create-matches/:eventId', async function (req, res) {
+  const { eventId } = req.params;
+
+  if (!req.session.user) {
+    return res.redirect('/');
+  }
+
+  try {
+    // Fetch the event registrations for the specific event
+    const { data: registrations, error: registrationsError } = await supabase
+      .from('events_registrations')
+      .select('*')
+      .eq('eventid', eventId);
+
+    if (registrationsError) {
+      return res.status(400).json({ error: registrationsError.message });
+    }
+
+    // Create pairs for matches
+    function createKnockoutPairs(registrations) {
+      const pairs = [];
+      for (let i = 0; i < registrations.length; i += 2) {
+        if (registrations[i + 1]) {
+          pairs.push([registrations[i], registrations[i + 1]]);
+        } else {
+          pairs.push([registrations[i]]); // Handle odd number of participants
+        }
+      }
+      return pairs;
+    }
+
+    const pairs = createKnockoutPairs(registrations);
+
+    // Store matches in the database
+    for (const pair of pairs) {
+      const { error } = await supabase
+        .from('matches')
+        .insert([{ eventid: eventId, player1: pair[0].userid, player2: pair[1]?.userid }]);
+
+      if (error) {
+        return res.status(500).json({ error: error.message });
+      }
+    }
+
+    res.status(200).send('Matches created successfully');
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 
 app.get('/profile', async function (req, res) {
   if (!req.session.user) {
@@ -2414,7 +2440,6 @@ app.get('/athletes', async function (req, res) {
   }
 });
 
-
 app.get('/athletes-profile/:athleteid', async function (req, res) {
   const { athleteid } = req.params;
 
@@ -2466,9 +2491,6 @@ app.get('/athletes-profile/:athleteid', async function (req, res) {
     res.status(500).json({ error: error.message });
   }
 });
-
-
-
 
 app.get('/notifications', async function (req, res) {
   if (!req.session.user) {
