@@ -1607,57 +1607,6 @@ app.post('/create-event', upload.single('eventpicture'), async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
-//   const {
-//     athleteid,
-//     eventid,
-//     email,
-//     playername,
-//     club,
-//     age,
-//     bday,
-//     division,
-//     belt,
-//     height,
-//     weight,
-//     instructor
-//   } = req.body; // Capture user input from the form
-
-//   const registered ='false';
-//   const userid= req.session.user.id;
-
-//   try {
-//     // Insert the new registration into the database
-//     const { data, error } = await supabase
-//       .from('events_registrations')
-//       .insert([{
-//         athleteid,
-//         userid,
-//         eventid,
-//         email,
-//         playername,
-//         club,
-//         age,
-//         bday,
-//         division,
-//         belt,
-//         height,
-//         weight,
-//         instructor,
-//         registered
-//       }]);
-
-//     if (error) {
-//       console.error('Error creating registration:', error.message);
-//       return res.status(500).send('Error creating registration.');
-//     }
-//     res.redirect(`/events-details/${eventid}`);
-//   } catch (error) {
-//     console.error('Server error:', error.message);
-//     res.status(500).json({ error: error.message });
-//   }
-// });
-
-// old submit player above ^
 
 app.post('/submit-player', async (req, res) => {
   const {
@@ -1900,6 +1849,41 @@ app.post('/create-announcement', async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+
+app.post('/submit-scores', async (req, res) => {
+  const { matchid, player1_total, player2_total, eventid, player1, player2 } = req.body;
+
+  const player1score = player1_total;
+  const player2score = player2_total;
+
+  // Determine the winner based on scores
+  let winner;
+  if (player1score > player2score) {
+    winner = player1;
+  } else if (player2score > player1score) {
+    winner = player2;
+  } else {
+    winner = 0; // In case of a tie
+  }
+
+  try {
+    // Update the match with the scores and winner
+    const { error } = await supabase
+      .from('matches')
+      .update({ player1score, player2score, winner })
+      .eq('id', matchid);
+
+    if (error) {
+      return res.status(400).json({ error: error.message });
+    }
+
+    res.redirect(`/events-details/${eventid}`);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+
                                        
 
                                                                         // VIEWS BELOW
@@ -2612,6 +2596,65 @@ app.get('/help-center', async function (req, res) {
     res.status(500).json({ error: error.message });
   }
 });
+
+app.get('/kyorugi-scoresheet/:matchid', async function (req, res) {
+  if (!req.session.user) {
+    return res.redirect('/');
+  }
+
+  const { matchid } = req.params;
+
+  try {
+    // Fetch match details
+    const { data: match, error: matchError } = await supabase
+      .from('matches')
+      .select('*')
+      .eq('id', matchid)
+      .single();
+
+    if (matchError) {
+      return res.status(400).json({ error: matchError.message });
+    }
+
+    // Fetch player1 details
+    const { data: player1, error: player1Error } = await supabase
+      .from('athletes')
+      .select('name')
+      .eq('userid', match.player1)
+      .single();
+
+    if (player1Error) {
+      return res.status(400).json({ error: player1Error.message });
+    }
+
+    // Fetch player2 details
+    const { data: player2, error: player2Error } = await supabase
+      .from('athletes')
+      .select('name')
+      .eq('userid', match.player2)
+      .single();
+
+    if (player2Error) {
+      return res.status(400).json({ error: player2Error.message });
+    }
+
+    console.log("Fetched match data:", match); // Log match data to the console
+    console.log("Fetched player1 data:", player1); // Log player1 data to the console
+    console.log("Fetched player2 data:", player2); // Log player2 data to the console
+
+    // Render the scoresheet template with the fetched data
+    res.render('kyorugi-scoresheet', {
+      match,
+      player1_name: player1.name,
+      player2_name: player2.name,
+      user: req.session.user
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+
 
 
                                                                         //MEMBERSHIP PAGES

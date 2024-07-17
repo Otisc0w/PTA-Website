@@ -19,6 +19,30 @@ body {
     color: #333; /* Ensures text is visible */
 }
 
+.flex {
+    display: flex;
+    align-items: center;
+}
+.column {
+    flex-direction: column;
+}
+.center {
+    align-items: center;
+    justify-content: center;
+}
+.space-around {
+    justify-content: space-around;
+}
+.rounded {
+    min-height: 150px;
+    min-width: 150px;
+    border-radius: 10px;
+}
+.information {
+    font-size: 20px;
+    color: #61d601e2;
+}
+
 .membership-header {
     background-color: #004085;
     padding: 10px 0;
@@ -73,6 +97,8 @@ body {
 
 .membership-container {
     padding: 20px;
+    padding-left: 300px;
+    padding-right: 300px;
 }
 
 .review-header h1 {
@@ -162,7 +188,7 @@ body {
 
 /* Status colors */
 .status-under-review {
-    color: green;
+    color: orange;
 }
 
 .status-printed {
@@ -170,11 +196,11 @@ body {
 }
 
 .status-en-route {
-    color: blue;
+    color: yellow;
 }
 
 .status-shipped {
-    color: orange;
+    color: green;
 }
 
 .status-rejected {
