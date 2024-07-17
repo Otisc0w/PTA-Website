@@ -97,6 +97,33 @@ app.use(session({
   cookie: { secure: false } // Set to true if using HTTPS
 }));
 
+async function createMatches(eventid, registrations) {
+  // Create pairs for matches
+  function createKnockoutPairs(registrations) {
+    const pairs = [];
+    for (let i = 0; i < registrations.length; i += 2) {
+      if (registrations[i + 1]) {
+        pairs.push([registrations[i], registrations[i + 1]]);
+      } else {
+        pairs.push([registrations[i]]); // Handle odd number of participants
+      }
+    }
+    return pairs;
+  }
+
+  const pairs = createKnockoutPairs(registrations);
+
+  // Store matches in the database
+  for (const pair of pairs) {
+    const { error } = await supabase
+      .from('matches')
+      .insert([{ eventid, player1: pair[0].userid, player2: pair[1]?.userid }]);
+
+    if (error) {
+      throw new Error(error.message);
+    }
+  }
+}
 // Set up Handlebars view engine
 app.set('view engine', 'hbs');
 app.set('views', path.join(__dirname, 'views'));
@@ -1580,6 +1607,57 @@ app.post('/create-event', upload.single('eventpicture'), async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+//   const {
+//     athleteid,
+//     eventid,
+//     email,
+//     playername,
+//     club,
+//     age,
+//     bday,
+//     division,
+//     belt,
+//     height,
+//     weight,
+//     instructor
+//   } = req.body; // Capture user input from the form
+
+//   const registered ='false';
+//   const userid= req.session.user.id;
+
+//   try {
+//     // Insert the new registration into the database
+//     const { data, error } = await supabase
+//       .from('events_registrations')
+//       .insert([{
+//         athleteid,
+//         userid,
+//         eventid,
+//         email,
+//         playername,
+//         club,
+//         age,
+//         bday,
+//         division,
+//         belt,
+//         height,
+//         weight,
+//         instructor,
+//         registered
+//       }]);
+
+//     if (error) {
+//       console.error('Error creating registration:', error.message);
+//       return res.status(500).send('Error creating registration.');
+//     }
+//     res.redirect(`/events-details/${eventid}`);
+//   } catch (error) {
+//     console.error('Server error:', error.message);
+//     res.status(500).json({ error: error.message });
+//   }
+// });
+
+// old submit player above ^
 
 app.post('/submit-player', async (req, res) => {
   const {
@@ -1602,12 +1680,13 @@ app.post('/submit-player', async (req, res) => {
 
   try {
     // Insert the new registration into the database
-    const { data, error } = await supabase
+    const { data: registrationData, error: registrationError } = await supabase
       .from('events_registrations')
       .insert([{
         athleteid,
         userid,
         eventid,
+        registered,
         email,
         playername,
         club,
@@ -1617,14 +1696,14 @@ app.post('/submit-player', async (req, res) => {
         belt,
         height,
         weight,
-        instructor,
-        registered
+        instructor
       }]);
 
-    if (error) {
-      console.error('Error creating registration:', error.message);
+    if (registrationError) {
+      console.error('Error creating registration:', registrationError.message);
       return res.status(500).send('Error creating registration.');
     }
+
     res.redirect(`/events-details/${eventid}`);
   } catch (error) {
     console.error('Server error:', error.message);
@@ -1632,56 +1711,45 @@ app.post('/submit-player', async (req, res) => {
   }
 });
 
-// old submit player above ^
+app.post('/begin-competition/:id', async (req, res) => {
+  const { id: eventid } = req.params; // Get the event ID from the URL
 
-// app.post('/submit-player', async (req, res) => {
-//   const { eventid, athleteid } = req.body;
+  try {
+    // Fetch the event registrations for the specific event
+    const { data: eventregistrations, error: eventregistrationsError } = await supabase
+      .from('events_registrations')
+      .select('*')
+      .eq('eventid', eventid);
 
-//   if (!req.session.user) {
-//     return res.status(401).send('Unauthorized: No user logged in');
-//   }
+    if (eventregistrationsError) {
+      console.error('Error fetching event registrations:', eventregistrationsError.message);
+      return res.status(500).send('Error fetching event registrations.');
+    }
 
-//   try {
-//     // Register the athlete for the event
-//     const { data, error } = await supabase
-//       .from('events_registrations')
-//       .insert([{ eventid, athleteid, registered: true }]);
+    // Fetch the event details to get the registration cap
+    const { data: event, error: eventError } = await supabase
+      .from('events')
+      .select('*')
+      .eq('id', eventid)
+      .single();
 
-//     if (error) {
-//       return res.status(500).json({ error: error.message });
-//     }
+    if (eventError) {
+      console.error('Error fetching event details:', eventError.message);
+      return res.status(500).send('Error fetching event details.');
+    }
 
-//     // Check if registration cap is reached
-//     const { data: event, error: eventError } = await supabase
-//       .from('events')
-//       .select('*')
-//       .eq('id', eventid)
-//       .single();
+    // Check if the registration cap has been reached
+    if (eventregistrations.length >= event.registrationcap) {
+      await createMatches(eventid, eventregistrations); // Trigger match creation
+    }
 
-//     if (eventError) {
-//       return res.status(500).json({ error: eventError.message });
-//     }
+    res.redirect(`/events-details/${eventid}`);
+  } catch (error) {
+    console.error('Server error:', error.message);
+    res.status(500).json({ error: error.message });
+  }
+});
 
-//     const { data: registrations, error: registrationsError } = await supabase
-//       .from('events_registrations')
-//       .select('*')
-//       .eq('eventid', eventid)
-//       .eq('registered', true);
-
-//     if (registrationsError) {
-//       return res.status(500).json({ error: registrationsError.message });
-//     }
-
-//     if (registrations.length >= event.registrationcap) {
-//       // Schedule matches if cap is reached
-//       scheduleMatches(eventid, registrations);
-//     }
-
-//     res.redirect('/events/' + eventid);
-//   } catch (error) {
-//     res.status(500).json({ error: error.message });
-//   }
-// });
 
 app.post('/update-eventreg-status', async (req, res) => {
   if (!req.session.user) {
@@ -2293,6 +2361,58 @@ app.get('/events-details/:id', async function (req, res) {
       return res.status(400).json({ error: currentregistrantError.message });
     }
 
+    // Fetch the matches for the specific event
+    const { data: matches, error: matchesError } = await supabase
+      .from('matches')
+      .select('*')
+      .eq('eventid', id);
+
+    if (matchesError) {
+      return res.status(400).json({ error: matchesError.message });
+    }
+
+    // Fetch player names and winner names for each match
+    for (let match of matches) {
+      const { data: player1, error: player1Error } = await supabase
+        .from('athletes')
+        .select('name')
+        .eq('userid', match.player1)
+        .single();
+
+      if (player1Error) {
+        return res.status(400).json({ error: 'Error fetching player1 name.' });
+      }
+
+      const { data: player2, error: player2Error } = await supabase
+        .from('athletes')
+        .select('name')
+        .eq('userid', match.player2)
+        .single();
+
+      if (player2Error) {
+        return res.status(400).json({ error: 'Error fetching player2 name.' });
+      }
+
+      match.player1_name = player1.name;
+      match.player2_name = player2.name;
+
+      if (match.winner) {
+        const { data: winner, error: winnerError } = await supabase
+          .from('athletes')
+          .select('name')
+          .eq('userid', match.winner)
+          .single();
+
+        if (winnerError) {
+          return res.status(400).json({ error: 'Error fetching winner name.' });
+        }
+
+        match.winner_name = winner.name;
+      } else {
+        match.winner_name = 'TBD'; // Or set to an appropriate default value
+      }
+    }
+
     // Calculate the number of registrations
     const registrationcount = eventregistrations.length;
 
@@ -2300,6 +2420,7 @@ app.get('/events-details/:id', async function (req, res) {
     console.log("Fetched event registrations data:", eventregistrations); // Log the event registrations data to the console
     console.log("Fetched participants data:", participants); // Log the participants data to the console
     console.log("Fetched current registrant data:", currentregistrant); // Log the current registrant data to the console
+    console.log("Fetched matches data:", matches); // Log the matches data to the console
 
     // Render the events-details.hbs template with the fetched data
     res.render('events-details', {
@@ -2307,6 +2428,7 @@ app.get('/events-details/:id', async function (req, res) {
       eventregistrations,
       participants,
       currentregistrant,
+      matches,
       registrationcount,
       registrationcap: event.registration_cap, // Assuming the registration cap is stored in the event table
       user: req.session.user
@@ -2315,57 +2437,6 @@ app.get('/events-details/:id', async function (req, res) {
     res.status(500).json({ error: error.message });
   }
 });
-
-app.get('/create-matches/:eventId', async function (req, res) {
-  const { eventId } = req.params;
-
-  if (!req.session.user) {
-    return res.redirect('/');
-  }
-
-  try {
-    // Fetch the event registrations for the specific event
-    const { data: registrations, error: registrationsError } = await supabase
-      .from('events_registrations')
-      .select('*')
-      .eq('eventid', eventId);
-
-    if (registrationsError) {
-      return res.status(400).json({ error: registrationsError.message });
-    }
-
-    // Create pairs for matches
-    function createKnockoutPairs(registrations) {
-      const pairs = [];
-      for (let i = 0; i < registrations.length; i += 2) {
-        if (registrations[i + 1]) {
-          pairs.push([registrations[i], registrations[i + 1]]);
-        } else {
-          pairs.push([registrations[i]]); // Handle odd number of participants
-        }
-      }
-      return pairs;
-    }
-
-    const pairs = createKnockoutPairs(registrations);
-
-    // Store matches in the database
-    for (const pair of pairs) {
-      const { error } = await supabase
-        .from('matches')
-        .insert([{ eventid: eventId, player1: pair[0].userid, player2: pair[1]?.userid }]);
-
-      if (error) {
-        return res.status(500).json({ error: error.message });
-      }
-    }
-
-    res.status(200).send('Matches created successfully');
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
 
 app.get('/profile', async function (req, res) {
   if (!req.session.user) {
@@ -2746,8 +2817,6 @@ app.get('/membership-club', async (req, res) => {
     res.status(500).send('Server error');
   }
 });
-
-
 
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
