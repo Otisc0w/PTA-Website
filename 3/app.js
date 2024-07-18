@@ -1610,6 +1610,71 @@ app.post('/begin-competition/:id', async (req, res) => {
   }
 });
 
+app.post('/begin-poomsae/:id', async (req, res) => {
+  const { id: eventid } = req.params; // Get the event ID from the URL
+  const { numGroups } = req.body; // Get the number of groups from the request body
+
+  try {
+    // Fetch the event registrations for the specific event
+    const { data: eventregistrations, error: eventregistrationsError } = await supabase
+      .from('events_registrations')
+      .select('*')
+      .eq('eventid', eventid);
+
+    if (eventregistrationsError) {
+      console.error('Error fetching event registrations:', eventregistrationsError.message);
+      return res.status(500).send('Error fetching event registrations.');
+    }
+
+    // Check if there are enough registrations to form the groups
+    if (eventregistrations.length < numGroups) {
+      return res.status(400).send('Not enough participants to form the specified number of groups.');
+    }
+
+    // Shuffle the registrations to ensure random distribution
+    eventregistrations.sort(() => Math.random() - 0.5);
+
+    // Create the groups
+    const groups = [];
+    for (let i = 0; i < numGroups; i++) {
+      groups.push([]);
+    }
+
+    eventregistrations.forEach((registration, index) => {
+      groups[index % numGroups].push(registration);
+    });
+
+    // Store the groups in the database
+    for (let i = 0; i < groups.length; i++) {
+      for (const registration of groups[i]) {
+        // Fetch the userid from the athletes table
+        const { data: athlete, error: athleteError } = await supabase
+          .from('athletes')
+          .select('userid')
+          .eq('id', registration.athleteid)
+          .single();
+
+        if (athleteError) {
+          throw new Error(athleteError.message);
+        }
+
+        const { error } = await supabase
+          .from('poomsae_groups')
+          .insert([{ eventid, groupnum: i + 1, athleteid: registration.athleteid, userid: athlete.userid }]);
+
+        if (error) {
+          throw new Error(error.message);
+        }
+      }
+    }
+
+    res.redirect(`/events-details/${eventid}`);
+  } catch (error) {
+    console.error('Server error:', error.message);
+    res.status(500).json({ error: error.message });
+  }
+});
+
 app.post('/update-eventreg-status', async (req, res) => {
   if (!req.session.user) {
     return res.status(401).send('Unauthorized: No user logged in');
@@ -1796,6 +1861,36 @@ app.post('/submit-scores', async (req, res) => {
   }
 });
 
+app.post('/submit-poomsae-scores', async (req, res) => {
+  const { groupId, eventId, athleteId, round, technicalScore, presentationScore, performanceTime, judgeScores } = req.body;
+  
+  const totalScore = parseFloat(technicalScore) + parseFloat(presentationScore);
+  
+  try {
+    const { error } = await supabase
+      .from('poomsae_groups')
+      .insert([{
+        group_id: groupId,
+        event_id: eventId,
+        athlete_id: athleteId,
+        round: round,
+        technical_score: technicalScore,
+        presentation_score: presentationScore,
+        total_score: totalScore,
+        performance_time: performanceTime,
+        judge_scores: judgeScores
+      }]);
+
+    if (error) {
+      return res.status(400).json({ error: error.message });
+    }
+
+    res.redirect(`/events-details/${eventId}`);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 app.post('/update-matchtime', async (req, res) => {
   const { id, matchtime, eventid } = req.body;
 
@@ -1816,7 +1911,6 @@ app.post('/update-matchtime', async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
-
                                    
 
                                                                         // VIEWS BELOW
@@ -2331,6 +2425,31 @@ app.get('/events-details/:id', async function (req, res) {
       }
     }
 
+    // Fetch the poomsae groups for the specific event
+    const { data: poomsaeGroups, error: poomsaeGroupsError } = await supabase
+      .from('poomsae_groups')
+      .select('*')
+      .eq('eventid', id);
+
+    if (poomsaeGroupsError) {
+      return res.status(400).json({ error: poomsaeGroupsError.message });
+    }
+
+    // Fetch player names for each poomsae group
+    for (let group of poomsaeGroups) {
+      const { data: athlete, error: athleteError } = await supabase
+        .from('athletes')
+        .select('name')
+        .eq('userid', group.userid)
+        .single();
+
+      if (athleteError) {
+        return res.status(400).json({ error: 'Error fetching athlete name.' });
+      }
+
+      group.athlete_name = athlete.name;
+    }
+
     // Calculate the number of registrations
     const registrationcount = eventregistrations.length;
 
@@ -2339,6 +2458,7 @@ app.get('/events-details/:id', async function (req, res) {
     console.log("Fetched participants data:", participants); // Log the participants data to the console
     console.log("Fetched current registrant data:", currentregistrant); // Log the current registrant data to the console
     console.log("Fetched matches data:", matches); // Log the matches data to the console
+    console.log("Fetched poomsae groups data:", poomsaeGroups); // Log the poomsae groups data to the console
 
     // Render the events-details.hbs template with the fetched data
     res.render('events-details', {
@@ -2347,6 +2467,7 @@ app.get('/events-details/:id', async function (req, res) {
       participants,
       currentregistrant,
       matches,
+      poomsaeGroups,
       registrationcount,
       registrationcap: event.registration_cap, // Assuming the registration cap is stored in the event table
       user: req.session.user
@@ -2450,7 +2571,7 @@ app.get('/athletes-profile/:athleteid', async function (req, res) {
 
     // Fetch match data
     const { data: matchdata, error: matchError } = await supabase
-      .from('kyurogi_history')
+      .from('match_history')
       .select('*')
       .eq('athleteid', athleteid);
 
@@ -2460,7 +2581,7 @@ app.get('/athletes-profile/:athleteid', async function (req, res) {
 
     // Fetch the most recent match data
     const { data: recentmatch, error: recentmatchError } = await supabase
-      .from('kyurogi_history')
+      .from('match_history')
       .select('*')
       .eq('athleteid', athleteid)
       .order('created_at', { ascending: false })
@@ -2588,7 +2709,54 @@ app.get('/kyorugi-scoresheet/:matchid', async function (req, res) {
   }
 });
 
+app.get('/poomsae-scoresheet/:groupnum/:athleteid', async function (req, res) {
+  if (!req.session.user) {
+    return res.redirect('/');
+  }
 
+  const { groupnum, athleteid } = req.params; // Get the group and athlete ID from the URL
+
+  try {
+    // Fetch the poomsae group details from the poomsae_groups table
+    const { data: group, error: groupError } = await supabase
+      .from('poomsae_groups')
+      .select('*')
+      .eq('groupnum', groupnum)
+      .eq('athleteid', athleteid)
+      .single(); // Ensure we get a single record
+
+    if (groupError) {
+      return res.status(400).json({ error: groupError.message });
+    }
+
+    // Fetch athlete details
+    const { data: athlete, error: athleteError } = await supabase
+      .from('athletes')
+      .select('*')
+      .eq('id', athleteid)
+      .single();
+
+    if (athleteError) {
+      return res.status(400).json({ error: athleteError.message });
+    }
+
+    const scoresheet = {
+      ...group,
+      athlete_name: athlete.name
+    };
+
+    console.log("Fetched group data:", group); // Log the group data to the console
+    console.log("Fetched athlete data:", athlete); // Log the athlete data to the console
+
+    // Render the poomsae-scoresheet.hbs template with the fetched data
+    res.render('poomsae-scoresheet', {
+      scoresheet,
+      user: req.session.user
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
 
 
                                                                         //MEMBERSHIP PAGES
