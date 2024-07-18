@@ -318,6 +318,10 @@
   width: 600px;
 }
 
+.eventrightside, .eventleftside{
+  height: 20%;
+}
+
 
 .intro, .schedule, .eventregistercodediv {
   padding: 20px;

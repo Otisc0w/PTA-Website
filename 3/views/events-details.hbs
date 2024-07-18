@@ -72,19 +72,46 @@
       <p>Registration Cap: {{registrationcount}} / {{event.registrationcap}}</p>
     </div>
   </div>
-
   <div class="eventmiddleside">
+    {{#if champion}}
+    <div class="champion-container">
+      <h2>Champion</h2>
+      <div class="champion-details">
+        <p><strong>Name:</strong> {{champion.name}}</p>
+        <p><strong>Club:</strong> {{champion.club}}</p>
+        <p><strong>Belt Level:</strong> {{champion.beltlevel}}</p>
+        <!-- Add any other relevant champion details -->
+      </div>
+    </div>
+    {{/if}}
     <div class="schedule">
       {{#if (and user.ptaverified (me registrationcount event.registrationcap ))}}
+        {{#if (eq event.eventtype 'Kyorugi')}}
         <form action="/begin-competition/{{event.id}}" method="post">
           <button type="submit" class="begincompe">Begin Competition</button>
         </form>
+        {{else if (eq event.eventtype 'Poomsae')}}
+        <form action="/begin-poomsae/{{event.id}}" method="post">
+          <button type="submit" class="beginpoomsae">Begin Competition</button>
+        </form>
+        {{/if}}
+
       {{/if}}
       <h2>Schedule</h2>
+
       {{#each matches}}
-        <div class="match">
+        <div class="match">Round {{round}}
           <div class="times">
-            <p class="match-time">{{matchtime}}8:00-9:00</p>
+            {{#if matchtime}}
+              <p class="match-time">{{matchtime}}</p>
+            {{else}}
+            <form action="/update-matchtime" method="post">
+              <input type="hidden" name="id" value="{{id}}">
+              <input type="hidden" name="eventid" value="{{eventid}}">
+              <input type="time" class="matchtime" name="matchtime">
+              <button type="submit">OK</button>
+            </form>
+            {{/if}}
           </div>
           <div class="match-info">
             <p class="match-players">{{player1_name}}</p>

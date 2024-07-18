@@ -112,18 +112,108 @@ async function createMatches(eventid, registrations) {
   }
 
   const pairs = createKnockoutPairs(registrations);
-
+  const round = 1;
   // Store matches in the database
   for (const pair of pairs) {
     const { error } = await supabase
       .from('matches')
-      .insert([{ eventid, player1: pair[0].userid, player2: pair[1]?.userid }]);
+      .insert([{ eventid, player1: pair[0].userid, player2: pair[1]?.userid, round }]);
 
     if (error) {
       throw new Error(error.message);
     }
   }
 }
+
+async function createNextRound(eventid) {
+  // Fetch the highest round number for the event
+  const { data: highestRound, error: roundError } = await supabase
+    .from('matches')
+    .select('round')
+    .eq('eventid', eventid)
+    .order('round', { ascending: false })
+    .limit(1)
+    .single();
+
+  if (roundError) {
+    console.error('Error fetching highest round:', roundError.message);
+    return;
+  }
+
+  const currentRound = highestRound ? highestRound.round : 0;
+
+  // Fetch all matches for the current round
+  const { data: matches, error: matchesError } = await supabase
+    .from('matches')
+    .select('*')
+    .eq('eventid', eventid)
+    .eq('round', currentRound);
+
+  if (matchesError) {
+    console.error('Error fetching matches:', matchesError.message);
+    return;
+  }
+
+  // Check if all matches in the current round are completed
+  const allMatchesCompleted = matches.every(match => match.winner !== null);
+  if (!allMatchesCompleted) {
+    console.log('Not all matches are completed.');
+    return;
+  }
+
+  // Fetch all winners from the current round
+  const winners = matches.map(match => match.winner).filter(winner => winner !== 0);
+
+  // If there's only one winner left, declare them the champion
+  if (winners.length === 1) {
+    const champion = winners[0];
+
+    try {
+      // Update the event to set the champion
+      const { error: eventError } = await supabase
+        .from('events')
+        .update({ champion })
+        .eq('id', eventid);
+
+      if (eventError) {
+        console.error('Error declaring champion:', eventError.message);
+      } else {
+        console.log('Champion declared:', champion);
+      }
+    } catch (error) {
+      console.error('Server error:', error.message);
+    }
+
+    return;
+  }
+
+  // Pair winners for the next round
+  const pairs = createPairs(winners);
+
+  // Insert the next round matches into the database
+  const nextRound = currentRound + 1;
+  for (const pair of pairs) {
+    const { error } = await supabase
+      .from('matches')
+      .insert([{ eventid, player1: pair[0], player2: pair[1] || null, round: nextRound }]);
+
+    if (error) {
+      console.error('Error creating next round match:', error.message);
+    }
+  }
+
+  console.log('Next round matches created.');
+}
+
+function createPairs(winners) {
+  const pairs = [];
+  for (let i = 0; i < winners.length; i += 2) {
+    pairs.push([winners[i], winners[i + 1] || null]); // Handle odd number of winners
+  }
+  return pairs;
+}
+
+
 // Set up Handlebars view engine
 app.set('view engine', 'hbs');
 app.set('views', path.join(__dirname, 'views'));
@@ -379,187 +469,6 @@ app.post('/submit-ncc', upload.fields([{ name: 'birthcert', maxCount: 1 }, { nam
     res.status(500).json({ error: error.message });
   }
 });
-//   { name: 'birthcert', maxCount: 1 },
-//   { name: 'portrait', maxCount: 1 },
-//   { name: 'educproof', maxCount: 1 },
-//   { name: 'poomsaecert', maxCount: 1 },
-//   { name: 'kukkiwoncert', maxCount: 1 },
-//   { name: 'ptablackbeltcert', maxCount: 1 }
-// ]), async (req, res) => {
-//   const {
-//     apptype,
-//     firstname,
-//     middlename,
-//     lastname,
-//     gender,
-//     bday,
-//     phonenum,
-//     email,
-//     clubregion
-//   } = req.body; // Capture user input from the form
-
-//   if (!req.session.user) {
-//     return res.status(401).send('Unauthorized: No user logged in');
-//   }
-
-//   const submittedby = req.session.user.id; // Get the current user's ID from the session
-//   const status = 1;
-
-//   let birthcertUrl = null;
-//   let portraitUrl = null;
-//   let educproofUrl = null;
-//   let poomsaecertUrl = null;
-//   let kukkiwoncertUrl = null;
-//   let ptablackbeltcertUrl = null;
-
-//   if (req.files) {
-//     try {
-//       if (req.files.birthcert) {
-//         const birthcertPath = `documents/${Date.now()}-${req.files.birthcert[0].originalname}`;
-//         const { error: birthcertUploadError } = await supabase
-//           .storage
-//           .from('documents')
-//           .upload(birthcertPath, req.files.birthcert[0].buffer, {
-//             contentType: req.files.birthcert[0].mimetype,
-//           });
-
-//         if (birthcertUploadError) {
-//           console.error('Error uploading birth certificate:', birthcertUploadError.message);
-//           return res.status(500).send('Error uploading birth certificate');
-//         }
-
-//         birthcertUrl = `${supabaseUrl}/storage/v1/object/public/documents/${birthcertPath}`;
-//       }
-
-//       if (req.files.portrait) {
-//         const portraitPath = `documents/${Date.now()}-${req.files.portrait[0].originalname}`;
-//         const { error: portraitUploadError } = await supabase
-//           .storage
-//           .from('documents')
-//           .upload(portraitPath, req.files.portrait[0].buffer, {
-//             contentType: req.files.portrait[0].mimetype,
-//           });
-
-//         if (portraitUploadError) {
-//           console.error('Error uploading portrait:', portraitUploadError.message);
-//           return res.status(500).send('Error uploading portrait');
-//         }
-
-//         portraitUrl = `${supabaseUrl}/storage/v1/object/public/documents/${portraitPath}`;
-//       }
-
-//       if (req.files.educproof) {
-//         const educproofPath = `documents/${Date.now()}-${req.files.educproof[0].originalname}`;
-//         const { error: educproofUploadError } = await supabase
-//           .storage
-//           .from('documents')
-//           .upload(educproofPath, req.files.educproof[0].buffer, {
-//             contentType: req.files.educproof[0].mimetype,
-//           });
-
-//         if (educproofUploadError) {
-//           console.error('Error uploading education proof:', educproofUploadError.message);
-//           return res.status(500).send('Error uploading education proof');
-//         }
-
-//         educproofUrl = `${supabaseUrl}/storage/v1/object/public/documents/${educproofPath}`;
-//       }
-
-//       if (req.files.poomsaecert) {
-//         const poomsaecertPath = `documents/${Date.now()}-${req.files.poomsaecert[0].originalname}`;
-//         const { error: poomsaecertUploadError } = await supabase
-//           .storage
-//           .from('documents')
-//           .upload(poomsaecertPath, req.files.poomsaecert[0].buffer, {
-//             contentType: req.files.poomsaecert[0].mimetype,
-//           });
-
-//         if (poomsaecertUploadError) {
-//           console.error('Error uploading poomsae certificate:', poomsaecertUploadError.message);
-//           return res.status(500).send('Error uploading poomsae certificate');
-//         }
-
-//         poomsaecertUrl = `${supabaseUrl}/storage/v1.object/public/documents/${poomsaecertPath}`;
-//       }
-
-//       if (req.files.kukkiwoncert) {
-//         const kukkiwoncertPath = `documents/${Date.now()}-${req.files.kukkiwoncert[0].originalname}`;
-//         const { error: kukkiwoncertUploadError } = await supabase
-//           .storage
-//           .from('documents')
-//           .upload(kukkiwoncertPath, req.files.kukkiwoncert[0].buffer, {
-//             contentType: req.files.kukkiwoncert[0].mimetype,
-//           });
-
-//         if (kukkiwoncertUploadError) {
-//           console.error('Error uploading kukkiwon certificate:', kukkiwoncertUploadError.message);
-//           return res.status(500).send('Error uploading kukkiwon certificate');
-//         }
-
-//         kukkiwoncertUrl = `${supabaseUrl}/storage/v1/object/public/documents/${kukkiwoncertPath}`;
-//       }
-
-//       if (req.files.ptablackbeltcert) {
-//         const ptablackbeltcertPath = `documents/${Date.now()}-${req.files.ptablackbeltcert[0].originalname}`;
-//         const { error: ptablackbeltcertUploadError } = await supabase
-//           .storage
-//           .from('documents')
-//           .upload(ptablackbeltcertPath, req.files.ptablackbeltcert[0].buffer, {
-//             contentType: req.files.ptablackbeltcert[0].mimetype,
-//           });
-
-//         if (ptablackbeltcertUploadError) {
-//           console.error('Error uploading PTA black belt certificate:', ptablackbeltcertUploadError.message);
-//           return res.status(500).send('Error uploading PTA black belt certificate');
-//         }
-
-//         ptablackbeltcertUrl = `${supabaseUrl}/storage/v1/object/public/documents/${ptablackbeltcertPath}`;
-//       }
-//     } catch (error) {
-//       console.error('Server error during file upload:', error.message);
-//       return res.status(500).json({ error: error.message });
-//     }
-//   }
-
-//   try {
-//     // Insert the new user into the database
-//     const { data, error } = await supabase
-//       .from('instructor_registrations')
-//       .insert([{
-//         apptype,
-//         firstname,
-//         middlename,
-//         lastname,
-//         gender,
-//         bday,
-//         phonenum,
-//         email,
-//         clubregion,
-//         status,
-//         submittedby,
-//         birthcert: birthcertUrl, // Include the birth certificate URL
-//         portrait: portraitUrl, // Include the portrait URL
-//         educproof: educproofUrl, // Include the education proof URL
-//         poomsaecert: poomsaecertUrl, // Include the poomsae certificate URL
-//         kukkiwoncert: kukkiwoncertUrl, // Include the kukkiwon certificate URL
-//         ptablackbeltcert: ptablackbeltcertUrl // Include the PTA black belt certificate URL
-//       }]);
-
-//     if (error) {
-//       console.error('Error creating registration:', error.message);
-//       console.error('Full error object:', error);
-//       return res.status(500).render('membership', {
-//         error: 'Error creating registration.',
-//         users: [] // Optionally pass users array if you need it in the view
-//       });
-//     }
-//     console.log('Registration created successfully:', data);
-//     res.redirect('/membership');
-//   } catch (error) {
-//     console.error('Server error:', error.message);
-//     res.status(500).json({ error: error.message });
-//   }
-// });
 
 app.post('/submit-instructor', upload.fields([{ name: 'birthcert', maxCount: 1 }, { name: 'portrait', maxCount: 1 }, { name: 'educproof', maxCount: 1 }, { name: 'poomsaecert', maxCount: 1 }, { name: 'kukkiwoncert', maxCount: 1 }, { name: 'ptablackbeltcert', maxCount: 1 }]), async (req, res) => {
   const {
@@ -1544,7 +1453,8 @@ app.post('/create-event', upload.single('eventpicture'), async (req, res) => {
     eventtype,
     registrationcap,
     date,
-    time,
+    starttime,
+    endtime,
     location
   } = req.body; // Capture user input from the form
 
@@ -1589,7 +1499,8 @@ app.post('/create-event', upload.single('eventpicture'), async (req, res) => {
         createdby,
         registrationcap,
         date,
-        time,
+        starttime,
+        endtime,
         location
       }])
       .select(); // Ensure the data is returned
@@ -1698,7 +1609,6 @@ app.post('/begin-competition/:id', async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
-
 
 app.post('/update-eventreg-status', async (req, res) => {
   if (!req.session.user) {
@@ -1877,14 +1787,37 @@ app.post('/submit-scores', async (req, res) => {
       return res.status(400).json({ error: error.message });
     }
 
+    // Check and create next round matches if all matches are completed
+    await createNextRound(eventid);
+
     res.redirect(`/events-details/${eventid}`);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
 
+app.post('/update-matchtime', async (req, res) => {
+  const { id, matchtime, eventid } = req.body;
 
-                                       
+  try {
+    // Update the matchtime in the matches table
+    const { error } = await supabase
+      .from('matches')
+      .update({ matchtime })
+      .eq('id', id);
+
+    if (error) {
+      return res.status(400).json({ error: error.message });
+    }
+
+    res.redirect(`/events-details/${eventid}`);
+  } catch (error) {
+    console.error('Error updating matchtime:', error.message);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+                                   
 
                                                                         // VIEWS BELOW
 
@@ -2345,11 +2278,12 @@ app.get('/events-details/:id', async function (req, res) {
       return res.status(400).json({ error: currentregistrantError.message });
     }
 
-    // Fetch the matches for the specific event
+    // Fetch the matches for the specific event and order them by id
     const { data: matches, error: matchesError } = await supabase
       .from('matches')
       .select('*')
-      .eq('eventid', id);
+      .eq('eventid', id)
+      .order('id', { ascending: true });
 
     if (matchesError) {
       return res.status(400).json({ error: matchesError.message });
