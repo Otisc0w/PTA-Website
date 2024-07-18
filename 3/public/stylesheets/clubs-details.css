@@ -295,3 +295,101 @@
   color: white;
   padding: 10px 10px;
 }
+
+/* events stuff */
+
+.eventsides {
+  display: flex;
+  justify-content: space-between;
+  padding: 20px;
+  margin: auto;
+}
+
+.eventleftside, .eventmiddleside, .eventrightside {
+  margin: 10px;
+  padding: 20px;
+  background-color: #2d2d2d;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  display: inline;
+}
+
+.eventmiddleside{
+  width: 600px;
+}
+
+.eventrightside, .eventleftside{
+  height: 20%;
+}
+
+
+.intro, .schedule, .eventregistercodediv {
+  padding: 20px;
+  color: #ffffff;
+}
+
+.match {
+  background-color: #333;
+  padding: 10px;
+  margin: 10px;
+  border-radius: 5px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.match-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.match-time {
+  font-size: 14px;
+  margin: 0;
+}
+.match-players {
+  font-size: 18px;
+  margin: 0;
+}
+.match-vs {
+  font-size: 14px;
+  margin: 0;
+}
+.scoresheet {
+  color: #0074d9;
+  text-decoration: none;
+}
+.scoresheet:hover {
+  text-decoration: underline;
+}
+
+.register-button, .grayed-register-button {
+  display: inline-block;
+  padding: 10px 20px;
+  margin-top: 20px;
+  border-radius: 5px;
+  text-align: center;
+  text-decoration: none;
+  color: #fff;
+  background-color: #007bff;
+}
+
+.grayed-register-button {
+  background-color: #6c757d;
+  cursor: not-allowed;
+}
+
+.code, .pending {
+  color: #007bff;
+}
+
+.begincompe{
+  border: none;
+  padding: 5px 10px;
+  background-color: #0074d9;
+  color: white;
+  border-radius: 4px;
+}
+
+.begincompe:hover{
+  background-color: #007bff;
+}

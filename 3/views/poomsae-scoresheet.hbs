@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Poomsae Scoresheet</title>
+  <link rel="stylesheet" type="text/css" href="/stylesheets/scoresheet.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>Poomsae Scoresheet for {{scoresheet.athlete_name}}</h1>
+    <table>
+      <thead>
+        <tr>
+          <th>Technical Score</th>
+          <th>Presentation Score</th>
+          <th>Total Score</th>
+          <th>Performance Time</th>
+          <th>Judge Scores</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>{{scoresheet.technical_score}}</td>
+          <td>{{scoresheet.presentation_score}}</td>
+          <td>{{scoresheet.total_score}}</td>
+          <td>{{scoresheet.performance_time}}</td>
+          <td>{{scoresheet.judge_scores}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</body>
+</html>

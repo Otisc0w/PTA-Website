@@ -39,63 +39,128 @@
   </div>
 
   <div class="events-container">
-      <img src="{{event.eventpicture}}" alt="Event Picture">
-      <div class="clubname">
-        <span class="name">{{event.name}}</span>
-        {{#if (eq club.registeredby user.id)}}
-          <span><a href="/clubs-manage" class="manage-button" ><img src="/images/settings.png">Manage</a></span>
+    <img src="{{event.eventpicture}}" alt="Event Picture">
+    <div class="clubname">
+      <span class="name">{{event.name}}</span>
+      {{#if (eq club.registeredby user.id)}}
+        <span><a href="/clubs-manage" class="manage-button" ><img src="/images/settings.png">Manage</a></span>
+      {{/if}}
+    </div>
+
+    <div class="clubtabs">
+      <ul>
+        <li><a href="#" id="details-tab">Details</a></li>
+        <li><a href="#" id="participants-tab">Participants</a></li>
+        {{#if user.ptaverified}}
+          <li><a href="#" id="registrations-tab">Registrations</a></li>
+          <li><a>Discussion</a></li>
+        {{/if}}
+        {{#if (or currentregistrant user.ptaverified)}}
+          <li><a>Announcements</a></li>
+        {{/if}}
+      </ul>
+    </div><br>
+
+    <div class="eventsides">
+  <div class="eventleftside">
+    <div class="intro">
+      <h3>Details</h3>
+      <p>{{event.description}}</p>
+      <p>Date: {{event.date}}</p>
+      <p>Time: {{event.starttime}} - {{event.endtime}}</p>
+      <p>Event Type: {{event.eventtype}}</p>
+      <p>Registration Cap: {{registrationcount}} / {{event.registrationcap}}</p>
+    </div>
+  </div>
+  <div class="eventmiddleside">
+    {{#if champion}}
+    <div class="champion-container">
+      <h2>Champion</h2>
+      <div class="champion-details">
+        <p><strong>Name:</strong> {{champion.name}}</p>
+        <p><strong>Club:</strong> {{champion.club}}</p>
+        <p><strong>Belt Level:</strong> {{champion.beltlevel}}</p>
+        <!-- Add any other relevant champion details -->
+      </div>
+    </div>
+    {{/if}}
+    <div class="schedule">
+      {{#if (and user.ptaverified (me registrationcount event.registrationcap ))}}
+        {{#if (eq event.eventtype 'Kyorugi')}}
+        <form action="/begin-competition/{{event.id}}" method="post">
+          <button type="submit" class="begincompe">Begin Competition</button>
+        </form>
+        {{else if (eq event.eventtype 'Poomsae')}}
+        <form action="/begin-poomsae/{{event.id}}" method="post">
+        <input type="number" id="numGroups" name="numGroups" min="1" required>
+          <button type="submit" class="beginpoomsae">Begin Competition</button>
+        </form>
+        {{/if}}
+
+      {{/if}}
+      <h2>Schedule</h2>
+
+      {{#each poomsaeGroups}}
+      <div class="group">
+        <h3>Group {{groupnum}}</h3>
+        <ul>
+          <li>
+            <div>
+              {{athlete_name}}
+              <a href="/poomsae-scoresheet/{{this.groupnum}}/{{this.athleteid}}" class="scoresheet-link">View Scoresheet</a>
+            </div>
+          </li>
+        </ul>
+      </div>
+      {{/each}}
+
+      {{#each matches}}
+        <div class="match">Round {{round}}
+          <div class="times">
+            {{#if matchtime}}
+              <p class="match-time">{{matchtime}}</p>
+            {{else}}
+            <form action="/update-matchtime" method="post">
+              <input type="hidden" name="id" value="{{id}}">
+              <input type="hidden" name="eventid" value="{{eventid}}">
+              <input type="time" class="matchtime" name="matchtime">
+              <button type="submit">OK</button>
+            </form>
+            {{/if}}
+          </div>
+          <div class="match-info">
+            <p class="match-players">{{player1_name}}</p>
+            <p class="match-vs">vs</p>
+            <p class="match-players">{{player2_name}}</p>
+          </div>
+            <a href="/kyorugi-scoresheet/{{id}}" class="kyorugi-scoresheet">scoresheet</a>
+        </div>
+      {{/each}}
+    </div>
+  </div>
+
+  <div class="eventrightside">
+    <div class="eventregistercodediv">
+      <div class="buttondiv">
+        {{#if user.athleteverified}}
+          {{#unless (or currentregistrant (me registrationcount event.registrationcap))}}
+            <a href="/events-registration/{{event.id}}" class="register-button">Register</a>
+          {{else if currentregistrant.registered}}
+            <p>Your check-in code is:</p>
+            <h1 class="code">{{currentregistrant.id}}</h1>
+          {{else if currentregistrant}}
+            <p>Your check-in code is:</p>
+            <h1 class="pending">pending</h1>
+          {{else}}
+            <h1 class="pending">Registration Limit Reached</h1>
+          {{/unless}}
+        {{else}}
+          <a class="grayed-register-button">Not Registered</a>
         {{/if}}
       </div>
-
-      <div class="clubtabs">
-        <ul>
-          <li><a href="#" id="details-tab">Details</a></li>
-          <li><a href="#" id="participants-tab">Participants</a></li>
-          
-          {{#if user.ptaverified}}
-            <li><a href="#" id="registrations-tab">Registrations</a></li>
-            <li><a>Discussion</a></li>
-            <li><a href="/create-matches/{{event.id}}">Matches</a></li>
-          {{/if}}
-          {{#if currentregistrant}}
-            <li><a>Announcements</a></li>
-          {{/if}}
-        </ul>
-      </div><br>
-      <div class="sides">
-        <div class="leftside">
-          <div class="intro">
-            <h3>Details</h3>
-            <p>{{event.description}}</p>
-            <p>Date: {{event.date}} </p>
-            <p>Time:  {{event.starttime}}  - {{event.endtime}}</p>
-            <p>Event Type: {{event.eventtype}}</p>
-            <p>Registration Cap: {{registrationcount}} / {{event.registrationcap}}</p>
-          </div>
-        </div>
-
-        <div class="rightside">
-          <div class="registercodediv">
-            <div class="buttondiv">
-              {{#if user.athleteverified}}
-                {{#unless (or currentregistrant (me registrationcount event.registrationcap))}}
-                  <a href="/events-registration/{{event.id}}" class="register-button">Register</a>
-                {{else if currentregistrant.registered}}
-                  <p>Your check-in code is:</p>
-                  <h1 class="code">{{currentregistrant.id}}</h1>
-                {{else if -currentregistrant.registered}}
-                  <p>Your check-in code is:</p>
-                  <h1 class="pending">pending</h1>
-                {{else}}
-                  <h1 class="pending">Registration Limit Reached</h1>
-                {{/unless}}
-              {{else}}
-                <a class="grayed-register-button">Not Registered</a>
-              {{/if}}
-            </div>
-          </div>
-        </div>
-      </div>
+    </div>
+  </div>
+</div>
   </div>
 
   <div class="participants-container">
@@ -114,7 +179,7 @@
         {{#each participants}}
           <tr>
             <td>{{this.playername}}</td>
-            <td>{{this.club}}</td>
+            <td>{{this.club}}f</td>
             <td>{{this.height}}</td>
             <td>{{this.weight}}</td>
             <td><a href="google.com">Go to scoresheet</a></td>
@@ -173,8 +238,9 @@
       const participantsTab = document.getElementById('participants-tab');
       const detailsTab = document.getElementById('details-tab');
       const registrationsTab = document.getElementById('registrations-tab');
-      const leftside = document.querySelector('.leftside');
-      const rightside = document.querySelector('.rightside');
+      const eventleftside = document.querySelector('.eventleftside');
+      const eventrightside = document.querySelector('.eventrightside');
+      const eventmiddleside = document.querySelector('.eventmiddleside');
       const participantsContainer = document.querySelector('.participants-container');
       const registrationsContainer = document.querySelector('.registrations-container');
 
@@ -182,22 +248,25 @@
       registrationsContainer.style.display = 'none';
 
       function showParticipants() {
-        leftside.style.display = 'none';
-        rightside.style.display = 'none';
+        eventleftside.style.display = 'none';
+        eventrightside.style.display = 'none';
+        eventmiddleside.style.display= 'none';
         participantsContainer.style.display = 'block';
         registrationsContainer.style.display = 'none';
       }
 
       function showDetails() {
-        leftside.style.display = 'block';
-        rightside.style.display = 'block';
+        eventleftside.style.display = 'block';
+        eventrightside.style.display = 'block';
+        eventmiddleside.style.display= 'block';
         participantsContainer.style.display = 'none';
         registrationsContainer.style.display = 'none';
       }
 
       function showRegistrations() {
-        leftside.style.display = 'none';
-        rightside.style.display = 'none';
+        eventleftside.style.display = 'none';
+        eventrightside.style.display = 'none';
+        eventmiddleside.style.display= 'none';
         participantsContainer.style.display = 'none';
         registrationsContainer.style.display = 'block';
       }

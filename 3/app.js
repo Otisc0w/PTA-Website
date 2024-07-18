@@ -97,6 +97,123 @@ app.use(session({
   cookie: { secure: false } // Set to true if using HTTPS
 }));
 
+async function createMatches(eventid, registrations) {
+  // Create pairs for matches
+  function createKnockoutPairs(registrations) {
+    const pairs = [];
+    for (let i = 0; i < registrations.length; i += 2) {
+      if (registrations[i + 1]) {
+        pairs.push([registrations[i], registrations[i + 1]]);
+      } else {
+        pairs.push([registrations[i]]); // Handle odd number of participants
+      }
+    }
+    return pairs;
+  }
+
+  const pairs = createKnockoutPairs(registrations);
+  const round = 1;
+  // Store matches in the database
+  for (const pair of pairs) {
+    const { error } = await supabase
+      .from('matches')
+      .insert([{ eventid, player1: pair[0].userid, player2: pair[1]?.userid, round }]);
+
+    if (error) {
+      throw new Error(error.message);
+    }
+  }
+}
+
+async function createNextRound(eventid) {
+  // Fetch the highest round number for the event
+  const { data: highestRound, error: roundError } = await supabase
+    .from('matches')
+    .select('round')
+    .eq('eventid', eventid)
+    .order('round', { ascending: false })
+    .limit(1)
+    .single();
+
+  if (roundError) {
+    console.error('Error fetching highest round:', roundError.message);
+    return;
+  }
+
+  const currentRound = highestRound ? highestRound.round : 0;
+
+  // Fetch all matches for the current round
+  const { data: matches, error: matchesError } = await supabase
+    .from('matches')
+    .select('*')
+    .eq('eventid', eventid)
+    .eq('round', currentRound);
+
+  if (matchesError) {
+    console.error('Error fetching matches:', matchesError.message);
+    return;
+  }
+
+  // Check if all matches in the current round are completed
+  const allMatchesCompleted = matches.every(match => match.winner !== null);
+  if (!allMatchesCompleted) {
+    console.log('Not all matches are completed.');
+    return;
+  }
+
+  // Fetch all winners from the current round
+  const winners = matches.map(match => match.winner).filter(winner => winner !== 0);
+
+  // If there's only one winner left, declare them the champion
+  if (winners.length === 1) {
+    const champion = winners[0];
+
+    try {
+      // Update the event to set the champion
+      const { error: eventError } = await supabase
+        .from('events')
+        .update({ champion })
+        .eq('id', eventid);
+
+      if (eventError) {
+        console.error('Error declaring champion:', eventError.message);
+      } else {
+        console.log('Champion declared:', champion);
+      }
+    } catch (error) {
+      console.error('Server error:', error.message);
+    }
+
+    return;
+  }
+
+  // Pair winners for the next round
+  const pairs = createPairs(winners);
+
+  // Insert the next round matches into the database
+  const nextRound = currentRound + 1;
+  for (const pair of pairs) {
+    const { error } = await supabase
+      .from('matches')
+      .insert([{ eventid, player1: pair[0], player2: pair[1] || null, round: nextRound }]);
+
+    if (error) {
+      console.error('Error creating next round match:', error.message);
+    }
+  }
+
+  console.log('Next round matches created.');
+}
+
+function createPairs(winners) {
+  const pairs = [];
+  for (let i = 0; i < winners.length; i += 2) {
+    pairs.push([winners[i], winners[i + 1] || null]); // Handle odd number of winners
+  }
+  return pairs;
+}
+
+
 // Set up Handlebars view engine
 app.set('view engine', 'hbs');
 app.set('views', path.join(__dirname, 'views'));
@@ -352,187 +469,6 @@ app.post('/submit-ncc', upload.fields([{ name: 'birthcert', maxCount: 1 }, { nam
     res.status(500).json({ error: error.message });
   }
 });
-//   { name: 'birthcert', maxCount: 1 },
-//   { name: 'portrait', maxCount: 1 },
-//   { name: 'educproof', maxCount: 1 },
-//   { name: 'poomsaecert', maxCount: 1 },
-//   { name: 'kukkiwoncert', maxCount: 1 },
-//   { name: 'ptablackbeltcert', maxCount: 1 }
-// ]), async (req, res) => {
-//   const {
-//     apptype,
-//     firstname,
-//     middlename,
-//     lastname,
-//     gender,
-//     bday,
-//     phonenum,
-//     email,
-//     clubregion
-//   } = req.body; // Capture user input from the form
-
-//   if (!req.session.user) {
-//     return res.status(401).send('Unauthorized: No user logged in');
-//   }
-
-//   const submittedby = req.session.user.id; // Get the current user's ID from the session
-//   const status = 1;
-
-//   let birthcertUrl = null;
-//   let portraitUrl = null;
-//   let educproofUrl = null;
-//   let poomsaecertUrl = null;
-//   let kukkiwoncertUrl = null;
-//   let ptablackbeltcertUrl = null;
-
-//   if (req.files) {
-//     try {
-//       if (req.files.birthcert) {
-//         const birthcertPath = `documents/${Date.now()}-${req.files.birthcert[0].originalname}`;
-//         const { error: birthcertUploadError } = await supabase
-//           .storage
-//           .from('documents')
-//           .upload(birthcertPath, req.files.birthcert[0].buffer, {
-//             contentType: req.files.birthcert[0].mimetype,
-//           });
-
-//         if (birthcertUploadError) {
-//           console.error('Error uploading birth certificate:', birthcertUploadError.message);
-//           return res.status(500).send('Error uploading birth certificate');
-//         }
-
-//         birthcertUrl = `${supabaseUrl}/storage/v1/object/public/documents/${birthcertPath}`;
-//       }
-
-//       if (req.files.portrait) {
-//         const portraitPath = `documents/${Date.now()}-${req.files.portrait[0].originalname}`;
-//         const { error: portraitUploadError } = await supabase
-//           .storage
-//           .from('documents')
-//           .upload(portraitPath, req.files.portrait[0].buffer, {
-//             contentType: req.files.portrait[0].mimetype,
-//           });
-
-//         if (portraitUploadError) {
-//           console.error('Error uploading portrait:', portraitUploadError.message);
-//           return res.status(500).send('Error uploading portrait');
-//         }
-
-//         portraitUrl = `${supabaseUrl}/storage/v1/object/public/documents/${portraitPath}`;
-//       }
-
-//       if (req.files.educproof) {
-//         const educproofPath = `documents/${Date.now()}-${req.files.educproof[0].originalname}`;
-//         const { error: educproofUploadError } = await supabase
-//           .storage
-//           .from('documents')
-//           .upload(educproofPath, req.files.educproof[0].buffer, {
-//             contentType: req.files.educproof[0].mimetype,
-//           });
-
-//         if (educproofUploadError) {
-//           console.error('Error uploading education proof:', educproofUploadError.message);
-//           return res.status(500).send('Error uploading education proof');
-//         }
-
-//         educproofUrl = `${supabaseUrl}/storage/v1/object/public/documents/${educproofPath}`;
-//       }
-
-//       if (req.files.poomsaecert) {
-//         const poomsaecertPath = `documents/${Date.now()}-${req.files.poomsaecert[0].originalname}`;
-//         const { error: poomsaecertUploadError } = await supabase
-//           .storage
-//           .from('documents')
-//           .upload(poomsaecertPath, req.files.poomsaecert[0].buffer, {
-//             contentType: req.files.poomsaecert[0].mimetype,
-//           });
-
-//         if (poomsaecertUploadError) {
-//           console.error('Error uploading poomsae certificate:', poomsaecertUploadError.message);
-//           return res.status(500).send('Error uploading poomsae certificate');
-//         }
-
-//         poomsaecertUrl = `${supabaseUrl}/storage/v1.object/public/documents/${poomsaecertPath}`;
-//       }
-
-//       if (req.files.kukkiwoncert) {
-//         const kukkiwoncertPath = `documents/${Date.now()}-${req.files.kukkiwoncert[0].originalname}`;
-//         const { error: kukkiwoncertUploadError } = await supabase
-//           .storage
-//           .from('documents')
-//           .upload(kukkiwoncertPath, req.files.kukkiwoncert[0].buffer, {
-//             contentType: req.files.kukkiwoncert[0].mimetype,
-//           });
-
-//         if (kukkiwoncertUploadError) {
-//           console.error('Error uploading kukkiwon certificate:', kukkiwoncertUploadError.message);
-//           return res.status(500).send('Error uploading kukkiwon certificate');
-//         }
-
-//         kukkiwoncertUrl = `${supabaseUrl}/storage/v1/object/public/documents/${kukkiwoncertPath}`;
-//       }
-
-//       if (req.files.ptablackbeltcert) {
-//         const ptablackbeltcertPath = `documents/${Date.now()}-${req.files.ptablackbeltcert[0].originalname}`;
-//         const { error: ptablackbeltcertUploadError } = await supabase
-//           .storage
-//           .from('documents')
-//           .upload(ptablackbeltcertPath, req.files.ptablackbeltcert[0].buffer, {
-//             contentType: req.files.ptablackbeltcert[0].mimetype,
-//           });
-
-//         if (ptablackbeltcertUploadError) {
-//           console.error('Error uploading PTA black belt certificate:', ptablackbeltcertUploadError.message);
-//           return res.status(500).send('Error uploading PTA black belt certificate');
-//         }
-
-//         ptablackbeltcertUrl = `${supabaseUrl}/storage/v1/object/public/documents/${ptablackbeltcertPath}`;
-//       }
-//     } catch (error) {
-//       console.error('Server error during file upload:', error.message);
-//       return res.status(500).json({ error: error.message });
-//     }
-//   }
-
-//   try {
-//     // Insert the new user into the database
-//     const { data, error } = await supabase
-//       .from('instructor_registrations')
-//       .insert([{
-//         apptype,
-//         firstname,
-//         middlename,
-//         lastname,
-//         gender,
-//         bday,
-//         phonenum,
-//         email,
-//         clubregion,
-//         status,
-//         submittedby,
-//         birthcert: birthcertUrl, // Include the birth certificate URL
-//         portrait: portraitUrl, // Include the portrait URL
-//         educproof: educproofUrl, // Include the education proof URL
-//         poomsaecert: poomsaecertUrl, // Include the poomsae certificate URL
-//         kukkiwoncert: kukkiwoncertUrl, // Include the kukkiwon certificate URL
-//         ptablackbeltcert: ptablackbeltcertUrl // Include the PTA black belt certificate URL
-//       }]);
-
-//     if (error) {
-//       console.error('Error creating registration:', error.message);
-//       console.error('Full error object:', error);
-//       return res.status(500).render('membership', {
-//         error: 'Error creating registration.',
-//         users: [] // Optionally pass users array if you need it in the view
-//       });
-//     }
-//     console.log('Registration created successfully:', data);
-//     res.redirect('/membership');
-//   } catch (error) {
-//     console.error('Server error:', error.message);
-//     res.status(500).json({ error: error.message });
-//   }
-// });
 
 app.post('/submit-instructor', upload.fields([{ name: 'birthcert', maxCount: 1 }, { name: 'portrait', maxCount: 1 }, { name: 'educproof', maxCount: 1 }, { name: 'poomsaecert', maxCount: 1 }, { name: 'kukkiwoncert', maxCount: 1 }, { name: 'ptablackbeltcert', maxCount: 1 }]), async (req, res) => {
   const {
@@ -1517,7 +1453,8 @@ app.post('/create-event', upload.single('eventpicture'), async (req, res) => {
     eventtype,
     registrationcap,
     date,
-    time,
+    starttime,
+    endtime,
     location
   } = req.body; // Capture user input from the form
 
@@ -1562,7 +1499,8 @@ app.post('/create-event', upload.single('eventpicture'), async (req, res) => {
         createdby,
         registrationcap,
         date,
-        time,
+        starttime,
+        endtime,
         location
       }])
       .select(); // Ensure the data is returned
@@ -1602,12 +1540,13 @@ app.post('/submit-player', async (req, res) => {
 
   try {
     // Insert the new registration into the database
-    const { data, error } = await supabase
+    const { data: registrationData, error: registrationError } = await supabase
       .from('events_registrations')
       .insert([{
         athleteid,
         userid,
         eventid,
+        registered,
         email,
         playername,
         club,
@@ -1617,14 +1556,14 @@ app.post('/submit-player', async (req, res) => {
         belt,
         height,
         weight,
-        instructor,
-        registered
+        instructor
       }]);
 
-    if (error) {
-      console.error('Error creating registration:', error.message);
+    if (registrationError) {
+      console.error('Error creating registration:', registrationError.message);
       return res.status(500).send('Error creating registration.');
     }
+
     res.redirect(`/events-details/${eventid}`);
   } catch (error) {
     console.error('Server error:', error.message);
@@ -1632,56 +1571,109 @@ app.post('/submit-player', async (req, res) => {
   }
 });
 
-// old submit player above ^
+app.post('/begin-competition/:id', async (req, res) => {
+  const { id: eventid } = req.params; // Get the event ID from the URL
 
-// app.post('/submit-player', async (req, res) => {
-//   const { eventid, athleteid } = req.body;
+  try {
+    // Fetch the event registrations for the specific event
+    const { data: eventregistrations, error: eventregistrationsError } = await supabase
+      .from('events_registrations')
+      .select('*')
+      .eq('eventid', eventid);
 
-//   if (!req.session.user) {
-//     return res.status(401).send('Unauthorized: No user logged in');
-//   }
+    if (eventregistrationsError) {
+      console.error('Error fetching event registrations:', eventregistrationsError.message);
+      return res.status(500).send('Error fetching event registrations.');
+    }
 
-//   try {
-//     // Register the athlete for the event
-//     const { data, error } = await supabase
-//       .from('events_registrations')
-//       .insert([{ eventid, athleteid, registered: true }]);
+    // Fetch the event details to get the registration cap
+    const { data: event, error: eventError } = await supabase
+      .from('events')
+      .select('*')
+      .eq('id', eventid)
+      .single();
 
-//     if (error) {
-//       return res.status(500).json({ error: error.message });
-//     }
+    if (eventError) {
+      console.error('Error fetching event details:', eventError.message);
+      return res.status(500).send('Error fetching event details.');
+    }
 
-//     // Check if registration cap is reached
-//     const { data: event, error: eventError } = await supabase
-//       .from('events')
-//       .select('*')
-//       .eq('id', eventid)
-//       .single();
+    // Check if the registration cap has been reached
+    if (eventregistrations.length >= event.registrationcap) {
+      await createMatches(eventid, eventregistrations); // Trigger match creation
+    }
 
-//     if (eventError) {
-//       return res.status(500).json({ error: eventError.message });
-//     }
+    res.redirect(`/events-details/${eventid}`);
+  } catch (error) {
+    console.error('Server error:', error.message);
+    res.status(500).json({ error: error.message });
+  }
+});
 
-//     const { data: registrations, error: registrationsError } = await supabase
-//       .from('events_registrations')
-//       .select('*')
-//       .eq('eventid', eventid)
-//       .eq('registered', true);
+app.post('/begin-poomsae/:id', async (req, res) => {
+  const { id: eventid } = req.params; // Get the event ID from the URL
+  const { numGroups } = req.body; // Get the number of groups from the request body
 
-//     if (registrationsError) {
-//       return res.status(500).json({ error: registrationsError.message });
-//     }
+  try {
+    // Fetch the event registrations for the specific event
+    const { data: eventregistrations, error: eventregistrationsError } = await supabase
+      .from('events_registrations')
+      .select('*')
+      .eq('eventid', eventid);
 
-//     if (registrations.length >= event.registrationcap) {
-//       // Schedule matches if cap is reached
-//       scheduleMatches(eventid, registrations);
-//     }
+    if (eventregistrationsError) {
+      console.error('Error fetching event registrations:', eventregistrationsError.message);
+      return res.status(500).send('Error fetching event registrations.');
+    }
 
-//     res.redirect('/events/' + eventid);
-//   } catch (error) {
-//     res.status(500).json({ error: error.message });
-//   }
-// });
+    // Check if there are enough registrations to form the groups
+    if (eventregistrations.length < numGroups) {
+      return res.status(400).send('Not enough participants to form the specified number of groups.');
+    }
+
+    // Shuffle the registrations to ensure random distribution
+    eventregistrations.sort(() => Math.random() - 0.5);
+
+    // Create the groups
+    const groups = [];
+    for (let i = 0; i < numGroups; i++) {
+      groups.push([]);
+    }
+
+    eventregistrations.forEach((registration, index) => {
+      groups[index % numGroups].push(registration);
+    });
+
+    // Store the groups in the database
+    for (let i = 0; i < groups.length; i++) {
+      for (const registration of groups[i]) {
+        // Fetch the userid from the athletes table
+        const { data: athlete, error: athleteError } = await supabase
+          .from('athletes')
+          .select('userid')
+          .eq('id', registration.athleteid)
+          .single();
+
+        if (athleteError) {
+          throw new Error(athleteError.message);
+        }
+
+        const { error } = await supabase
+          .from('poomsae_groups')
+          .insert([{ eventid, groupnum: i + 1, athleteid: registration.athleteid, userid: athlete.userid }]);
+
+        if (error) {
+          throw new Error(error.message);
+        }
+      }
+    }
+
+    res.redirect(`/events-details/${eventid}`);
+  } catch (error) {
+    console.error('Server error:', error.message);
+    res.status(500).json({ error: error.message });
+  }
+});
 
 app.post('/update-eventreg-status', async (req, res) => {
   if (!req.session.user) {
@@ -1832,7 +1824,94 @@ app.post('/create-announcement', async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
-                                       
+
+app.post('/submit-scores', async (req, res) => {
+  const { matchid, player1_total, player2_total, eventid, player1, player2 } = req.body;
+
+  const player1score = player1_total;
+  const player2score = player2_total;
+
+  // Determine the winner based on scores
+  let winner;
+  if (player1score > player2score) {
+    winner = player1;
+  } else if (player2score > player1score) {
+    winner = player2;
+  } else {
+    winner = 0; // In case of a tie
+  }
+
+  try {
+    // Update the match with the scores and winner
+    const { error } = await supabase
+      .from('matches')
+      .update({ player1score, player2score, winner })
+      .eq('id', matchid);
+
+    if (error) {
+      return res.status(400).json({ error: error.message });
+    }
+
+    // Check and create next round matches if all matches are completed
+    await createNextRound(eventid);
+
+    res.redirect(`/events-details/${eventid}`);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.post('/submit-poomsae-scores', async (req, res) => {
+  const { groupId, eventId, athleteId, round, technicalScore, presentationScore, performanceTime, judgeScores } = req.body;
+  
+  const totalScore = parseFloat(technicalScore) + parseFloat(presentationScore);
+  
+  try {
+    const { error } = await supabase
+      .from('poomsae_groups')
+      .insert([{
+        group_id: groupId,
+        event_id: eventId,
+        athlete_id: athleteId,
+        round: round,
+        technical_score: technicalScore,
+        presentation_score: presentationScore,
+        total_score: totalScore,
+        performance_time: performanceTime,
+        judge_scores: judgeScores
+      }]);
+
+    if (error) {
+      return res.status(400).json({ error: error.message });
+    }
+
+    res.redirect(`/events-details/${eventId}`);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.post('/update-matchtime', async (req, res) => {
+  const { id, matchtime, eventid } = req.body;
+
+  try {
+    // Update the matchtime in the matches table
+    const { error } = await supabase
+      .from('matches')
+      .update({ matchtime })
+      .eq('id', id);
+
+    if (error) {
+      return res.status(400).json({ error: error.message });
+    }
+
+    res.redirect(`/events-details/${eventid}`);
+  } catch (error) {
+    console.error('Error updating matchtime:', error.message);
+    res.status(500).json({ error: error.message });
+  }
+});
+                                   
 
                                                                         // VIEWS BELOW
 
@@ -2293,6 +2372,84 @@ app.get('/events-details/:id', async function (req, res) {
       return res.status(400).json({ error: currentregistrantError.message });
     }
 
+    // Fetch the matches for the specific event and order them by id
+    const { data: matches, error: matchesError } = await supabase
+      .from('matches')
+      .select('*')
+      .eq('eventid', id)
+      .order('id', { ascending: true });
+
+    if (matchesError) {
+      return res.status(400).json({ error: matchesError.message });
+    }
+
+    // Fetch player names and winner names for each match
+    for (let match of matches) {
+      const { data: player1, error: player1Error } = await supabase
+        .from('athletes')
+        .select('name')
+        .eq('userid', match.player1)
+        .single();
+
+      if (player1Error) {
+        return res.status(400).json({ error: 'Error fetching player1 name.' });
+      }
+
+      const { data: player2, error: player2Error } = await supabase
+        .from('athletes')
+        .select('name')
+        .eq('userid', match.player2)
+        .single();
+
+      if (player2Error) {
+        return res.status(400).json({ error: 'Error fetching player2 name.' });
+      }
+
+      match.player1_name = player1.name;
+      match.player2_name = player2.name;
+
+      if (match.winner) {
+        const { data: winner, error: winnerError } = await supabase
+          .from('athletes')
+          .select('name')
+          .eq('userid', match.winner)
+          .single();
+
+        if (winnerError) {
+          return res.status(400).json({ error: 'Error fetching winner name.' });
+        }
+
+        match.winner_name = winner.name;
+      } else {
+        match.winner_name = 'TBD'; // Or set to an appropriate default value
+      }
+    }
+
+    // Fetch the poomsae groups for the specific event
+    const { data: poomsaeGroups, error: poomsaeGroupsError } = await supabase
+      .from('poomsae_groups')
+      .select('*')
+      .eq('eventid', id);
+
+    if (poomsaeGroupsError) {
+      return res.status(400).json({ error: poomsaeGroupsError.message });
+    }
+
+    // Fetch player names for each poomsae group
+    for (let group of poomsaeGroups) {
+      const { data: athlete, error: athleteError } = await supabase
+        .from('athletes')
+        .select('name')
+        .eq('userid', group.userid)
+        .single();
+
+      if (athleteError) {
+        return res.status(400).json({ error: 'Error fetching athlete name.' });
+      }
+
+      group.athlete_name = athlete.name;
+    }
+
     // Calculate the number of registrations
     const registrationcount = eventregistrations.length;
 
@@ -2300,6 +2457,8 @@ app.get('/events-details/:id', async function (req, res) {
     console.log("Fetched event registrations data:", eventregistrations); // Log the event registrations data to the console
     console.log("Fetched participants data:", participants); // Log the participants data to the console
     console.log("Fetched current registrant data:", currentregistrant); // Log the current registrant data to the console
+    console.log("Fetched matches data:", matches); // Log the matches data to the console
+    console.log("Fetched poomsae groups data:", poomsaeGroups); // Log the poomsae groups data to the console
 
     // Render the events-details.hbs template with the fetched data
     res.render('events-details', {
@@ -2307,6 +2466,8 @@ app.get('/events-details/:id', async function (req, res) {
       eventregistrations,
       participants,
       currentregistrant,
+      matches,
+      poomsaeGroups,
       registrationcount,
       registrationcap: event.registration_cap, // Assuming the registration cap is stored in the event table
       user: req.session.user
@@ -2315,57 +2476,6 @@ app.get('/events-details/:id', async function (req, res) {
     res.status(500).json({ error: error.message });
   }
 });
-
-app.get('/create-matches/:eventId', async function (req, res) {
-  const { eventId } = req.params;
-
-  if (!req.session.user) {
-    return res.redirect('/');
-  }
-
-  try {
-    // Fetch the event registrations for the specific event
-    const { data: registrations, error: registrationsError } = await supabase
-      .from('events_registrations')
-      .select('*')
-      .eq('eventid', eventId);
-
-    if (registrationsError) {
-      return res.status(400).json({ error: registrationsError.message });
-    }
-
-    // Create pairs for matches
-    function createKnockoutPairs(registrations) {
-      const pairs = [];
-      for (let i = 0; i < registrations.length; i += 2) {
-        if (registrations[i + 1]) {
-          pairs.push([registrations[i], registrations[i + 1]]);
-        } else {
-          pairs.push([registrations[i]]); // Handle odd number of participants
-        }
-      }
-      return pairs;
-    }
-
-    const pairs = createKnockoutPairs(registrations);
-
-    // Store matches in the database
-    for (const pair of pairs) {
-      const { error } = await supabase
-        .from('matches')
-        .insert([{ eventid: eventId, player1: pair[0].userid, player2: pair[1]?.userid }]);
-
-      if (error) {
-        return res.status(500).json({ error: error.message });
-      }
-    }
-
-    res.status(200).send('Matches created successfully');
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
 
 app.get('/profile', async function (req, res) {
   if (!req.session.user) {
@@ -2461,7 +2571,7 @@ app.get('/athletes-profile/:athleteid', async function (req, res) {
 
     // Fetch match data
     const { data: matchdata, error: matchError } = await supabase
-      .from('kyurogi_history')
+      .from('match_history')
       .select('*')
       .eq('athleteid', athleteid);
 
@@ -2471,7 +2581,7 @@ app.get('/athletes-profile/:athleteid', async function (req, res) {
 
     // Fetch the most recent match data
     const { data: recentmatch, error: recentmatchError } = await supabase
-      .from('kyurogi_history')
+      .from('match_history')
       .select('*')
       .eq('athleteid', athleteid)
       .order('created_at', { ascending: false })
@@ -2537,6 +2647,112 @@ app.get('/help-center', async function (req, res) {
 
     // Render the athletes.hbs template with the fetched data
     res.render('help-center', { athletes: data, user: req.session.user });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.get('/kyorugi-scoresheet/:matchid', async function (req, res) {
+  if (!req.session.user) {
+    return res.redirect('/');
+  }
+
+  const { matchid } = req.params;
+
+  try {
+    // Fetch match details
+    const { data: match, error: matchError } = await supabase
+      .from('matches')
+      .select('*')
+      .eq('id', matchid)
+      .single();
+
+    if (matchError) {
+      return res.status(400).json({ error: matchError.message });
+    }
+
+    // Fetch player1 details
+    const { data: player1, error: player1Error } = await supabase
+      .from('athletes')
+      .select('name')
+      .eq('userid', match.player1)
+      .single();
+
+    if (player1Error) {
+      return res.status(400).json({ error: player1Error.message });
+    }
+
+    // Fetch player2 details
+    const { data: player2, error: player2Error } = await supabase
+      .from('athletes')
+      .select('name')
+      .eq('userid', match.player2)
+      .single();
+
+    if (player2Error) {
+      return res.status(400).json({ error: player2Error.message });
+    }
+
+    console.log("Fetched match data:", match); // Log match data to the console
+    console.log("Fetched player1 data:", player1); // Log player1 data to the console
+    console.log("Fetched player2 data:", player2); // Log player2 data to the console
+
+    // Render the scoresheet template with the fetched data
+    res.render('kyorugi-scoresheet', {
+      match,
+      player1_name: player1.name,
+      player2_name: player2.name,
+      user: req.session.user
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.get('/poomsae-scoresheet/:groupnum/:athleteid', async function (req, res) {
+  if (!req.session.user) {
+    return res.redirect('/');
+  }
+
+  const { groupnum, athleteid } = req.params; // Get the group and athlete ID from the URL
+
+  try {
+    // Fetch the poomsae group details from the poomsae_groups table
+    const { data: group, error: groupError } = await supabase
+      .from('poomsae_groups')
+      .select('*')
+      .eq('groupnum', groupnum)
+      .eq('athleteid', athleteid)
+      .single(); // Ensure we get a single record
+
+    if (groupError) {
+      return res.status(400).json({ error: groupError.message });
+    }
+
+    // Fetch athlete details
+    const { data: athlete, error: athleteError } = await supabase
+      .from('athletes')
+      .select('*')
+      .eq('id', athleteid)
+      .single();
+
+    if (athleteError) {
+      return res.status(400).json({ error: athleteError.message });
+    }
+
+    const scoresheet = {
+      ...group,
+      athlete_name: athlete.name
+    };
+
+    console.log("Fetched group data:", group); // Log the group data to the console
+    console.log("Fetched athlete data:", athlete); // Log the athlete data to the console
+
+    // Render the poomsae-scoresheet.hbs template with the fetched data
+    res.render('poomsae-scoresheet', {
+      scoresheet,
+      user: req.session.user
+    });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -2746,8 +2962,6 @@ app.get('/membership-club', async (req, res) => {
     res.status(500).send('Server error');
   }
 });
-
-
 
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
