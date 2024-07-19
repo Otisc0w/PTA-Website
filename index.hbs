@@ -1,0 +1,150 @@
+<html>
+
+	<head>
+	  <title>PTA | Login</title>
+	  <link rel="icon" type="image/x-icon" href="../images/favicon.ico" />
+	  <link rel="stylesheet" type="text/css" href="../stylesheets/login.css" />
+	</head>
+
+	
+	<body style="margin: 0;">
+		<div class="container">
+			<div class="leftside">
+				<div class="forumtitle">
+					<h1 class= "forumname"> <span class="logo"> </span></h1>
+					<h3 class = "forumdesc">Philippine Taekwondo Assocation</h3>
+					
+				</div>
+			</div>
+		
+			<div class="rightside">
+				<div class="login">
+					<h2 class="login-title">Login</h2>
+					<div class="signup-button">
+						Need an account? <a class="signup-link" href="#" id="showSignup">Sign Up</a>
+					</div><br>
+					
+					<div class ="login-input">
+	
+						<form id="loginform" action="/submit-login" method="post">
+
+							<label class="username-input" for="username">Email/ Username</label><br>
+							<input type="text" id="username" name="username" required><br><br>
+							
+							<label class="password-input" for="password">Password</label><br>
+							<input type="password" id="password" name="password" required><br><br>
+							
+							{{!-- <input type="checkbox" id="remember" name="remember">
+							<label class="remember-label" for="remember">Remember Me</label><br><br> --}}
+							
+							<button class="button button-padding" type="submit">Log in</button>
+							<p id="error-message" style="color:red;"></p>
+						</form>
+					</div>
+				</div>
+
+				<div class="signup" style="display:none;">
+					<h2 class="signup-title">Signup</h2>
+					<div class="login-button">
+						Have an account? <a class="login-link" href="#" id="showLogin">Login</a>
+					</div><br>
+					
+					<div class="login-input">
+   						<form id="signupform" action="/submit-signup" method="post" onsubmit="return validateFields()">
+							<label class="username-input" for="username">Username</label><br>
+							<input type="text" id="signupusername" name="username" required><br><br>
+
+							<label class="email-input" for="email">Email</label><br>
+							<input type="text" id="signupemail" name="email" required><br><br>
+
+							<div>
+								<label class="password-input" for="password">Password</label><br>
+								<input type="password" id="signuppassword" name="password" required>
+							</div>
+
+							<div>
+								<label class="confpassword-input" for="confpassword">Confirm Password</label><br>
+								<input type="password" id="confpassword" name="confpassword" required><br><br>
+							</div>
+
+							<button class="button button-padding" type="submit">Sign Up</button>
+							<p id="error-message2" style="color:red;"></p>
+						</form>
+
+					</div>
+				</div>
+			</div>
+
+			
+		</div>
+		<script>
+			function validateFields() {
+				var username = document.getElementById("signupusername").value;
+				var email = document.getElementById("signupemail").value;
+				var password = document.getElementById("signuppassword").value;
+				var confirmPassword = document.getElementById("confpassword").value;
+				var errorMessage = document.getElementById("error-message2");
+				var emailPattern = /^[a-zA-Z0-9]+@[a-zA-Z]+\.[a-zA-Z]+$/;
+
+				if (username.length < 3) {
+					errorMessage.textContent = "Username must be at least 3 characters long.";
+					return false;
+				} else if (!emailPattern.test(email)) {
+					errorMessage.textContent = "Invalid email.";
+					return false;
+				} else if (password !== confirmPassword) {
+					errorMessage.textContent = "Passwords do not match.";
+					return false;
+				} else if (password.length < 5) {
+					errorMessage.textContent = "Password must be at least 5 characters long.";
+					return false;
+				}
+				return true;
+			}
+			document.addEventListener("DOMContentLoaded", function() {
+				const form = document.getElementById("loginform");
+
+				form.addEventListener("submit", function(event) {
+					const username = document.getElementById("username").value;
+					const password = document.getElementById("password").value;
+
+					// Clear any previous error messages
+					document.getElementById("error-message").textContent = "";
+
+					if (!username || !password) {
+						document.getElementById("error-message").textContent = "Both username and password are required.";
+						event.preventDefault(); // Prevent form submission
+						return;
+					}
+
+				});
+
+				const showSignupLink = document.getElementById("showSignup");
+				const showLoginLink = document.getElementById("showLogin");
+				const loginDiv = document.querySelector(".login");
+				const signupDiv = document.querySelector(".signup");
+
+				showSignupLink.addEventListener("click", function(event) {
+					event.preventDefault();
+					loginDiv.style.display = "none";
+					signupDiv.style.display = "block";
+				});
+
+				showLoginLink.addEventListener("click", function(event) {
+					event.preventDefault();
+					loginDiv.style.display = "block";
+					signupDiv.style.display = "none";
+				});
+
+				const url = new URLSearchParams(window.location.search);
+
+				if (url.has('signup') && url.get('signup') === 'failed') {
+					var errorMessage = document.getElementById("error-message2");
+					errorMessage.textContent = "Email or username are already in use";
+					loginDiv.style.display = "none";
+					signupDiv.style.display = "block";
+				}
+			});
+  		</script>
+	</body>
+</html>
