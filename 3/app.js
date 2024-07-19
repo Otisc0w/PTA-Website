@@ -180,6 +180,22 @@ async function createNextRound(eventid) {
       } else {
         console.log('Champion declared:', champion);
       }
+
+      // Determine second and third places
+      const finalMatch = matches.find(match => match.round === currentRound);
+      const secondPlace = finalMatch.player1 === champion ? finalMatch.player2 : finalMatch.player1;
+
+      const semiFinals = matches.filter(match => match.round === currentRound - 1);
+      const thirdPlaceMatches = semiFinals.filter(match => match.winner !== champion && match.winner !== secondPlace);
+      const thirdPlace = thirdPlaceMatches.map(match => match.winner);
+
+      // Log the results
+      console.log(`Champion: ${champion}`);
+      console.log(`Second Place: ${secondPlace}`);
+      console.log(`Third Place: ${thirdPlace.join(', ')}`);
+
+      // Award ranking points
+      await awardRankingPoints(eventid, champion, secondPlace, thirdPlace);
     } catch (error) {
       console.error('Server error:', error.message);
     }
@@ -213,6 +229,67 @@ function createPairs(winners) {
   return pairs;
 }
 
+async function awardRankingPoints(eventid, champion, secondPlace, thirdPlace) {
+  const rankingPoints = {
+    champion: 10,
+    secondPlace: 7,
+    thirdPlace: 5,
+    participant: 1
+  };
+
+  // Award points to champion
+  await updateRankingPoints(champion, rankingPoints.champion);
+
+  // Award points to second place
+  await updateRankingPoints(secondPlace, rankingPoints.secondPlace);
+
+  // Award points to third place
+  for (const third of thirdPlace) {
+    await updateRankingPoints(third, rankingPoints.thirdPlace);
+  }
+
+  // Award points to participants who didn't place in top 3
+  const { data: participants, error: participantsError } = await supabase
+    .from('events_registrations')
+    .select('userid')
+    .eq('eventid', eventid);
+
+  if (participantsError) {
+    console.error('Error fetching participants:', participantsError.message);
+    return;
+  }
+
+  for (const participant of participants) {
+    if (![champion, secondPlace, ...thirdPlace].includes(participant.userid)) {
+      await updateRankingPoints(participant.userid, rankingPoints.participant);
+    }
+  }
+}
+
+async function updateRankingPoints(userid, points) {
+  const { data, error } = await supabase
+    .from('athletes')
+    .select('rankingpoints')
+    .eq('userid', userid)
+    .single();
+
+  if (error) {
+    console.error('Error fetching athlete ranking points:', error.message);
+    return;
+  }
+
+  const currentPoints = data.rankingpoints || 0;
+  const updatedPoints = currentPoints + points;
+
+  const { error: updateError } = await supabase
+    .from('athletes')
+    .update({ rankingpoints: updatedPoints })
+    .eq('userid', userid);
+
+  if (updateError) {
+    console.error('Error updating athlete ranking points:', updateError.message);
+  }
+}
 
 // Set up Handlebars view engine
 app.set('view engine', 'hbs');
@@ -282,11 +359,12 @@ app.post('/submit-login', async (req, res) => {
       .from('users')
       .select('*')
       .eq('username', username)
-      .eq('password', password) //blue is from form and red is column in databse
+      .eq('password', password) 
       .single(); // Ensure a single match
 
     if (error || !data) {
       // Invalid credentials
+      res.redirect('/?login=failed');
       return res.status(401).render('index', {
         error: 'Invalid username or password.',
         users: [], // Pass users array if needed
@@ -319,39 +397,43 @@ app.post('/submit-login', async (req, res) => {
 });
 
 app.post('/submit-signup', async (req, res) => {
-  const { username, password, confpassword } = req.body; // Capture user input from the form
-
-  // Validate the input
-  if (password !== confpassword) {
-    return res.status(400).render('index', {
-      error: 'Passwords do not match.',
-      users: [] // Optionally pass users array if you need it in the view
-    });
-  }
+  const { username, firstname, middlename = '', lastname, email, password } = req.body; // Capture user input from the form
 
   const athleteverified = false;
   const instructorverified = false;
   const ptaverified = false;
-  
 
   try {
-    // Insert the new user into the database
+    const { data: existingUsers, error: existingUsersError } = await supabase
+      .from('users')
+      .select('username, email')
+      .or(`username.eq.${username},email.eq.${email}`);
+
+    if (existingUsersError) {
+      // Handle any errors that occur during the select
+      return res.status(500).render('index', {
+        error: 'Error checking existing users.',
+        users: [] // Optionally pass users array if you need it in the view
+      });
+    }
+
+    if (existingUsers.length > 0) {
+      return res.redirect('/?signup=failed');
+    }
+
     const { data, error } = await supabase
-      .from('users') // Replace 'users' with your actual table name if different
-      .insert([{ username, password, athleteverified, instructorverified, ptaverified }]);
+      .from('users') 
+      .insert([{ username, email, firstname, middlename, lastname, password, athleteverified, instructorverified, ptaverified }]);
 
     if (error) {
-      // Handle any errors that occur during the insert
       return res.status(500).render('index', {
         error: 'Error creating user.',
         users: [] // Optionally pass users array if you need it in the view
       });
     }
 
-    // Redirect to the login page after successful signup
     res.redirect('/');
   } catch (error) {
-    // Handle any server-side errors
     res.status(500).json({ error: error.message });
   }
 });
@@ -883,8 +965,6 @@ app.post('/update-nccstatus', async (req, res) => {
     }
 
     console.log('Registration updated:', registration);
-    
-    
 
     // Check if status is 4, indicating the need to update the user's athleteverified column and insert into athletes table
     if (status == 4) {
@@ -894,7 +974,7 @@ app.post('/update-nccstatus', async (req, res) => {
         height, weight, submittedby, instructorfirstname, instructorlastname
       } = registration;
 
-      console.log('Updating user with username:', submittedby);
+      console.log('Updating user with ID:', submittedby);
 
       // Update the corresponding user's registered column to true
       const { data: user, error: updateUserError } = await supabase
@@ -908,12 +988,12 @@ app.post('/update-nccstatus', async (req, res) => {
         console.error('Error updating user:', updateUserError.message);
         return res.status(500).send('Error updating user');
       }
-      
+
       console.log('User updated:', user);
-      const name= firstname + ' ' + middlename + ' ' + lastname;
-      const instructor = instructorfirstname + ' ' + instructorlastname;
-      
-      userid = submittedby;
+      const name = `${firstname} ${middlename} ${lastname}`;
+      const instructor = `${instructorfirstname} ${instructorlastname}`;
+
+      const userid = submittedby;
 
       // Insert the relevant data into the athletes table
       const { error: insertAthleteError } = await supabase
@@ -934,8 +1014,8 @@ app.post('/update-nccstatus', async (req, res) => {
       // Store athlete data in session
       req.session.athlete = {
         firstname, middlename, lastname, gender, bday, clubregion, club,
-          beltlevel, portrait, division,
-          height, weight,
+        beltlevel, portrait, division,
+        height, weight,
       };
     }
 
@@ -1825,7 +1905,7 @@ app.post('/create-announcement', async (req, res) => {
   }
 });
 
-app.post('/submit-scores', async (req, res) => {
+app.post('/submit-kyorugi-scores', async (req, res) => {
   const { matchid, player1_total, player2_total, eventid, player1, player2 } = req.body;
 
   const player1score = player1_total;
@@ -2425,6 +2505,25 @@ app.get('/events-details/:id', async function (req, res) {
       }
     }
 
+    // Determine the champion (winner of the last match)
+    let champion = null;
+    if (matches.length > 0) {
+      const finalMatch = matches[matches.length - 1];
+      if (finalMatch.winner) {
+        const { data: finalWinner, error: finalWinnerError } = await supabase
+          .from('athletes')
+          .select('*')
+          .eq('userid', finalMatch.winner)
+          .single();
+
+        if (finalWinnerError) {
+          return res.status(400).json({ error: 'Error fetching champion name.' });
+        }
+
+        champion = finalWinner;
+      }
+    }
+
     // Fetch the poomsae groups for the specific event
     const { data: poomsaeGroups, error: poomsaeGroupsError } = await supabase
       .from('poomsae_groups')
@@ -2470,7 +2569,8 @@ app.get('/events-details/:id', async function (req, res) {
       poomsaeGroups,
       registrationcount,
       registrationcap: event.registration_cap, // Assuming the registration cap is stored in the event table
-      user: req.session.user
+      user: req.session.user,
+      champion
     });
   } catch (error) {
     res.status(500).json({ error: error.message });

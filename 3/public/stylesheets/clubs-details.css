@@ -393,3 +393,10 @@
 .begincompe:hover{
   background-color: #007bff;
 }
+
+.champion-container img{
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  
+}

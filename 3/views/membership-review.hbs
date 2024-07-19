@@ -40,7 +40,7 @@
     <section class="review-header">
       <h1>Review NCC Application</h1>
     </section>
-    <form action="/update-nccstatus" method="post" class="review-form">
+    
       <div class="review-details flex column">
 				<div>
 				  <img class="rounded" src="{{registration.portrait}}">
@@ -72,6 +72,8 @@
 				
       </div>
 
+    <form action="/update-nccstatus" method="post" class="review-form">
+      <input type="hidden" name="applicationId" value="{{registration.id}}">
       <section class="application-actions">
         <h1 class="status">
           {{#if (eq registration.status 1)}}
@@ -89,7 +91,7 @@
           {{/if}}
         </h1>
         {{#if user.ptaverified}}
-          <div class="action-buttons"> <!-- TYPES NAMES ID'S CLASSES VALUES NEED TO STAY THE SAME -->
+          <div class="action-buttons">
             <button type="button" onclick="printDiv('printableArea')">Print</button>
             <button type="submit" name="status" value="1">Under Review</button>
             <button type="submit" name="status" value="2">Printed</button>
@@ -97,9 +99,8 @@
             <button type="button" id="idshipped" class="idshipped">ID Shipped</button>
             <button type="submit" name="status" value="0">Reject Application</button>
           </div>
-
           <div class="confirmscreen" id="confirmscreen" style="display: none;">
-            <h3>Are you sure? The player will be notified that his ID is ready. This registration will also disappear after a few days.</h3>
+            <h3>Are you sure? The player will be notified that his ID is ready.</h3>
             <button type="button" class="cancel" id="cancel">Cancel</button>
             <button type="submit" value="4" name="status" id="confirm">Confirm</button>
           </div>
@@ -107,9 +108,7 @@
         <div class="backtolist">
           <a href="/membership-status">Back to list</a>
         </div>
-        
       </section>
-
       <div class="printwindow" id="printableArea">
         <p><strong>ID:</strong> {{registration.id}}</p>
         <p><strong>First Name:</strong> {{registration.firstname}}</p>
@@ -118,13 +117,8 @@
         <a href="{{registration.birthcert}}" target="_blank" download>Birth Certificate</a>
         <p>submitted by: {{registration.submittedby}}</p>
       </div>
+    </form> 
 
-      <div class="confirmscreen" id="confirmscreen" style="display: none;">
-        <h3>Are you sure? The player will be notified that his ID is ready. This registration will also disappear after a few days.</h3>
-        <button type="button" class="cancel" id="cancel">Cancel</button>
-        <button type="submit" value="4" name="status" id="confirm">Confirm</button>
-      </div>
-    </form>
   </main>
   
   <script>

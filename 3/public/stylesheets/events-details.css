@@ -163,4 +163,11 @@
   .submit-button:hover {
     background-color: #0056b3;
   }
+
+  .champportrait{
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    
+  }
   

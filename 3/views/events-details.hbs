@@ -74,16 +74,22 @@
   </div>
   <div class="eventmiddleside">
     {{#if champion}}
-    <div class="champion-container">
-      <h2>Champion</h2>
-      <div class="champion-details">
-        <p><strong>Name:</strong> {{champion.name}}</p>
-        <p><strong>Club:</strong> {{champion.club}}</p>
-        <p><strong>Belt Level:</strong> {{champion.beltlevel}}</p>
-        <!-- Add any other relevant champion details -->
-      </div>
+    <div class="champion">
+      <h2>Champion: {{champion.name}}</h2>
+      <h2>Club: {{champion.club}}</h2>
+      <h2>Height: {{champion.height}}</h2>
     </div>
     {{/if}}
+    {{#if thirdPlace}}
+    <div class="third-place">
+      <h2>Third Place: {{thirdPlace}}</h2>
+    </div>
+    {{/if}}
+    {{#each remainingPlayers}}
+    <div class="remaining-player">
+      <h2>Rank {{@index}}: {{this.name}}</h2>
+    </div>
+    {{/each}}
     <div class="schedule">
       {{#if (and user.ptaverified (me registrationcount event.registrationcap ))}}
         {{#if (eq event.eventtype 'Kyorugi')}}
@@ -102,11 +108,11 @@
 
       {{#each poomsaeGroups}}
       <div class="group">
-        <h3>Group {{groupnum}}</h3>
+        {{!-- <h3>Group {{groupnum}}</h3> --}}
         <ul>
           <li>
             <div>
-              {{athlete_name}}
+              {{athlete_name}} group: {{groupnum}}
               <a href="/poomsae-scoresheet/{{this.groupnum}}/{{this.athleteid}}" class="scoresheet-link">View Scoresheet</a>
             </div>
           </li>
