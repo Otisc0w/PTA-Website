@@ -53,10 +53,10 @@
         <li><a href="#" id="participants-tab">Participants</a></li>
         {{#if user.ptaverified}}
           <li><a href="#" id="registrations-tab">Registrations</a></li>
-          <li><a>Discussion</a></li>
+          <li><a href="#" id="discussion-tab">Discussion</a></li>
         {{/if}}
         {{#if (or currentregistrant user.ptaverified)}}
-          <li><a>Announcements</a></li>
+          <li><a href="#" id="announcements-tab">Announcements</a></li>
         {{/if}}
       </ul>
     </div><br>
@@ -142,6 +142,42 @@
             <a href="/kyorugi-scoresheet/{{id}}" class="kyorugi-scoresheet">scoresheet</a>
         </div>
       {{/each}}
+    </div>
+  </div>
+
+  <div class="announcements" hidden>
+    <h2>Announcements</h2>
+    <div class="makeannouncement">
+      <button class="newannounce" onclick="openannounceModal()">+ Announce</button>
+    </div>
+    {{#each announcements}}
+      <div class="oneannouncement">
+        <h2>{{title}}</h2>
+        <p>{{subject}}</p>
+        <p>{{body}}</p>
+      </div>
+    {{/each}}
+  </div>
+
+  <div id="announceModal" class="modal" style="display:none;">
+    <div class="modal-content">
+      <span class="close" onclick="closeannounceModal()">&times;</span>
+      <form action="/create-announcement" method="post" class="announceform">
+        <input type="hidden" name="originalposter" value="{{user.username}}">
+        <input type="hidden" name="profilepic" value="{{user.profilepic}}">
+        <input type="hidden" name="clubid" value="{{club.id}}">
+        
+        <label for="title">Title:</label>
+        <input type="text" id="title" name="title" required>
+
+        <label for="subject">Subject:</label>
+        <input type="text" id="subject" name="subject" required>
+
+        <label for="body">Body:</label>
+        <textarea id="body" name="body" rows="4" required></textarea>
+
+        <button type="submit" class="submit-announce">Post Announcement</button>
+      </form>
     </div>
   </div>
 
@@ -244,11 +280,13 @@
       const participantsTab = document.getElementById('participants-tab');
       const detailsTab = document.getElementById('details-tab');
       const registrationsTab = document.getElementById('registrations-tab');
+      const announcementsTab = document.getElementById('announcements-tab');
       const eventleftside = document.querySelector('.eventleftside');
       const eventrightside = document.querySelector('.eventrightside');
       const eventmiddleside = document.querySelector('.eventmiddleside');
       const participantsContainer = document.querySelector('.participants-container');
       const registrationsContainer = document.querySelector('.registrations-container');
+      const announcements = document.querySelector('.announcements');
 
       participantsContainer.style.display = 'none';
       registrationsContainer.style.display = 'none';
@@ -259,6 +297,7 @@
         eventmiddleside.style.display= 'none';
         participantsContainer.style.display = 'block';
         registrationsContainer.style.display = 'none';
+        announcements.style.display = 'none';
       }
 
       function showDetails() {
@@ -267,6 +306,7 @@
         eventmiddleside.style.display= 'block';
         participantsContainer.style.display = 'none';
         registrationsContainer.style.display = 'none';
+        announcements.style.display = 'none';
       }
 
       function showRegistrations() {
@@ -275,6 +315,16 @@
         eventmiddleside.style.display= 'none';
         participantsContainer.style.display = 'none';
         registrationsContainer.style.display = 'block';
+        announcements.style.display = 'none';
+      }
+
+      function showAnnouncements() {
+        eventleftside.style.display = 'none';
+        eventrightside.style.display = 'none';
+        eventmiddleside.style.display= 'none';
+        participantsContainer.style.display = 'none';
+        registrationsContainer.style.display = 'none';
+        announcements.style.display = 'block';
       }
 
       participantsTab.addEventListener('click', function () {
@@ -288,7 +338,33 @@
       registrationsTab.addEventListener('click', function () {
         showRegistrations();
       });
+
+      announcementsTab.addEventListener('click', function () {
+        showAnnouncements();
+      });
     });
+
+    function openModal() {
+      document.getElementById('inviteModal').style.display = 'block';
+    }
+
+    function closeModal() {
+      document.getElementById('inviteModal').style.display = 'none';
+    }
+
+    function openannounceModal() {
+      document.getElementById('announceModal').style.display = 'block';
+    }
+
+    function closeannounceModal() {
+      document.getElementById('announceModal').style.display = 'none';
+    }
+
+    window.onclick = function(event) {
+      if (event.target == document.getElementById('announceModal')) {
+        closeModal();
+      }
+    }
   </script>
 </body>
 </html>

@@ -249,6 +249,7 @@ async function awardRankingPoints(eventid, champion, secondPlace, thirdPlace) {
     participant: 1
   };
 
+  console.log('Awarding ranking points...');
   await updateRankingPoints(champion, rankingPoints.champion);
   await updateRankingPoints(secondPlace, rankingPoints.secondPlace);
 
@@ -274,6 +275,8 @@ async function awardRankingPoints(eventid, champion, secondPlace, thirdPlace) {
 }
 
 async function updateRankingPoints(userid, points) {
+  if (!userid) return;
+
   const { data, error } = await supabase
     .from('athletes')
     .select('rankingpoints')
@@ -295,6 +298,8 @@ async function updateRankingPoints(userid, points) {
 
   if (updateError) {
     console.error('Error updating athlete ranking points:', updateError.message);
+  } else {
+    console.log(`Updated ranking points for user ${userid}: ${updatedPoints} points`);
   }
 }
 
