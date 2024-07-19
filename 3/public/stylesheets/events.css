@@ -8,6 +8,25 @@ body {
     overflow-x: hidden;
 }
 
+.flex {
+    display: flex;
+}
+
+input, .button-padding {
+    padding: 5px;
+    border-radius: 10px;
+} 
+
+.margin {
+    margin: 300px;
+    margin-top: 100px;
+    align-self: center;
+    justify-self: center;
+}
+.small-margin {
+    margin: 20px;
+}
+
 .events-container {
     margin-top: 60px;
     height: auto;
@@ -228,7 +247,7 @@ body {
     background-color: rgba(0, 0, 0, 0.8); /* Black w/ opacity */
     backdrop-filter: blur(10px); /* Blur the background */
 }
-  
+
 .modal-content {
     background-color: #222;
     margin: 15% auto; /* 15% from the top and centered */
@@ -243,7 +262,7 @@ body {
 .modal ul li{
     display: inline-block;
     margin: 30px;
-    
+
 }
 
 .modal a{
@@ -267,29 +286,27 @@ body {
     border-radius: 7%;
     padding: 15px;
 }
-  
+
 .close {
     color: #aaa;
     float: right;
     font-size: 28px;
     font-weight: bold;
 }
-  
+
 .close:hover,
 .close:focus {
     color: white;
     text-decoration: none;
     cursor: pointer;
 }
-  
+
 .participants-table img{
     width: 40px;
     height: 40px;
     border-radius: 30px;
 }
-  
+
 .name{
     margin-left: 400px;
 }
-
-

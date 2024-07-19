@@ -92,7 +92,7 @@
         </form>
         {{else if (eq event.eventtype 'Poomsae')}}
         <form action="/begin-poomsae/{{event.id}}" method="post">
-        <input type="number" id="numGroups" name="numGroups" min="1" required>
+          Number of Groups: <input type="number" id="numGroups" name="numGroups" min="1" required>
           <button type="submit" class="beginpoomsae">Begin Competition</button>
         </form>
         {{/if}}
