@@ -98,7 +98,6 @@ app.use(session({
 }));
 
 async function createMatches(eventid, registrations) {
-  // Create pairs for matches
   function createKnockoutPairs(registrations) {
     const pairs = [];
     for (let i = 0; i < registrations.length; i += 2) {
@@ -113,11 +112,10 @@ async function createMatches(eventid, registrations) {
 
   const pairs = createKnockoutPairs(registrations);
   const round = 1;
-  // Store matches in the database
   for (const pair of pairs) {
     const { error } = await supabase
       .from('matches')
-      .insert([{ eventid, player1: pair[0].userid, player2: pair[1]?.userid, round }]);
+      .insert([{ eventid, player1: pair[0].userid, player2: pair[1]?.userid, round, matchtype: 'regular' }]);
 
     if (error) {
       throw new Error(error.message);
@@ -126,7 +124,6 @@ async function createMatches(eventid, registrations) {
 }
 
 async function createNextRound(eventid) {
-  // Fetch the highest round number for the event
   const { data: highestRound, error: roundError } = await supabase
     .from('matches')
     .select('round')
@@ -142,34 +139,31 @@ async function createNextRound(eventid) {
 
   const currentRound = highestRound ? highestRound.round : 0;
 
-  // Fetch all matches for the current round
   const { data: matches, error: matchesError } = await supabase
     .from('matches')
     .select('*')
     .eq('eventid', eventid)
-    .eq('round', currentRound);
+    .eq('round', currentRound)
+    .eq('matchtype', 'regular');
 
   if (matchesError) {
     console.error('Error fetching matches:', matchesError.message);
     return;
   }
 
-  // Check if all matches in the current round are completed
-  const allMatchesCompleted = matches.every(match => match.winner !== null);
+  const allMatchesCompleted = matches.every(match => match.winner !== null && match.loser !== null);
   if (!allMatchesCompleted) {
     console.log('Not all matches are completed.');
     return;
   }
 
-  // Fetch all winners from the current round
   const winners = matches.map(match => match.winner).filter(winner => winner !== 0);
+  const losers = matches.map(match => match.loser).filter(loser => loser !== 0);
 
-  // If there's only one winner left, declare them the champion
   if (winners.length === 1) {
     const champion = winners[0];
 
     try {
-      // Update the event to set the champion
       const { error: eventError } = await supabase
         .from('events')
         .update({ champion })
@@ -181,21 +175,18 @@ async function createNextRound(eventid) {
         console.log('Champion declared:', champion);
       }
 
-      // Determine second and third places
       const finalMatch = matches.find(match => match.round === currentRound);
       const secondPlace = finalMatch.player1 === champion ? finalMatch.player2 : finalMatch.player1;
 
       const semiFinals = matches.filter(match => match.round === currentRound - 1);
-      const thirdPlaceMatches = semiFinals.filter(match => match.winner !== champion && match.winner !== secondPlace);
-      const thirdPlace = thirdPlaceMatches.map(match => match.winner);
+      const thirdPlaceMatch = semiFinals.find(match => match.winner !== champion && match.winner !== secondPlace);
+      const thirdPlace = thirdPlaceMatch ? thirdPlaceMatch.winner : null;
 
-      // Log the results
       console.log(`Champion: ${champion}`);
       console.log(`Second Place: ${secondPlace}`);
-      console.log(`Third Place: ${thirdPlace.join(', ')}`);
+      console.log(`Third Place: ${thirdPlace}`);
 
-      // Award ranking points
-      await awardRankingPoints(eventid, champion, secondPlace, thirdPlace);
+      await awardRankingPoints(eventid, champion, secondPlace, [thirdPlace]);
     } catch (error) {
       console.error('Server error:', error.message);
     }
@@ -203,22 +194,43 @@ async function createNextRound(eventid) {
     return;
   }
 
-  // Pair winners for the next round
   const pairs = createPairs(winners);
-
-  // Insert the next round matches into the database
   const nextRound = currentRound + 1;
-  for (const pair of pairs) {
-    const { error } = await supabase
+
+  if (matches.length === 2) {
+    const [firstMatch, secondMatch] = matches;
+    const thirdPlaceMatchPlayers = [firstMatch.loser, secondMatch.loser].filter(player => player !== null);
+
+    const { error: finalMatchError } = await supabase
       .from('matches')
-      .insert([{ eventid, player1: pair[0], player2: pair[1] || null, round: nextRound }]);
+      .insert([{ eventid, player1: pairs[0][0], player2: pairs[0][1] || null, round: nextRound, matchtype: 'final' }]);
 
-    if (error) {
-      console.error('Error creating next round match:', error.message);
+    if (finalMatchError) {
+      console.error('Error creating final match:', finalMatchError.message);
     }
-  }
 
-  console.log('Next round matches created.');
+    const { error: thirdPlaceMatchError } = await supabase
+      .from('matches')
+      .insert([{ eventid, player1: thirdPlaceMatchPlayers[0], player2: thirdPlaceMatchPlayers[1] || null, round: nextRound, matchtype: 'thirdPlace' }]);
+
+    if (thirdPlaceMatchError) {
+      console.error('Error creating 3rd place match:', thirdPlaceMatchError.message);
+    }
+
+    console.log('Final and 3rd place matches created.');
+  } else {
+    for (const pair of pairs) {
+      const { error } = await supabase
+        .from('matches')
+        .insert([{ eventid, player1: pair[0], player2: pair[1] || null, round: nextRound, matchtype: 'regular' }]);
+
+      if (error) {
+        console.error('Error creating next round match:', error.message);
+      }
+    }
+
+    console.log('Next round matches created.');
+  }
 }
 
 function createPairs(winners) {
@@ -237,18 +249,13 @@ async function awardRankingPoints(eventid, champion, secondPlace, thirdPlace) {
     participant: 1
   };
 
-  // Award points to champion
   await updateRankingPoints(champion, rankingPoints.champion);
-
-  // Award points to second place
   await updateRankingPoints(secondPlace, rankingPoints.secondPlace);
 
-  // Award points to third place
   for (const third of thirdPlace) {
     await updateRankingPoints(third, rankingPoints.thirdPlace);
   }
 
-  // Award points to participants who didn't place in top 3
   const { data: participants, error: participantsError } = await supabase
     .from('events_registrations')
     .select('userid')
@@ -290,6 +297,7 @@ async function updateRankingPoints(userid, points) {
     console.error('Error updating athlete ranking points:', updateError.message);
   }
 }
+
 
 // Set up Handlebars view engine
 app.set('view engine', 'hbs');
@@ -1911,28 +1919,28 @@ app.post('/submit-kyorugi-scores', async (req, res) => {
   const player1score = player1_total;
   const player2score = player2_total;
 
-  // Determine the winner based on scores
-  let winner;
+  let winner, loser;
   if (player1score > player2score) {
     winner = player1;
+    loser = player2;
   } else if (player2score > player1score) {
     winner = player2;
+    loser = player1;
   } else {
     winner = 0; // In case of a tie
+    loser = 0;
   }
 
   try {
-    // Update the match with the scores and winner
     const { error } = await supabase
       .from('matches')
-      .update({ player1score, player2score, winner })
+      .update({ player1score, player2score, winner, loser })
       .eq('id', matchid);
 
     if (error) {
       return res.status(400).json({ error: error.message });
     }
 
-    // Check and create next round matches if all matches are completed
     await createNextRound(eventid);
 
     res.redirect(`/events-details/${eventid}`);
