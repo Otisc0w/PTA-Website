@@ -1,0 +1,76 @@
+@import url('https://fonts.cdnfonts.com/css/sf-pro-display');
+
+:root{
+    font-family: 'SF Pro Display', sans-serif;    
+  --dark: #111214;
+  --light: #232428;
+  --white: #F1F6F9;
+  --border: #343536;
+  --color: #1ED760;
+  color: var(--white);
+}
+
+.container {
+    position:relative; 
+    width: 100%;
+    overflow: hidden;
+    color: var(--white);
+    background-image: url('../images/ptabg.png');
+}
+
+input, .button-padding {
+    padding: 5px;
+    border-radius: 10px;
+} 
+
+.leftside{
+    width: 50%;
+    height: 100%;
+    background-color: #3A3A3A;
+    float: left;
+    text-align: right;
+    opacity: .9;
+}
+
+.rightside{
+    width: 50%;
+    height: 100%;
+    overflow: hidden;
+    color: white;
+    background-color: #232428;
+    justify-content: left;
+    opacity: .95;
+}
+
+.logo {
+    display: inline-block;
+    background-image: url('../images/logo.png');
+    height: 126px;
+    width: 200px;
+    margin-top: 20%;
+}
+
+.forumdesc {
+    margin-right: 2%;
+}
+
+.login{
+    margin-top: 250px;
+    margin-left: 2%;
+}
+
+.signup{
+    margin-top: 250px;
+    margin-left: 2%;
+    
+}
+
+.login-link, .signup-link{
+    color: #4285F4;
+}
+
+
+.login-link:hover, .signup-link:hover{
+    color: #7caeff;
+}
+
