@@ -459,6 +459,7 @@ app.post('/submit-ncc', upload.fields([{ name: 'birthcert', maxCount: 1 }, { nam
     lastname,
     gender,
     bday,
+    age,
     phonenum,
     email,
     lastpromo,
@@ -534,6 +535,7 @@ app.post('/submit-ncc', upload.fields([{ name: 'birthcert', maxCount: 1 }, { nam
         lastname,
         gender,
         bday,
+        age,
         phonenum,
         email,
         lastpromo,
@@ -984,7 +986,7 @@ app.post('/update-nccstatus', async (req, res) => {
       const {
         firstname, middlename, lastname, gender, bday, clubregion, club,
         beltlevel, portrait, division,
-        height, weight, submittedby, instructorfirstname, instructorlastname
+        height, weight, submittedby, instructorfirstname, instructorlastname, age
       } = registration;
 
       console.log('Updating user with ID:', submittedby);
@@ -1014,7 +1016,7 @@ app.post('/update-nccstatus', async (req, res) => {
         .insert([{
           name, gender, bday, clubregion, club,
           beltlevel, portrait, division,
-          height, weight, instructor, userid
+          height, weight, instructor, userid, age
         }]);
 
       if (insertAthleteError) {
