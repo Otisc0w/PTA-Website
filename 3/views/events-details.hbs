@@ -73,23 +73,51 @@
     </div>
   </div>
   <div class="eventmiddleside">
-    {{#if champion}}
-    <div class="champion">
-      <h2>Champion: {{champion.name}}</h2>
-      <h2>Club: {{champion.club}}</h2>
-      <h2>Height: {{champion.height}}</h2>
+
+    <div class="ranking">
+      <h3>Rankings</h3>
+      <div class="rank-item">
+        <h4>Champion</h4>
+        {{#if champion}}
+          <p>{{champion.name}}</p>
+          <form action="/update-points" method="post">
+            <input type="hidden" name="userid" value="{{champion.userid}}">
+            <input type="number" name="points" placeholder="Enter points" required>
+            <button type="submit">Update Points</button>
+          </form>
+        {{else}}
+          <p>To be decided</p>
+        {{/if}}
+      </div>
+      <div class="rank-item">
+        <h4>2nd Place</h4>
+        {{#if secondPlace}}
+          <p>{{secondPlace.name}}</p>
+          <form action="/update-points" method="post">
+            <input type="hidden" name="userid" value="{{secondPlace.userid}}">
+            <input type="number" name="points" placeholder="Enter points" required>
+            <button type="submit">Update Points</button>
+          </form>
+        {{else}}
+          <p>To be decided</p>
+        {{/if}}
+      </div>
+      <div class="rank-item">
+        <h4>3rd Place</h4>
+        {{#if thirdPlace}}
+          <p>{{thirdPlace.name}}</p>
+          <form action="/update-points" method="post">
+            <input type="hidden" name="userid" value="{{thirdPlace.userid}}">
+            <input type="number" name="points" placeholder="Enter points" required>
+            <button type="submit">Update Points</button>
+          </form>
+        {{else}}
+          <p>To be decided</p>
+        {{/if}}
+      </div>
     </div>
-    {{/if}}
-    {{#if thirdPlace}}
-    <div class="third-place">
-      <h2>Third Place: {{thirdPlace}}</h2>
-    </div>
-    {{/if}}
-    {{#each remainingPlayers}}
-    <div class="remaining-player">
-      <h2>Rank {{@index}}: {{this.name}}</h2>
-    </div>
-    {{/each}}
+
+
     <div class="schedule">
       {{#if (and user.ptaverified (me registrationcount event.registrationcap ))}}
         {{#if (eq event.eventtype 'Kyorugi')}}
@@ -135,9 +163,9 @@
             {{/if}}
           </div>
           <div class="match-info">
-            <p class="match-players">{{player1_name}}</p>
+            <p class="match-players">{{player1_name}}: {{player1score}}</p>
             <p class="match-vs">vs</p>
-            <p class="match-players">{{player2_name}}</p>
+            <p class="match-players">{{player2_name}}: {{player2score}}</p>
           </div>
             <a href="/kyorugi-scoresheet/{{id}}" class="kyorugi-scoresheet">scoresheet</a>
         </div>
@@ -184,21 +212,26 @@
   <div class="eventrightside">
     <div class="eventregistercodediv">
       <div class="buttondiv">
-        {{#if user.athleteverified}}
-          {{#unless (or currentregistrant (me registrationcount event.registrationcap))}}
-            <a href="/events-registration/{{event.id}}" class="register-button">Register</a>
-          {{else if currentregistrant.registered}}
-            <p>Your check-in code is:</p>
-            <h1 class="code">{{currentregistrant.id}}</h1>
-          {{else if currentregistrant}}
-            <p>Your check-in code is:</p>
-            <h1 class="pending">pending</h1>
+        {{#unless champion}}
+          {{#if user.athleteverified}}
+            {{#unless (or currentregistrant (me registrationcount event.registrationcap))}}
+              <a href="/events-registration/{{event.id}}" class="register-button">Register</a>
+            {{else if currentregistrant.registered}}
+              <p>Your check-in code is:</p>
+              <h1 class="code">{{currentregistrant.id}}</h1>
+            {{else if currentregistrant}}
+              <p>Your check-in code is:</p>
+              <h1 class="pending">pending</h1>
+            {{else}}
+              <h1 class="pending">Registration Limit Reached</h1>
+            {{/unless}}
           {{else}}
-            <h1 class="pending">Registration Limit Reached</h1>
-          {{/unless}}
+            <a class="grayed-register-button">Not Registered</a>
+          {{/if}}
         {{else}}
-          <a class="grayed-register-button">Not Registered</a>
-        {{/if}}
+          <h1 class="pending">This Competition has</h1>
+            <h1 class="pending"> Concluded</h1>
+        {{/unless}}
       </div>
     </div>
   </div>

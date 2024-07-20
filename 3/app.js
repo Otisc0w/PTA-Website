@@ -2004,7 +2004,42 @@ app.post('/update-matchtime', async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
-                                   
+
+app.post('/update-points', async (req, res) => {
+  const { userid, points } = req.body;
+
+  try {
+    // Fetch the current ranking points for the user
+    const { data: athlete, error: fetchError } = await supabase
+      .from('athletes')
+      .select('rankingpoints')
+      .eq('userid', userid)
+      .single();
+
+    if (fetchError) {
+      return res.status(400).json({ error: fetchError.message });
+    }
+
+    // Calculate the new total points
+    const currentPoints = athlete.rankingpoints || 0;
+    const newTotalPoints = currentPoints + parseInt(points, 10);
+
+    // Update the ranking points for the user
+    const { error: updateError } = await supabase
+      .from('athletes')
+      .update({ rankingpoints: newTotalPoints })
+      .eq('userid', userid);
+
+    if (updateError) {
+      return res.status(400).json({ error: updateError.message });
+    }
+
+    res.redirect('back'); // Redirect back to the previous page
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+                              
 
                                                                         // VIEWS BELOW
 
@@ -2478,28 +2513,33 @@ app.get('/events-details/:id', async function (req, res) {
 
     // Fetch player names and winner names for each match
     for (let match of matches) {
-      const { data: player1, error: player1Error } = await supabase
-        .from('athletes')
-        .select('name')
-        .eq('userid', match.player1)
-        .single();
+      if (match.player1) {
+        const { data: player1, error: player1Error } = await supabase
+          .from('athletes')
+          .select('name')
+          .eq('userid', match.player1)
+          .single();
 
-      if (player1Error) {
-        return res.status(400).json({ error: 'Error fetching player1 name.' });
+        if (player1Error) {
+          return res.status(400).json({ error: 'Error fetching player1 name.' });
+        }
+
+        match.player1_name = player1.name;
       }
 
-      const { data: player2, error: player2Error } = await supabase
-        .from('athletes')
-        .select('name')
-        .eq('userid', match.player2)
-        .single();
+      if (match.player2) {
+        const { data: player2, error: player2Error } = await supabase
+          .from('athletes')
+          .select('name')
+          .eq('userid', match.player2)
+          .single();
 
-      if (player2Error) {
-        return res.status(400).json({ error: 'Error fetching player2 name.' });
+        if (player2Error) {
+          return res.status(400).json({ error: 'Error fetching player2 name.' });
+        }
+
+        match.player2_name = player2.name;
       }
-
-      match.player1_name = player1.name;
-      match.player2_name = player2.name;
 
       if (match.winner) {
         const { data: winner, error: winnerError } = await supabase
@@ -2518,14 +2558,17 @@ app.get('/events-details/:id', async function (req, res) {
       }
     }
 
-    // Determine the champion (winner of the last match)
+    // Determine the champion, 2nd place, and 3rd place
     let champion = null;
+    let secondPlace = null;
+    let thirdPlace = null;
+
     if (matches.length > 0) {
-      const finalMatch = matches[matches.length - 1];
-      if (finalMatch.winner) {
+      const finalMatch = matches.find(match => match.matchtype === 'final');
+      if (finalMatch && finalMatch.winner) {
         const { data: finalWinner, error: finalWinnerError } = await supabase
           .from('athletes')
-          .select('*')
+          .select('name, userid')
           .eq('userid', finalMatch.winner)
           .single();
 
@@ -2534,6 +2577,36 @@ app.get('/events-details/:id', async function (req, res) {
         }
 
         champion = finalWinner;
+
+        // Determine second place (loser of the final match)
+        const secondPlaceId = finalMatch.winner === finalMatch.player1 ? finalMatch.player2 : finalMatch.player1;
+        const { data: secondPlaceAthlete, error: secondPlaceError } = await supabase
+          .from('athletes')
+          .select('name, userid')
+          .eq('userid', secondPlaceId)
+          .single();
+
+        if (secondPlaceError) {
+          return res.status(400).json({ error: 'Error fetching second place name.' });
+        }
+
+        secondPlace = secondPlaceAthlete;
+
+        // Determine third place (winner of the 3rd place match)
+        const thirdPlaceMatch = matches.find(match => match.matchtype === 'thirdPlace');
+        if (thirdPlaceMatch && thirdPlaceMatch.winner) {
+          const { data: thirdPlaceWinner, error: thirdPlaceWinnerError } = await supabase
+            .from('athletes')
+            .select('name, userid')
+            .eq('userid', thirdPlaceMatch.winner)
+            .single();
+
+          if (thirdPlaceWinnerError) {
+            return res.status(400).json({ error: 'Error fetching third place name.' });
+          }
+
+          thirdPlace = thirdPlaceWinner;
+        }
       }
     }
 
@@ -2583,7 +2656,9 @@ app.get('/events-details/:id', async function (req, res) {
       registrationcount,
       registrationcap: event.registration_cap, // Assuming the registration cap is stored in the event table
       user: req.session.user,
-      champion
+      champion,
+      secondPlace,
+      thirdPlace
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
