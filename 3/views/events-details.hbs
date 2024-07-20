@@ -78,41 +78,43 @@
       <h3>Rankings</h3>
       <div class="rank-item">
         <h4>Champion</h4>
-        {{#if champion}}
-          <p>{{champion.name}}</p>
-          <form action="/update-points" method="post">
-            <input type="hidden" name="userid" value="{{champion.userid}}">
-            <input type="number" name="points" placeholder="Enter points" required>
-            <button type="submit">Update Points</button>
-          </form>
-        {{else}}
-          <p>To be decided</p>
-        {{/if}}
-      </div>
-      <div class="rank-item">
-        <h4>2nd Place</h4>
-        {{#if secondPlace}}
-          <p>{{secondPlace.name}}</p>
-          <form action="/update-points" method="post">
-            <input type="hidden" name="userid" value="{{secondPlace.userid}}">
-            <input type="number" name="points" placeholder="Enter points" required>
-            <button type="submit">Update Points</button>
-          </form>
-        {{else}}
-          <p>To be decided</p>
-        {{/if}}
-      </div>
-      <div class="rank-item">
-        <h4>3rd Place</h4>
-        {{#if thirdPlace}}
-          <p>{{thirdPlace.name}}</p>
-          <form action="/update-points" method="post">
-            <input type="hidden" name="userid" value="{{thirdPlace.userid}}">
-            <input type="number" name="points" placeholder="Enter points" required>
-            <button type="submit">Update Points</button>
-          </form>
-        {{else}}
-          <p>To be decided</p>
+        {{#if (eq event.eventtype 'Kyorugi')}}
+          {{#if champion}}
+            <p>{{champion.name}}</p>
+            <form action="/update-points" method="post">
+              <input type="hidden" name="userid" value="{{champion.userid}}">
+              <input type="number" name="points" placeholder="Enter points" required>
+              <button type="submit">Update Points</button>
+            </form>
+          {{else}}
+            <p>To be decided</p>
+          {{/if}}
+          </div>
+          <div class="rank-item">
+          <h4>2nd Place</h4>
+          {{#if secondPlace}}
+            <p>{{secondPlace.name}}</p>
+            <form action="/update-points" method="post">
+              <input type="hidden" name="userid" value="{{secondPlace.userid}}">
+              <input type="number" name="points" placeholder="Enter points" required>
+              <button type="submit">Update Points</button>
+            </form>
+          {{else}}
+            <p>To be decided</p>
+          {{/if}}
+          </div>
+          <div class="rank-item">
+          <h4>3rd Place</h4>
+          {{#if thirdPlace}}
+            <p>{{thirdPlace.name}}</p>
+            <form action="/update-points" method="post">
+              <input type="hidden" name="userid" value="{{thirdPlace.userid}}">
+              <input type="number" name="points" placeholder="Enter points" required>
+              <button type="submit">Update Points</button>
+            </form>
+          {{else}}
+            <p>To be decided</p>
+          {{/if}}
         {{/if}}
       </div>
     </div>
