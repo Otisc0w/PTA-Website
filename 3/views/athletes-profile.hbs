@@ -44,17 +44,17 @@
         <h1>{{athlete.name}}</h1>
         <p class="team">{{athlete.club}}</p>
         <div class="invite-button">
-          <a action="invite-player">+ Invite this player to your club</a>
+          {{!-- <a action="invite-player">+ Invite this player to your club</a> --}}
         </div>
       </div>
       <div class="athlete-stats">
         <div class="stat">
-          <span class="label">Kyurogi Rankings</span>
-          <span class="value">{{athlete.kyurogirank}}1</span>
+          <span class="label">Kyurogi Ranking Points</span>
+          <span class="value">{{athlete.rankingpoints}}1</span>
         </div>
         <div class="stat">
-          <span class="label">Poomsae Rankings</span>
-          <span class="value">{{athlete.poomsaerank}}1</span>
+          <span class="label">Poomsae Ranking Points</span>
+          <span class="value">{{athlete.poomsaerankingpoints}}</span>
         </div>
       </div>
     </div>
@@ -86,14 +86,6 @@
           </tbody>
         </table>
       </div>
-      {{!-- <div class="latest-videos">
-        <h2>Latest Videos</h2>
-        <ul>
-          <li><a href="#">UNLV Rebels vs. Princeton Tigers: Game Highlights</a></li>
-          <li><a href="#">Xaivian Lee has too much range with this deep 3</a></li>
-          <li><a href="#">Princeton Tigers vs. Pennsylvania Quakers: Game Highlights</a></li>
-        </ul>
-      </div> --}}
     </div>
   </main>
 </body>

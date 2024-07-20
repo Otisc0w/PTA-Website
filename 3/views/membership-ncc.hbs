@@ -61,15 +61,15 @@
 						<div class="form-row">
 							<div class="form-group">
 								<label for="firstname">First Name</label>
-								<input type="text" id="firstname" name="firstname">
+								<input type="text" id="firstname" name="firstname" value="{{user.firstname}}">
 							</div>
 							<div class="form-group">
 								<label for="middlename">M.I.</label>
-								<input type="text" id="middlename" name="middlename">
+								<input type="text" id="middlename" name="middlename" value="{{user.middlename}}">
 							</div>
 							<div class="form-group">
 								<label for="lastname">Last Name</label>
-								<input type="text" id="lastname" name="lastname">
+								<input type="text" id="lastname" name="lastname" value="{{user.lastname}}">
 							</div>
 						</div>
 
@@ -94,7 +94,7 @@
 							</div>
 							<div class="form-group">
 								<label for="email">E-mail</label>
-								<input type="email" id="email" name="email">
+								<input type="email" id="email" name="email" value="{{user.email}}">
 							</div>
 							<div class="form-group">
 								<label for="confemail">Confirm E-mail</label>
@@ -133,25 +133,15 @@
 
 						<div class="form-row">
 							<div class="form-group">
-								<label for="clubregion">Region of Club</label>
+								<label for="clubregion">Province of Club</label>
 								<select name="clubregion" id="clubregion">
-									<option value="Region I – Ilocos Region">Region I – Ilocos Region</option>
-                  <option value="Region II – Cagayan Valley">Region II – Cagayan Valley</option>
-                  <option value="Region III – Central Luzon">Region III – Central Luzon</option>
-                  <option value="Region IV‑A – CALABARZON">Region IV‑A – CALABARZON</option>
-                  <option value="MIMAROPA Region">MIMAROPA Region</option>
-                  <option value="Region V – Bicol Region">Region V – Bicol Region</option>
-                  <option value="Region VI – Western Visayas">Region VI – Western Visayas</option>
-                  <option value="Region VII – Central Visayas">Region VII – Central Visayas</option>
-                  <option value="Region VIII – Eastern Visayas">Region VIII – Eastern Visayas</option>
-                  <option value="Region IX – Zamboanga Peninsula">Region IX – Zamboanga Peninsula</option>
-                  <option value="Region X – Northern Mindanao">Region X – Northern Mindanao</option>
-                  <option value="Region XI – Davao Region">Region XI – Davao Region</option>
-                  <option value="Region XII – SOCCSKSARGEN">Region XII – SOCCSKSARGEN</option>
-                  <option value="Region XIII – Caraga">Region XIII – Caraga</option>
-                  <option value="NCR – National Capital Region">NCR – National Capital Region</option>
-                  <option value="CAR – Cordillera Administrative Region">CAR – Cordillera Administrative Region</option>
-                  <option value="BARMM – Bangsamoro Autonomous Region in Muslim Mindanao">BARMM – Bangsamoro Autonomous Region in Muslim Mindanao</option>
+									<option value="Aurora">Aurora</option>
+                  <option value="Bataan">Bataan</option>
+                  <option value="Bulacan">Bulacan</option>
+                  <option value="Nueva Ecija">Nueva Ecija</option>
+                  <option value="Pampanga">Pampanga</option>
+                  <option value="Tarlac">Tarlac</option>
+                  <option value="Zamabales">Zamabales</option>
 								</select>
 							</div>
 							{{!-- <div class="form-group">
