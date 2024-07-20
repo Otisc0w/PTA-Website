@@ -156,12 +156,14 @@
             {{#if matchtime}}
               <p class="match-time">{{matchtime}}</p>
             {{else}}
-            <form action="/update-matchtime" method="post">
-              <input type="hidden" name="id" value="{{id}}">
-              <input type="hidden" name="eventid" value="{{eventid}}">
-              <input type="time" class="matchtime" name="matchtime">
-              <button type="submit">OK</button>
-            </form>
+              {{#if user.ptaverified}}
+                <form action="/update-matchtime" method="post">
+                  <input type="hidden" name="id" value="{{id}}">
+                  <input type="hidden" name="eventid" value="{{eventid}}">
+                  <input type="time" class="matchtime" name="matchtime">
+                  <button type="submit">OK</button>
+                </form>
+              {{/if}}
             {{/if}}
           </div>
           <div class="match-info">
@@ -169,7 +171,9 @@
             <p class="match-vs">vs</p>
             <p class="match-players">{{player2_name}}: {{player2score}}</p>
           </div>
+          {{#if user.ptaverified}}
             <a href="/kyorugi-scoresheet/{{id}}" class="kyorugi-scoresheet">scoresheet</a>
+          {{/if}}
         </div>
       {{/each}}
     </div>

@@ -2711,10 +2711,11 @@ app.get('/athletes', async function (req, res) {
   const userId = req.session.user.id;
 
   try {
-    // Fetch athletes data
+    // Fetch athletes data sorted by ranking points in descending order
     const { data: athletes, error: athletesError } = await supabase
       .from('athletes')
-      .select('*');
+      .select('*')
+      .order('rankingpoints', { ascending: false });
 
     if (athletesError) {
       return res.status(400).json({ error: athletesError.message });
@@ -2729,6 +2730,21 @@ app.get('/athletes', async function (req, res) {
     if (clubsError) {
       return res.status(400).json({ error: clubsError.message });
     }
+
+    // Fetch user data to get the club information
+    const { data: users, error: usersError } = await supabase
+      .from('users')
+      .select('id, club');
+
+    if (usersError) {
+      return res.status(400).json({ error: usersError.message });
+    }
+
+    // Merge the club information with the athletes data
+    athletes.forEach(athlete => {
+      const user = users.find(user => user.id === athlete.userid);
+      athlete.club = user ? user.club : 'N/A';
+    });
 
     console.log("Fetched athletes data:", athletes); // Log the athletes data to the console
     console.log("Fetched clubs data:", clubs); // Log the clubs data to the console

@@ -87,7 +87,7 @@
 							</div>
 							<div class="form-group">
 								<label for="age">Age:</label>
-								<input type="number" id="age" name="age">
+								<input type="number" id="age" name="age" readonly>
 							</div>
 						</div>
 
@@ -148,14 +148,6 @@
                   <option value="Zamabales">Zamabales</option>
 								</select>
 							</div>
-							{{!-- <div class="form-group">
-								<label for="club">Club</label>
-								<select name="club" id="club">
-									{{#each clubs}}
-										<option value="{{clubname}}">{{clubname}}</option>
-									{{/each}}
-								</select>
-							</div> --}}
 						</div>
 
 						<div class="form-row">
@@ -317,6 +309,34 @@
 
     // Initial display setup
     showPage(currentPage);
+
+	function calculateAge(birthday) {
+		const today = new Date();
+		const birthDate = new Date(birthday);
+		let age = today.getFullYear() - birthDate.getFullYear();
+		const monthDifference = today.getMonth() - birthDate.getMonth();
+		
+		if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < birthDate.getDate())) {
+			age--;
+		}
+
+		return age;
+	}
+
+	window.addEventListener('DOMContentLoaded', (event) => {
+		const bdayInput = document.getElementById('bday');
+		const ageInput = document.getElementById('age');
+
+		bdayInput.addEventListener('input', () => {
+			const birthday = bdayInput.value;
+			if (birthday) {
+				const age = calculateAge(birthday);
+				ageInput.value = age;
+			} else {
+				ageInput.value = '';
+			}
+		});
+	});
   </script>
   
 </body>

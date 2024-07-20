@@ -51,7 +51,9 @@
         <ul>
           <li><a href="#">Details</a></li>
           <li><a href="#">Members</a></li>
-          <li><a href="#">Announcements</a></li>
+          {{#if (eq user.club club.clubname)}}
+            <li><a href="#">Announcements</a></li>
+          {{/if}}
         </ul>
       </div><br>
       <div class="sides">
@@ -96,6 +98,8 @@
 		</table>
 	</div>
 
+
+  
   <div class="announcements" hidden>
     <h2>Announcements</h2>
     <div class="makeannouncement">
