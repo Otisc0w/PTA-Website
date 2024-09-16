@@ -56,10 +56,11 @@
           {{/if}}
         </ul>
       </div><br>
-      <div class="sides">
+      <div class="detailstab">
         <div class="leftside">
           <div class="intro">
-            <h3>Details</h3>
+            <div class="details"><h3>Details</h3></div>
+            <div><button class="edit-button" href="/home"><img src="../images/edit.png"></button></div>
             <p>{{club.clubaddress}}</p>
             <p>{{club.email}}</p>
             <p>{{club.phonenum}}</p>
@@ -73,9 +74,11 @@
         </div>
       </div>
   </div>
-
 	<div class="participants-container">
-		<div class="participants-title">Participants</div>
+    <div class="participants-title">
+      Head Instructor: <h2>{{club.registeree}}</h2>
+    </div>
+		<div class="participants-title">Members of this club</div>
 		<table class="participants-table">
 			<thead>
 				<tr>
@@ -98,8 +101,6 @@
 		</table>
 	</div>
 
-
-  
   <div class="announcements" hidden>
     <h2>Announcements</h2>
     <div class="makeannouncement">
@@ -153,6 +154,10 @@
         <button type="submit" class="submit-invite">Invite</button>
       </form>
     </div>
+  </div>
+
+  <div>
+    <h1>FOOTER :p</h1>
   </div>
 
   <script>
