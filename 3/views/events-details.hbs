@@ -61,7 +61,7 @@
       </ul>
     </div><br>
 
-    <div class="eventsides">
+  <div class="eventsides">
   <div class="eventleftside">
     <div class="intro">
       <h3>Details
@@ -72,6 +72,65 @@
       <p>Time: {{event.starttime}} - {{event.endtime}}</p>
       <p>Event Type: {{event.eventtype}}</p>
       <p>Registration Cap: {{registrationcount}} / {{event.registrationcap}}</p>
+    </div>
+  </div>
+  <div id="createmodal" class="modal"></div>
+    <div class="modal-content">
+      <span class="close" onclick="closeModal()">&times;</span>
+      <form id="eventform" class="event-form" action="/create-event" method="post" enctype="multipart/form-data">
+        {{#if (eq eventtype 'kyurogi')}}
+          <h3>Create Kyurogi Event</h3>
+        {{else if (eq eventtype 'poomsae')}}
+          <h3>Create Kyurogi Event</h3>
+        {{else if (eq eventtype 'promo')}}
+          <h3>Create Promotion Test Event</h3>
+        {{/if}}
+        <input type="hidden" value="{{eventtype}}" name="eventtype">
+        <div class="eventpic">
+          <input type="file" name="eventpicture">
+        </div>
+        <div class="form-group">
+          <label for="name">Event Name:</label>
+          <input type="text" id="name" name="name" required>
+        </div>
+        <div class="form-group">
+          <label for="description">Event Description:</label>
+          <textarea id="description" name="description" rows="4" required></textarea>
+        </div>
+        <div class="form-group">
+          <label for="weightclass">Weight Class:</label>
+          <select id="weightclass" name="weightclass" rows="4" required></select>
+
+          <label for="gender">Gender:</label>
+          <select id="gender" name="gender" rows="4" required></select>
+
+          <label for="weightclass">Belt Level:</label>
+          <select id="weightclass" name="weightclass" rows="4" required></select>
+
+          <label for="division">Division:</label>
+          <select id="division" name="division" rows="4" required></select>
+        </div>
+        <div class="form-group">
+          <label for="date">Event Date:</label>
+          <input type="date" id="date" name="date" required>
+        </div>
+        <div class="form-group">
+          <label for="starttime">Start Time:</label>
+          <input type="time" id="starttime" name="starttime" required>
+          <label for="endtime">End Time:</label>
+          <input type="time" id="endtime" name="endtime" required>
+        </div>
+        <div class="form-group">
+          <label for="registrationcap">Registration Cap:</label>
+          <input type="number" id="registrationcap" name="registrationcap" required>
+        </div>
+        <div class="form-group">
+          <label for="location">Location:</label>
+          <input type="text" id="location" name="location" required>
+        </div>
+        <a href="/events" class="cancel">Cancel</a>
+        <button type="submit">Create Kyurogi Event</button>
+      </form>
     </div>
   </div>
   <div class="eventmiddleside">
