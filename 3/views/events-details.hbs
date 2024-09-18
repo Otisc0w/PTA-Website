@@ -65,7 +65,9 @@
   <div class="eventleftside">
     <div class="intro">
       <h3>Details
-        <div><button class="edit-button" href="/home"><img src="../images/edit.png"></button></div>
+        {{#if user.ptaverified}}
+          <div><button class="edit-button" onclick="openModal()"><img src="../images/edit.png"></button></div>
+        {{/if}}
       </h3>
       <p>{{event.description}}</p>
       <p>Date: {{event.date}}</p>
@@ -74,10 +76,11 @@
       <p>Registration Cap: {{registrationcount}} / {{event.registrationcap}}</p>
     </div>
   </div>
-  <div id="createmodal" class="modal"></div>
+  <div id="createmodal" class="modal">
     <div class="modal-content">
       <span class="close" onclick="closeModal()">&times;</span>
-      <form id="eventform" class="event-form" action="/create-event" method="post" enctype="multipart/form-data">
+
+      <form id="eventform" class="event-form" action="/update-event" method="post" enctype="multipart/form-data">
         {{#if (eq eventtype 'kyurogi')}}
           <h3>Create Kyurogi Event</h3>
         {{else if (eq eventtype 'poomsae')}}
@@ -91,15 +94,15 @@
         </div>
         <div class="form-group">
           <label for="name">Event Name:</label>
-          <input type="text" id="name" name="name" required>
+          <input type="text" id="name" name="name" placeholder="{{event.name}}" required>
         </div>
         <div class="form-group">
           <label for="description">Event Description:</label>
-          <textarea id="description" name="description" rows="4" required></textarea>
+          <textarea id="description" name="description" rows="4" placeholder="{{event.description}}" required></textarea>
         </div>
         <div class="form-group">
           <label for="weightclass">Weight Class:</label>
-          <select id="weightclass" name="weightclass" rows="4" required></select>
+          <select id="weightclass" name="weightclass" rows="4" placeholder="{{event.weightclass}}" required></select>
 
           <label for="gender">Gender:</label>
           <select id="gender" name="gender" rows="4" required></select>
@@ -112,7 +115,7 @@
         </div>
         <div class="form-group">
           <label for="date">Event Date:</label>
-          <input type="date" id="date" name="date" required>
+          <input type="date" id="date" name="date" placeholder="{{event.date}}" required>
         </div>
         <div class="form-group">
           <label for="starttime">Start Time:</label>
@@ -122,15 +125,16 @@
         </div>
         <div class="form-group">
           <label for="registrationcap">Registration Cap:</label>
-          <input type="number" id="registrationcap" name="registrationcap" required>
+          <input type="number" id="registrationcap" name="registrationcap" placeholder="{{event.registrationcap}}" required>
         </div>
         <div class="form-group">
           <label for="location">Location:</label>
-          <input type="text" id="location" name="location" required>
+          <input type="text" id="location" name="location" placeholder="{{event.location}}" required>
         </div>
         <a href="/events" class="cancel">Cancel</a>
-        <button type="submit">Create Kyurogi Event</button>
+        <button type="submit">Update Event</button>
       </form>
+
     </div>
   </div>
   <div class="eventmiddleside">
@@ -462,6 +466,14 @@
       if (event.target == document.getElementById('announceModal')) {
         closeModal();
       }
+    }
+
+    function openModal() {
+      document.getElementById('createmodal').style.display = 'block';
+    }
+
+    function closeModal() {
+      document.getElementById('createmodal').style.display = 'none';
     }
   </script>
 </body>
