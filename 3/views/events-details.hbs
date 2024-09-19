@@ -81,41 +81,42 @@
       <span class="close" onclick="closeModal()">&times;</span>
 
       <form id="eventform" class="event-form" action="/update-event" method="post" enctype="multipart/form-data">
-        {{#if (eq eventtype 'kyurogi')}}
+        {{!-- {{#if (eq eventtype 'kyurogi')}}
           <h3>Create Kyurogi Event</h3>
         {{else if (eq eventtype 'poomsae')}}
           <h3>Create Kyurogi Event</h3>
         {{else if (eq eventtype 'promo')}}
           <h3>Create Promotion Test Event</h3>
-        {{/if}}
-        <input type="hidden" value="{{eventtype}}" name="eventtype">
+        {{/if}} --}}
+        <input type="hidden" name="eventid" value="{{event.id}}">
+        <input type="hidden" value="{{event.eventtype}}" name="eventtype">
         <div class="eventpic">
           <input type="file" name="eventpicture">
         </div>
         <div class="form-group">
           <label for="name">Event Name:</label>
-          <input type="text" id="name" name="name" placeholder="{{event.name}}" required>
+          <input type="text" id="name" name="name" value="{{event.name}}" required>
         </div>
         <div class="form-group">
           <label for="description">Event Description:</label>
-          <textarea id="description" name="description" rows="4" placeholder="{{event.description}}" required></textarea>
+          <textarea id="description" name="description" rows="4" value="{{event.description}}" required></textarea>
         </div>
-        <div class="form-group">
+        {{!-- <div class="form-group">
           <label for="weightclass">Weight Class:</label>
-          <select id="weightclass" name="weightclass" rows="4" placeholder="{{event.weightclass}}" required></select>
+          <select id="weightclass" name="weightclass" rows="4" value="{{event.weightclass}}" ></select>
 
           <label for="gender">Gender:</label>
-          <select id="gender" name="gender" rows="4" required></select>
+          <select id="gender" name="gender" rows="4" ></select>
 
           <label for="weightclass">Belt Level:</label>
-          <select id="weightclass" name="weightclass" rows="4" required></select>
+          <select id="weightclass" name="weightclass" rows="4" ></select>
 
-          <label for="division">Division:</label>
-          <select id="division" name="division" rows="4" required></select>
-        </div>
+          <label for="division">Age Division:</label>
+          <select id="division" name="division" rows="4" ></select>
+        </div> --}}
         <div class="form-group">
           <label for="date">Event Date:</label>
-          <input type="date" id="date" name="date" placeholder="{{event.date}}" required>
+          <input type="date" id="date" name="date" value="{{event.date}}" >
         </div>
         <div class="form-group">
           <label for="starttime">Start Time:</label>
@@ -125,11 +126,11 @@
         </div>
         <div class="form-group">
           <label for="registrationcap">Registration Cap:</label>
-          <input type="number" id="registrationcap" name="registrationcap" placeholder="{{event.registrationcap}}" required>
+          <input type="number" id="registrationcap" name="registrationcap" value="{{event.registrationcap}}" required>
         </div>
         <div class="form-group">
           <label for="location">Location:</label>
-          <input type="text" id="location" name="location" placeholder="{{event.location}}" required>
+          <input type="text" id="location" name="location" value="{{event.location}}" required>
         </div>
         <a href="/events" class="cancel">Cancel</a>
         <button type="submit">Update Event</button>

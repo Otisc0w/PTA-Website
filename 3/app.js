@@ -1614,6 +1614,80 @@ app.post('/create-event', upload.single('eventpicture'), async (req, res) => {
   }
 });
 
+// Update Event Route with File Upload (eventpicture) using Supabase Storage
+app.post('/update-event', upload.single('eventpicture'), async (req, res) => {
+  const {
+    eventid,       // Event ID to identify the event to update
+    name,
+    description,
+    date,
+    eventtype,
+    createdby,
+    registrationcap,
+    location,
+    starttime,
+    endtime,
+    agedivision
+  } = req.body;
+
+  let eventpicture = null;
+  if (req.file) {
+    try {
+      // Define file path in Supabase storage bucket
+      const filePath = `eventpictures/${Date.now()}-${req.file.originalname}`;
+
+      // Upload file to Supabase storage
+      const { error: uploadError } = await supabase
+        .storage
+        .from('documents') // This is the name of your storage bucket
+        .upload(filePath, req.file.buffer, {
+          contentType: req.file.mimetype,
+        });
+
+      if (uploadError) {
+        console.error('Error uploading event picture:', uploadError.message);
+        return res.status(500).send('Error uploading event picture');
+      }
+
+      // Construct public URL for the uploaded file
+      eventpicture = `${supabaseUrl}/storage/v1/object/public/eventpictures/${filePath}`;
+    } catch (error) {
+      console.error('Server error:', error.message);
+      return res.status(500).json({ error: error.message });
+    }
+  }
+
+  try {
+    // Update event details in Supabase database
+    const { data, error } = await supabase
+      .from('events')  // Assuming your table is called 'events'
+      .update({
+        name: name,
+        description: description,
+        eventpicture: eventpicture, // Use the public URL of the uploaded image
+        date: date,
+        eventtype: eventtype,
+        createdby: createdby,
+        registrationcap: registrationcap,
+        location: location,
+        starttime: starttime,
+        endtime: endtime,
+        // agedivision: agedivision
+      })
+      .eq('id', eventid); // Match the event ID
+
+    if (error) {
+      console.error('Supabase error:', error);
+      return res.status(500).json({ message: 'Failed to update event', error });
+    }
+
+    res.redirect('/events'); // Redirect to a success page or another appropriate route
+  } catch (error) {
+    console.error('Server error:', error.message);
+    res.status(500).json({ message: 'Server error, unable to update event' });
+  }
+});
+
 app.post('/submit-player', async (req, res) => {
   const {
     athleteid,
