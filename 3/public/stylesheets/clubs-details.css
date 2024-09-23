@@ -1,4 +1,4 @@
-.events-container{
+.events-container {
   margin-top: 80px;
   display: flex;
   flex-direction: column;
@@ -28,7 +28,7 @@
 .manage-button {
   display: flex;
   align-items: center;
-  background-color: #007BFF;
+  background-color: #007bff;
   color: white;
   padding: 10px 20px;
   border-radius: 5px;
@@ -39,7 +39,6 @@
   margin-right: 5px;
   height: 20px;
 }
-
 
 .clubtabs ul {
   list-style: none;
@@ -72,14 +71,13 @@
   padding: 10px 20px;
   background-color: #333;
   border-radius: 5px;
-
 }
 
-.intro div{
+.intro div {
   display: inline-block;
 }
 
-.intro img{
+.intro img {
   width: 20px;
   height: 20px;
   border-radius: 0%;
@@ -90,12 +88,12 @@
 
 .edit-button {
   background: none;
-	color: inherit;
-	border: none;
-	padding: 0;
-	font: inherit;
-	cursor: pointer;
-	outline: inherit;
+  color: inherit;
+  border: none;
+  padding: 0;
+  font: inherit;
+  cursor: pointer;
+  outline: inherit;
 }
 
 .sides {
@@ -113,7 +111,7 @@
 .leftside,
 .rightside {
   width: 30%;
-  position: relative
+  position: relative;
 }
 
 .intro {
@@ -128,42 +126,52 @@
   margin-top: 0;
 }
 
-.participants-container, .registrations-container {
+.participants-container,
+.registrations-container {
   display: none;
   margin-top: 20px;
   padding: 0 300px;
 }
 
-.participants-title, .registrations-title  {
+.participants-title,
+.registrations-title {
   font-size: 1.5em;
   margin-bottom: 10px;
 }
 
-.participants-table, .registrations-table  {
+.participants-table,
+.registrations-table {
   width: 100%;
   border-collapse: collapse;
   text-align: left;
 }
 
-.participants-table th, .participants-table td, .registrations-table th, .registrations-table td  {
+.participants-table th,
+.participants-table td,
+.registrations-table th,
+.registrations-table td {
   padding: 10px;
   border-bottom: 1px solid #333;
 }
 
-.participants-table th, .registrations-table th {
+.participants-table th,
+.registrations-table th {
   background-color: #444;
   color: white;
 }
 
-.participants-table tr:nth-child(even), .registrations-table tr:nth-child(even) {
+.participants-table tr:nth-child(even),
+.registrations-table tr:nth-child(even) {
   background-color: #2e2e2e;
 }
 
-.participants-table tr:hover, .registrations-table tr:hover {
+.participants-table tr:hover,
+.registrations-table tr:hover {
   background-color: #3e3e3e;
 }
 
-.participants-table td, .registrations-table td {
+.participants-table td,
+.registrations-table td {
   color: #fff;
 }
 
@@ -220,34 +228,34 @@
   cursor: pointer;
 }
 
-.participants-table img{
+.participants-table img {
   width: 40px;
   height: 40px;
   border-radius: 30px;
 }
 
-.name{
+.name {
   margin-left: 380px;
 }
 
-.modal select{
-    width: 100%;
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
+.modal select {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
 }
 
-.modal .submit-invite{
-  background-color: #4CAF50;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-top: 20px;
+.modal .submit-invite {
+  background-color: #4caf50;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 20px;
 }
 
-.registercodediv{
+.registercodediv {
   width: 400px;
   height: 150px;
   margin: auto;
@@ -273,15 +281,16 @@
   background-color: #0056b3;
 }
 
-.buttondiv{
+.buttondiv {
   padding: 20px 10px;
 }
 
-.buttondiv p, h1{
+.buttondiv p,
+h1 {
   text-align: center;
 }
 
-.grayed-register-button{
+.grayed-register-button {
   background-color: gray;
   color: white;
   border: none;
@@ -294,18 +303,18 @@
   margin-top: 65px;
 }
 
-.pending{
+.pending {
   color: rgb(214, 190, 84);
 }
 
-.announcements{
+.announcements {
   margin: auto;
   margin-top: 10px;
   margin-left: 20%;
   position: relative;
 }
 
-.oneannouncement{
+.oneannouncement {
   width: 900px;
   padding: 10px 10px;
   background-color: #444;
@@ -314,12 +323,12 @@
   margin-left: 130px;
 }
 
-.newannounce{
-  background-color: #007BFF;
+.newannounce {
+  background-color: #007bff;
   border-radius: 4px;
-  border:none;
-  margin:0;
-  padding:0;
+  border: none;
+  margin: 0;
+  padding: 0;
   cursor: pointer;
   color: white;
   padding: 10px 10px;
@@ -334,27 +343,33 @@
   margin: auto;
 }
 
-.eventleftside, .eventmiddleside, .eventrightside {
+.eventleftside,
+.eventmiddleside,
+.eventrightside {
   margin: 10px;
   padding: 20px;
   background-color: #2d2d2d;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
   display: inline;
+  height: auto;
 }
 
-.eventmiddleside{
+.eventmiddleside {
   width: 600px;
 }
 
-.eventrightside, .eventleftside{
+.eventrightside,
+.eventleftside {
   height: 20%;
 }
 
-
-.intro, .schedule, .eventregistercodediv {
+.intro,
+.schedule,
+.eventregistercodediv {
   padding: 20px;
   color: #ffffff;
+  height: auto;
 }
 
 .match {
@@ -391,7 +406,8 @@
   text-decoration: underline;
 }
 
-.register-button, .grayed-register-button {
+.register-button,
+.grayed-register-button {
   display: inline-block;
   padding: 10px 20px;
   margin-top: 20px;
@@ -407,11 +423,12 @@
   cursor: not-allowed;
 }
 
-.code, .pending {
+.code,
+.pending {
   color: #007bff;
 }
 
-.begincompe{
+.begincompe {
   border: none;
   padding: 5px 10px;
   background-color: #0074d9;
@@ -419,13 +436,12 @@
   border-radius: 4px;
 }
 
-.begincompe:hover{
+.begincompe:hover {
   background-color: #007bff;
 }
 
-.champion-container img{
+.champion-container img {
   width: 150px;
   height: 150px;
   object-fit: cover;
-  
 }
