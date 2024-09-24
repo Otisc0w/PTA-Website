@@ -1823,12 +1823,9 @@ app.post("/update-event", upload.single("eventpicture"), async (req, res) => {
   let eventpicture = null;
   if (req.file) {
     try {
-      // Define file path in Supabase storage bucket
       const filePath = `eventpictures/${Date.now()}-${req.file.originalname}`;
-
-      // Upload file to Supabase storage
       const { error: uploadError } = await supabase.storage
-        .from("documents") // This is the name of your storage bucket
+        .from("documents")
         .upload(filePath, req.file.buffer, {
           contentType: req.file.mimetype,
         });
@@ -1838,8 +1835,7 @@ app.post("/update-event", upload.single("eventpicture"), async (req, res) => {
         return res.status(500).send("Error uploading event picture");
       }
 
-      // Construct public URL for the uploaded file
-      eventpicture = `${supabaseUrl}/storage/v1/object/public/eventpictures/${filePath}`;
+      eventpicture = `${supabaseUrl}/storage/v1/object/public/documents/${filePath}`;
     } catch (error) {
       console.error("Server error:", error.message);
       return res.status(500).json({ error: error.message });

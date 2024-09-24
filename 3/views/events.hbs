@@ -1,13 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <title>PTA | Events</title>
   <link rel="icon" type="image/x-icon" href="../images/favicon.ico" />
-  <link rel="stylesheet" type="text/css" href="../stylesheets/home.css" />
   <link rel="stylesheet" type="text/css" href="../stylesheets/navbar.css" />
   <link rel="stylesheet" type="text/css" href="../stylesheets/events.css" />
 </head>
+
 <body class="container">
   <div class="header">
     <div class="navbar">
@@ -24,9 +25,11 @@
         </li>
         <li class="profile-pic">
           {{#if user.profilepic}}
-            <a href="#" onclick="toggleDropdown()"><img src="{{user.profilepic}}" alt="Profile Picture" class="profile-picture"></a>
+          <a href="#" onclick="toggleDropdown()"><img src="{{user.profilepic}}" alt="Profile Picture"
+              class="profile-picture"></a>
           {{else}}
-            <a href="#" onclick="toggleDropdown()" class="profile-picture"><img src="/images/none.jpg" alt="Profile Picture" class="profile-picture"></a>
+          <a href="#" onclick="toggleDropdown()" class="profile-picture"><img src="/images/none.jpg"
+              alt="Profile Picture" class="profile-picture"></a>
           {{/if}}
           <div id="dropdown" class="dropdown-content">
             <a href="profile">Profile</a>
@@ -46,7 +49,7 @@
         <button onclick="searchEvents()">Search</button>
       </div>
       {{#if user.ptaverified}}
-        <a onclick="openModal()" class="create-event-button">+ Create Event</a>
+      <a onclick="openModal()" class="create-event-button">+ Create Event</a>
       {{/if}}
     </div>
     <div class="main-panel">
@@ -70,17 +73,17 @@
         <h2 class="left-align-title">Promotion Tests</h2>
         <div id="promotion-tests" class="horizontal-container">
           {{#each promotionTests}}
-            <div class="event event-card">
-              <img src="{{eventpicture}}" alt="Promotion Test {{id}}">
-              <h3 class="event-title">{{name}} - {{date}} {{time}}</h3>
-              <p>{{eventtype}}</p>
-              <a href="/events-details/{{id}}">Read More</a>
-              {{#if user.registered}}
-                <a href="/events-registration/{{id}}">Register</a>
-              {{else}}
-                <a class="grayed-register-button">Not Registered</a>
-              {{/if}}
-            </div>
+          <div class="event event-card">
+            <img src="{{eventpicture}}" alt="Promotion Test {{id}}">
+            <h3 class="event-title">{{name}} - {{date}} {{time}}</h3>
+            <p>{{eventtype}}</p>
+            <a href="/events-details/{{id}}">Read More</a>
+            {{#if user.registered}}
+            <a href="/events-registration/{{id}}">Register</a>
+            {{else}}
+            <a class="grayed-register-button">Not Registered</a>
+            {{/if}}
+          </div>
           {{/each}}
         </div>
       </div> --}}
@@ -127,7 +130,7 @@
       document.getElementById("dropdown").classList.toggle("show");
     }
 
-    window.onclick = function(event) {
+    window.onclick = function (event) {
       if (!event.target.matches('.profile-pic img')) {
         var dropdowns = document.getElementsByClassName("dropdown-content");
         for (var i = 0; i < dropdowns.length; i++) {
@@ -142,7 +145,7 @@
     function searchEvents() {
       const searchTerm = document.getElementById('search-input').value.toLowerCase();
       const eventCards = document.querySelectorAll('.event-card');
-      
+
       eventCards.forEach(card => {
         const eventTitle = card.querySelector('.event-title').innerText.toLowerCase();
         const eventDescription = card.querySelector('p').innerText.toLowerCase();
@@ -163,4 +166,5 @@
     }
   </script>
 </body>
+
 </html>

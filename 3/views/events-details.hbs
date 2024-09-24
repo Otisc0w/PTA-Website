@@ -80,7 +80,7 @@
           <p>Registration Cap: {{registrationcount}} / {{event.registrationcap}}</p>
         </div>
       </div>
-      <div id="createmodal" class="modal">
+      <div id="editmodal" class="modal">
         <div class="modal-content">
           <span class="close" onclick="closeModal()">&times;</span>
 
@@ -147,8 +147,8 @@
             <div class="form-group">
               <label for="location">Location:</label>
               <input type="text" id="location" name="location" value="{{event.location}}" required>
-            </div>
-            <a href="/events" class="cancel">Cancel</a>
+            </div>{{event.id}}
+            <button onclick="closeModal()" class="cancel">Cancel</button>
             <button type="submit">Update Event</button>
           </form>
 
@@ -487,11 +487,11 @@
     }
 
     function openModal() {
-      document.getElementById('createmodal').style.display = 'block';
+      document.getElementById('editmodal').style.display = 'block';
     }
 
     function closeModal() {
-      document.getElementById('createmodal').style.display = 'none';
+      document.getElementById('editmodal').style.display = 'none';
     }
   </script>
 </body>

@@ -117,8 +117,12 @@ input, .button-padding {
 }
 
 .event-card img {
-    max-width: 100%;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 3 / 4;
     border-radius: 8px;
+    object-fit: cover; /* Ensures the image covers the area while maintaining aspect ratio */
+    max-height: 400px; /* Slightly bigger */
 }
 
 .event-title {
@@ -188,12 +192,6 @@ input, .button-padding {
 .event-detail {
     display: flex;
     flex-direction: row;
-}
-
-.event-detail img {
-    max-width: 250px;
-    border-radius: 8px;
-    margin-right: 20px;
 }
 
 .event-info {
@@ -301,11 +299,6 @@ input, .button-padding {
     cursor: pointer;
 }
 
-.participants-table img{
-    width: 40px;
-    height: 40px;
-    border-radius: 30px;
-}
 
 .name{
     margin-left: 400px;
