@@ -106,8 +106,15 @@
               <textarea id="description" name="description" rows="4" required>{{event.description}}</textarea>
             </div>
             <div class="form-group">
-              <label for="weightclass">Weight Class:</label>
-              <select id="weightclass" name="weightclass" rows="4" value="{{event.weightclass}}"></select>
+              <label for="weightclass">Betl Level:</label>
+              <select id="weightclass" name="weightclass" rows="4" value="{{event.weightclass}}">
+                <option value="white">White</option>
+                <option value="yellow">Yellow</option>
+                <option value="green">Green</option>
+                <option value="blue">Blue</option>
+                <option value="red">Red</option>
+                <option value="black">Black</option>
+              </select>
 
 
               <label for="gender">Gender:</label>
@@ -116,17 +123,24 @@
                 <option value="female">Female</option>
               </select>
 
-              <label for="weightclass">Belt Level:</label>
+              <label for="weightclass">Weight Class:</label>
               <select id="weightclass" name="weightclass" rows="4">
-                <option value="50kg">50kg</option>
-                <option value="50kg">60kg</option>
-                <option value="50kg">123123kg</option>
+                <option value="54kg">54kg</option>
+                <option value="58kg">58kg</option>
+                <option value="68kg">68kg</option>
+                <option value="74kg">74kg</option>
+                <option value="80kg">80kg</option>
+                <option value="87kg">87kg</option>
+                <option value="87+kg">87+kg</option>
               </select>
 
               <label for="division">Age Division:</label>
               <select id="division" name="division" rows="4">
-                <option value="cadets">Cadets</option>
-                <option value="bruh">olderpeople</option>
+                <option value="Youth">Youth</option>
+                <option value="Cadet">Cadet</option>
+                <option value="Junior">Junior</option>
+                <option value="Senior">Senior</option>
+                <option value="Ultra">Ultra</option>
               </select>
             </div>
             <div class="form-group">
@@ -147,7 +161,7 @@
             <div class="form-group">
               <label for="location">Location:</label>
               <input type="text" id="location" name="location" value="{{event.location}}" required>
-            </div>{{event.id}}
+            </div>
             <button onclick="closeModal()" class="cancel">Cancel</button>
             <button type="submit">Update Event</button>
           </form>
@@ -277,7 +291,7 @@
       <div id="announceModal" class="modal" style="display:none;">
         <div class="modal-content">
           <span class="close" onclick="closeannounceModal()">&times;</span>
-          <form action="/create-announcement" method="post" class="announceform">
+          <form action="/create-event-announcement" method="post" class="announceform">
             <input type="hidden" name="originalposter" value="{{user.username}}">
             <input type="hidden" name="profilepic" value="{{user.profilepic}}">
             <input type="hidden" name="clubid" value="{{club.id}}">

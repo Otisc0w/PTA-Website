@@ -13,30 +13,6 @@
   object-fit: cover;
 }
 /*09/25/24*/
-.header {
-  background-color: #222;
-  padding: 10px 0;
-  text-align: center;
-  font-family: 'Arial', sans-serif;
-}
-
-.tabs li {
-  display: inline-block;
-  margin: 0 10px;
-}
-
-.tabs li a {
-  color: white;
-  text-decoration: none;
-  font-size: 18px;
-  padding: 10px 20px;
-  font-family: 'Arial', sans-serif;
-}
-
-.tabs li a:hover {
-  background-color: #007bff;
-  border-radius: 5px;
-}
 
 .clubname {
   display: flex;

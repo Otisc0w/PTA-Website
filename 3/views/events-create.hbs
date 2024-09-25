@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <title>PTA | Events</title>
@@ -7,30 +8,33 @@
   <link rel="stylesheet" type="text/css" href="../stylesheets/navbar.css" />
   <link rel="stylesheet" type="text/css" href="../stylesheets/events-create.css" />
 </head>
+
 <body class="container">
   <div class="header">
     <div class="navbar">
       <a href="home"><img src="/images/logo.png" class="logo" alt="Logo"></a>
       <ul class="tabs">
-        <li class="home"><a href="home">Home</a></li>
-        <li class="athletes"><a href="athletes">Athletes</a></li>
-        <li class="clubs"><a href="clubs">Clubs</a></li>
-        <li class="events"><a href="events">Events</a></li>
-        <li class="membership"><a href="membership">Membership</a></li>
-        <li class="forum"><a href="forum">Forum</a></li>
+        <li class="home"><a href="/home">Home</a></li>
+        <li class="athletes"><a href="/athletes">Athletes</a></li>
+        <li class="clubs"><a href="/clubs">Clubs</a></li>
+        <li class="events"><a href="/events">Events</a></li>
+        <li class="membership"><a href="/membership">Membership</a></li>
+        <li class="forum"><a href="/forum">Forum</a></li>
         <li class="notifications">
-          <a href="notifications">Notifications <span class="badge">3</span></a>
+          <a href="/notifications">Notifications <span class="badge">3</span></a>
         </li>
         <li class="profile-pic">
           {{#if user.profilepic}}
-            <a href="#" onclick="toggleDropdown()"><img src="{{user.profilepic}}" alt="Profile Picture" class="profile-picture"></a>
+          <a href="#" onclick="toggleDropdown()"><img src="{{user.profilepic}}" alt="Profile Picture"
+              class="profile-picture"></a>
           {{else}}
-            <a href="#" onclick="toggleDropdown()" class="profile-picture"><img src="/images/none.jpg" alt="Profile Picture" class="profile-picture"></a>
+          <a href="#" onclick="toggleDropdown()" class="profile-picture"><img src="/images/none.jpg"
+              alt="Profile Picture" class="profile-picture"></a>
           {{/if}}
           <div id="dropdown" class="dropdown-content">
-            <a href="profile">Profile</a>
-            <a href="settings">Settings</a>
-            <a href="help-center">FAQs</a>
+            <a href="/profile">Profile</a>
+            <a href="/settings">Settings</a>
+            <a href="/help-center">FAQs</a>
             <a href="/">Logout</a>
           </div>
         </li>
@@ -39,61 +43,91 @@
   </div>
 
   <div class="events-create-container">
-      <form id="eventform" class="event-form" action="/create-event" method="post" enctype="multipart/form-data">
-        
-        {{#if (eq eventtype 'kyurogi')}}
-          <h3>Create Kyurogi Event</h3>
-        {{else if (eq eventtype 'poomsae')}}
-          <h3>Create Kyurogi Event</h3>
-        {{else if (eq eventtype 'promo')}}
-          <h3>Create Promotion Test Event</h3>
-        {{/if}}
-        <input type="hidden" value="{{eventtype}}" name="eventtype">
-        <div class="eventpic">
-          <input type="file" name="eventpicture">
-        </div>
-        <div class="form-group">
-          <label for="name">Event Name:</label>
-          <input type="text" id="name" name="name" required>
-        </div>
-        <div class="form-group">
-          <label for="description">Event Description:</label>
-          <textarea id="description" name="description" rows="4" required></textarea>
-        </div>
-        <div class="form-group">
-          <label for="weightclass">Weight Class:</label>
-          <select id="weightclass" name="weightclass" rows="4" ></select>
+    <form id="eventform" class="event-form" action="/create-event" method="post" enctype="multipart/form-data">
+      {{#if (eq eventtype 'kyurogi')}}
+      <h3>Create Kyurogi Event</h3>
+      {{else if (eq eventtype 'poomsae')}}
+      <h3>Create Poomsae Event</h3>
+      {{else if (eq eventtype 'promo')}}
+      <h3>Create Promotion Test Event</h3>
+      {{/if}}
+      <input type="hidden" value="{{eventtype}}" name="eventtype">
 
-          <label for="gender">Gender:</label>
-          <select id="gender" name="gender" rows="4" ></select>
+      <div class="eventpic">
+        <input type="file" name="eventpicture">
+      </div>
 
-          <label for="weightclass">Belt Level:</label>
-          <select id="weightclass" name="weightclass" rows="4" ></select>
+      <input type="hidden" name="eventid" value="{{event.id}}">
 
-          <label for="division">Division:</label>
-          <select id="division" name="division" rows="4" ></select>
-        </div>
-        <div class="form-group">
-          <label for="date">Event Date:</label>
-          <input type="date" id="date" name="date" required>
-        </div>
-        <div class="form-group">
-          <label for="starttime">Start Time:</label>
-          <input type="time" id="starttime" name="starttime" required>
-          <label for="endtime">End Time:</label>
-          <input type="time" id="endtime" name="endtime" required>
-        </div>
-        <div class="form-group">
-          <label for="registrationcap">Registration Cap:</label>
-          <input type="number" id="registrationcap" name="registrationcap" required>
-        </div>
-        <div class="form-group">
-          <label for="location">Location:</label>
-          <input type="text" id="location" name="location" required>
-        </div>
-        <a href="/events" class="cancel">Cancel</a>
-        <button type="submit">Create Kyurogi Event</button>
-      </form>
+      <div class="form-group">
+        <label for="name">Event Name:</label>
+        <input type="text" id="name" name="name" value="{{event.name}}" required>
+      </div>
+      <div class="form-group">
+        <label for="description">Event Description:</label>
+        <textarea id="description" name="description" rows="4" required>{{event.description}}</textarea>
+      </div>
+      <div class="form-group">
+        <label for="beltlevel">Belt Level:</label>
+        <select id="beltlevel" name="beltlevel" value="{{event.beltlevel}}">
+          <option value="white">White</option>
+          <option value="yellow">Yellow</option>
+          <option value="green">Green</option>
+          <option value="blue">Blue</option>
+          <option value="red">Red</option>
+          <option value="black">Black</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="gender">Gender:</label>
+        <select id="gender" name="gender">
+          <option value="male">Male</option>
+          <option value="female">Female</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="weightclass">Weight Class:</label>
+        <select id="weightclass" name="weightclass">
+          <option value="54kg">54kg</option>
+          <option value="58kg">58kg</option>
+          <option value="68kg">68kg</option>
+          <option value="74kg">74kg</option>
+          <option value="80kg">80kg</option>
+          <option value="87kg">87kg</option>
+          <option value="87+kg">87+kg</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="division">Age Division:</label>
+        <select id="division" name="division">
+          <option value="Youth">Youth</option>
+          <option value="Cadet">Cadet</option>
+          <option value="Junior">Junior</option>
+          <option value="Senior">Senior</option>
+          <option value="Ultra">Ultra</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="date">Event Date:</label>
+        <input type="date" id="date" name="date" value="{{event.date}}">
+      </div>
+      <div class="form-group">
+        <label for="starttime">Start Time:</label>
+        <input type="time" id="starttime" name="starttime" value="{{event.starttime}}" required>
+        <label for="endtime">End Time:</label>
+        <input type="time" id="endtime" name="endtime" value="{{event.endtime}}" required>
+      </div>
+      <div class="form-group">
+        <label for="registrationcap">Registration Cap:</label>
+        <input type="number" id="registrationcap" name="registrationcap" value="{{event.registrationcap}}" required>
+      </div>
+      <div class="form-group">
+        <label for="location">Location:</label>
+        <input type="text" id="location" name="location" value="{{event.location}}" required>
+      </div>
+      <button type="button" class="cancel" onclick="window.location.href='/events'">Cancel</button>
+      <button type="submit">Create Event</button>
+    </form>
   </div>
 
   <script>
@@ -101,7 +135,7 @@
       document.getElementById("dropdown").classList.toggle("show");
     }
 
-    window.onclick = function(event) {
+    window.onclick = function (event) {
       if (!event.target.matches('.profile-pic img')) {
         var dropdowns = document.getElementsByClassName("dropdown-content");
         for (var i = 0; i < dropdowns.length; i++) {
@@ -114,4 +148,5 @@
     }
   </script>
 </body>
+
 </html>

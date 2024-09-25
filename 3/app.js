@@ -2163,7 +2163,7 @@ app.post("/unfollow-topic/:id", async (req, res) => {
   }
 });
 
-app.post("/create-announcement", async (req, res) => {
+app.post("/create-club-announcement", async (req, res) => {
   const { title, subject, body, originalposter, profilepic, clubid } = req.body;
 
   if (!req.session.user) {
@@ -2190,6 +2190,38 @@ app.post("/create-announcement", async (req, res) => {
     }
 
     res.redirect(`/clubs-details/${clubid}`);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.post("/create-event-announcement", async (req, res) => {
+  const { title, subject, body, originalposter, profilepic, eventid } = req.body;
+
+  if (!req.session.user) {
+    return res.status(401).send("Unauthorized: No user logged in");
+  }
+
+  try {
+    const { data, error } = await supabase.from("event_announcements").insert([
+      {
+        title,
+        subject,
+        body,
+        originalposter,
+        profilepic,
+        eventid,
+      },
+    ]);
+
+    if (error) {
+      return res.status(500).render("announcements", {
+        error: "Error creating announcement.",
+        user: req.session.user,
+      });
+    }
+
+    res.redirect(`/events-details/${eventid}`);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
