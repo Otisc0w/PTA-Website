@@ -124,15 +124,23 @@
   vertical-align: middle;
   margin-left: 10px;
 }
+.intro:hover {
+  background-color: #444; 
+  transition: background-color 0.3s ease-in-out;
+}
 
 .edit-button {
   background: none;
-  color: inherit;
+  color: white;
   border: none;
-  padding: 0;
-  font: inherit;
+  font-size: 14px;
   cursor: pointer;
-  outline: inherit;
+  margin-left: 10px;
+}
+
+.edit-button img {
+  width: 16px;
+  height: 16px;
 }
 
 .sides {
@@ -143,8 +151,9 @@
 
 .detailstab {
   display: flex;
-  justify-content: space-between;
-  width: 70%;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
 }
 
 .leftside,
@@ -157,8 +166,15 @@
   background-color: #2e2e2e;
   padding: 20px;
   border-radius: 10px;
-  width: 300px;
-  height: 200px;
+  width: 400px;
+  text-align: left;
+  box-shadow: 0px 4px 10px rgba (0,0,0,0.5);
+}
+
+.intro p {
+  color: white;
+  font-size: 16px;
+  margin: 10px 0;
 }
 
 .intro h3 {
