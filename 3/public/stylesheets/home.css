@@ -48,14 +48,20 @@
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     position: relative;
+    /*09/25/24*/
+    height: 400px; /* Ensure all event containers have the same height */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    /*09/25/24*/
 }
 
 .event img, .news-item img {
     width: 100%;
-    height: 70%;
+    height: 250px;
     object-fit: cover; /* Ensure the image covers the container */
     object-position: center; /* Center the image within the container */
-    border-radius: 4px 4px 4px 4px;
+    border-radius: 4px 4px 0 0;
 }
 
 .event h3, .news-item h3 {
@@ -77,6 +83,10 @@
     border-radius: 5px;
     background-color: #2E2E2E;
     transition: background-color 0.3s;
+    /*09/25/24*/
+    margin-top: auto; /* Ensure the button stays at the bottom */
+    align-self: center; /* Align the button horizontally at the center */
+    /*09/25/24*/
 }
 
 .event a:hover, .news-item a:hover {
@@ -137,5 +147,13 @@
     height: 30px;
 }
 
-
-
+/* 09/25/24 */
+/* Style for the "Clubs" title */
+.clubs-title {
+    text-align: left;  /* Align the text to the left */
+    font-size: 36px;   /* Increase the font size for visibility */
+    font-weight: bold; /* Make the text bold for better readability */
+    color: white;      /* Ensure the text color contrasts with the background */
+    margin-left: 20px; /* Add some left margin for spacing */
+    margin-top: 20px;  /* Add top margin to prevent it from sticking to the navbar */
+}
