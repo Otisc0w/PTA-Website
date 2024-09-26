@@ -2196,26 +2196,24 @@ app.post("/create-club-announcement", async (req, res) => {
 });
 
 app.post("/create-event-announcement", async (req, res) => {
-  const { title, subject, body, originalposter, profilepic, eventid } = req.body;
+  const { title, subject, body, eventid } = req.body;
 
   if (!req.session.user) {
     return res.status(401).send("Unauthorized: No user logged in");
   }
 
   try {
-    const { data, error } = await supabase.from("event_announcements").insert([
+    const { error } = await supabase.from("event_announcements").insert([
       {
         title,
         subject,
         body,
-        originalposter,
-        profilepic,
         eventid,
       },
     ]);
 
     if (error) {
-      return res.status(500).render("announcements", {
+      return res.status(500).render("events", {
         error: "Error creating announcement.",
         user: req.session.user,
       });
@@ -2846,6 +2844,16 @@ app.get("/events-details/:id", async function (req, res) {
       return res.status(400).json({ error: matchesError.message });
     }
 
+    const { data: eventannouncements, error: eventannouncementsError } = await supabase
+      .from("event_announcements")
+      .select("*")
+      .eq("eventid", id)
+      .order("id", { ascending: true });
+
+    if (matchesError) {
+      return res.status(400).json({ error: matchesError.message });
+    }
+
     // Fetch player names and winner names for each match
     for (let match of matches) {
       if (match.player1) {
@@ -3011,6 +3019,7 @@ app.get("/events-details/:id", async function (req, res) {
       champion,
       secondPlace,
       thirdPlace,
+      eventannouncements
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
