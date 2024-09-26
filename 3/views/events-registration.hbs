@@ -38,62 +38,66 @@
     </div>
   </div>
 
-  <div class="form-container">
+  <div class="form-container margin">
     <h2>Event Registration for {{event.name}}</h2>
     <form id="registrationForm" action="/submit-player" method="post">
-      
+
       <div class="form-group">
         <input type="hidden" id="eventid" name="eventid" value="{{event.id}}">
       </div>
       <div class="form-group">
         <input type="hidden" id="athleteid" name="athleteid" value="{{athlete.id}}">
       </div>
-      <div class="form-group">
-        <label for="email">Email:</label>
-        <input type="email" id="email" name="email" value="{{user.email}}">
-      </div>
-      <div class="form-group">
-        <label for="playername">Player Name:</label>
-        <input type="text" id="playername" name="playername" value="{{athlete.name}}">
-      </div>
-      <div class="form-group">
-        <label for="club">Club:</label>
-        <input type="text" id="club" name="club" value="{{athlete.club}}">
-      </div>
-      <div class="form-group">
-        <label for="age">Age:</label>
-        <input type="number" id="age" name="age" value="{{athlete.age}}">
-      </div>
-      <div class="form-group">
-        <label for="bday">Birthday:</label>
-        <input type="date" id="bday" name="bday" value="{{athlete.bday}}">
-      </div>
-      <div class="form-group">
-        <label for="division">Division:</label>
-        <input type="text" id="division" name="division" value="{{athlete.division}}">
-      </div>
-      <div class="form-group">
-        <label for="belt">Belt:</label>
-        <input type="text" id="belt" name="belt" value="{{athlete.beltlevel}}"> 
-      </div>
-      <div class="form-group">
-        <label for="height">Height (cm):</label>
-        <input type="number" id="height" name="height" value="{{athlete.height}}">
-      </div>
-      <div class="form-group">
-        <label for="weight">Weight (kg):</label>
-        <input type="number" id="weight" name="weight" value="{{athlete.weight}}">
-      </div>
-      <div class="form-group">
-        <label for="category">Category:</label>
-        <input type="number" id="category" name="category" value="{{athlete.category}}"> THIS IS AUTOMATIC BASEDO N WEIGHT
-      </div>
-      <div class="form-group">
-        <label for="instructor">Instructor:</label>
-        <input type="text" id="instructor" name="instructor" value="{{athlete.instructor}}">
+
+      <div class="flex">
+        <div class="small-margin">
+          <div class="form-group">
+            <label for="playername">Player Name:</label><br>
+            <input type="text" id="playername" name="playername" value="{{athlete.name}}">
+          </div><br>
+          <div class="form-group">
+            <label for="email">Email:</label><br>
+            <input type="email" id="email" name="email" value="{{user.email}}">
+          </div><br>
+          <div class="form-group">
+            <label for="bday">Birth Date:</label><br>
+            <input type="date" id="bday" name="bday" value="{{athlete.bday}}">
+          </div><br>
+          <div class="form-group">
+            <label for="height">Height (cm):</label><br>
+            <input type="number" id="height" name="height" value="{{athlete.height}}">
+          </div><br>
+          <div class="form-group">
+            <label for="weight">Weight (kg):</label><br>
+            <input type="number" id="weight" name="weight" value="{{athlete.weight}}">
+          </div>
+        </div><br>
+
+        <div class="small-margin">
+          <div class="form-group">
+            <label for="club">Club:</label><br>
+            <input type="text" id="club" name="club" value="{{user.club}}">
+          </div><br>
+          <div class="form-group">
+            <label for="division">Division:</label><br>
+            <input type="text" id="division" name="division" value="{{athlete.division}}">
+          </div><br>
+          <div class="form-group">
+            <label for="belt">Belt:</label><br>
+            <input type="text" id="belt" name="belt" value="{{athlete.beltlevel}}"> 
+          </div><br>
+          <div class="form-group">
+            <label for="category">Category:</label><br>
+            <input type="number" id="category" name="category" value="{{athlete.category}}">
+          </div><br>
+          <div class="form-group">
+            <label for="instructor">Instructor:</label><br>
+            <input type="text" id="instructor" name="instructor" value="{{athlete.instructor}}">
+          </div><br>
+        </div>
       </div>
 
-      <button type="submit">Register</button>
+      <button class="button-padding" type="submit">Register</button>
     </form>
   </div>
 
@@ -101,7 +105,6 @@
     function toggleDropdown() {
       document.getElementById("dropdown").classList.toggle("show");
     }
-
     window.onclick = function (event) {
       if (!event.target.matches('.profile-pic img')) {
         var dropdowns = document.getElementsByClassName("dropdown-content");

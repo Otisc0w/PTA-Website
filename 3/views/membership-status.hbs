@@ -9,33 +9,35 @@
 </head>
 
 <body style="margin:0;" class="container">
-    <div class="navbar">
-      <a href="/home"><img src="/images/logo.png" class="logo" alt="Logo"></a>
-      <ul class="tabs">
-        <li class="home"><a href="/home">Home</a></li>
-        <li class="athletes"><a href="/athletes">Athletes</a></li>
-        <li class="clubs"><a href="/clubs">Clubs</a></li>
-        <li class="events"><a href="/events">Events</a></li>
-        <li class="membership"><a href="/membership">Membership</a></li>
-        <li class="forum"><a href="/forum">Forum</a></li>
-        <li class="notifications">
-          <a href="/notifications">Notifications <span class="badge">3</span></a>
-        </li>
-        <li class="profile-pic">
-          {{#if user.profilepic}}
-            <a href="#" onclick="toggleDropdown()"><img src="{{user.profilepic}}" alt="Profile Picture" class="profile-picture"></a>
-          {{else}}
-            <a href="#" onclick="toggleDropdown()" class="profile-picture"><img src="/images/none.jpg" alt="Profile Picture" class="profile-picture"></a>
-          {{/if}}
-          <div id="dropdown" class="dropdown-content">
-            <a href="/profile">Profile</a>
-            <a href="/settings">Settings</a>
-            <a href="/help-center">FAQs</a>
-            <a href="/">Logout</a>
-          </div>
-        </li>
-      </ul>
-    </div>
+  <div class="navbar">
+    <a href="/home"><img src="/images/logo.png" class="logo" alt="Logo"></a>
+    <ul class="tabs">
+      <li class="home"><a href="/home">Home</a></li>
+      <li class="athletes"><a href="/athletes">Athletes</a></li>
+      <li class="clubs"><a href="/clubs">Clubs</a></li>
+      <li class="events"><a href="/events">Events</a></li>
+      <li class="membership"><a href="/membership">Membership</a></li>
+      <li class="forum"><a href="/forum">Forum</a></li>
+      <li class="notifications">
+        <a href="/notifications">Notifications <span class="badge">3</span></a>
+      </li>
+      <li class="profile-pic">
+        {{#if user.profilepic}}
+        <a href="#" onclick="toggleDropdown()"><img src="{{user.profilepic}}" alt="Profile Picture"
+            class="profile-picture"></a>
+        {{else}}
+        <a href="#" onclick="toggleDropdown()" class="profile-picture"><img src="/images/none.jpg" alt="Profile Picture"
+            class="profile-picture"></a>
+        {{/if}}
+        <div id="dropdown" class="dropdown-content">
+          <a href="/profile">Profile</a>
+          <a href="/settings">Settings</a>
+          <a href="/help-center">FAQs</a>
+          <a href="/">Logout</a>
+        </div>
+      </li>
+    </ul>
+  </div>
   <div class="membership-container">
     <div class="membership-leftside">
       <div class="forumtitle">
@@ -43,46 +45,54 @@
         <h3 class="forumdesc">Membership Status</h3>
       </div>
     </div>
-  
+
     <div class="membership-rightside">
       <div class="membership-statuses">
         {{#if ncc_registrations}}
-          <h2>NCC ID's</h2>
-          {{#reverseEach ncc_registrations}}
-            <div class='post-content'>
-              <span class='small'>Applicant: <h2>{{firstname}} {{lastname}}</h2> on {{created_at}}</span>
-              <span><h3>Status: {{{formatStatus status}}}</h3></span>
-              <a href="/membership-review/{{id}}">Review</a>
-            </div><br>
-          {{/reverseEach}}
+        <h2>NCC ID's</h2>
+        {{#reverseEach ncc_registrations}}
+        <div class='post-content'>
+          <span class='small'>Applicant: <h2>{{firstname}} {{lastname}}</h2> on {{created_at}}<br> expires on
+            {{expireson}}</span>
+          <span>
+            <h3>Status: {{{formatStatus status}}}</h3>
+          </span>
+          <a href="/membership-review/{{id}}">Review</a>
+        </div><br>
+        {{/reverseEach}}
         {{else}}
-          No pending NCC applications <br>
+        No pending NCC applications <br>
         {{/if}}
 
-				{{#if instructor_registrations}}
-          <h2>Instructor ID's</h2>
-          {{#reverseEach instructor_registrations}}
-            <div class='post-content'>
-              <span class='small'>by <h2>{{firstname}} {{lastname}}</h2> on {{created_at}}</span>
-              <span><h3>Status: {{{formatStatus status}}}</h3></span>
-              <a href="/instructor-review/{{id}}">Review</a>
-            </div><br>
-          {{/reverseEach}}
+        {{#if instructor_registrations}}
+        <h2>Instructor ID's</h2>
+        {{#reverseEach instructor_registrations}}
+        <div class='post-content'>
+          <span class='small'>by <h2>{{firstname}} {{lastname}}</h2> on {{created_at}}<br> expires on
+            {{expireson}}</span>
+          <span>
+            <h3>Status: {{{formatStatus status}}}</h3>
+          </span>
+          <a href="/instructor-review/{{id}}">Review</a>
+        </div><br>
+        {{/reverseEach}}
         {{else}}
-          No pending instructor applications <br>
+        No pending instructor applications <br>
         {{/if}}
 
         {{#if club_registrations}}
-          <h2>Club Registrations</h2>
-          {{#reverseEach club_registrations}}
-            <div class='post-content'>
-              <span class='small'>Applicant: <h2>{{firstname}} {{lastname}}</h2> on {{created_at}}</span>
-              <span><h3>Status: {{{formatStatus status}}}</h3></span>
-              <a href="/clubreg-review/{{id}}">Review</a>
-            </div><br>
-          {{/reverseEach}}
+        <h2>Club Registrations</h2>
+        {{#reverseEach club_registrations}}
+        <div class='post-content'>
+          <span class='small'>Applicant: <h2>{{firstname}} {{lastname}}</h2> on {{created_at}}</span>
+          <span>
+            <h3>Status: {{{formatStatus status}}}</h3>
+          </span>
+          <a href="/clubreg-review/{{id}}">Review</a>
+        </div><br>
+        {{/reverseEach}}
         {{else}}
-          No pending club registrations
+        No pending club registrations
         {{/if}}
       </div>
       <div class="backtomembership">
@@ -94,7 +104,7 @@
     <p>&copy; 2024 Philippine Taekwondo Association. All rights reserved.</p>
   </div>
   <script>
-    document.addEventListener("DOMContentLoaded", function() {
+    document.addEventListener("DOMContentLoaded", function () {
       const form = document.getElementById("nccform");
 
       const nccstep1 = document.getElementById("nccstep1");

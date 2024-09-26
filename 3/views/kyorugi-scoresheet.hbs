@@ -1,0 +1,77 @@
+<!-- views/scoresheet.hbs -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Kyorugi Scoresheet</title>
+  <link rel="stylesheet" type="text/css" href="/stylesheets/scoresheet.css">
+</head>
+<body>
+  <div class="scoresheet-container">
+    <a href="/events-details/{{match.eventid}}"> BACK</a>
+    <h1>Kyorugi Scoresheet</h1>
+    <div class="match-info">
+      <p><strong>Match:</strong> {{player1_name}} vs {{player2_name}}</p>
+      <p><strong>Time:</strong> {{match.matchtime}}</p>
+    </div>
+    <div class="scores">
+      <h2>Scores</h2>
+      <form action="/submit-kyorugi-scores" method="POST">
+        <input type="hidden" name="eventid" value="{{match.eventid}}">
+        <input type="hidden" name="matchid" value="{{match.id}}">
+        <input type="hidden" name="player1" value="{{match.player1}}">
+        <input type="hidden" name="player2" value="{{match.player2}}">
+        <table>
+          <thead>
+            <tr>
+              <th>Round</th>
+              <th>{{player1_name}}</th>
+              <th>{{player2_name}}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>1</td>
+              <td><input type="number" name="player1_round1" required></td>
+              <td><input type="number" name="player2_round1" required></td>
+            </tr>
+            <tr>
+              <td>2</td>
+              <td><input type="number" name="player1_round2" ></td>
+              <td><input type="number" name="player2_round2" ></td>
+            </tr>
+            <tr>
+              <td>3</td>
+              <td><input type="number" name="player1_round3" ></td>
+              <td><input type="number" name="player2_round3" ></td>
+            </tr>
+            <tr>
+              <td>OT</td>
+              <td><input type="number" name="player1_ot" ></td>
+              <td><input type="number" name="player2_ot" ></td>
+            </tr>
+            <tr>
+              <td>Total</td>
+              <td><input type="number" name="player1_total" readonly></td>
+              <td><input type="number" name="player2_total" readonly></td>
+            </tr>
+          </tbody>
+        </table>
+        <button type="submit">Submit Scores</button>
+      </form>
+    </div>
+  </div>
+  <script>
+    document.addEventListener('input', function() {
+      let player1_total = 0;
+      let player2_total = 0;
+      const player1_rounds = document.querySelectorAll('input[name^="player1_round"]');
+      const player2_rounds = document.querySelectorAll('input[name^="player2_round"]');
+      player1_rounds.forEach(input => player1_total += parseInt(input.value) || 0);
+      player2_rounds.forEach(input => player2_total += parseInt(input.value) || 0);
+      document.querySelector('input[name="player1_total"]').value = player1_total;
+      document.querySelector('input[name="player2_total"]').value = player2_total;
+    });
+  </script>
+</body>
+</html>

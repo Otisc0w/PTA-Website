@@ -40,39 +40,40 @@
     <section class="review-header">
       <h1>Review NCC Application</h1>
     </section>
-    <form action="/update-nccstatus" method="post" class="review-form">
-      <section class="review-details">
-        <h2>Applicant Information</h2>
-
-        <input type="hidden" name="applicationId" value="{{registration.id}}">
+    
+      <div class="review-details flex column">
 				<div>
-					<img src="{{registration.portrait}}">
-				</div>
-				<div>
-					<p><strong>ID:</strong> {{registration.id}}</p>
-					<p><strong>First Name:</strong> {{registration.firstname}}</p>
-					<p><strong>Middle Initial:</strong> {{registration.mi}}</p>
-					<p><strong>Last Name:</strong> {{registration.lastname}}</p>
-					<p><strong>Gender:</strong> {{registration.gender}}</p>
-					<p><strong>Birthday:</strong> {{registration.bday}}</p>
-					<p><strong>Phone Number:</strong> {{registration.phonenum}}</p>
-					<p><strong>Email:</strong> {{registration.email}}</p>
-					<p><strong>Last Promotion:</strong> {{registration.lastpromo}}</p>
-					<p><strong>Promotion Location:</strong> {{registration.promolocation}}</p>
-					<p><strong>Region:</strong> {{registration.region}}</p>
-					<p><strong>Club:</strong> {{registration.clubname}}</p>
-					<p><strong>Belt Level:</strong> {{registration.beltlevel}}</p>
-					<p><strong>Instructor First Name:</strong> {{registration.instructorfirstname}}</p>
-					<p><strong>Instructor Middle Initial:</strong> {{registration.instructormi}}</p>
-					<p><strong>Instructor Last Name:</strong> {{registration.instructorlastname}}</p>
-					<p><strong>Instructor Mobile:</strong> {{registration.instructormobile}}</p>
-					<p><strong>Instructor Email:</strong> {{registration.instructoremail}}</p>
-					<p>submitted by: {{registration.submittedby}}</p>
-					<a href="{{registration.birthcert}}" target="_blank" download> Birth Certificate</a>
+				  <img class="rounded" src="{{registration.portrait}}">
+          <div>
+            <p><strong>ID:</strong> <span class="information">{{registration.id}}</span></p>
+            <p><strong>First Name:</strong> <span class="information">{{registration.firstname}}</span></p>
+            <p><strong>Middle Initial:</strong> <span class="information">{{registration.middlename}}</span></p>
+            <p><strong>Last Name:</strong> <span class="information">{{registration.lastname}}</span></p>
+            <p><strong>Gender:</strong> <span class="information">{{registration.gender}}</span></p>
+            <p><strong>Birthday:</strong> <span class="information">{{registration.bday}}</span></p>
+            <p><strong>Phone Number:</strong> <span class="information">{{registration.phonenum}}</span></p>
+            <p><strong>Email:</strong> <span class="information">{{registration.email}}</span></p>
+          </div>   
 				</div>
 				
-      </section>
+        <div> 
+          <p><strong>Last Promotion:</strong> <span class="information">{{registration.lastpromo}}</span></p>
+          <p><strong>Promotion Location:</strong> <span class="information">{{registration.promolocation}}</span></p>
+          <p><strong>Club:</strong> <span class="information">{{registration.club}}</span></p>
+          <p><strong>Region:</strong> <span class="information">{{registration.clubregion}}</span></p>
+          <p><strong>Belt Level:</strong> <span class="information">{{registration.beltlevel}}</span></p>
+          <p><strong>Instructor First Name:</strong> <span class="information">{{registration.instructorfirstname}}</span></p>
+          <p><strong>Instructor Middle Initial:</strong> <span class="information">{{registration.instructormi}}</span></p>
+          <p><strong>Instructor Last Name:</strong> <span class="information">{{registration.instructorlastname}}</span></p>
+          <p><strong>Instructor Mobile:</strong> <span class="information">{{registration.instructormobile}}</span></p>
+          <p><strong>Instructor Email:</strong> <span class="information">{{registration.instructoremail}}</span></p>
+          <p>Submitted by: <span class="information">{{registration.submittedby}}</span></p>
+        </div>
+				
+      </div>
 
+    <form action="/update-nccstatus" method="post" class="review-form">
+      <input type="hidden" name="applicationId" value="{{registration.id}}">
       <section class="application-actions">
         <h1 class="status">
           {{#if (eq registration.status 1)}}
@@ -90,7 +91,7 @@
           {{/if}}
         </h1>
         {{#if user.ptaverified}}
-          <div class="action-buttons"> <!-- TYPES NAMES ID'S CLASSES VALUES NEED TO STAY THE SAME -->
+          <div class="action-buttons">
             <button type="button" onclick="printDiv('printableArea')">Print</button>
             <button type="submit" name="status" value="1">Under Review</button>
             <button type="submit" name="status" value="2">Printed</button>
@@ -98,9 +99,8 @@
             <button type="button" id="idshipped" class="idshipped">ID Shipped</button>
             <button type="submit" name="status" value="0">Reject Application</button>
           </div>
-
           <div class="confirmscreen" id="confirmscreen" style="display: none;">
-            <h3>Are you sure? The player will be notified that his ID is ready. This registration will also disappear after a few days.</h3>
+            <h3>Are you sure? The player will be notified that his ID is ready.</h3>
             <button type="button" class="cancel" id="cancel">Cancel</button>
             <button type="submit" value="4" name="status" id="confirm">Confirm</button>
           </div>
@@ -108,9 +108,7 @@
         <div class="backtolist">
           <a href="/membership-status">Back to list</a>
         </div>
-        
       </section>
-
       <div class="printwindow" id="printableArea">
         <p><strong>ID:</strong> {{registration.id}}</p>
         <p><strong>First Name:</strong> {{registration.firstname}}</p>
@@ -119,13 +117,8 @@
         <a href="{{registration.birthcert}}" target="_blank" download>Birth Certificate</a>
         <p>submitted by: {{registration.submittedby}}</p>
       </div>
+    </form> 
 
-      <div class="confirmscreen" id="confirmscreen" style="display: none;">
-        <h3>Are you sure? The player will be notified that his ID is ready. This registration will also disappear after a few days.</h3>
-        <button type="button" class="cancel" id="cancel">Cancel</button>
-        <button type="submit" value="4" name="status" id="confirm">Confirm</button>
-      </div>
-    </form>
   </main>
   
   <script>

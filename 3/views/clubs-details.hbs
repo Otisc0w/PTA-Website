@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <title>PTA | Events</title>
@@ -7,6 +8,7 @@
   <link rel="stylesheet" type="text/css" href="../stylesheets/navbar.css" />
   <link rel="stylesheet" type="text/css" href="../stylesheets/clubs-details.css" />
 </head>
+
 <body class="container">
   <div class="header">
     <div class="navbar">
@@ -23,9 +25,11 @@
         </li>
         <li class="profile-pic">
           {{#if user.profilepic}}
-            <a href="#" onclick="toggleDropdown()"><img src="{{user.profilepic}}" alt="Profile Picture" class="profile-picture"></a>
+          <a href="#" onclick="toggleDropdown()"><img src="{{user.profilepic}}" alt="Profile Picture"
+              class="profile-picture"></a>
           {{else}}
-            <a href="#" onclick="toggleDropdown()" class="profile-picture"><img src="/images/none.jpg" alt="Profile Picture" class="profile-picture"></a>
+          <a href="#" onclick="toggleDropdown()" class="profile-picture"><img src="/images/none.jpg"
+              alt="Profile Picture" class="profile-picture"></a>
           {{/if}}
           <div id="dropdown" class="dropdown-content">
             <a href="/profile">Profile</a>
@@ -39,62 +43,69 @@
   </div>
 
   <div class="events-container">
-      <img src="{{club.clubpic}}" alt="event Picture">
-      <div class="clubname">
-        <span class="name">{{club.clubname}}</span>
-        {{#if (eq -club.registeredby user.id)}}
-          <span><a href="/clubs-manage" class="manage-button" ><img src="/images/settings.png">Manage</a></span>
+    <img src="{{club.clubpic}}" alt="event Picture">
+    <div class="clubname">
+      <span class="name">{{club.clubname}}</span>
+      {{#if (eq -club.registeredby user.id)}}
+      <span><a href="/clubs-manage" class="manage-button"><img src="/images/settings.png">Manage</a></span>
+      {{/if}}
+    </div>
+
+    <div class="clubtabs">
+      <ul>
+        <li><a href="#">Details</a></li>
+        <li><a href="#">Members</a></li>
+        {{#if (eq user.club club.clubname)}}
+        <li><a href="#">Announcements</a></li>
+        {{/if}}
+      </ul>
+    </div><br>
+    <div class="detailstab">
+      <div class="leftside">
+        <div class="intro">
+          <div class="details">
+            <h3>Details</h3>
+          </div>
+          <div><button class="edit-button" href="/home"><img src="../images/edit.png"></button></div>
+          <p>{{club.clubaddress}}</p>
+          <p>{{club.email}}</p>
+          <p>{{club.phonenum}}</p>
+        </div>
+      </div>
+
+      <div class="rightside">
+        {{#if (eq club.registeredby user.id)}}
+        <button class="invite-button" onclick="openModal()">+ Invite Members</button>
         {{/if}}
       </div>
-
-      <div class="clubtabs">
-        <ul>
-          <li><a href="#">Details</a></li>
-          <li><a href="#">Members</a></li>
-          <li><a href="#">Announcements</a></li>
-        </ul>
-      </div><br>
-      <div class="sides">
-        <div class="leftside">
-          <div class="intro">
-            <h3>Details</h3>
-            <p>{{club.clubaddress}}</p>
-            <p>{{club.email}}</p>
-            <p>{{club.phonenum}}</p>
-          </div>
-        </div>
-
-        <div class="rightside">
-					{{#if (eq club.registeredby user.id)}}
-						<button class="invite-button" onclick="openModal()">+ Invite Members</button>
-					{{/if}}
-        </div>
-      </div>
+    </div>
   </div>
-
-	<div class="participants-container">
-		<div class="participants-title">Participants</div>
-		<table class="participants-table">
-			<thead>
-				<tr>
+  <div class="participants-container">
+    <div class="participants-title">
+      Head Instructor: <h2>{{club.registeree}}</h2>
+    </div>
+    <div class="participants-title">Members of this club</div>
+    <table class="participants-table">
+      <thead>
+        <tr>
           <th>Picture</th>
-					<th>Player</th>
-					<th>Height (cm)</th>
-					<th>Weight (kg)</th>
-				</tr>
-			</thead>
-			<tbody>
-				{{#each clubMembers}}
-					<tr>
-            <th><img src="{{this.portrait}}"></th>
-						<td>{{this.name}}</td>
-						<td>{{this.height}}</td>
-						<td>{{this.weight}}</td>
-					</tr>
-				{{/each}}
-			</tbody>
-		</table>
-	</div>
+          <th>Player</th>
+          <th>Height (cm)</th>
+          <th>Weight (kg)</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each clubMembers}}
+        <tr>
+          <th><img src="{{this.portrait}}"></th>
+          <td>{{this.name}}</td>
+          <td>{{this.height}}</td>
+          <td>{{this.weight}}</td>
+        </tr>
+        {{/each}}
+      </tbody>
+    </table>
+  </div>
 
   <div class="announcements" hidden>
     <h2>Announcements</h2>
@@ -104,22 +115,22 @@
       {{/if}}
     </div>
     {{#reverseEach announcements}}
-      <div class="oneannouncement">
-        <h2>{{title}}</h2>
-        <p>{{subject}}</p>
-        <p>{{body}}</p>
-      </div>
+    <div class="oneannouncement">
+      <h2>{{title}}</h2>
+      <p>{{subject}}</p>
+      <p>{{body}}</p>
+    </div>
     {{/reverseEach}}
   </div>
 
   <div id="announceModal" class="modal" style="display:none;">
     <div class="modal-content">
       <span class="close" onclick="closeannounceModal()">&times;</span>
-      <form action="/create-announcement" method="post" class="announceform">
+      <form action="/create-club-announcement" method="post" class="announceform">
         <input type="hidden" name="originalposter" value="{{user.username}}">
         <input type="hidden" name="profilepic" value="{{user.profilepic}}">
         <input type="hidden" name="clubid" value="{{club.id}}">
-        
+
         <label for="title">Title:</label>
         <input type="text" id="title" name="title" required>
 
@@ -134,7 +145,7 @@
     </div>
   </div>
 
-	<div id="inviteModal" class="modal">
+  <div id="inviteModal" class="modal">
     <div class="modal-content">
       <span class="close" onclick="closeModal()">&times;</span>
       <form action="/invite-user" method="post" class="inviteform">
@@ -143,13 +154,35 @@
         <label for="invited_user">Invite User:</label>
         <select name="invited_user" id="invited_user">
           {{#each allUsers}}
-            <option value="{{id}}">{{firstname}}</option>
+          <option value="{{id}}">{{firstname}}</option>
           {{/each}}
         </select>
         <button type="submit" class="submit-invite">Invite</button>
       </form>
     </div>
   </div>
+
+  <footer>
+    <div class="footer-content">
+      <div class="pta-logo">
+        <img src="/images/logo.png" alt="PTA Logo">
+      </div>
+      <div class="contact-info">
+        <p>Philippine Taekwondo Central Headquarters</p>
+        <p>Rizal Memorial Coliseum, Manila, Philippines</p>
+        <p>0977 384 5879</p>
+        <p>pthtkd@gmail.com</p>
+      </div>
+      <div class="social-media">
+        <p>Follow us</p>
+        <div class="icons">
+          <a href="https://www.facebook.com"><img src="/images/homepage/fb.png" alt="Facebook"></a>
+          <a href="https://www.instagram.com"><img src="/images/homepage/ig.png" alt="Instagram"></a>
+          <a href="https://www.twitch.com"><img src="/images/homepage/twitch.webp" alt="Twitch"></a>
+        </div>
+      </div>
+    </div>
+  </footer>
 
   <script>
     function toggleDropdown() {
@@ -169,56 +202,56 @@
     }
 
     document.addEventListener('DOMContentLoaded', function () {
-    // Get references to the elements
-    const participantsTab = document.querySelector('.clubtabs ul li:nth-child(2) a');
-    const detailsTab = document.querySelector('.clubtabs ul li:nth-child(1) a');
-    const announcementsTab = document.querySelector('.clubtabs ul li:nth-child(3) a');
-    const leftside = document.querySelector('.leftside');
-    const rightside = document.querySelector('.rightside');
-    const participantsContainer = document.querySelector('.participants-container');
-    const announcements = document.querySelector('.announcements');
+      // Get references to the elements
+      const participantsTab = document.querySelector('.clubtabs ul li:nth-child(2) a');
+      const detailsTab = document.querySelector('.clubtabs ul li:nth-child(1) a');
+      const announcementsTab = document.querySelector('.clubtabs ul li:nth-child(3) a');
+      const leftside = document.querySelector('.leftside');
+      const rightside = document.querySelector('.rightside');
+      const participantsContainer = document.querySelector('.participants-container');
+      const announcements = document.querySelector('.announcements');
 
-    // Hide participants container by default
-    participantsContainer.style.display = 'none';
-
-    // Function to show participants container and hide sides
-    function showParticipants() {
-      leftside.style.display = 'none';
-      rightside.style.display = 'none';
-      participantsContainer.style.display = 'block';
-      announcements.style.display = 'none';
-    }
-
-    // Function to show sides and hide participants container
-    function showDetails() {
-      leftside.style.display = 'block';
-      rightside.style.display = 'block';
+      // Hide participants container by default
       participantsContainer.style.display = 'none';
-      announcements.style.display = 'none';
-    }
 
-    function showAnnouncements() {
-      leftside.style.display = 'none';
-      rightside.style.display = 'none';
-      participantsContainer.style.display = 'none';
-      announcements.style.display = 'block';
-    }
+      // Function to show participants container and hide sides
+      function showParticipants() {
+        leftside.style.display = 'none';
+        rightside.style.display = 'none';
+        participantsContainer.style.display = 'block';
+        announcements.style.display = 'none';
+      }
 
-    // Add event listener for the Participants tab
-    participantsTab.addEventListener('click', function () {
-      showParticipants();
-    });
+      // Function to show sides and hide participants container
+      function showDetails() {
+        leftside.style.display = 'block';
+        rightside.style.display = 'block';
+        participantsContainer.style.display = 'none';
+        announcements.style.display = 'none';
+      }
 
-    // Add event listener for the Details tab
-    detailsTab.addEventListener('click', function () {
+      function showAnnouncements() {
+        leftside.style.display = 'none';
+        rightside.style.display = 'none';
+        participantsContainer.style.display = 'none';
+        announcements.style.display = 'block';
+      }
+
+      // Add event listener for the Participants tab
+      participantsTab.addEventListener('click', function () {
+        showParticipants();
+      });
+
+      // Add event listener for the Details tab
+      detailsTab.addEventListener('click', function () {
         showDetails();
       });
 
-    announcementsTab.addEventListener('click', function () {
+      announcementsTab.addEventListener('click', function () {
         showAnnouncements();
       });
-    }); 
-      
+    });
+
 
     function openModal() {
       document.getElementById('inviteModal').style.display = 'block';
@@ -236,11 +269,12 @@
       document.getElementById('announceModal').style.display = 'none';
     }
 
-    window.onclick = function(event) {
+    window.onclick = function (event) {
       if (event.target == document.getElementById('announceModal')) {
         closeModal();
       }
     }
   </script>
 </body>
+
 </html>

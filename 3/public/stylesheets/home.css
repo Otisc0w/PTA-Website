@@ -1,5 +1,17 @@
 @import url('https://fonts.cdnfonts.com/css/sf-pro-display');
 
+
+.upcoming-events {
+    overflow-x: auto; /* Enable horizontal scrolling */
+    overflow-y: hidden; /* Hide vertical overflow */
+    white-space: nowrap; /* Prevent line breaks */
+    width: auto;
+}
+
+.upcoming-events .event {
+    display: inline-block; /* Display events in a single line */
+}
+
 .poster {
     text-align: center;
     margin-bottom: 20px;
@@ -20,16 +32,13 @@
     flex-grow:1;
 }
 
-.left-panel, .right-panel {
-    flex: 1;
-}
-
 .main-panel {
-    flex: 2;
+    flex: 1;
     padding: 0 20px;
+
 }
 
-.upcoming-events, .news {
+.news {
     margin-bottom: 20px;
 }
 
@@ -43,19 +52,23 @@
     padding: 20px;
     margin: 10px;
     font-size: 16px;
-    width: 300px;
+    height: 400px; /* Ensure all event containers have the same height */
+    width: 300px; /* Ensure all event containers have the same width */
     text-align: center;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 .event img, .news-item img {
     width: 100%;
-    height: 70%;
+    height: 250px;
     object-fit: cover; /* Ensure the image covers the container */
     object-position: center; /* Center the image within the container */
-    border-radius: 4px 4px 4px 4px;
+    border-radius: 4px 4px 0 0;
 }
 
 .event h3, .news-item h3 {
@@ -77,16 +90,20 @@
     border-radius: 5px;
     background-color: #2E2E2E;
     transition: background-color 0.3s;
-}
-
-.event a:hover, .news-item a:hover {
-    background-color: #1A1A1A;
+    margin-top: auto; /* Ensure the button stays at the bottom */
+    align-self: center; /* Align the button horizontally at the center */
 }
 
 .horizontal-container {
     display: flex;
-    flex-wrap: nowrap;
-    overflow-x: auto;
+    justify-content: center; /* Center the container horizontally */
+    align-items: center; /* Center the container vertically */
+    width: 100%; /* Ensure the container takes full width */
+    height: auto; /* Adjust height as needed */
+}
+
+.event a:hover, .news-item a:hover {
+    background-color: #1A1A1A;
 }
 
 .footer-content {
@@ -137,5 +154,13 @@
     height: 30px;
 }
 
-
-
+/* 09/25/24 */
+/* Style for the "Clubs" title */
+.clubs-title {
+    text-align: left;  /* Align the text to the left */
+    font-size: 36px;   /* Increase the font size for visibility */
+    font-weight: bold; /* Make the text bold for better readability */
+    color: white;      /* Ensure the text color contrasts with the background */
+    margin-left: 20px; /* Add some left margin for spacing */
+    margin-top: 20px;  /* Add top margin to prevent it from sticking to the navbar */
+}

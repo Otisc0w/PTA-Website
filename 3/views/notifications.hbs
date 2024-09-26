@@ -39,7 +39,7 @@
     </div>
   </div>
 
-  <div class="notifications-container">
+  <div class="notifications-container padding">
     <h1>Notifications</h1>
     <ul class="notifications-list">
       {{#each notifications}}
@@ -54,21 +54,22 @@
         <button class="delete-button">X</button>
       </li>
       {{else}}
-      <li>No notifications available</li>
+      <li class="no-notifs">No notifications available</li>
       {{/each}}
     </ul>
 
-    <h2>Pending Invitations</h2>
     <ul>
     {{#each club_invitations}}
-        <li>
-          You've been invited to {{this.clubname}}, Invited by: {{this.registree}}
-          <form action="/accept-invitation/{{this.id}}" method="post" style="display: inline;">
-            <button type="submit">Accept</button>
-          </form>
-          <form action="/reject-invitation/{{this.id}}" method="post" style="display: inline;">
-            <button type="submit">Reject</button>
-          </form>
+        <li class="notification">
+          <div class="fit center">
+            You have been invited to<span class="focus"> {{this.clubname}}</span>. You have been invited by:<span class="focus"> {{this.invitername}}</span><br>
+            <form action="/accept-invitation/{{this.id}}" method="post" style="display: inline;">
+              <button class="button-3 bg-green margin" type="submit">Accept</button>
+            </form>
+            <form action="/reject-invitation/{{this.id}}" method="post" style="display: inline;">
+              <button class="button-3 bg-red margin" type="submit">Reject</button>
+            </form>
+          </div>
         </li>
     {{/each}}
     </ul>
@@ -76,12 +77,13 @@
   </div>
 
   <script>
-    // This code assumes you have access to the `notifications` data in your JavaScript context.
-    // If you don't, you need to make sure the data is available here.
     document.addEventListener("DOMContentLoaded", function () {
-      // Assuming you have a variable `notifications` that holds your notifications data.
-      const notifications = []; // Replace with actual data fetching logic.
-      console.log("Notifications:", notifications);
+      if (document.querySelectorAll('.notification').length > 0) {
+        let nonotifs = document.querySelectorAll('.no-notifs');
+        nonotifs.forEach(function(element) {
+            element.style.display = 'none';
+        });
+      }
     });
 
     function toggleDropdown() {

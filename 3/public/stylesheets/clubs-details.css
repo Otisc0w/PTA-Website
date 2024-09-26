@@ -1,4 +1,4 @@
-.events-container{
+.events-container {
   margin-top: 80px;
   display: flex;
   flex-direction: column;
@@ -12,27 +12,40 @@
   margin-bottom: 20px;
   object-fit: cover;
 }
+/*09/25/24*/
+
 
 .clubname {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
   align-items: center;
   width: 100%;
+   /*09/25/24*/
+  justify-content: center; 
+  text-align: center;
+  font-size: 30px;
+  font-weight: bold;
+  margin-bottom: 10px;
 }
 
 .clubname .name {
-  font-size: 24px;
+  font-size: 30px;
   font-weight: bold;
+  /*09/25/24*/
+  text-align: center; 
+  margin: 10px 0; 
+  /*09/25/24*/
 }
 
 .manage-button {
   display: flex;
   align-items: center;
-  background-color: #007BFF;
+  background-color: #007bff;
   color: white;
   padding: 10px 20px;
   border-radius: 5px;
   text-decoration: none;
+  margin-top: 10px; /*09/25/24*/
 }
 
 .manage-button img {
@@ -40,11 +53,11 @@
   height: 20px;
 }
 
-
 .clubtabs ul {
   list-style: none;
   display: flex;
   padding: 0;
+  justify-content: center; /*09/25/24*/
 }
 
 .clubtabs ul li {
@@ -56,6 +69,7 @@
   color: #fff;
   font-size: 22px;
   padding: 10px 20px;
+  text-align: center; /*09/25/24*/
 }
 
 .clubtabs ul li a:active {
@@ -72,7 +86,38 @@
   padding: 10px 20px;
   background-color: #333;
   border-radius: 5px;
+  text-align: center; /*09/25/24*/
+}
 
+.intro div {
+  display: inline-block;
+}
+
+.intro img {
+  width: 20px;
+  height: 20px;
+  border-radius: 0%;
+  float: center;
+  vertical-align: middle;
+  margin-left: 10px;
+}
+.intro:hover {
+  background-color: #444; 
+  transition: background-color 0.3s ease-in-out;
+}
+
+.edit-button {
+  background: none;
+  color: white;
+  border: none;
+  font-size: 14px;
+  cursor: pointer;
+  margin-left: 10px;
+}
+
+.edit-button img {
+  width: 16px;
+  height: 16px;
 }
 
 .sides {
@@ -81,61 +126,107 @@
   width: 70%;
 }
 
+.detailstab {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
 .leftside,
 .rightside {
   width: 30%;
-  position: relative
+  position: relative;
 }
 
 .intro {
   background-color: #2e2e2e;
   padding: 20px;
   border-radius: 10px;
-  width: 300px;
-  height: 200px;
+  width: 400px;
+  text-align: left;
+  box-shadow: 0px 4px 10px rgba (0,0,0,0.5);
+}
+
+.intro p {
+  color: white;
+  font-size: 16px;
+  margin: 10px 0;
 }
 
 .intro h3 {
   margin-top: 0;
 }
 
-.participants-container, .registrations-container {
+.participants-container,
+.registrations-container {
   display: none;
   margin-top: 20px;
   padding: 0 300px;
 }
 
-.participants-title, .registrations-title  {
-  font-size: 1.5em;
+.participants-title,
+.registrations-title {
   margin-bottom: 10px;
-}
-
-.participants-table, .registrations-table  {
-  width: 100%;
-  border-collapse: collapse;
+  /*09/25/24*/
+  font-size: 25px;
+  font-weight: bold;
   text-align: left;
 }
 
-.participants-table th, .participants-table td, .registrations-table th, .registrations-table td  {
-  padding: 10px;
-  border-bottom: 1px solid #333;
+.participants-table,
+.registrations-table {
+ /* width: 100%;
+  border-collapse: collapse;
+  text-align: left; */
+  /*09/25/24*/
+  width: 90%;
+  margin: 20px auto;
+  border-collapse: collapse;
 }
 
-.participants-table th, .registrations-table th {
+.participants-table th,
+.participants-table td,
+.registrations-table th,
+.registrations-table td {
+  padding: 12px;
+  border-bottom: 1px solid #333;
+  text-align: center; /*09/25/24*/
+}
+
+.participants-table th,
+.registrations-table th {
   background-color: #444;
   color: white;
+  font-size: 18px; /*09/25/24*/
 }
 
-.participants-table tr:nth-child(even), .registrations-table tr:nth-child(even) {
+.participants-table tr:nth-child(even),
+.registrations-table tr:nth-child(even) {
   background-color: #2e2e2e;
 }
 
-.participants-table tr:hover, .registrations-table tr:hover {
+.participants-table tr:hover,
+.registrations-table tr:hover {
   background-color: #3e3e3e;
 }
 
-.participants-table td, .registrations-table td {
+.participants-table td,
+.registrations-table td {
   color: #fff;
+}
+/*09/25/24*/
+.participants-table td img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: block;
+  margin: 0 auto;
+}
+h2 {
+  font-size: 20px; 
+  font-weight: normal;
+  text-align: left;
 }
 
 .invite-button {
@@ -191,34 +282,34 @@
   cursor: pointer;
 }
 
-.participants-table img{
+.participants-table img {
   width: 40px;
   height: 40px;
   border-radius: 30px;
 }
 
-.name{
+.name {
   margin-left: 380px;
 }
 
-.modal select{
-    width: 100%;
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
+.modal select {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
 }
 
-.modal .submit-invite{
-  background-color: #4CAF50;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-top: 20px;
+.modal .submit-invite {
+  background-color: #4caf50;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 20px;
 }
 
-.registercodediv{
+.registercodediv {
   width: 400px;
   height: 150px;
   margin: auto;
@@ -244,15 +335,16 @@
   background-color: #0056b3;
 }
 
-.buttondiv{
+.buttondiv {
   padding: 20px 10px;
 }
 
-.buttondiv p, h1{
+.buttondiv p,
+h1 {
   text-align: center;
 }
 
-.grayed-register-button{
+.grayed-register-button {
   background-color: gray;
   color: white;
   border: none;
@@ -265,18 +357,18 @@
   margin-top: 65px;
 }
 
-.pending{
+.pending {
   color: rgb(214, 190, 84);
 }
 
-.announcements{
+.announcements {
   margin: auto;
   margin-top: 10px;
   margin-left: 20%;
   position: relative;
 }
 
-.oneannouncement{
+.oneannouncement {
   width: 900px;
   padding: 10px 10px;
   background-color: #444;
@@ -285,13 +377,295 @@
   margin-left: 130px;
 }
 
-.newannounce{
-  background-color: #007BFF;
+.newannounce {
+  background-color: #007bff;
   border-radius: 4px;
-  border:none;
-  margin:0;
-  padding:0;
+  border: none;
+  margin: 0;
+  padding: 0;
   cursor: pointer;
   color: white;
   padding: 10px 10px;
+}
+
+/* events stuff */
+
+.eventsides {
+  display: flex;
+  justify-content: space-between;
+  padding: 20px;
+  margin: auto;
+}
+
+.eventleftside,
+.eventmiddleside,
+.eventrightside {
+  margin: 10px;
+  padding: 20px;
+  background-color: #2d2d2d;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  display: inline;
+  height: auto;
+}
+
+.eventmiddleside {
+  width: 600px;
+}
+
+.eventrightside,
+.eventleftside {
+  height: 20%;
+}
+
+.intro,
+.schedule,
+.eventregistercodediv {
+  padding: 20px;
+  color: #ffffff;
+  height: auto;
+}
+
+.match {
+  background-color: #333;
+  padding: 10px;
+  margin: 10px;
+  border-radius: 5px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.match-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.match-time {
+  font-size: 14px;
+  margin: 0;
+}
+.match-players {
+  font-size: 18px;
+  margin: 0;
+}
+.match-vs {
+  font-size: 14px;
+  margin: 0;
+}
+.scoresheet {
+  color: #0074d9;
+  text-decoration: none;
+}
+.scoresheet:hover {
+  text-decoration: underline;
+}
+
+.register-button,
+.grayed-register-button {
+  display: inline-block;
+  padding: 10px 20px;
+  margin-top: 20px;
+  border-radius: 5px;
+  text-align: center;
+  text-decoration: none;
+  color: #fff;
+  background-color: #007bff;
+}
+
+.grayed-register-button {
+  background-color: #6c757d;
+  cursor: not-allowed;
+}
+
+.code,
+.pending {
+  color: #007bff;
+}
+
+.begincompe {
+  border: none;
+  padding: 5px 10px;
+  background-color: #0074d9;
+  color: white;
+  border-radius: 4px;
+}
+
+.begincompe:hover {
+  background-color: #007bff;
+}
+
+.champion-container img {
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+}
+
+/* Modal container */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgba(0, 0, 0, 0.8); /* Black w/ opacity */
+  backdrop-filter: blur(10px); /* Blur the background */
+}
+
+/* Modal content */
+.modal-content {
+  background-color: #222;
+  margin: 15% auto; /* 15% from the top and centered */
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%; /* Could be more or less, depending on screen size */
+  max-width: 600px; /* Maximum width */
+  border-radius: 8px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+  animation: fadeIn 0.3s;
+  color: white;
+}
+
+/* Close button */
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: white;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+/* Form fields */
+.event-form .form-group {
+  margin-bottom: 15px;
+}
+
+.event-form label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.event-form input[type="text"],
+.event-form input[type="date"],
+.event-form input[type="time"],
+.event-form input[type="number"],
+.event-form textarea,
+.event-form select {
+  width: 100%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  background-color: #333;
+  color: white;
+}
+
+/* File input */
+.event-form .eventpic input[type="file"] {
+  display: block;
+  margin-top: 10px;
+}
+
+/* Buttons */
+.event-form .cancel,
+.event-form button[type="submit"] {
+  width: 100%;
+  background-color: #007bff;
+  color: white;
+  padding: 14px 20px;
+  margin: 8px 0;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.event-form .cancel {
+  background-color: #f44336;
+}
+
+.event-form .cancel:hover {
+  background-color: #d32f2f;
+}
+
+.event-form button[type="submit"]:hover {
+  background-color: #0056b3;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* 09/25/24*/
+
+.footer-content {
+  background-color: #333;
+  color: #fff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+ /* height: 100px;
+  margin-top: auto; */
+}
+
+.footer-content .pta-logo img {
+  height: 100%; 
+}
+
+.footer-content .contact-info {
+  flex: 1;
+  text-align: center;
+  padding: 0 20px;
+}
+
+.footer-content .contact-info p {
+  margin: 5px 0;
+}
+
+.footer-content .social-media {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.footer-content .social-media p {
+  margin-bottom: 5px;
+}
+
+.footer-content .social-media .icons {
+  display: flex;
+  align-items: center;
+}
+
+.footer-content .social-media a {
+  margin-left: 10px;
+}
+.footer-content .contact-info p, .footer-content .social-media p {
+  margin: 5px 0;
+  font-size: 14px;
+}
+
+.footer-content .social-media a img {
+  height: 30px;
+  margin-left: 10px;
+}
+
+.footer-content .social-media img {
+  height: 30px;
 }

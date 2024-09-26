@@ -51,6 +51,7 @@ body {
     margin: 10px 0;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    width: max-content;
 }
 
 .notification-type {
@@ -91,4 +92,92 @@ body {
 
 .notification-type.Joined {
     color: green;
+}
+
+.bg-green {
+    background-color: green;
+}
+.bg-red {
+    background-color: red;
+}
+
+.focus {
+    font-size: 30px;
+    font-weight: bold;
+}
+
+.button-3 {
+  appearance: none;
+  border: 1px solid rgba(27, 31, 35, .15);
+  border-radius: 6px;
+  box-shadow: rgba(27, 31, 35, .1) 0 1px 0;
+  box-sizing: border-box;
+  color: #fff;
+  cursor: pointer;
+  display: inline-block;
+  font-family: -apple-system,system-ui,"Segoe UI",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji";
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 20px;
+  padding: 6px 16px;
+  position: relative;
+  text-align: center;
+  text-decoration: none;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.button-3:focus:not(:focus-visible):not(.focus-visible) {
+  box-shadow: none;
+  outline: none;
+}
+
+.bg-green:hover {
+    background-color: rgb(25, 98, 25);
+}
+.bg-red:hover {
+    background-color: rgb(172, 41, 41);
+}
+
+.button-3:focus {
+  box-shadow: rgba(157, 157, 157, 0.4) 0 0 0 3px;
+  outline: none;
+}
+
+.button-3:disabled {
+  background-color: #cfcfcf;
+  border-color: rgba(27, 31, 35, .1);
+  color: rgba(255, 255, 255, .8);
+  cursor: default;
+}
+
+.button-3:active {
+  background-color: #8f8f8f;
+  box-shadow: rgba(20, 70, 32, .2) 0 1px 0 inset;
+}
+
+.margin {
+    margin: 10px;
+}
+
+.fit {
+    width: max-content;
+}
+
+.center {
+    align-content: center;
+    justify-content: center;
+    align-items: center;
+}
+
+.flex {
+    display: flex;
+}
+
+.padding {
+    padding-left: 300px;
+    padding-right: 300px;
 }

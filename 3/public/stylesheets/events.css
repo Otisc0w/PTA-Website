@@ -8,6 +8,25 @@ body {
     overflow-x: hidden;
 }
 
+.flex {
+    display: flex;
+}
+
+input, .button-padding {
+    padding: 5px;
+    border-radius: 10px;
+} 
+
+.margin {
+    margin: 300px;
+    margin-top: 100px;
+    align-self: center;
+    justify-self: center;
+}
+.small-margin {
+    margin: 20px;
+}
+
 .events-container {
     margin-top: 60px;
     height: auto;
@@ -79,107 +98,74 @@ body {
     width: 100%;
 }
 
-.horizontal-container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 20px;
-    padding: 20px 0;
-}
-
-.event-card {
-    background-color: #1c1c1c;
-    border: 1px solid #444;
-    border-radius: 8px;
-    padding: 16px;
-    max-width: 300px;
-    text-align: center;
-    color: #ffffff;
-}
-
-.event-card img {
-    max-width: 100%;
-    border-radius: 8px;
-}
-
-.event-title {
-    font-size: 1.2em;
-    margin: 10px 0;
-    color: #007BFF;
-}
-
-.event-card p {
-    font-size: 1em;
-    color: #bfbfbf;
-}
-
-.event-card a {
-    display: inline-block;
-    margin-top: 10px;
-    padding: 10px 20px;
-    background-color: #007BFF;
-    color: white;
-    text-decoration: none;
-    border-radius: 4px;
-}
-
-/* Modal styling */
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 1;
-    left: 0;
-    top: 0;
+.home-container {
+    margin-top: 70px; 
+    background-color: #3A3A3A;
     width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgba(0, 0, 0, 0.4);
-    padding-top: 60px;
+    flex: 1;
+    color: white;
+    opacity: .9;
 }
 
-.modal-content {
-    background-color: #2e2e2e;
-    margin: 5% auto;
+.event, .news-item {
+    background-color: #1E1E1E; 
+    color: white;
     padding: 20px;
-    border: 1px solid #888;
-    width: 80%;
-    max-width: 600px;
-    border-radius: 8px;
+    margin: 10px;
+    font-size: 16px;
+    width: 300px;
+    height: 400px; /* Ensure all event containers have the same height */
+    width: 300px; /* Ensure all event containers have the same width */
+    text-align: center;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
-.close {
-    color: #aaa;
-    float: right;
-    font-size: 28px;
+.event img, .news-item img {
+    width: 100%;
+    height: 250px;
+    object-fit: cover; /* Ensure the image covers the container */
+    object-position: center; /* Center the image within the container */
+    border-radius: 4px 4px 0 0;
+}
+
+.event h3, .news-item h3 {
+    margin-top: 10px;
+    font-size: 18px;
     font-weight: bold;
 }
 
-.close:hover,
-.close:focus {
-    color: white;
+.event p, .news-item p {
+    font-size: 14px;
+    margin: 10px 0;
+}
+
+.event a, .news-item a {
+    display: inline-block;
+    padding: 10px 15px;
+    color: #007BFF;
     text-decoration: none;
-    cursor: pointer;
+    border-radius: 5px;
+    background-color: #2E2E2E;
+    transition: background-color 0.3s;
+    margin-top: auto; /* Ensure the button stays at the bottom */
+    align-self: center; /* Align the button horizontally at the center */
 }
 
-.modal-body {
+.event a:hover, .news-item a:hover {
+    background-color: #1A1A1A;
+}
+
+.horizontal-container {
+    margin-left: 30px;
     display: flex;
-    flex-direction: column;
-}
-
-.event-detail {
-    display: flex;
-    flex-direction: row;
-}
-
-.event-detail img {
-    max-width: 250px;
-    border-radius: 8px;
-    margin-right: 20px;
-}
-
-.event-info {
-    display: flex;
-    flex-direction: column;
+    flex-wrap: wrap;
+    max-height: 100vh; /* Ensure the container does not exceed the viewport height */
+    padding: 10px; /* Add some padding for better appearance */
 }
 
 .register-button {
@@ -228,7 +214,7 @@ body {
     background-color: rgba(0, 0, 0, 0.8); /* Black w/ opacity */
     backdrop-filter: blur(10px); /* Blur the background */
 }
-  
+
 .modal-content {
     background-color: #222;
     margin: 15% auto; /* 15% from the top and centered */
@@ -243,7 +229,7 @@ body {
 .modal ul li{
     display: inline-block;
     margin: 30px;
-    
+
 }
 
 .modal a{
@@ -267,29 +253,69 @@ body {
     border-radius: 7%;
     padding: 15px;
 }
-  
+
 .close {
     color: #aaa;
     float: right;
     font-size: 28px;
     font-weight: bold;
 }
-  
+
 .close:hover,
 .close:focus {
     color: white;
     text-decoration: none;
     cursor: pointer;
 }
-  
-.participants-table img{
-    width: 40px;
-    height: 40px;
-    border-radius: 30px;
-}
-  
+
 .name{
     margin-left: 400px;
 }
 
+.footer-content {
+    background-color: #333;
+    color: #fff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    height: 100px;
+}
 
+.footer-content .pta-logo img {
+    height: 50px; 
+}
+
+.footer-content .contact-info {
+    flex: 1;
+    text-align: center;
+    padding: 0 20px;
+}
+
+.footer-content .contact-info p {
+    margin: 5px 0;
+}
+
+.footer-content .social-media {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.footer-content .social-media p {
+    margin-bottom: 5px;
+}
+
+.footer-content .social-media .icons {
+    display: flex;
+    align-items: center;
+}
+
+.footer-content .social-media a {
+    margin-left: 10px;
+}
+
+.footer-content .social-media img {
+    height: 30px; 
+    width: 30px; 
+}

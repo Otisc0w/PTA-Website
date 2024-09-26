@@ -10,6 +10,15 @@
   color: var(--white);
 }
 
+.margin {
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.flex {
+    display: flex;
+}
+
 .container {
     position:relative; 
     width: 100%;
@@ -17,6 +26,11 @@
     color: var(--white);
     background-image: url('../images/ptabg.png');
 }
+
+input, .button-padding {
+    padding: 5px;
+    border-radius: 10px;
+} 
 
 .leftside{
     width: 50%;
@@ -68,4 +82,3 @@
 .login-link:hover, .signup-link:hover{
     color: #7caeff;
 }
-
