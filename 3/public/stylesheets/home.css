@@ -1,11 +1,17 @@
 @import url('https://fonts.cdnfonts.com/css/sf-pro-display');
 
 
-.upcoming-events{
-    max-height: 800px; /* Set a maximum height for the container */
+.upcoming-events {
     overflow-x: auto; /* Enable horizontal scrolling */
-    max-width: 1080px;
+    overflow-y: hidden; /* Hide vertical overflow */
+    white-space: nowrap; /* Prevent line breaks */
+    width: auto;
 }
+
+.upcoming-events .event {
+    display: inline-block; /* Display events in a single line */
+}
+
 .poster {
     text-align: center;
     margin-bottom: 20px;
@@ -26,16 +32,13 @@
     flex-grow:1;
 }
 
-.left-panel, .right-panel {
-    flex: 1;
-}
-
 .main-panel {
-    flex: 2;
+    flex: 1;
     padding: 0 20px;
+
 }
 
-.upcoming-events, .news {
+.news {
     margin-bottom: 20px;
 }
 
@@ -49,17 +52,15 @@
     padding: 20px;
     margin: 10px;
     font-size: 16px;
-    width: 300px;
+    height: 400px; /* Ensure all event containers have the same height */
+    width: 300px; /* Ensure all event containers have the same width */
     text-align: center;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     position: relative;
-    /*09/25/24*/
-    height: 400px; /* Ensure all event containers have the same height */
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    /*09/25/24*/
 }
 
 .event img, .news-item img {
@@ -89,20 +90,20 @@
     border-radius: 5px;
     background-color: #2E2E2E;
     transition: background-color 0.3s;
-    /*09/25/24*/
     margin-top: auto; /* Ensure the button stays at the bottom */
     align-self: center; /* Align the button horizontally at the center */
-    /*09/25/24*/
-}
-
-.event a:hover, .news-item a:hover {
-    background-color: #1A1A1A;
 }
 
 .horizontal-container {
     display: flex;
-    flex-wrap: nowrap;
-    overflow-x: auto;
+    justify-content: center; /* Center the container horizontally */
+    align-items: center; /* Center the container vertically */
+    width: 100%; /* Ensure the container takes full width */
+    height: auto; /* Adjust height as needed */
+}
+
+.event a:hover, .news-item a:hover {
+    background-color: #1A1A1A;
 }
 
 .footer-content {

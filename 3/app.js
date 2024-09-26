@@ -2365,7 +2365,11 @@ app.get("/home", async function (req, res) {
   }
 
   try {
-    const { data, error } = await supabase.from("events").select("*");
+    const { data, error } = await supabase
+      .from("events")
+      .select("*")
+      .order("created_at", { ascending: false })
+      .limit(4);
 
     if (error) {
       return res.status(400).json({ error: error.message });

@@ -18,6 +18,7 @@ body {
     margin-top: 70px; 
     background-color: #3A3A3A;
     width: 100%;
+    height: auto;
     flex: 1;
     color: white;
     opacity: .9;
@@ -79,8 +80,6 @@ body {
     margin-left: 30px;
     display: flex;
     flex-wrap: wrap;
-    overflow-x: auto; /* Enable horizontal scrolling */
-    max-height: 100vh; /* Ensure the container does not exceed the viewport height */
     padding: 10px; /* Add some padding for better appearance */
 }
 
