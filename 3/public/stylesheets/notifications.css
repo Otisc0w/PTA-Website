@@ -16,6 +16,7 @@ body {
     color: white;
     opacity: .9;
 }
+
 .notifications {
     position: relative;
 }
@@ -51,7 +52,7 @@ body {
     margin: 10px 0;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    width: max-content;
+    width: 100%;
 }
 
 .notification-type {
@@ -97,6 +98,7 @@ body {
 .bg-green {
     background-color: green;
 }
+
 .bg-red {
     background-color: red;
 }
@@ -107,56 +109,61 @@ body {
 }
 
 .button-3 {
-  appearance: none;
-  border: 1px solid rgba(27, 31, 35, .15);
-  border-radius: 6px;
-  box-shadow: rgba(27, 31, 35, .1) 0 1px 0;
-  box-sizing: border-box;
-  color: #fff;
-  cursor: pointer;
-  display: inline-block;
-  font-family: -apple-system,system-ui,"Segoe UI",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji";
-  font-size: 14px;
-  font-weight: 600;
-  line-height: 20px;
-  padding: 6px 16px;
-  position: relative;
-  text-align: center;
-  text-decoration: none;
-  user-select: none;
-  -webkit-user-select: none;
-  touch-action: manipulation;
-  vertical-align: middle;
-  white-space: nowrap;
+    appearance: none;
+    border: 1px solid rgba(27, 31, 35, .15);
+    border-radius: 6px;
+    box-shadow: rgba(27, 31, 35, .1) 0 1px 0;
+    box-sizing: border-box;
+    color: #fff;
+    cursor: pointer;
+    display: inline-block;
+    font-family: -apple-system, system-ui, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 20px;
+    padding: 6px 16px;
+    position: relative;
+    text-align: center;
+    text-decoration: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    vertical-align: middle;
+    white-space: nowrap;
+    background-color: #007BFF; /* Changed button color to a nicer blue */
 }
 
 .button-3:focus:not(:focus-visible):not(.focus-visible) {
-  box-shadow: none;
-  outline: none;
+    box-shadow: none;
+    outline: none;
 }
 
 .bg-green:hover {
     background-color: rgb(25, 98, 25);
 }
+
 .bg-red:hover {
     background-color: rgb(172, 41, 41);
 }
 
+.button-3:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+}
+
 .button-3:focus {
-  box-shadow: rgba(157, 157, 157, 0.4) 0 0 0 3px;
-  outline: none;
+    box-shadow: rgba(157, 157, 157, 0.4) 0 0 0 3px;
+    outline: none;
 }
 
 .button-3:disabled {
-  background-color: #cfcfcf;
-  border-color: rgba(27, 31, 35, .1);
-  color: rgba(255, 255, 255, .8);
-  cursor: default;
+    background-color: #cfcfcf;
+    border-color: rgba(27, 31, 35, .1);
+    color: rgba(255, 255, 255, .8);
+    cursor: default;
 }
 
 .button-3:active {
-  background-color: #8f8f8f;
-  box-shadow: rgba(20, 70, 32, .2) 0 1px 0 inset;
+    background-color: #8f8f8f;
+    box-shadow: rgba(20, 70, 32, .2) 0 1px 0 inset;
 }
 
 .margin {
@@ -180,4 +187,43 @@ body {
 .padding {
     padding-left: 300px;
     padding-right: 300px;
+}
+
+.verification-reminder {
+    background-color: #ffcc00;
+    color: #333;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    margin: 20px 0;
+}
+
+.verification-reminder .icon {
+    font-size: 24px;
+    margin-right: 10px;
+}
+
+.verification-reminder .message {
+    flex: 1;
+    font-size: 16px;
+}
+
+.verification-reminder .button {
+    background-color: #007BFF; /* Changed button color to match the new button style */
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.verification-reminder .button:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+}
+
+.verification-reminder a, p{
+    margin-left: 20px;
 }
