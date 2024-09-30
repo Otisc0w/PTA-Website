@@ -434,7 +434,6 @@ app.post("/submit-login", async (req, res) => {
 
     if (error || !data) {
       // Invalid credentials
-      res.redirect("/?login=failed");
       return res.status(401).render("index", {
         error: "Invalid username or password.",
         users: [], // Pass users array if needed
@@ -442,7 +441,7 @@ app.post("/submit-login", async (req, res) => {
       });
     }
 
-    // Store user information in session
+    // Store user in session
     req.session.user = {
       id: data.id,
       firstname: data.firstname,
@@ -469,10 +468,10 @@ app.post("/submit-login", async (req, res) => {
       console.error("Error fetching NCC registrations:", registrationsError.message);
     } else {
       for (const registration of registrations) {
-        if (registration.expireson !== currentDate) {
+        if (registration.expireson == currentDate) {
           const { error: updateError } = await supabase
             .from("ncc_registrations")
-            .update({ status: 5 })
+            .update({ status: 6 })
             .eq("id", registration.id);
 
           if (updateError) {
@@ -487,7 +486,7 @@ app.post("/submit-login", async (req, res) => {
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
-});//not sure if this thang works
+});
 
 app.post("/submit-signup", async (req, res) => {
   const {
