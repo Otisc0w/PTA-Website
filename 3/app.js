@@ -615,164 +615,95 @@ app.post(
     }
 
     try {
-      // Insert the new user into the database
-      const { data, error } = await supabase.from("ncc_registrations").insert([
-        {
-          apptype,
-          firstname,
-          middlename,
-          lastname,
-          gender,
-          bday,
-          age,
-          phonenum,
-          email,
-          lastpromo,
-          promolocation,
-          clubregion,
-          beltlevel,
-          instructorfirstname,
-          instructormi,
-          instructorlastname,
-          instructormobile,
-          instructoremail,
-          status,
-          submittedby,
-          birthcert: birthcertUrl, // Include the birth certificate URL
-          portrait: portraitUrl, // Include the portrait URL
-        },
-      ]);
-
-      if (error) {
-        console.error("Error creating registration:", error.message);
-        return res.status(500).render("membership", {
-          error: "Error creating registration.",
-          users: [], // Optionally pass users array if you need it in the view
-        });
-      }
-      res.redirect("/membership");
-    } catch (error) {
-      console.error("Server error:", error.message);
-      res.status(500).json({ error: error.message });
-    }
-  }
-);
-
-app.post(
-  "/update-ncc",
-  upload.fields([
-    { name: "birthcert", maxCount: 1 },
-    { name: "portrait", maxCount: 1 },
-  ]),
-  async (req, res) => {
-    const {
-      id,
-      apptype,
-      firstname,
-      middlename,
-      lastname,
-      gender,
-      bday,
-      age,
-      phonenum,
-      email,
-      lastpromo,
-      promolocation,
-      clubregion,
-      beltlevel,
-      instructorfirstname,
-      instructormi,
-      instructorlastname,
-      instructormobile,
-      instructoremail,
-    } = req.body; // Capture user input from the form
-
-    if (!req.session.user) {
-      return res.status(401).send("Unauthorized: No user logged in");
-    }
-
-    const submittedby = req.session.user.id; // Get the current user's username from the session
-    const status = 1;
-
-    let birthcertUrl = null;
-    let portraitUrl = null;
-
-    if (req.files) {
-      try {
-        if (req.files.birthcert) {
-          const birthcertPath = `documents/${Date.now()}-${req.files.birthcert[0].originalname}`;
-          const { error: birthcertUploadError } = await supabase.storage
-            .from("documents")
-            .upload(birthcertPath, req.files.birthcert[0].buffer, {
-              contentType: req.files.birthcert[0].mimetype,
-            });
-
-          if (birthcertUploadError) {
-            console.error("Error uploading birth certificate:", birthcertUploadError.message);
-            return res.status(500).send("Error uploading birth certificate");
-          }
-
-          birthcertUrl = `${supabaseUrl}/storage/v1/object/public/documents/${birthcertPath}`;
-        }
-
-        if (req.files.portrait) {
-          const portraitPath = `documents/${Date.now()}-${req.files.portrait[0].originalname}`;
-          const { error: portraitUploadError } = await supabase.storage
-            .from("documents")
-            .upload(portraitPath, req.files.portrait[0].buffer, {
-              contentType: req.files.portrait[0].mimetype,
-            });
-
-          if (portraitUploadError) {
-            console.error("Error uploading portrait:", portraitUploadError.message);
-            return res.status(500).send("Error uploading portrait");
-          }
-
-          portraitUrl = `${supabaseUrl}/storage/v1/object/public/documents/${portraitPath}`;
-        }
-      } catch (error) {
-        console.error("Server error during file upload:", error.message);
-        return res.status(500).json({ error: error.message });
-      }
-    }
-
-    try {
-      // Update the existing user in the database
-      const { data, error } = await supabase
+      // Check if a row with the same submittedby already exists
+      const { data: existingRegistration, error: existingRegistrationError } = await supabase
         .from("ncc_registrations")
-        .update({
-          apptype,
-          firstname,
-          middlename,
-          lastname,
-          gender,
-          bday,
-          age,
-          phonenum,
-          email,
-          lastpromo,
-          promolocation,
-          clubregion,
-          beltlevel,
-          instructorfirstname,
-          instructormi,
-          instructorlastname,
-          instructormobile,
-          instructoremail,
-          status,
-          submittedby,
-          birthcert: birthcertUrl, // Include the birth certificate URL
-          portrait: portraitUrl, // Include the portrait URL
-        })
-        .eq("submittedby", id);
+        .select("*")
+        .eq("submittedby", submittedby)
+        .single();
 
-      if (error) {
-        console.error("Error updating registration:", error.message);
+      if (existingRegistrationError && existingRegistrationError.code !== 'PGRST116') {
+        console.error("Error checking existing registration:", existingRegistrationError.message);
         return res.status(500).render("membership", {
-          error: "Error updating registration.",
+          error: "Error checking existing registration.",
           users: [], // Optionally pass users array if you need it in the view
         });
       }
+
+      if (existingRegistration) {
+        // Update the existing registration
+        const { data, error } = await supabase
+          .from("ncc_registrations")
+          .update({
+            apptype,
+            firstname,
+            middlename,
+            lastname,
+            gender,
+            bday,
+            age,
+            phonenum,
+            email,
+            lastpromo,
+            promolocation,
+            clubregion,
+            beltlevel,
+            instructorfirstname,
+            instructormi,
+            instructorlastname,
+            instructormobile,
+            instructoremail,
+            status,
+            birthcert: birthcertUrl, // Include the birth certificate URL
+            portrait: portraitUrl, // Include the portrait URL
+          })
+          .eq("submittedby", submittedby);
+
+        if (error) {
+          console.error("Error updating registration:", error.message);
+          return res.status(500).render("membership", {
+            error: "Error updating registration.",
+            users: [], // Optionally pass users array if you need it in the view
+          });
+        }
+      } else {
+        // Insert a new registration
+        const { data, error } = await supabase.from("ncc_registrations").insert([
+          {
+            apptype,
+            firstname,
+            middlename,
+            lastname,
+            gender,
+            bday,
+            age,
+            phonenum,
+            email,
+            lastpromo,
+            promolocation,
+            clubregion,
+            beltlevel,
+            instructorfirstname,
+            instructormi,
+            instructorlastname,
+            instructormobile,
+            instructoremail,
+            status,
+            submittedby,
+            birthcert: birthcertUrl, // Include the birth certificate URL
+            portrait: portraitUrl, // Include the portrait URL
+          },
+        ]);
+
+        if (error) {
+          console.error("Error creating registration:", error.message);
+          return res.status(500).render("membership", {
+            error: "Error creating registration.",
+            users: [], // Optionally pass users array if you need it in the view
+          });
+        }
+      }
+
       res.redirect("/membership");
     } catch (error) {
       console.error("Server error:", error.message);
