@@ -459,12 +459,35 @@ app.post("/submit-login", async (req, res) => {
       ptaverified: data.ptaverified,
     };
 
+    // Check and update NCC registrations
+    const currentDate = new Date().toISOString().split('T')[0]; // Get current date in YYYY-MM-DD format
+    const { data: registrations, error: registrationsError } = await supabase
+      .from("ncc_registrations")
+      .select("*");
+
+    if (registrationsError) {
+      console.error("Error fetching NCC registrations:", registrationsError.message);
+    } else {
+      for (const registration of registrations) {
+        if (registration.expireson !== currentDate) {
+          const { error: updateError } = await supabase
+            .from("ncc_registrations")
+            .update({ status: 5 })
+            .eq("id", registration.id);
+
+          if (updateError) {
+            console.error("Error updating NCC registration status:", updateError.message);
+          }
+        }
+      }
+    }
+
     // Successful login
     res.redirect("/home");
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
-});
+});//not sure if this thang works
 
 app.post("/submit-signup", async (req, res) => {
   const {
@@ -1898,7 +1921,6 @@ app.post("/create-event", upload.single("eventpicture"), async (req, res) => {
   }
 });
 
-// Update Event Route with File Upload (eventpicture) using Supabase Storage
 app.post("/update-event", upload.single("eventpicture"), async (req, res) => {
   const {
     eventid, // Event ID to identify the event to update
