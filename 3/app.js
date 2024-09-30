@@ -1171,37 +1171,37 @@ app.post("/update-nccstatus", async (req, res) => {
     // Check if status is 4, indicating the need to update the user's athleteverified column and insert into athletes table
     if (status == 4) {
       const {
-        firstname,
-        middlename,
-        lastname,
-        gender,
-        bday,
-        clubregion,
-        club,
-        beltlevel,
-        portrait,
-        division,
-        height,
-        weight,
-        submittedby,
-        instructorfirstname,
-        instructorlastname,
-        age,
+      firstname,
+      middlename,
+      lastname,
+      gender,
+      bday,
+      clubregion,
+      club,
+      beltlevel,
+      portrait,
+      division,
+      height,
+      weight,
+      submittedby,
+      instructorfirstname,
+      instructorlastname,
+      age,
       } = registration;
 
       console.log("Updating user with ID:", submittedby);
 
       // Update the corresponding user's registered column to true
       const { data: user, error: updateUserError } = await supabase
-        .from("users")
-        .update({ athleteverified: true })
-        .eq("id", submittedby)
-        .select("*")
-        .single();
+      .from("users")
+      .update({ athleteverified: true })
+      .eq("id", submittedby)
+      .select("*")
+      .single();
 
       if (updateUserError) {
-        console.error("Error updating user:", updateUserError.message);
-        return res.status(500).send("Error updating user");
+      console.error("Error updating user:", updateUserError.message);
+      return res.status(500).send("Error updating user");
       }
 
       console.log("User updated:", user);
@@ -1210,39 +1210,24 @@ app.post("/update-nccstatus", async (req, res) => {
 
       const userid = submittedby;
 
-      // Insert the relevant data into the athletes table
-      const { error: insertAthleteError } = await supabase
-        .from("athletes")
-        .insert([
-          {
-            name,
-            gender,
-            bday,
-            clubregion,
-            club,
-            beltlevel,
-            portrait,
-            division,
-            height,
-            weight,
-            instructor,
-            userid,
-            age,
-          },
-        ]);
+      // Check if the athlete already exists
+      const { data: existingAthlete, error: fetchAthleteError } = await supabase
+      .from("athletes")
+      .select("*")
+      .eq("userid", userid)
+      .single();
 
-      if (insertAthleteError) {
-        console.error("Error inserting athlete:", insertAthleteError.message);
-        return res.status(500).send("Error inserting athlete");
+      if (fetchAthleteError && fetchAthleteError.code !== 'PGRST116') {
+      console.error("Error fetching athlete:", fetchAthleteError.message);
+      return res.status(500).send("Error fetching athlete");
       }
 
-      console.log("Athlete inserted successfully");
-
-      // Store athlete data in session
-      req.session.athlete = {
-        firstname,
-        middlename,
-        lastname,
+      if (existingAthlete) {
+      // Update the existing athlete
+      const { error: updateAthleteError } = await supabase
+        .from("athletes")
+        .update({
+        name,
         gender,
         bday,
         clubregion,
@@ -1252,6 +1237,61 @@ app.post("/update-nccstatus", async (req, res) => {
         division,
         height,
         weight,
+        instructor,
+        age,
+        })
+        .eq("userid", userid);
+
+      if (updateAthleteError) {
+        console.error("Error updating athlete:", updateAthleteError.message);
+        return res.status(500).send("Error updating athlete");
+      }
+
+      console.log("Athlete updated successfully");
+      } else {
+      // Insert the new athlete
+      const { error: insertAthleteError } = await supabase
+        .from("athletes")
+        .insert([
+        {
+          name,
+          gender,
+          bday,
+          clubregion,
+          club,
+          beltlevel,
+          portrait,
+          division,
+          height,
+          weight,
+          instructor,
+          userid,
+          age,
+        },
+        ]);
+
+      if (insertAthleteError) {
+        console.error("Error inserting athlete:", insertAthleteError.message);
+        return res.status(500).send("Error inserting athlete");
+      }
+
+      console.log("Athlete inserted successfully");
+      }
+
+      // Store athlete data in session
+      req.session.athlete = {
+      firstname,
+      middlename,
+      lastname,
+      gender,
+      bday,
+      clubregion,
+      club,
+      beltlevel,
+      portrait,
+      division,
+      height,
+      weight,
       };
     }
 
