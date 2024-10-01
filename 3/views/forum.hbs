@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <title>PTA | Forum</title>
   <link rel="icon" type="image/x-icon" href="../images/favicon.ico" />
   <link rel="stylesheet" type="text/css" href="../stylesheets/navbar.css" />
   <link rel="stylesheet" type="text/css" href="../stylesheets/forum.css" />
-   
+
 </head>
+
 <body class="container">
   <div class="header">
     <div class="navbar">
@@ -19,20 +21,22 @@
         <li class="membership"><a href="membership">Membership</a></li>
         <li class="forum"><a href="forum">Forum</a></li>
         <li class="notifications">
-            <a href="notifications">Notifications <span class="badge">3</span></a>
+          <a href="notifications">Notifications <span class="badge">3</span></a>
         </li>
         <li class="profile-pic">
-            {{#if user.profilepic}}
-                <a href="#" onclick="toggleDropdown()"><img src="{{user.profilepic}}" alt="Profile Picture" class="profile-picture"></a>
-            {{else}}
-                <a href="#" onclick="toggleDropdown()" class="profile-picture"><img src="/images/none.jpg" alt="Profile Picture" class="profile-picture"></a>
-            {{/if}}
-            <div id="dropdown" class="dropdown-content">
-                <a href="profile">Profile</a>
-                <a href="settings">Settings</a>
-                <a href="help-center">FAQs</a>
-                <a href="/">Logout</a>
-            </div>
+          {{#if user.profilepic}}
+          <a href="#" onclick="toggleDropdown()"><img src="{{user.profilepic}}" alt="Profile Picture"
+              class="profile-picture"></a>
+          {{else}}
+          <a href="#" onclick="toggleDropdown()" class="profile-picture"><img src="/images/none.jpg"
+              alt="Profile Picture" class="profile-picture"></a>
+          {{/if}}
+          <div id="dropdown" class="dropdown-content">
+            <a href="profile">Profile</a>
+            <a href="settings">Settings</a>
+            <a href="help-center">FAQs</a>
+            <a href="/">Logout</a>
+          </div>
         </li>
       </ul>
     </div>
@@ -45,27 +49,27 @@
       <div class="list">
         <ul>
           {{#each forum_topics}}
-            <li>
-                {{#if this.followed}}
-                  <div class="followedtopic">
-                    <form action="/unfollow-topic/{{this.id}}" method="post" class="unfollow-form">
-                      <span class="topicname">#{{this.topic}}</span>
-                      <button class="followbtn" type="submit">-</button>
-                    </form>
-                  </div>
-                {{else}}
-                  <div class="notfollowedtopic">
-                    <form action="/follow-topic/{{this.id}}" method="post" class="follow-form">
-                      <span class="topicname">#{{this.topic}}</span>
-                      <button class="followbtn" type="submit">+</button>
-                    </form>
-                  </div>
-                {{/if}}
-            </li>
+          <li>
+            {{#if this.followed}}
+            <div class="followedtopic">
+              <form action="/unfollow-topic/{{this.id}}" method="post" class="unfollow-form">
+                <span class="topicname">#{{this.topic}}</span>
+                <button class="followbtn" type="submit">-</button>
+              </form>
+            </div>
+            {{else}}
+            <div class="notfollowedtopic">
+              <form action="/follow-topic/{{this.id}}" method="post" class="follow-form">
+                <span class="topicname">#{{this.topic}}</span>
+                <button class="followbtn" type="submit">+</button>
+              </form>
+            </div>
+            {{/if}}
+          </li>
           {{/each}}
         </ul>
         {{!-- <button id="followButton" onclick="followTopic('{{1}}')">Follow</button>
-            <button id="unfollowButton" onclick="unfollowTopic('{{1}}')" style="display:none;">Unfollow</button> --}}
+        <button id="unfollowButton" onclick="unfollowTopic('{{1}}')" style="display:none;">Unfollow</button> --}}
       </div>
     </div>
 
@@ -78,7 +82,7 @@
             <button id="createPostButton" class="create-post-button" href="/create-post">
               <span class="plus-icon">+</span> Create a post
             </button>
-            <button id="createtopicButton" class="create-topic-button" >
+            <button id="createtopicButton" class="create-topic-button">
               <span class="plus-icon">+</span> Create a #topic
             </button>
           </div>
@@ -99,11 +103,11 @@
         <div class='post-link' data-href='/forum-thread/{{id}}'>
           <div class='post-container'>
             <div class='post-content'>
-                <div class="dropdown-container">
+              <div class="dropdown-container">
                 <button onclick="toggleDropdown(this)" class="dropbtn">...</button>
                 <div class="dropdown-content">
                   <a href="#">Pin</a>
-                 <!-- <a href="#">Save</a>
+                  <!-- <a href="#">Save</a>
                   <a href="#">Hide</a>
                   <a href="#">Report</a> -->
                 </div>
@@ -115,19 +119,19 @@
                     <span class="op">{{originalposter}}</span>
                     <span class="tag">
                       {{!-- {{#if this.user.ptaverified}}
-                        <span class="tag">ADMIN</span>
+                      <span class="tag">ADMIN</span>
                       {{else}}
-                        {{#if this.user.instructorverified}}
-                          <span class="tag">INSTRUCTOR</span>
-                        {{/if}}
-                        {{#if this.user.athleteverified}}
-                          <span class="tag">ATHLETE</span>
-                        {{/if}}
+                      {{#if this.user.instructorverified}}
+                      <span class="tag">INSTRUCTOR</span>
+                      {{/if}}
+                      {{#if this.user.athleteverified}}
+                      <span class="tag">ATHLETE</span>
+                      {{/if}}
                       {{/if}} --}}
                     </span>
                   </div>
                 </div><br>
-                
+
                 <span class='community'>
                   <a class='post-community' href='/community?community={{topic}}'>#{{topic}}</a> •
                 </span>
@@ -141,27 +145,27 @@
                 <ul class="post-buttons">
                   <li class="comment-buttons">
                     <div class='comment-button comment'>Comment
-                    	<img class="commentpic" src="/images/comment.png" alt="comment">
+                      <img class="commentpic" src="/images/comment.png" alt="comment">
                     </div>
                   </li>
                   <li class="vote-buttons">
-                   <form action="/vote" method="post">
-          <input type="hidden" name="threadId" value="{{id}}">
-          <div class="buttons-div">
-            <div class="vote-button upvote">
-              <button type="submit" name="type" value="upvote" onclick="event.stopPropagation()">
-                <img src="/images/thumbs up.png" alt="Upvote">
-                <span class="upvote-count">{{arraySize upvotes}}</span>
-              </button>
-            </div>
-            <div class="vote-button downvote">
-              <button type="submit" name="type" value="downvote" onclick="event.stopPropagation()">
-                <img src="/images/thumbs down.png" alt="Downvote">
-                <span class="downvote-count">{{arraySize downvotes}}</span>
-              </button>
-            </div>
-          </div>
-        </form>
+                    <form action="/vote" method="post">
+                      <input type="hidden" name="threadId" value="{{id}}">
+                      <div class="buttons-div">
+                        <div class="vote-button upvote">
+                          <button type="submit" name="type" value="upvote" onclick="event.stopPropagation()">
+                            <img src="/images/thumbs up.png" alt="Upvote">
+                            <span class="upvote-count">{{arraySize upvotes}}</span>
+                          </button>
+                        </div>
+                        <div class="vote-button downvote">
+                          <button type="submit" name="type" value="downvote" onclick="event.stopPropagation()">
+                            <img src="/images/thumbs down.png" alt="Downvote">
+                            <span class="downvote-count">{{arraySize downvotes}}</span>
+                          </button>
+                        </div>
+                      </div>
+                    </form>
                   </li>
                 </ul>
               </div>
@@ -199,7 +203,7 @@
       document.getElementById("dropdown").classList.toggle("show");
     }
 
-    window.onclick = function(event) {
+    window.onclick = function (event) {
       if (!event.target.matches('.profile-pic img')) {
         var dropdowns = document.getElementsByClassName("dropdown-content");
         for (var i = 0; i < dropdowns.length; i++) {
@@ -211,16 +215,16 @@
       }
     }
 
-    document.addEventListener("DOMContentLoaded", function() {
+    document.addEventListener("DOMContentLoaded", function () {
       const postLinks = document.querySelectorAll('.post-link');
       postLinks.forEach(link => {
-        link.addEventListener('click', function() {
+        link.addEventListener('click', function () {
           window.location.href = this.getAttribute('data-href');
         });
       });
     });
 
-    document.getElementById("createPostButton").addEventListener("click", function() {
+    document.getElementById("createPostButton").addEventListener("click", function () {
       window.location.href = "forum-create";
     });
 
@@ -242,34 +246,34 @@
     function toggleDropdown(button) {
       event.stopPropagation();
       var dropdowns = document.getElementsByClassName("dropdown-content");
-        for (var i = 0; i < dropdowns.length; i++) {
-          var openDropdown = dropdowns[i];
-            if (openDropdown !== button.nextElementSibling) {
-              openDropdown.classList.remove('show');
-          }
+      for (var i = 0; i < dropdowns.length; i++) {
+        var openDropdown = dropdowns[i];
+        if (openDropdown !== button.nextElementSibling) {
+          openDropdown.classList.remove('show');
         }
-                button.nextElementSibling.classList.toggle("show");
       }
+      button.nextElementSibling.classList.toggle("show");
+    }
 
-    window.onclick = function(event) {
+    window.onclick = function (event) {
       if (!event.target.matches('.dropbtn')) {
         var dropdowns = document.getElementsByClassName("dropdown-content");
-          for (var i = 0; i < dropdowns.length; i++) {
-            var openDropdown = dropdowns[i];
-        if (openDropdown.classList.contains('show')) {
+        for (var i = 0; i < dropdowns.length; i++) {
+          var openDropdown = dropdowns[i];
+          if (openDropdown.classList.contains('show')) {
             openDropdown.classList.remove('show');
-            }
           }
         }
       }
+    }
 
     function submitVote(event) {
       event.preventDefault();
       event.stopPropagation();
-      
+
       const form = event.target;
       const formData = new FormData(form);
-      
+
       fetch(form.action, {
         method: form.method,
         body: formData
@@ -310,4 +314,5 @@
     });
   </script>
 </body>
+
 </html>
