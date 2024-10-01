@@ -2,62 +2,55 @@
 <html>
 
 <head>
-  <title>PTA | Membership Status</title>
-  <link rel="icon" type="image/x-icon" href="../images/favicon.ico" />
-  <link rel="stylesheet" type="text/css" href="../stylesheets/membership-ncc.css" />
-  <link rel="stylesheet" type="text/css" href="../stylesheets/navbar.css" />
+	<title>PTA | Membership Status</title>
+	<link rel="icon" type="image/x-icon" href="../images/favicon.ico" />
+	<link rel="stylesheet" type="text/css" href="../stylesheets/membership-ncc.css" />
+	<link rel="stylesheet" type="text/css" href="../stylesheets/navbar.css" />
 </head>
 
 <body style="margin:0;" class="container">
-    <div class="navbar">
-      <a href="/home"><img src="/images/logo.png" class="logo" alt="Logo"></a>
-      <ul class="tabs">
-        <li class="home"><a href="/home">Home</a></li>
-        <li class="athletes"><a href="/athletes">Athletes</a></li>
-        <li class="clubs"><a href="/clubs">Clubs</a></li>
-        <li class="events"><a href="/events">Events</a></li>
-        <li class="membership"><a href="/membership">Membership</a></li>
-        <li class="forum"><a href="/forum">Forum</a></li>
-        <li class="notifications">
-          <a href="/notifications">Notifications <span class="badge">3</span></a>
-        </li>
-        <li class="profile-pic">
-          {{#if user.profilepic}}
-            <a href="#" onclick="toggleDropdown()"><img src="{{user.profilepic}}" alt="Profile Picture" class="profile-picture"></a>
-          {{else}}
-            <a href="#" onclick="toggleDropdown()" class="profile-picture"><img src="/images/none.jpg" alt="Profile Picture" class="profile-picture"></a>
-          {{/if}}
-          <div id="dropdown" class="dropdown-content">
-            <a href="/profile">Profile</a>
-            <a href="/settings">Settings</a>
-            <a href="/help-center">FAQs</a>
-            <a href="/">Logout</a>
-          </div>
-        </li>
-      </ul>
-    </div>
+	<div class="navbar">
+		<a href="/home"><img src="/images/logo.png" class="logo" alt="Logo"></a>
+		<ul class="tabs">
+			<li class="home"><a href="/home">Home</a></li>
+			<li class="athletes"><a href="/athletes">Athletes</a></li>
+			<li class="clubs"><a href="/clubs">Clubs</a></li>
+			<li class="events"><a href="/events">Events</a></li>
+			<li class="membership"><a href="/membership">Membership</a></li>
+			<li class="forum"><a href="/forum">Forum</a></li>
+			<li class="notifications">
+				<a href="/notifications">Notifications <span class="badge">3</span></a>
+			</li>
+			<li class="profile-pic">
+				{{#if user.profilepic}}
+				<a href="#" onclick="toggleDropdown()"><img src="{{user.profilepic}}" alt="Profile Picture"
+						class="profile-picture"></a>
+				{{else}}
+				<a href="#" onclick="toggleDropdown()" class="profile-picture"><img src="/images/none.jpg" alt="Profile Picture"
+						class="profile-picture"></a>
+				{{/if}}
+				<div id="dropdown" class="dropdown-content">
+					<a href="/profile">Profile</a>
+					<a href="/settings">Settings</a>
+					<a href="/help-center">FAQs</a>
+					<a href="/">Logout</a>
+				</div>
+			</li>
+		</ul>
+	</div>
 
-  <div class="content-container">
-    <div class="leftside">
-      <div class="forumtitle">
-        <h1 class="forumname"></h1>
-        <h3 class="forumdesc">Apply for NCC ID</h3>
-      </div>
-    </div>
-    <div class="rightside">
-      <div class="formcontainer">
-        <form id="nccform" action="/submit-ncc" method="post" enctype="multipart/form-data">
+	<div class="content-container">
+		<div class="leftside">
+			<div class="forumtitle">
+				<h1 class="forumname"></h1>
+				<h3 class="forumdesc">Apply for NCC ID</h3>
+			</div>
+		</div>
+		<div class="rightside">
+			<div class="formcontainer">
+				<form id="nccform" action="/submit-ncc" method="post" enctype="multipart/form-data">
 					<!-- Page 1 -->
 					<div class="ncc-page ncc-page1">
-
-						<div class="form-row">
-							<input type="radio" id="apptype" name="apptype" value="new application">
-							<label for="apptype"><h3>New Application</h3></label>
-							
-							<input type="radio" id="apptype" name="apptype" value="renewal">
-							<label for="apptype"><h3>Renewal</h3></label>
-						</div><br>
-
 						<div class="form-row">
 							<div class="form-group">
 								<label for="firstname">First Name</label>
@@ -115,22 +108,25 @@
 								<label for="promolocation">Location of Last Promotion</label>
 								<select name="promolocation" id="promolocation">
 									<option value="Region I – Ilocos Region">Region I – Ilocos Region</option>
-                  <option value="Region II – Cagayan Valley">Region II – Cagayan Valley</option>
-                  <option value="Region III – Central Luzon">Region III – Central Luzon</option>
-                  <option value="Region IV‑A – CALABARZON">Region IV‑A – CALABARZON</option>
-                  <option value="middlenameMAROPA Region">MIMAROPA Region</option>
-                  <option value="Region V – Bicol Region">Region V – Bicol Region</option>
-                  <option value="Region VI – Western Visayas">Region VI – Western Visayas</option>
-                  <option value="Region VII – Central Visayas">Region VII – Central Visayas</option>
-                  <option value="Region VIII – Eastern Visayas">Region VIII – Eastern Visayas</option>
-                  <option value="Region IX – Zamboanga Peninsula">Region IX – Zamboanga Peninsula</option>
-                  <option value="Region X – Northern Mindanao">Region X – Northern Mindanao</option>
-                  <option value="Region XI – Davao Region">Region XI – Davao Region</option>
-                  <option value="Region XII – SOCCSKSARGEN">Region XII – SOCCSKSARGEN</option>
-                  <option value="Region XIII – Caraga">Region XIII – Caraga</option>
-                  <option value="NCR – National Capital Region">NCR – National Capital Region</option>
-                  <option value="CAR – Cordillera Administrative Region">CAR – Cordillera Administrative Region</option>
-                  <option value="BARMM – Bangsamoro Autonomous Region in Muslim Mindanao">BARMM – Bangsamoro Autonomous Region in Muslim Mindanao</option>
+									<option value="Region II – Cagayan Valley">Region II – Cagayan Valley</option>
+									<option value="Region III – Central Luzon">Region III – Central Luzon</option>
+									<option value="Region IV‑A – CALABARZON">Region IV‑A – CALABARZON</option>
+									<option value="middlenameMAROPA Region">MIMAROPA Region</option>
+									<option value="Region V – Bicol Region">Region V – Bicol Region</option>
+									<option value="Region VI – Western Visayas">Region VI – Western Visayas</option>
+									<option value="Region VII – Central Visayas">Region VII – Central Visayas</option>
+									<option value="Region VIII – Eastern Visayas">Region VIII – Eastern Visayas</option>
+									<option value="Region IX – Zamboanga Peninsula">Region IX – Zamboanga Peninsula</option>
+									<option value="Region X – Northern Mindanao">Region X – Northern Mindanao</option>
+									<option value="Region XI – Davao Region">Region XI – Davao Region</option>
+									<option value="Region XII – SOCCSKSARGEN">Region XII – SOCCSKSARGEN</option>
+									<option value="Region XIII – Caraga">Region XIII – Caraga</option>
+									<option value="NCR – National Capital Region">NCR – National Capital Region</option>
+									<option value="CAR – Cordillera Administrative Region">CAR – Cordillera Administrative Region
+									</option>
+									<option value="BARMM – Bangsamoro Autonomous Region in Muslim Mindanao">BARMM – Bangsamoro
+										Autonomous
+										Region in Muslim Mindanao</option>
 								</select>
 							</div>
 						</div>
@@ -140,12 +136,12 @@
 								<label for="clubregion">Province of Club</label>
 								<select name="clubregion" id="clubregion">
 									<option value="Aurora">Aurora</option>
-                  <option value="Bataan">Bataan</option>
-                  <option value="Bulacan">Bulacan</option>
-                  <option value="Nueva Ecija">Nueva Ecija</option>
-                  <option value="Pampanga">Pampanga</option>
-                  <option value="Tarlac">Tarlac</option>
-                  <option value="Zamabales">Zamabales</option>
+									<option value="Bataan">Bataan</option>
+									<option value="Bulacan">Bulacan</option>
+									<option value="Nueva Ecija">Nueva Ecija</option>
+									<option value="Pampanga">Pampanga</option>
+									<option value="Tarlac">Tarlac</option>
+									<option value="Zamabales">Zamabales</option>
 								</select>
 							</div>
 						</div>
@@ -155,16 +151,16 @@
 								<label for="beltlevel">Current Belt Level</label>
 								<select name="beltlevel" id="beltlevel">
 									<option value="White Belt">White Belt</option>
-                  <option value="Low Yellow Belt">Low Yellow Belt</option>
-                  <option value="High Yellow Belt">High Yellow Belt</option>
-                  <option value="Low Blue Belt">Low Blue Belt</option>
-                  <option value="High Blue Belt">High Blue Belt</option>
-                  <option value="Low Red Belt">Low Red Belt</option>
-                  <option value="High Red Belt">High Red Belt</option>
-                  <option value="Low Brown Belt">Low Brown Belt</option>
-                  <option value="High Brown Belt">High Brown Belt</option>
-                  <option value="Junior/Poom Black Belt">Junior/Poom Black Belt</option>
-                  <option value="Black/Dan Belt">Black/Dan Belt</option>
+									<option value="Low Yellow Belt">Low Yellow Belt</option>
+									<option value="High Yellow Belt">High Yellow Belt</option>
+									<option value="Low Blue Belt">Low Blue Belt</option>
+									<option value="High Blue Belt">High Blue Belt</option>
+									<option value="Low Red Belt">Low Red Belt</option>
+									<option value="High Red Belt">High Red Belt</option>
+									<option value="Low Brown Belt">Low Brown Belt</option>
+									<option value="High Brown Belt">High Brown Belt</option>
+									<option value="Junior/Poom Black Belt">Junior/Poom Black Belt</option>
+									<option value="Black/Dan Belt">Black/Dan Belt</option>
 								</select>
 							</div>
 						</div>
@@ -195,7 +191,8 @@
 						<div class="form-row">
 							<div class="form-group">
 								<label for="instructormobile">Instructor Mobile Number</label>
-								<input type="tel" id="instructormobile" name="instructormobile" pattern="\d{4}\d{3}\d{4}" placeholder="0912-345-6789">
+								<input type="tel" id="instructormobile" name="instructormobile" pattern="\d{4}\d{3}\d{4}"
+									placeholder="0912-345-6789">
 							</div>
 							<div class="form-group">
 								<label for="instructoremail">Instructor E-mail</label>
@@ -237,7 +234,14 @@
 								<p>Certification, Waiver and Release Form<br>
 									1. I hereby certify that the above information is true and correct.<br>
 									2. I acknowledge, fully understand and will abide by the rules and regulations of PTA.<br>
-									3. I do hereby waive, release and discharge any and all liabilities from death, injuries or damages arising from my own negligence, furthermore I or my family, will waive and release any or all rights, claims for damages from the entire PTA body including the PTA Officers, PTA competition officials, PTA instructors, or any department/facility of PTA like PTA Admin, PTA Competitions Management Team or Digital Team from any Taekwondo related issues.
+									3. I do hereby waive, release and discharge any and all liabilities from death, injuries or
+									damages
+									arising from my own negligence, furthermore I or my family, will waive and release any or all
+									rights,
+									claims for damages from the entire PTA body including the PTA Officers, PTA competition officials,
+									PTA
+									instructors, or any department/facility of PTA like PTA Admin, PTA Competitions Management Team or
+									Digital Team from any Taekwondo related issues.
 								</p>
 							</div>
 						</div>
@@ -256,88 +260,109 @@
 
 						<p id="error-message" style="color:red;"></p>
 					</div>
-				</form>		
-      </div>
-    </div>
-  </div>
+				</form>
+			</div>
+		</div>
+	</div>
 
-  <div class="footer">
-    <p>&copy; 2024 Philippine Taekwondo Association. All rights reserved.</p>
-  </div>
+	<div class="footer">
+		<p>&copy; 2024 Philippine Taekwondo Association. All rights reserved.</p>
+	</div>
 	<style>
-    .hidden { display: none; }
-  </style>
-  <script>
-    function toggleDropdown() {
-      document.getElementById("dropdown").classList.toggle("show");
-    }
+		.hidden {
+			display: none;
+		}
+	</style>
+	<script>
 
-    window.onclick = function (event) {
-      if (!event.target.matches('.profile-pic img')) {
-        var dropdowns = document.getElementsByClassName("dropdown-content");
-        for (var i = 0; i < dropdowns.length; i++) {
-          var openDropdown = dropdowns[i];
-          if (openDropdown.classList.contains('show')) {
-            openDropdown.classList.remove('show');
-          }
-        }
-      }
-    }
+		/*function updateFormAction() {
+			const form = document.getElementById('nccform');
+			const apptype = document.getElementById('apptype').value;
 
-		let currentPage = 0;
-    const pages = document.querySelectorAll('.ncc-page');
+			switch (apptype) {
+				case 'new application':
+					form.action = '/submit-ncc';
+					break;
+				case 'renewal':
+					form.action = '/update-ncc';
+					break;
+				// Add more cases as needed
+				default:
+					form.action = '/submit-ncc';
+			}
+		}*/
 
-    function showPage(pageIndex) {
-      pages.forEach((page, index) => {
-        page.classList.toggle('hidden', index !== pageIndex);
-      });
-    }
-
-    function showNextPage() {
-      if (currentPage < pages.length - 1) {
-        currentPage++;
-        showPage(currentPage);
-      }
-    }
-
-    function showPreviousPage() {
-      if (currentPage > 0) {
-        currentPage--;
-        showPage(currentPage);
-      }
-    }
-
-    // Initial display setup
-    showPage(currentPage);
-
-	function calculateAge(birthday) {
-		const today = new Date();
-		const birthDate = new Date(birthday);
-		let age = today.getFullYear() - birthDate.getFullYear();
-		const monthDifference = today.getMonth() - birthDate.getMonth();
-		
-		if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < birthDate.getDate())) {
-			age--;
+		function toggleDropdown() {
+			document.getElementById("dropdown").classList.toggle("show");
 		}
 
-		return age;
-	}
-
-	window.addEventListener('DOMContentLoaded', (event) => {
-		const bdayInput = document.getElementById('bday');
-		const ageInput = document.getElementById('age');
-
-		bdayInput.addEventListener('input', () => {
-			const birthday = bdayInput.value;
-			if (birthday) {
-				const age = calculateAge(birthday);
-				ageInput.value = age;
-			} else {
-				ageInput.value = '';
+		window.onclick = function (event) {
+			if (!event.target.matches('.profile-pic img')) {
+				var dropdowns = document.getElementsByClassName("dropdown-content");
+				for (var i = 0; i < dropdowns.length; i++) {
+					var openDropdown = dropdowns[i];
+					if (openDropdown.classList.contains('show')) {
+						openDropdown.classList.remove('show');
+					}
+				}
 			}
+		}
+
+		let currentPage = 0;
+		const pages = document.querySelectorAll('.ncc-page');
+
+		function showPage(pageIndex) {
+			pages.forEach((page, index) => {
+				page.classList.toggle('hidden', index !== pageIndex);
+			});
+		}
+
+		function showNextPage() {
+			if (currentPage < pages.length - 1) {
+				currentPage++;
+				showPage(currentPage);
+			}
+		}
+
+		function showPreviousPage() {
+			if (currentPage > 0) {
+				currentPage--;
+				showPage(currentPage);
+			}
+		}
+
+		// Initial display setup
+		showPage(currentPage);
+
+		function calculateAge(birthday) {
+			const today = new Date();
+			const birthDate = new Date(birthday);
+			let age = today.getFullYear() - birthDate.getFullYear();
+			const monthDifference = today.getMonth() - birthDate.getMonth();
+
+			if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < birthDate.getDate())) {
+				age--;
+			}
+
+			return age;
+		}
+
+		window.addEventListener('DOMContentLoaded', (event) => {
+			const bdayInput = document.getElementById('bday');
+			const ageInput = document.getElementById('age');
+
+			bdayInput.addEventListener('input', () => {
+				const birthday = bdayInput.value;
+				if (birthday) {
+					const age = calculateAge(birthday);
+					ageInput.value = age;
+				} else {
+					ageInput.value = '';
+				}
+			});
 		});
-	});
-  </script>
-  
+	</script>
+
 </body>
+
 </html>
