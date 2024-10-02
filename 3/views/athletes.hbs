@@ -80,6 +80,7 @@
             <th>Club</th>
             <th>Belt Level</th>
             <th>Ranking Points</th>
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -91,6 +92,11 @@
             <td>{{club}}</td>
             <td>{{beltlevel}}</td>
             <td>{{rankingpoints}}</td>
+            <td>
+              <button class="action-button ban">Ban</button>
+              <button class="action-button suspend">Suspend</button>
+              <button class="action-button delete">Delete</button>
+            </td>
           </tr>
           {{/each}}
         </tbody>
@@ -204,6 +210,28 @@
         modal.style.display = "none";
       }
     }
+
+    document.querySelectorAll('.action-button.ban').forEach(button => {
+      button.addEventListener('click', () => {
+          // Logic to ban user
+          alert('User banned');
+      });
+    });
+
+    document.querySelectorAll('.action-button.suspend').forEach(button => {
+        button.addEventListener('click', () => {
+            // Logic to suspend user
+            alert('User suspended');
+        });
+    });
+
+    document.querySelectorAll('.action-button.delete').forEach(button => {
+        button.addEventListener('click', () => {
+            // Logic to delete user
+            alert('User deleted');
+        });
+    });
+
   </script>
 </body>
 
