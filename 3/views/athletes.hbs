@@ -223,40 +223,46 @@
       }
     }
 
-    document.querySelectorAll('.action-button.active').forEach(button => {
-    button.addEventListener('click', function() {
-      const row = this.closest('tr');
-      const statusCell = row.querySelector('.status');
-      statusCell.textContent = 'Active'; // Change status to Active
-      alert('User activated');
-    });
+
+document.querySelectorAll('.action-button.active').forEach(button => {
+  button.addEventListener('click', function() {
+    const row = this.closest('tr');
+    const statusCell = row.querySelector('.status');
+    const athleteId = row.dataset.id; // Assuming the athlete's ID is stored in a data attribute
+    statusCell.textContent = 'Active'; // Change status to Active
+    updateStatus(athleteId, 'Active'); // Call the function to update the status on the server
   });
+});
 
-    document.querySelectorAll('.action-button.ban').forEach(button => {
-      button.addEventListener('click', function() {
-        const row = this.closest('tr');
-        const statusCell = row.querySelector('.status');
-        statusCell.textContent = 'Banned'; // Change status to Banned
-        alert('User banned');
-      });
-    });
+document.querySelectorAll('.action-button.ban').forEach(button => {
+  button.addEventListener('click', function() {
+    const row = this.closest('tr');
+    const statusCell = row.querySelector('.status');
+    const athleteId = row.dataset.id; // Assuming the athlete's ID is stored in a data attribute
+    statusCell.textContent = 'Banned'; // Change status to Banned
+    updateStatus(athleteId, 'Banned'); // Call the function to update the status on the server
+  });
+});
 
-    document.querySelectorAll('.action-button.suspend').forEach(button => {
-        button.addEventListener('click', function() {
-            const row = this.closest('tr');
-            const statusCell = row.querySelector('.status');
-            statusCell.textContent = 'Suspended'; // Change status to Suspended
-            alert('User suspended');
-        });
-    });
+document.querySelectorAll('.action-button.suspend').forEach(button => {
+  button.addEventListener('click', function() {
+    const row = this.closest('tr');
+    const statusCell = row.querySelector('.status');
+    const athleteId = row.dataset.id; // Assuming the athlete's ID is stored in a data attribute
+    statusCell.textContent = 'Suspended'; // Change status to Suspended
+    updateStatus(athleteId, 'Suspended'); // Call the function to update the status on the server
+  });
+});
 
-    document.querySelectorAll('.action-button.delete').forEach(button => {
-        button.addEventListener('click', function() {
-            const row = this.closest('tr');
-            row.remove(); // Remove row from the table
-            alert('User deleted');
-        });
-    });
+document.querySelectorAll('.action-button.delete').forEach(button => {
+  button.addEventListener('click', function() {
+    const row = this.closest('tr');
+    const athleteId = row.dataset.id; // Assuming the athlete's ID is stored in a data attribute
+    row.remove(); // Remove row from the table
+    updateStatus(athleteId, 'Deleted'); // Call the function to update the status on the server
+  });
+});
+
 
   </script>
 </body>
