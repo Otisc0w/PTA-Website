@@ -100,7 +100,7 @@
 .form-actions {
     display: flex;
     justify-content: flex-end;
-    gap: 10px; /* Adjust the gap as needed */
+    gap: 10px; 
     padding: 20px 0;
 }
 
@@ -215,4 +215,29 @@ body {
     align-items: center;
   }
   
-  
+  .action-button {
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    margin-right: 5px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.action-button.ban {
+    background-color: #FF5733; /* Red for ban */
+}
+
+.action-button.suspend {
+    background-color: #FFC107; /* Yellow for suspend */
+}
+
+.action-button.delete {
+    background-color: #DC3545; /* Red for delete */
+}
+
+.action-button:hover {
+    opacity: 0.8;
+}
+
