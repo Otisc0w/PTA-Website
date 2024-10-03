@@ -188,25 +188,25 @@ body {
 
 /* Status colors */
 .status-under-review {
-    color: orange;
+  color: orange;
 }
 
 .status-printed {
-    color: yellow;
+  color: yellow;
 }
 
 .status-en-route {
-    color: yellow;
+  color: #0099ff;
 }
 
 .status-shipped {
-    color: green;
+  color: #78ff47;
 }
 
-.status-rejected {
-    color: red;
+.status-rejected, .status-expired {
+  color: red;
 }
 
 .status-unknown {
-    color: grey;
+  color: grey;
 }
