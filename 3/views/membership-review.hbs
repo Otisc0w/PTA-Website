@@ -155,7 +155,8 @@
         </h1>
         {{#if user.ptaverified}}
         <div class="action-buttons">
-          <button type="button" onclick="printDiv('printableArea')">Print</button>
+          <button type="button" onclick="printDiv('printableArea')" class="printbtn"><img src="../images/image.png"
+              alt="Print"></button>
           <button type="submit" name="status" value="1">Under Review</button>
           <button type="submit" name="status" value="2">Printed</button>
           <button type="submit" name="status" value="3">En-route to Regional Office</button>
@@ -168,8 +169,9 @@
           <button type="submit" value="4" name="status" id="confirm">Confirm</button>
         </div>
         {{/if}}
-        <div class="backtolist">
-          <button type="button" onclick="window.location.href='/membership-status'">Back to list</button>
+        <div class="back">
+          <button type="button" onclick="window.location.href='/membership-status'" class="backtolist">Back to
+            list</button>
         </div>
       </section>
       <div class="printwindow" id="printableArea">
