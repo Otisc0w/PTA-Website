@@ -60,8 +60,9 @@
           {{#each events}}
           <div class="event event-card">
             <img src="{{eventpicture}}" alt="Event {{id}}">
-            <h3 class="event-title">{{name}} - {{date}} {{time}}</h3>
+            <h3 class="event-title">{{name}} <br> {{formatDate date "MMMM D, YYYY"}} {{time}}</h3>
             <p>{{eventtype}}</p>
+            <p class="eventstatus">{{status}}</p>
             <a href="/events-details/{{id}}">Read More</a>
           </div>
           {{/each}}
