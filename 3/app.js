@@ -6,6 +6,8 @@ const session = require("express-session"); // Import express-session
 const app = express();
 const cron = require("node-cron");
 const axios = require("axios");
+const Handlebars = require('handlebars');
+const moment = require('moment');
 
 // Replace these with your actual API keys from PayMongo
 const PAYMONGO_SECRET_KEY = "sk_test_rfwrr7CgVzNP4AnGJcjU6yFa";
@@ -91,6 +93,9 @@ hbs.registerHelper("formatStatus", function (status) {
     default:
       return '<span class="status-unknown">Unknown Status</span>';
   }
+});
+hbs.registerHelper('formatDate', function (date, format) {
+  return moment(date).format(format);
 });
 
 app.use(
