@@ -164,8 +164,9 @@ a:hover {
 .show {
   display: block;
 }
+
 .status-under-review {
-  color: green;
+  color: orange;
 }
 
 .status-printed {
@@ -173,14 +174,14 @@ a:hover {
 }
 
 .status-en-route {
-  color: blue;
+  color: #0099ff;
 }
 
 .status-shipped {
-  color: orange;
+  color: #78ff47;
 }
 
-.status-rejected {
+.status-rejected, .status-expired {
   color: red;
 }
 

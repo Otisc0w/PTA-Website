@@ -47,19 +47,28 @@
       <div class="filter-group">
         <label for="belt-color">Belt Color</label>
         <select id="belt-color">
-          <!-- Add options here -->
+            <option value="White Belt">White Belt</option>
+            <option value="Low Yellow Belt">Low Yellow Belt</option>
+            <option value="High Yellow Belt">High Yellow Belt</option>
+            <option value="Low Blue Belt">Low Blue Belt</option>
+            <option value="High Blue Belt">High Blue Belt</option>
+            <option value="Low Red Belt">Low Red Belt</option>
+            <option value="High Red Belt">High Red Belt</option>
+            <option value="Low Brown Belt">Low Brown Belt</option>
+            <option value="High Brown Belt">High Brown Belt</option>
+            <option value="Junior/Poom Black Belt">Junior/Poom Black Belt</option>
+            <option value="Black/Dan Belt">Black/Dan Belt</option>
         </select>
       </div>
       <div class="filter-group">
-        <label for="sub-category">Sub Category</label>
-        <select id="sub-category">
-          <!-- Add options here -->
+        <label for="club">Club</label>
+        <select id="club">
+         <!-- Add options here -->
         </select>
       </div>
       <div class="filter-group">
-        <label for="club-region">Club Province</label>
-        <select id="club-region">
-          <!-- jdancfjanf-->
+        <label for="ranking-points">Ranking Points</label>
+        <select id="ranking-points">
           <!-- Add options here -->
         </select>
       </div>
@@ -80,6 +89,8 @@
             <th>Club</th>
             <th>Belt Level</th>
             <th>Ranking Points</th>
+            <th>Actions</th>
+            <th>Status</th>
           </tr>
         </thead>
         <tbody>
@@ -91,6 +102,13 @@
             <td>{{club}}</td>
             <td>{{beltlevel}}</td>
             <td>{{rankingpoints}}</td>
+            <td>
+              <button class="action-button active">Active</button>
+              <button class="action-button ban">Ban</button>
+              <button class="action-button suspend">Suspend</button>
+              <button class="action-button delete">Delete</button>
+            </td>
+            <td class = "status">{{status}}</td>
           </tr>
           {{/each}}
         </tbody>
@@ -204,6 +222,48 @@
         modal.style.display = "none";
       }
     }
+
+
+document.querySelectorAll('.action-button.active').forEach(button => {
+  button.addEventListener('click', function() {
+    const row = this.closest('tr');
+    const statusCell = row.querySelector('.status');
+    const athleteId = row.dataset.id; // Assuming the athlete's ID is stored in a data attribute
+    statusCell.textContent = 'Active'; // Change status to Active
+    updateStatus(athleteId, 'Active'); // Call the function to update the status on the server
+  });
+});
+
+document.querySelectorAll('.action-button.ban').forEach(button => {
+  button.addEventListener('click', function() {
+    const row = this.closest('tr');
+    const statusCell = row.querySelector('.status');
+    const athleteId = row.dataset.id; // Assuming the athlete's ID is stored in a data attribute
+    statusCell.textContent = 'Banned'; // Change status to Banned
+    updateStatus(athleteId, 'Banned'); // Call the function to update the status on the server
+  });
+});
+
+document.querySelectorAll('.action-button.suspend').forEach(button => {
+  button.addEventListener('click', function() {
+    const row = this.closest('tr');
+    const statusCell = row.querySelector('.status');
+    const athleteId = row.dataset.id; // Assuming the athlete's ID is stored in a data attribute
+    statusCell.textContent = 'Suspended'; // Change status to Suspended
+    updateStatus(athleteId, 'Suspended'); // Call the function to update the status on the server
+  });
+});
+
+document.querySelectorAll('.action-button.delete').forEach(button => {
+  button.addEventListener('click', function() {
+    const row = this.closest('tr');
+    const athleteId = row.dataset.id; // Assuming the athlete's ID is stored in a data attribute
+    row.remove(); // Remove row from the table
+    updateStatus(athleteId, 'Deleted'); // Call the function to update the status on the server
+  });
+});
+
+
   </script>
 </body>
 

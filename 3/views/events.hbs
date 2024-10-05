@@ -21,7 +21,7 @@
         <li class="membership"><a href="membership">Membership</a></li>
         <li class="forum"><a href="forum">Forum</a></li>
         <li class="notifications">
-          <a href="notifications">Notifications <span class="badge">3</span></a>
+          <a href="notifications">Notifications <span class="badge">{{notificationsCount}}</span></a>
         </li>
         <li class="profile-pic">
           {{#if user.profilepic}}
@@ -60,8 +60,9 @@
           {{#each events}}
           <div class="event event-card">
             <img src="{{eventpicture}}" alt="Event {{id}}">
-            <h3 class="event-title">{{name}} - {{date}} {{time}}</h3>
+            <h3 class="event-title">{{name}} <br> {{formatDate date "MMMM D, YYYY"}} {{time}}</h3>
             <p>{{eventtype}}</p>
+            <p class="eventstatus">{{status}}</p>
             <a href="/events-details/{{id}}">Read More</a>
           </div>
           {{/each}}
