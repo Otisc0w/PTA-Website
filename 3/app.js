@@ -16,6 +16,7 @@ const PAYMONGO_PUBLIC_KEY = "pk_test_tfhdABT3Jvix9Wvsbv5AGP6d ";
 require("dotenv").config();
 
 const { createClient } = require("@supabase/supabase-js");
+const { threadId } = require("worker_threads");
 
 const port = process.env.PORT || 3000;
 
@@ -3666,6 +3667,103 @@ app.get("/membership-club", async (req, res) => {
   } catch (error) {
     console.error("Server error:", error.message);
     res.status(500).send("Server error");
+  }
+});
+
+app.get('/edit-post/', async (req, res) => {
+  const {id} = req.params.id;
+
+  try {
+    // Fetch the specific registration data
+    const { data, error } = await supabase
+      .from("forum_threads")
+      .select("*")
+      .eq("id", id)
+      .single();
+
+    if (error) {
+      console.error("Error fetching registration:", error.message);
+      return res.status(500).send("Error fetching registration");
+    }
+
+    res.render("edit-post", {
+      forum_threads: data,
+      user: req.session.user,
+    });
+  } catch (error) {
+    console.error("Server error:", error.message);
+    res.status(500).send("Server error");
+  }
+});
+
+app.post('/edit-post/:id', (req, res) => {
+  const {id} = req.params.id;
+  const updatedData = {
+      title: req.body.title,
+      content: req.body.content,
+  };
+
+  // Update the post in your database (adjust this to your DB setup)
+  Post.findByIdAndUpdate(threadId, updatedData, (err, post) => {
+      if (err) {
+          res.status(500).send('Error updating post');
+      } else {
+          res.redirect('/forum'); // Redirect back to the forum after editing
+      }
+  });
+});
+
+
+// Edit post route
+app.post('/edit-post/:id', async (req, res) => {
+  const postId = req.params.id;
+  const updatedContent = req.body.content; // Assuming the content is passed from a form
+
+  try {
+      // Update the post content in your database
+      await Post.findByIdAndUpdate(thread.id, { content: updatedContent });
+
+      // Redirect back to the post or send a success response
+      res.redirect(`/forum/${thread.id}`);
+  } catch (err) {
+      console.error(err);
+      res.status(500).send('Failed to edit post');
+  }
+});
+
+function editPost(thread) {
+  const content = prompt("Edit your post:", document.getElementById(`forum_threads${thread.id}`).innerText);
+  
+  if (content !== null) {
+      // Send a request to the server to update the post
+      fetch(`/edit-post/${thread.id}`, {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ content }),
+      })
+      .then(response => response.json())
+      .then(data => {
+          // Reload the page or update the post content on the page
+          location.reload();
+      })
+      .catch(error => console.error('Error:', error));
+  }
+}
+
+app.post('/delete-post/:id', async (req, res) => {
+  const postId = req.params.id;
+
+  try {
+      // Delete the post from your database
+      await Post.findByIdAndDelete(thread.id);
+
+      // Redirect back to the forum list or send a success response
+      res.redirect('/forum');
+  } catch (err) {
+      console.error(err);
+      res.status(500).send('Failed to delete post');
   }
 });
 

@@ -46,9 +46,8 @@
                 <button onclick="toggleDropdown(this)" class="dropbtn">...</button>
                 <div class="dropdown-content">
                   <a href="#">Pin</a>
-                 <!-- <a href="#">Save</a>
-                  <a href="#">Hide</a>
-                  <a href="#">Report</a> -->
+                  <a href="/edit-post" onclick="editPost('{{thread.id}}')">Edit</a>
+                  <a href="#" onclick="deletePost('{{thread.id}}')">Delete</a>
                 </div>
               </div>
         <div class="back-btn">
@@ -178,6 +177,18 @@
           }
         }
     }
+    function deletePost(threadId) {
+    if (confirm("Are you sure you want to delete this post?")) {
+        fetch(`/delete-post/${threadId}`, {
+            method: 'POST',
+        })
+        .then(response => response.json())
+        .then(data => {
+            location.reload(); // Reload the page or redirect after deletion
+        })
+        .catch(error => console.error('Error:', error));
+    }
+}
   </script>
 </body>
 
