@@ -9,9 +9,6 @@ const axios = require("axios");
 const Handlebars = require('handlebars');
 const moment = require('moment');
 
-//wahstup
-//don't move
-
 // Replace these with your actual API keys from PayMongo
 const PAYMONGO_SECRET_KEY = "sk_test_rfwrr7CgVzNP4AnGJcjU6yFa";
 const PAYMONGO_PUBLIC_KEY = "pk_test_tfhdABT3Jvix9Wvsbv5AGP6d ";
