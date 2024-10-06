@@ -46,9 +46,47 @@
     <img src="{{club.clubpic}}" alt="event Picture">
     <div class="clubname">
       <span class="name">{{club.clubname}}</span>
+      {{#if (ne club.clubname user.club)}}
+      <button class="joinbtn" onclick="/join-club">Join this club</button>
+      {{/if}}
       {{#if (eq -club.registeredby user.id)}}
       <span><a href="/clubs-manage" class="manage-button"><img src="/images/settings.png">Manage</a></span>
       {{/if}}
+    </div>
+
+    <div id="editclubmodal" class="modal">
+      <div class="modal-content">
+        <span class="close" onclick="closeModal()">&times;</span>
+
+        <form id="clubform" class="club-form" action="/update-club" method="post" enctype="multipart/form-data">
+          <input type="hidden" name="clubid" value="{{club.id}}">
+          <div class="clubpic">
+            <input type="file" name="clubpicture">
+          </div>
+          <div class="form-group">
+            <label for="clubname">Club Name:</label>
+            <input type="text" id="clubname" name="clubname" value="{{club.clubname}}" required>
+          </div>
+          <div class="form-group">
+            <label for="clubaddress">Club Address:</label>
+            <textarea id="clubaddress" name="clubaddress" rows="4" required>{{club.clubaddress}}</textarea>
+          </div>
+          <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" value="{{club.email}}" required>
+          </div>
+          <div class="form-group">
+            <label for="phonenum">Phone Number:</label>
+            <input type="text" id="phonenum" name="phonenum" value="{{club.phonenum}}" required>
+          </div>
+          <div class="form-group">
+            <label for="region">Region:</label>
+            <input type="text" id="region" name="region" value="{{club.region}}" required>
+          </div>
+          <button onclick="closeModal()" class="cancel">Cancel</button>
+          <button type="submit">Update Club</button>
+        </form>
+      </div>
     </div>
 
     <div class="clubtabs">
@@ -65,9 +103,11 @@
       <div class="leftside">
         <div class="intro">
           <div class="details">
-            <h3>Details</h3>
+            <span>Details</span>
+            {{#if (eq club.registeredby user.id)}}
+            <button class="edit-button" onclick="openModal()"></button>
+            {{/if}}
           </div>
-          <div><button class="edit-button" href="/home"><img src="../images/edit.png"></button></div>
           <p>{{club.clubaddress}}</p>
           <p>{{club.email}}</p>
           <p>{{club.phonenum}}</p>
@@ -81,6 +121,7 @@
       </div>
     </div>
   </div>
+
   <div class="participants-container">
     <div class="participants-title">
       Head Instructor: <h2>{{club.registeree}}</h2>
@@ -274,6 +315,14 @@
       if (event.target == document.getElementById('announceModal')) {
         closeModal();
       }
+    }
+
+    function openModal() {
+      document.getElementById('editclubmodal').style.display = 'block';
+    }
+
+    function closeModal() {
+      document.getElementById('editclubmodal').style.display = 'none';
     }
   </script>
 </body>

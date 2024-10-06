@@ -14,7 +14,6 @@
 }
 /*09/25/24*/
 
-
 .clubname {
   display: flex;
   flex-direction: column;
@@ -101,25 +100,6 @@
   vertical-align: middle;
   margin-left: 10px;
 }
-.intro:hover {
-  background-color: #444; 
-  transition: background-color 0.3s ease-in-out;
-}
-
-.edit-button {
-  background: none;
-  color: white;
-  border: none;
-  font-size: 14px;
-  cursor: pointer;
-  margin-left: 10px;
-}
-
-.edit-button img {
-  width: 16px;
-  height: 16px;
-}
-
 
 .detailstab {
   display: flex;
@@ -663,4 +643,176 @@ h1 {
 
 .footer-content .social-media img {
   height: 30px;
+}
+
+.joinbtn {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  outline: inherit;
+  transition: background-color 0.3s;
+  margin-left: 12px;
+}
+
+.joinbtn:hover {
+  background-color: #0056b3;
+}
+
+.clubname {
+  display: flex;
+  flex-direction: row;
+  text-align: center;
+  font-size: 30px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.details {
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 10px;
+  font-size: 20px;
+}
+
+.details span{
+  vertical-align: middle;
+}
+
+.edit-button {
+  background: none;
+	color: inherit;
+	border: none;
+	padding: 0;
+	font: inherit;
+	cursor: pointer;
+	outline: inherit;
+  height: 20px;
+  width: 20px;
+  background: url('/images/edit.png') no-repeat center center;
+  background-size: contain;
+  vertical-align: middle;
+  margin-left: 5px;
+}
+
+
+
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgba(0, 0, 0, 0.8); /* Black w/ opacity */
+  backdrop-filter: blur(10px); /* Blur the background */
+}
+
+.modal-content {
+  background-color: #222;
+  margin: 15% auto; /* 15% from the top and centered */
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%; /* Could be more or less, depending on screen size */
+  max-width: 500px;
+  border-radius: 10px;
+  color: white;
+}
+
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: white;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.participants-table img {
+  width: 40px;
+  height: 40px;
+  border-radius: 30px;
+}
+
+.name {
+  margin-left: 380px;
+}
+
+.modal select {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.modal .submit-invite {
+  background-color: #4caf50;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 20px;
+}
+
+#editclubmodal input[type="text"],
+#editclubmodal input[type="email"],
+#editclubmodal input[type="file"],
+#editclubmodal textarea {
+  width: 100%;
+  padding: 12px;
+  margin: 8px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  background-color: #333;
+  color: white;
+}
+
+#editclubmodal label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+  color: white;
+}
+
+#editclubmodal .form-group {
+  margin-bottom: 15px;
+}
+
+#editclubmodal button[type="submit"],
+#editclubmodal .cancel {
+  width: 100%;
+  background-color: #007bff;
+  color: white;
+  padding: 14px 20px;
+  margin: 8px 0;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+}
+
+#editclubmodal .cancel {
+  background-color: #f44336;
+}
+
+#editclubmodal .cancel:hover {
+  background-color: #d32f2f;
+}
+
+#editclubmodal button[type="submit"]:hover {
+  background-color: #0056b3;
 }

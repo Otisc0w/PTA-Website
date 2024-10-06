@@ -1697,6 +1697,34 @@ app.post("/invite-player", async (req, res) => {
   }
 });
 
+app.post("/request-join-club", async (req, res) => {
+  const { club_id } = req.body;
+
+  if (!req.session.user) {
+    return res.status(401).send("Unauthorized: No user logged in");
+  }
+
+  const user_id = req.session.user.id;
+  const username = req.session.user.username;
+  const useremail = req.session.user.email;
+
+  try {
+    const { data, error } = await supabase
+      .from("club_requests")
+      .insert([{ club_id, user_id, username, useremail }]);
+
+    if (error) {
+      console.error("Error requesting to join club:", error.message);
+      return res.status(500).send("Error requesting to join club");
+    }
+
+    res.redirect(`/clubs-details/${club_id}`);
+  } catch (error) {
+    console.error("Server error:", error.message);
+    res.status(500).json({ error: error.message });
+  }
+});
+
 app.post("/accept-invitation/:id", async (req, res) => {
   const { id } = req.params;
 
