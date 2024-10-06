@@ -4,18 +4,12 @@ const multer = require("multer");
 const hbs = require("hbs");
 const session = require("express-session"); // Import express-session
 const app = express();
-const cron = require("node-cron");
-const axios = require("axios");
-const Handlebars = require('handlebars');
 const moment = require('moment');
-
-// Replace these with your actual API keys from PayMongo
-const PAYMONGO_SECRET_KEY = "sk_test_rfwrr7CgVzNP4AnGJcjU6yFa";
-const PAYMONGO_PUBLIC_KEY = "pk_test_tfhdABT3Jvix9Wvsbv5AGP6d ";
 
 require("dotenv").config();
 
 const { createClient } = require("@supabase/supabase-js");
+const asyncfuncs = require("./asyncfuncs");
 
 const port = process.env.PORT || 3000;
 
@@ -23,10 +17,20 @@ const port = process.env.PORT || 3000;
 const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseKey = process.env.SUPABASE_KEY;
 const supabase = createClient(supabaseUrl, supabaseKey);
+exports.supabase = supabase;
 
 // Middleware to parse JSON
 app.use(express.json());
 app.use(express.urlencoded({ extended: true })); // Middleware to parse URL-encoded data
+app.use(session({
+  secret: 'your-secret-key',
+  resave: false,
+  saveUninitialized: true,
+}));
+
+app.use(asyncfuncs.fetchNotifications);
+app.use(asyncfuncs.fetchUserData);
+
 
 // Configure Multer for file uploads
 const storage = multer.memoryStorage();
@@ -1193,6 +1197,43 @@ app.post("/update-nccstatus", async (req, res) => {
     if (updateStatusError) {
       console.error("Error updating status:", updateStatusError.message);
       return res.status(500).send("Error updating status");
+    }
+
+    // Add a notification for the user about their registration status
+    let statusMessage;
+    switch (status) {
+      case 1:
+      statusMessage = "Your NCC registration is under review.";
+      break;
+      case 2:
+      statusMessage = "Your NCC ID is en route to your regional office.";
+      break;
+      case 3:
+      statusMessage = "Your NCC ID is now ready for pickup at your regional office.";
+      break;
+      case 4:
+      statusMessage = "Your NCC registration has been approved.";
+      break;
+      case 5:
+      statusMessage = "Your NCC registration has been rejected.";
+      break;
+      default:
+      statusMessage = "Unknown status.";
+    }
+
+    const { error: notificationError } = await supabase
+      .from("notifications")
+      .insert([
+      {
+        userid: registration.submittedby,
+        message: statusMessage,
+        created_at: new Date(),
+      },
+      ]);
+
+    if (notificationError) {
+      console.error("Error creating notification:", notificationError.message);
+      return res.status(500).send("Error creating notification");
     }
 
     console.log("Registration updated:", registration);
@@ -3395,21 +3436,32 @@ app.get("/notifications", async function (req, res) {
   const userid = req.session.user.id; // Get the current user's username from the session
 
   try {
-    const { data, error } = await supabase
+    const { data: clubInvitations, error: clubInvitationsError } = await supabase
       .from("club_invitations")
       .select("*")
       .eq("invited_user", userid)
       .is("status", null);
 
-    if (error) {
-      return res.status(400).json({ error: error.message });
+    if (clubInvitationsError) {
+      return res.status(400).json({ error: clubInvitationsError.message });
     }
 
-    console.log("Fetched data:", data); // Log the data to the console
+    const { data: notifications, error: notificationsError } = await supabase
+      .from("notifications")
+      .select("*")
+      .eq("userid", userid);
+
+    if (notificationsError) {
+      return res.status(400).json({ error: notificationsError.message });
+    }
+
+    console.log("Fetched club invitations data:", clubInvitations); // Log the club invitations data to the console
+    console.log("Fetched notifications data:", notifications); // Log the notifications data to the console
 
     // Render the notifications.hbs template with the fetched data
     res.render("notifications", {
-      club_invitations: data,
+      club_invitations: clubInvitations,
+      notifications: notifications,
       user: req.session.user,
     });
   } catch (error) {

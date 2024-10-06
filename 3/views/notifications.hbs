@@ -20,7 +20,8 @@
         <li class="membership"><a href="membership">Membership</a></li>
         <li class="forum"><a href="forum">Forum</a></li>
         <li class="notifications">
-          <a href="notifications">Notifications <span class="badge">3</span></a>
+          <a href="notifications">Notifications {{#if
+            notifications}}<span class="badge">{{notifications.length}}{{/if}}</span></a>
         </li>
         <li class="profile-pic">
           {{#if user.profilepic}}
@@ -43,6 +44,17 @@
 
   <div class="notifications-container padding">
     <h1>Notifications</h1>
+
+    {{#unless user.athleteverified}}
+    <div class="verification-reminder">
+      <h2>You don't have a club</h2>
+      <p>Join your real-life club first before applying to be verified! You can either</p>
+      <a href="clubs" class="button-3 bg-blue">Join a club</a>
+      <p>or</p>
+      <a href="membership" class="button-3 bg-blue">Register your club</a>
+    </div>
+    {{/unless}}
+
     <ul class="notifications-list">
       {{#each notifications}}
       <li class="notification">
@@ -77,15 +89,7 @@
       {{/each}}
     </ul>
 
-    {{#unless user.athleteverified}}
-    <div class="verification-reminder">
-      <h2>You don't have a club</h2>
-      <p>Join your real-life club first before applying to be verified! You can either</p>
-      <a href="clubs" class="button-3 bg-blue">Join a club</a>
-      <p>or</p>
-      <a href="membership" class="button-3 bg-blue">Register your club</a>
-    </div>
-    {{/unless}}
+
 
   </div>
 
