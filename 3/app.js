@@ -1177,24 +1177,26 @@ app.post("/update-nccstatus", async (req, res) => {
 
     // Add a notification for the user about their registration status
     let statusMessage;
-    switch (status) {
+    const statusInt = parseInt(status, 10);
+
+    switch (statusInt) {
       case 1:
-      statusMessage = "Your NCC registration is under review.";
-      break;
+        statusMessage = "Your NCC registration is under review.";
+        break;
       case 2:
-      statusMessage = "Your NCC ID is en route to your regional office.";
-      break;
+        statusMessage = "Your NCC ID is en route to your regional office.";
+        break;
       case 3:
-      statusMessage = "Your NCC ID is now ready for pickup at your regional office.";
-      break;
+        statusMessage = "Your NCC ID is now ready for pickup at your regional office.";
+        break;
       case 4:
-      statusMessage = "Your NCC registration has been approved.";
-      break;
+        statusMessage = "Your NCC registration has been approved.";
+        break;
       case 5:
-      statusMessage = "Your NCC registration has been rejected.";
-      break;
+        statusMessage = "Your NCC registration has been rejected.";
+        break;
       default:
-      statusMessage = "Unknown status.";
+        statusMessage = "Unknown status.";
     }
 
     const { error: notificationError } = await supabase
