@@ -59,6 +59,37 @@ async function fetchUserData(req, res, next) {
   }
 }
 
-exports.fetchUserData = fetchUserData;
+async function checkAndExpireNCCRegistrations() {
+  const currentDate = new Date().toISOString().split('T')[0]; // Get current date in YYYY-MM-DD format
+  const { data: registrations, error: registrationsError } = await supabase
+    .from("ncc_registrations")
+    .select("*");
 
-exports.fetchNotifications = fetchNotifications;
+  if (registrationsError) {
+    console.error("Error fetching NCC registrations:", registrationsError.message);
+  } else {
+    for (const registration of registrations) {
+      if (registration.expireson == currentDate) {
+        const { error: updateError } = await supabase
+          .from("ncc_registrations")
+          .update({ status: 5 })
+          .eq("id", registration.id);
+
+        if (updateError) {
+          console.error("Error updating NCC registration status:", updateError.message);
+        }
+      }
+    }
+  }
+}
+
+
+module.exports = {
+
+  fetchNotifications,
+
+  fetchUserData,
+
+  checkAndExpireNCCRegistrations,
+
+};

@@ -30,6 +30,7 @@ app.use(session({
 
 app.use(asyncfuncs.fetchNotifications);
 app.use(asyncfuncs.fetchUserData);
+// app.use(asyncfuncs.checkAndExpireNCCRegistrations);
 
 
 // Configure Multer for file uploads
@@ -85,17 +86,16 @@ hbs.registerHelper("formatStatus", function (status) {
     case 1:
       return '<span class="status-under-review">Under Review</span>';
     case 2:
-      return '<span class="status-printed">Printed</span>';
-    case 3:
       return '<span class="status-en-route">En-route to Regional Office</span>';
-    case 4:
+    case 3:
       return '<span class="status-shipped">ID Shipped</span>';
-    case 5:
+    case 4:
       return '<span class="status-rejected">Reject Application</span>';
-    case 6:
+    case 5:
       return '<span class="status-expired">Expired</span>';
     default:
       return '<span class="status-unknown">Unknown Status</span>';
+      
   }
 });
 hbs.registerHelper('formatDate', function (date, format) {
@@ -468,30 +468,6 @@ app.post("/submit-login", async (req, res) => {
       instructorverified: data.instructorverified,
       ptaverified: data.ptaverified,
     };
-
-    // Check and update NCC registrations
-    const currentDate = new Date().toISOString().split('T')[0]; // Get current date in YYYY-MM-DD format
-    const { data: registrations, error: registrationsError } = await supabase
-      .from("ncc_registrations")
-      .select("*");
-
-    if (registrationsError) {
-      console.error("Error fetching NCC registrations:", registrationsError.message);
-    } else {
-      for (const registration of registrations) {
-        if (registration.expireson == currentDate) {
-          const { error: updateError } = await supabase
-            .from("ncc_registrations")
-            .update({ status: 6 })
-            .eq("id", registration.id);
-
-          if (updateError) {
-            console.error("Error updating NCC registration status:", updateError.message);
-          }
-        }
-      }
-    }
-
     // Successful login
     res.redirect("/home");
   } catch (error) {
@@ -1226,8 +1202,8 @@ app.post("/update-nccstatus", async (req, res) => {
       .insert([
       {
         userid: registration.submittedby,
+        notiftype: "registration",
         message: statusMessage,
-        created_at: new Date(),
       },
       ]);
 
