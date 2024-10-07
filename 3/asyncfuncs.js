@@ -59,28 +59,44 @@ async function fetchUserData(req, res, next) {
   }
 }
 
-async function checkAndExpireNCCRegistrations() {
-  const currentDate = new Date().toISOString().split('T')[0]; // Get current date in YYYY-MM-DD format
-  const { data: registrations, error: registrationsError } = await supabase
-    .from("ncc_registrations")
-    .select("*");
+async function checkAndExpireNCCRegistrations(req, res, next) {
+  const currentDate = new Date();
+  const currentDateString = currentDate.toISOString().split('T')[0]; // Get current date in YYYY-MM-DD format
 
-  if (registrationsError) {
-    console.error("Error fetching NCC registrations:", registrationsError.message);
-  } else {
-    for (const registration of registrations) {
-      if (registration.expireson == currentDate) {
-        const { error: updateError } = await supabase
-          .from("ncc_registrations")
-          .update({ status: 5 })
-          .eq("id", registration.id);
+  try {
+    const { data: registrations, error: registrationsError } = await supabase
+      .from("ncc_registrations")
+      .select("*");
 
-        if (updateError) {
-          console.error("Error updating NCC registration status:", updateError.message);
-        }
-      }
+    if (registrationsError) {
+      throw new Error(`Error fetching NCC registrations: ${registrationsError.message}`);
     }
+
+    const expiredRegistrations = registrations.filter(registration => {
+      const expiresOn = new Date(registration.expireson);
+      return expiresOn.toISOString().split('T')[0] === currentDateString;
+    });
+
+    if (expiredRegistrations.length > 0) {
+      const ids = expiredRegistrations.map(registration => registration.id);
+      const { error: updateError } = await supabase
+        .from("ncc_registrations")
+        .update({ status: 5 })
+        .in("id", ids);
+
+      if (updateError) {
+        throw new Error(`Error updating NCC registration status: ${updateError.message}`);
+      }
+
+      console.log(`Updated status to 5 for ${expiredRegistrations.length} registrations.`);
+    } else {
+    }
+    
+  } catch (error) {
+    console.error(error.message);
   }
+
+  next();
 }
 
 

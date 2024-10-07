@@ -30,7 +30,7 @@ app.use(session({
 
 app.use(asyncfuncs.fetchNotifications);
 app.use(asyncfuncs.fetchUserData);
-// app.use(asyncfuncs.checkAndExpireNCCRegistrations);
+app.use(asyncfuncs.checkAndExpireNCCRegistrations);
 
 
 // Configure Multer for file uploads
