@@ -1214,8 +1214,8 @@ app.post("/update-nccstatus", async (req, res) => {
 
     console.log("Registration updated:", registration);
 
-    // Check if status is 4, indicating the need to update the user's athleteverified column and insert into athletes table
-    if (status == 4) {
+    // Check if status is 3, indicating the need to update the user's athleteverified column and insert into athletes table
+    if (status == 3) {
       const {
       firstname,
       middlename,

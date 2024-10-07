@@ -52,8 +52,11 @@
         <h2>NCC ID's</h2>
         {{#reverseEach ncc_registrations}}
         <div class='post-content'>
-          <span class='small'>Applicant: <h2>{{firstname}} {{lastname}}</h2> on {{created_at}}<br> expires on
-            {{expireson}}</span>
+          <span class='small'>Applicant: <h2>{{firstname}} {{lastname}}</h2> on {{created_at}}<br>
+            {{#if (eq status 3)}}
+            expires on {{expireson}}
+            {{/if}}
+          </span>
           <span>
             <h3>Status: {{{formatStatus status}}}</h3>
           </span>
