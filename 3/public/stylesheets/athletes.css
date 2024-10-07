@@ -309,3 +309,50 @@ body {
     background-color: #005fa3;
   }
   
+  /* Action buttons */
+.action-btn {
+    background-color: #007BFF; /* same color as the apply button */
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.action-btn:hover {
+    background-color: #0056b3; /* same hover effect as the apply button */
+}
+
+/* Specific buttons can have different colors */
+.active-btn {
+    background-color: #28a745; /* green for Active */
+}
+
+.ban-btn {
+    background-color: #dc3545; /* red for Ban */
+}
+
+.suspend-btn {
+    background-color: #ffc107; /* yellow for Suspend */
+}
+
+.delete-btn {
+    background-color: #6c757d; /* gray for Delete */
+}
+
+/* Hover effects for specific buttons */
+.active-btn:hover {
+    background-color: #218838;
+}
+
+.ban-btn:hover {
+    background-color: #c82333;
+}
+
+.suspend-btn:hover {
+    background-color: #e0a800;
+}
+
+.delete-btn:hover {
+    background-color: #5a6268;
+}
