@@ -224,8 +224,8 @@
     }
 
 
-document.querySelectorAll('.action-button.active').forEach(button => {
-  button.addEventListener('click', function() {
+document.querySelectorAll('.active-btn').forEach(button => {
+  button.addEventListener('click', function () {
     const row = this.closest('tr');
     const statusCell = row.querySelector('.status');
     const athleteId = row.dataset.id; // Assuming the athlete's ID is stored in a data attribute
@@ -234,8 +234,8 @@ document.querySelectorAll('.action-button.active').forEach(button => {
   });
 });
 
-document.querySelectorAll('.action-button.ban').forEach(button => {
-  button.addEventListener('click', function() {
+document.querySelectorAll('.ban-btn').forEach(button => {
+  button.addEventListener('click', function () {
     const row = this.closest('tr');
     const statusCell = row.querySelector('.status');
     const athleteId = row.dataset.id; // Assuming the athlete's ID is stored in a data attribute
@@ -244,8 +244,8 @@ document.querySelectorAll('.action-button.ban').forEach(button => {
   });
 });
 
-document.querySelectorAll('.action-button.suspend').forEach(button => {
-  button.addEventListener('click', function() {
+document.querySelectorAll('.suspend-btn').forEach(button => {
+  button.addEventListener('click', function () {
     const row = this.closest('tr');
     const statusCell = row.querySelector('.status');
     const athleteId = row.dataset.id; // Assuming the athlete's ID is stored in a data attribute
@@ -254,14 +254,64 @@ document.querySelectorAll('.action-button.suspend').forEach(button => {
   });
 });
 
-document.querySelectorAll('.action-button.delete').forEach(button => {
-  button.addEventListener('click', function() {
+document.querySelectorAll('.delete-btn').forEach(button => {
+  button.addEventListener('click', function () {
     const row = this.closest('tr');
     const athleteId = row.dataset.id; // Assuming the athlete's ID is stored in a data attribute
-    row.remove(); // Remove row from the table
+    row.remove(); // Remove the row from the table
     updateStatus(athleteId, 'Deleted'); // Call the function to update the status on the server
   });
 });
+
+function updateStatus(athleteId, status) {
+  // Example AJAX call using fetch to update the status on the server
+  fetch('/update-athlete-status', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ athleteId: athleteId, status: status })
+  })
+  .then(response => response.json())
+  .then(data => {
+    console.log(`Athlete ID: ${athleteId} Status updated to: ${status}`);
+    // Handle server response if needed
+  })
+  .catch(error => {
+    console.error('Error updating status:', error);
+  });
+}
+
+  document.addEventListener('DOMContentLoaded', () => {
+      fetch('/athletes')
+        .then(response => response.json())
+        .then(athletes => {
+          const tbody = document.querySelector('tbody');
+          tbody.innerHTML = ''; // Clear current table body content
+          athletes.forEach((athlete, index) => {
+            const row = document.createElement('tr');
+            row.dataset.id = athlete.id;
+            row.innerHTML = `
+              <td>${index + 1}</td>
+              <td>${athlete.name}</td>
+              <td>${athlete.club}</td>
+              <td>${athlete.beltLevel}</td>
+              <td>${athlete.rankingPoints}</td>
+              <td>
+                <button class="action-btn active-btn">Active</button>
+                <button class="action-btn ban-btn">Ban</button>
+                <button class="action-btn suspend-btn">Suspend</button>
+                <button class="action-btn delete-btn">Delete</button>
+              </td>
+              <td class="status">${athlete.status}</td>
+            `;
+
+            tbody.appendChild(row);
+          });
+          attachEventListeners(); // Attach event listeners after rendering
+        })
+        .catch(error => console.error('Error fetching athletes:', error));
+    });
 
 
   </script>
