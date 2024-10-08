@@ -56,20 +56,24 @@
     {{/unless}}
 
     <ul class="notifications-list">
-      {{#each notifications}}
-      <li class="notification">
-        <span class="notification-type {{type}}">{{type}}</span>
-        <div class="notification-content">
-          <h2>{{title}}</h2>
-          <p>{{message}}</p>
-          <span class="notification-user">{{user}}</span>
-          <span class="notification-time">{{time}}</span>
-        </div>
-        <button class="delete-button">X</button>
-      </li>
-      {{else}}
-      <li class="no-notifs">No notifications available</li>
-      {{/each}}
+      {{#reverseEach notifications}}
+      <a style="text-decoration:none" href="/home">
+        <li class="notification">
+          <span class="notification-type {{type}}">{{type}}</span>
+          <div class="notification-content">
+            <h2>{{title}}</h2>
+            <p>{{message}}</p>
+            <span class="notification-user">{{user}}</span>
+            <span class="notification-time">{{time}}</span>
+          </div>
+          <form action="/delete-notification/{{id}}" method="post" style="display: inline;">
+            <button class="delete-button" type="submit">&#10005;</button>
+          </form>
+        </li>
+        {{else}}
+        <li class="no-notifs">No notifications available</li>
+      </a>
+      {{/reverseEach}}
     </ul>
 
     <ul>
