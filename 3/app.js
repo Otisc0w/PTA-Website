@@ -3787,7 +3787,28 @@ app.get("/membership-club", async (req, res) => {
     res.status(500).send("Server error");
   }
 });
+/*
+app.get('/athletes', (req, res) => {
+  // Fetch all athletes from the database, including their status
+  const athletes = db.getAllAthletes(); // This is a hypothetical function to fetch data
+  res.json(athletes);
+});
 
+// Update athlete status
+app.post('/update-athlete-status', (req, res) => {
+  const { athleteId, status } = req.body;
+
+  // Find the athlete and update their status
+  const athlete = athletes.find(a => a.id === parseInt(athleteId));
+  if (athlete) {
+    athlete.status = status;
+    res.json({ success: true, message: 'Status updated successfully!' });
+  } else {
+    res.status(404).json({ success: false, message: 'Athlete not found!' });
+  }
+});
+
+*/
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
 });
