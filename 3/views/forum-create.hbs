@@ -1,72 +1,76 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>PTA | Create Post</title>
-    <link rel="icon" type="image/x-icon" href="../images/favicon.ico" />
-    <link rel="stylesheet" type="text/css" href="../stylesheets/forum-create.css" />
-    <link rel="stylesheet" type="text/css" href="../stylesheets/home.css" />
-    <link rel="stylesheet" type="text/css" href="../stylesheets/navbar.css" />
-  </head>
 
-  <body class="container">
-    <div class="header">
-      <div class="navbar">
-        <a href="home"><img src="/images/logo.png" class="logo" alt="Logo"></a>
-        <ul class="tabs">
-          <li class="home"><a href="home">Home</a></li>
-          <li class="athletes"><a href="athletes">Athletes</a></li>
-          <li class="clubs"><a href="clubs">Clubs</a></li>
-          <li class="events"><a href="events">Events</a></li>
-          <li class="membership"><a href="membership">Membership</a></li>
-          <li class="forum"><a href="forum">Forum</a></li>
-          <li class="notifications">
-            <a href="notifications">Notifications <span class="badge">3</span></a>
-          </li>
-          <li class="profile-pic">
-            {{#if user.profilepic}}
-              <a href="#" onclick="toggleDropdown()"><img src="{{user.profilepic}}" alt="Profile Picture" class="profile-picture"></a>
-            {{else}}
-              <a href="#" onclick="toggleDropdown()" class="profile-picture"><img src="/images/none.jpg" alt="Profile Picture" class="profile-picture"></a>
-            {{/if}}
-            <div id="dropdown" class="dropdown-content">
-              <a href="profile">Profile</a>
-              <a href="settings">Settings</a>
-              <a href="help-center">FAQs</a>
-              <a href="/">Logout</a>
-            </div>
-          </li>
-        </ul>
-      </div>
+<head>
+  <title>PTA | Create Post</title>
+  <link rel="icon" type="image/x-icon" href="../images/favicon.ico" />
+  <link rel="stylesheet" type="text/css" href="../stylesheets/forum-create.css" />
+  <link rel="stylesheet" type="text/css" href="../stylesheets/home.css" />
+  <link rel="stylesheet" type="text/css" href="../stylesheets/navbar.css" />
+</head>
+
+<body class="container">
+  <div class="header">
+    <div class="navbar">
+      <a href="home"><img src="/images/logo.png" class="logo" alt="Logo"></a>
+      <ul class="tabs">
+        <li class="home"><a href="home">Home</a></li>
+        <li class="athletes"><a href="athletes">Athletes</a></li>
+        <li class="clubs"><a href="clubs">Clubs</a></li>
+        <li class="events"><a href="events">Events</a></li>
+        <li class="membership"><a href="membership">Membership</a></li>
+        <li class="forum"><a href="forum">Forum</a></li>
+        <li class="notifications">
+          <a href="notifications">Notifications <span class="badge">3</span></a>
+        </li>
+        <li class="profile-pic">
+          {{#if user.profilepic}}
+          <a href="#" onclick="toggleDropdown()"><img src="{{user.profilepic}}" alt="Profile Picture"
+              class="profile-picture"></a>
+          {{else}}
+          <a href="#" onclick="toggleDropdown()" class="profile-picture"><img src="/images/none.jpg"
+              alt="Profile Picture" class="profile-picture"></a>
+          {{/if}}
+          <div id="dropdown" class="dropdown-content">
+            <a href="profile">Profile</a>
+            <a href="settings">Settings</a>
+            <a href="help-center">FAQs</a>
+            <a href="/">Logout</a>
+          </div>
+        </li>
+      </ul>
     </div>
-
-    <div class="home-container">
-        <div class="create-post-container">
-    <h2>Create a Post</h2>
-    <form id="create-post" action="create-post" method="POST">
-      <input type="hidden" value="{{user.profilepic}}" name="profilepic" id="profilepic">
-       <div class="form-group">
-        <label for="title">Title<span class="required-asterisk">*</span></label>
-        <input type="text" id="title" name="title" placeholder="Title" required>
-      </div>
-      <div class="form-group">
-        
-        <label for="topic">Topic<span class="required-asterisk">*</span></label>
-        <select id="topic" name="topicid" rows="2" placeholder="Topic" required>
-          {{#each forum_topics}}
-            <option value="{{id}}">{{topic}}</option>
-          {{/each}}
-        </select> 
-      </div>
-      <div class="form-group">
-        <label for="body">Body<span class="required-asterisk">*</span></label>
-        <textarea id="body" name="body" rows="10" placeholder="Body" required></textarea> 
-      </div>
-
-      <button type="submit" class="submit-button">Post</button>
-    </form>
   </div>
+
+  <div class="home-container">
+    <div class="create-post-container">
+      <h2>Create a Post</h2>
+      <form id="create-post" action="create-post" method="POST">
+        <input type="hidden" value="{{user.profilepic}}" name="profilepic" id="profilepic">
+        <div class="form-group">
+          <label for="title">Title<span class="required-asterisk">*</span></label>
+          <input type="text" id="title" name="title" placeholder="Title" required>
+        </div>
+
+        <div class="form-group">
+          <label for="topic">Topic<span class="required-asterisk">*</span></label>
+          <select id="topic" name="topicid" rows="2" placeholder="Topic" required>
+            {{#each forum_topics}}
+            <option value="{{id}}">{{topic}}</option>
+            {{/each}}
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="body">Body<span class="required-asterisk">*</span></label>
+          <textarea id="body" name="body" rows="10" placeholder="Body" required></textarea>
+        </div>
+
+        <button type="submit" class="submit-button">Post</button>
+      </form>
     </div>
-  
+  </div>
+
 
   <footer>
     <div class="footer-content">
@@ -95,7 +99,7 @@
       document.getElementById("dropdown").classList.toggle("show");
     }
 
-    window.onclick = function(event) {
+    window.onclick = function (event) {
       if (!event.target.matches('.profile-pic img')) {
         var dropdowns = document.getElementsByClassName("dropdown-content");
         for (var i = 0; i < dropdowns.length; i++) {
@@ -108,7 +112,8 @@
     }
   </script>
 
-   
+
 
 </body>
+
 </html>
