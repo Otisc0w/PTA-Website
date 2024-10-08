@@ -309,50 +309,39 @@ body {
     background-color: #005fa3;
   }
   
-  /* Action buttons */
-.action-btn {
-    background-color: #007BFF; /* same color as the apply button */
+  .dropdown-container {
+    position: relative;
+    display: inline-block;
+  }
+  
+  .dropbtn {
+    background-color: #4CAF50; /* Adjust the color */
     color: white;
-    padding: 10px 15px;
+    padding: 8px;
+    font-size: 16px;
     border: none;
-    border-radius: 5px;
     cursor: pointer;
-}
-
-.action-btn:hover {
-    background-color: #0056b3; /* same hover effect as the apply button */
-}
-
-/* Specific buttons can have different colors */
-.active-btn {
-    background-color: #28a745; /* green for Active */
-}
-
-.ban-btn {
-    background-color: #dc3545; /* red for Ban */
-}
-
-.suspend-btn {
-    background-color: #ffc107; /* yellow for Suspend */
-}
-
-.delete-btn {
-    background-color: #6c757d; /* gray for Delete */
-}
-
-/* Hover effects for specific buttons */
-.active-btn:hover {
-    background-color: #218838;
-}
-
-.ban-btn:hover {
-    background-color: #c82333;
-}
-
-.suspend-btn:hover {
-    background-color: #e0a800;
-}
-
-.delete-btn:hover {
-    background-color: #5a6268;
-}
+  }
+  
+  .dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+  }
+  
+  .dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+  }
+  
+  .dropdown-content a:hover {background-color: #f1f1f1}
+  
+  .show {
+    display: block;
+  }
+  
