@@ -280,7 +280,7 @@ body {
 }
 
 .modal {
-    display: none; /* Hidden by default */
+    display: block; /* Hidden by default */
     position: fixed;
     z-index: 1;
     left: 0;
