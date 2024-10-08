@@ -214,6 +214,65 @@
         }
       }
     }
+
+var modal = document.getElementById("editPostModal");
+var editLink = document.querySelector(".dropdown-content a[href='#2']"); 
+var closeBtn = document.querySelector(".modal .close");
+
+// When the user clicks the edit link, open the modal
+editLink.addEventListener("click", function(event) {
+    event.preventDefault();
+    modal.style.display = "flex";
+});
+
+// When the user clicks on <span> (x), close the modal
+closeBtn.onclick = function() {
+    modal.style.display = "none";
+}
+
+// When the user clicks anywhere outside the modal, close it
+window.onclick = function(event) {
+    if (event.target == modal) {
+        modal.style.display = "none";
+    }
+}
+
+editLink.addEventListener("click", function(event) {
+    event.preventDefault();
+    
+    // Assuming post data is available as data attributes on the link
+    var postTitle = event.target.getAttribute('title');
+    var postContent = event.target.getAttribute('body');
+    
+    document.getElementById("title").value = thread.title;
+    document.getElementById("content").value = thread.body;
+
+    modal.style.display = "flex";
+});
+
+document.getElementById("deleteButton").addEventListener("click", function() {
+    const threadId = document.querySelector('input[name="threadId"]').value; // Get thread ID from the form
+
+    // Send DELETE request to the server
+    fetch(`/delete-post/${threadId}`, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert("Post deleted successfully!");
+            window.location.href = "/forum";  // Redirect to forum page after deletion
+        } else {
+            alert("Failed to delete the post.");
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+});
   </script>
 </body>
 
