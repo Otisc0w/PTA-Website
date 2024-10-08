@@ -3801,6 +3801,30 @@ app.post('/update-athlete-status', (req, res) => {
     });
 });
 
+// try - 10/08/24
+app.post('/update-athlete-status', (req, res) => {
+  const { id, status } = req.body;
+  
+  // Update the athlete's status in the database
+  Athlete.update({ _id: id }, { status: status }, (err, result) => {
+    if (err) {
+      console.error("Error updating status:", err);
+      return res.status(500).json({ success: false, message: 'Error updating status' });
+    }
+    res.json({ success: true });
+  });
+});
+
+app.get('/athletes', (req, res) => {
+  Athlete.find({}, (err, athletes) => {
+    if (err) {
+      return res.status(500).send('Error retrieving athletes');
+    }
+    res.render('athletes', { athletes: athletes });
+  });
+});
+
+
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
 });
