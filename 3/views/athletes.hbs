@@ -93,7 +93,7 @@
         </thead>
         <tbody>
           {{#each athletes}}
-          <tr>
+          <tr onclick="showAthleteDetails('{{id}}', '{{name}}', '{{athleteClass}}', '{{height}}', '{{weight}}', '{{birthplace}}', '{{club}}', '{{image}}', '{{userid}}')">
             <td>{{@index}}</td>
             <td>{{name}}</td>
             <td>{{club}}</td>
@@ -179,99 +179,30 @@
 
    <script>
   function toggleDropdown(button) {
-    // Ensure dropdowns work properly
-    event.stopPropagation();
+  event.stopPropagation();
+  var dropdowns = document.getElementsByClassName("dropdown-content");
+  for (var i = 0; i < dropdowns.length; i++) {
+    var openDropdown = dropdowns[i];
+    if (openDropdown !== button.nextElementSibling) {
+      openDropdown.classList.remove('show');
+    }
+  }
+  button.nextElementSibling.classList.toggle("show");
+}
+
+window.onclick = function(event) {
+  if (!event.target.matches('.dropbtn')) {
     var dropdowns = document.getElementsByClassName("dropdown-content");
     for (var i = 0; i < dropdowns.length; i++) {
       var openDropdown = dropdowns[i];
-      if (openDropdown !== button.nextElementSibling) {
+      if (openDropdown.classList.contains('show')) {
         openDropdown.classList.remove('show');
       }
     }
-    button.nextElementSibling.classList.toggle("show");
   }
+}
 
-  window.onclick = function(event) {
-    if (!event.target.matches('.dropbtn')) {
-      var dropdowns = document.getElementsByClassName("dropdown-content");
-      for (var i = 0; i < dropdowns.length; i++) {
-        var openDropdown = dropdowns[i];
-        if (openDropdown.classList.contains('show')) {
-          openDropdown.classList.remove('show');
-        }
-      }
-    }
-  }
-
-  // Function to update status both in frontend and backend
-  function updateStatus(athleteId, status) {
-    console.log("Updating status for athlete ID:", athleteId, "to", status); // Debugging
-
-    // Send status update to the backend using fetch
-    fetch('/update-athlete-status', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ athleteId: athleteId, status: status }) // Send athlete ID and new status
-    })
-    .then(response => response.json()) // Parse the JSON response
-    .then(data => {
-      if (data.success) {
-        console.log(`Athlete ID: ${athleteId} Status updated to: ${status}`);
-        // Find the row by athlete ID and update the status in the table
-        const statusCell = document.querySelector(`[data-id='${athleteId}'] .status`);
-        if (statusCell) {
-          statusCell.textContent = status; // Update the status text
-        } else {
-          console.log("Unable to find the status cell for athlete ID:", athleteId);
-        }
-      } else {
-        console.error('Failed to update status on the server.');
-      }
-    })
-    .catch(error => {
-      console.error('Error updating status:', error);
-    });
-  }
-
-  // Fetch and display athletes when page loads
-  document.addEventListener('DOMContentLoaded', () => {
-    fetch('/athletes')
-      .then(response => response.json()) // Get the athlete data from the backend
-      .then(athletes => {
-        const tbody = document.querySelector('tbody');
-        tbody.innerHTML = ''; // Clear current table body content
-        athletes.forEach((athlete, index) => {
-          const row = document.createElement('tr');
-          row.dataset.id = athlete.id; // Store athlete ID in row
-          row.innerHTML = `
-            <td>${index + 1}</td>
-            <td>${athlete.name}</td>
-            <td>${athlete.club}</td>
-            <td>${athlete.beltLevel}</td>
-            <td>${athlete.rankingPoints}</td>
-            <td>
-              <div class="dropdown-container">
-                <button onclick="toggleDropdown(this)" class="dropbtn">...</button>
-                <div class="dropdown-content">
-                  <a href="#" onclick="updateStatus('${athlete.id}', 'Active')">Active</a>
-                  <a href="#" onclick="updateStatus('${athlete.id}', 'Banned')">Ban</a>
-                  <a href="#" onclick="updateStatus('${athlete.id}', 'Suspended')">Suspend</a>
-                  <a href="#" onclick="updateStatus('${athlete.id}', 'Deleted')">Delete</a>
-                </div>
-              </div>
-            </td>
-            <td class="status">${athlete.status}</td>
-          `;
-          tbody.appendChild(row);
-        });
-      })
-      .catch(error => console.error('Error fetching athletes:', error));
-  });
-
-    // Show athlete details when a row is clicked
-    function showAthleteDetails(id, name, athleteClass, height, weight, birthplace, club, image, userid) {
+ function showAthleteDetails(id, name, athleteClass, height, weight, birthplace, club, image, userid) {
       document.getElementById("athlete-name").textContent = name;
       document.getElementById("athlete-class").textContent = "Class: " + athleteClass;
       document.getElementById("athlete-height-weight").textContent = "HT/WT: " + height + " cm, " + weight + " kg";
@@ -300,6 +231,10 @@
         modal.style.display = "none";
       }
     }
+    
   </script>
 </body>
 </html>
+
+
+
