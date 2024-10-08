@@ -1260,7 +1260,7 @@ app.post("/update-nccstatus", async (req, res) => {
       .insert([
       {
         userid: registration.submittedby,
-        notiftype: "registration",
+        type: "registration",
         message: statusMessage,
       },
       ]);

@@ -57,23 +57,27 @@
 
     <ul class="notifications-list">
       {{#reverseEach notifications}}
-      <a style="text-decoration:none" href="/home">
-        <li class="notification">
-          <span class="notification-type {{type}}">{{type}}</span>
-          <div class="notification-content">
-            <h2>{{title}}</h2>
-            <p>{{message}}</p>
-            <span class="notification-user">{{user}}</span>
-            <span class="notification-time">{{time}}</span>
-          </div>
-          <form action="/delete-notification/{{id}}" method="post" style="display: inline;">
-            <button class="delete-button" type="submit">&#10005;</button>
-          </form>
-        </li>
-        {{else}}
-        <li class="no-notifs">No notifications available</li>
-      </a>
-      {{/reverseEach}}
+      {{#if (eq type 'registration')}}
+      <a style="text-decoration:none" href="/membership">
+        {{else if (eq type 'event')}}
+        <a style="text-decoration:none" href="/events">
+          {{/if}}
+          <li class="notification">
+            <span class="notification-type {{type}}">{{type}}</span>
+            <div class="notification-content">
+              <h2>{{title}}</h2>
+              <p>{{message}}</p>
+              <span class="notification-user">{{user}}</span>
+              <span class="notification-time">{{time}}</span>
+            </div>
+            <form action="/delete-notification/{{id}}" method="post" style="display: inline;">
+              <button class="delete-button" type="submit">&#10005;</button>
+            </form>
+          </li>
+          {{else}}
+          <li class="no-notifs">No notifications available</li>
+        </a>
+        {{/reverseEach}}
     </ul>
 
     <ul>
