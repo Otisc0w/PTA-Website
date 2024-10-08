@@ -47,9 +47,9 @@
       <div class="dropdown-container">
         <button onclick="toggleDropdown(this)" class="dropbtn">...</button>
         <div class="dropdown-content">
-          <a href="#">Pin</a>
+          <a href="#1">Pin</a>
           {{#if (eq thread.originalposter user.username)}}
-          <a href="#">Edit</a>
+          <a href="#2" data-title="{{thread.title}}" data-content="{{thread.body}}">Edit</a>
           {{/if}}
           <!-- <a href="#">Save</a>
                   <a href="#">Hide</a>
@@ -126,6 +126,39 @@
       {{/if}}
     </div>
   </div>
+
+ <!-- Edit Post Modal -->
+<div id="editPostModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Edit Post</h2>
+        <!-- Form to update the post -->
+        <form action="update-post" method="POST">
+            <div class="form-group">
+                <label for="edit-title">Title:</label>
+                <input type="hidden" name="threadId" value="{{thread.id}}" >
+                <input type="text" id="title" name="title" value="{{thread.title}}" required>
+            </div>
+            <div class="form-group">
+                <label for="edit-topic">Topic:</label>
+                <input type="text" id="topic" name="topic" value="{{thread.topic}}" required>
+            </div>
+            <div class="form-group">
+                <label for="edit-body">Body:</label>
+                <textarea id="body" name="body" rows="5" required>{{thread.body}}</textarea>
+            </div>
+            <button type="submit" class="btn-save">Save Changes</button>
+        </form>
+
+        <!-- Form to delete the post -->
+        <form action="delete-post" method="POST">
+            <input type="hidden" name="threadId" value="{{thread.id}}">
+            <button type="submit" id="deleteButton" class="btn-delete">Delete</button>
+        </form>
+    </div>
+</div>
+
+
   <footer>
     <div class="footer-content">
       <div class="pta-logo">
@@ -184,6 +217,68 @@
         }
       }
     }
+
+    // Get modal element
+var modal = document.getElementById("editPostModal");
+var editLink = document.querySelector(".dropdown-content a[href='#2']"); 
+var closeBtn = document.querySelector(".modal .close");
+
+// When the user clicks the edit link, open the modal
+editLink.addEventListener("click", function(event) {
+    event.preventDefault();
+    modal.style.display = "flex";
+});
+
+// When the user clicks on <span> (x), close the modal
+closeBtn.onclick = function() {
+    modal.style.display = "none";
+}
+
+// When the user clicks anywhere outside the modal, close it
+window.onclick = function(event) {
+    if (event.target == modal) {
+        modal.style.display = "none";
+    }
+}
+
+editLink.addEventListener("click", function(event) {
+    event.preventDefault();
+    
+    // Assuming post data is available as data attributes on the link
+    var postTitle = event.target.getAttribute('title');
+    var postContent = event.target.getAttribute('body');
+    
+    document.getElementById("title").value = thread.title;
+    document.getElementById("content").value = thread.body;
+
+    modal.style.display = "flex";
+});
+
+document.getElementById("deleteButton").addEventListener("click", function() {
+    const threadId = document.querySelector('input[name="threadId"]').value; // Get thread ID from the form
+
+    // Send DELETE request to the server
+    fetch(`/delete-post/${threadId}`, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert("Post deleted successfully!");
+            window.location.href = "/forum";  // Redirect to forum page after deletion
+        } else {
+            alert("Failed to delete the post.");
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+});
+
+
   </script>
 </body>
 
