@@ -3787,28 +3787,20 @@ app.get("/membership-club", async (req, res) => {
     res.status(500).send("Server error");
   }
 });
-/*
-app.get('/athletes', (req, res) => {
-  // Fetch all athletes from the database, including their status
-  const athletes = db.getAllAthletes(); // This is a hypothetical function to fetch data
-  res.json(athletes);
-});
-
-// Update athlete status
 app.post('/update-athlete-status', (req, res) => {
-  const { athleteId, status } = req.body;
+  const { athleteId, status } = req.body; // Get the data from the request body
 
-  // Find the athlete and update their status
-  const athlete = athletes.find(a => a.id === parseInt(athleteId));
-  if (athlete) {
-    athlete.status = status;
-    res.json({ success: true, message: 'Status updated successfully!' });
-  } else {
-    res.status(404).json({ success: false, message: 'Athlete not found!' });
-  }
+  // Update the athlete's status in the database
+  Athletes.update({ status }, { where: { id: athleteId } })
+    .then(() => {
+      res.json({ success: true }); // Send a success response
+    })
+    .catch(error => {
+      console.error('Error updating athlete status:', error);
+      res.json({ success: false }); // Send a failure response
+    });
 });
 
-*/
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
 });
