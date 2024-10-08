@@ -1024,6 +1024,62 @@ app.post("/create-topic", async (req, res) => {
   }
 });
 
+app.post('/forum-thread/update-post', async (req, res) => {
+  try {
+    // Extract the necessary fields from the request body
+    const { title, topic, body } = req.body;
+    const threadId = req.body.threadId; // Assuming you pass the threadId to identify which post to update
+    
+    // Update the post in the database
+    const { data, error } = await supabase
+      .from('forum_threads') // Replace 'threads' with your actual table name if different
+      .update({
+        title: title,
+        topic:topic,
+        body: body,
+      })
+      .eq('id', threadId); // Ensure the correct id is used in the eq method
+
+    if (error) {
+      console.error("Error updating post:", error.message);
+      return res.status(500).render("forum-thread", {
+        error: "Error updating post.",
+        thread: {}, // Optionally pass the thread object to show current data if needed
+      });
+    }
+
+    // Redirect or render success view
+    res.redirect(`/forum-thread/${threadId}`);
+  } catch (err) {
+    console.error("Unexpected error:", err);
+    return res.status(500).render("forum-thread", {
+      error: "An unexpected error occurred.",
+    });
+  }
+});
+
+// Create a DELETE route for deleting a post
+app.post('/forum-thread/delete-post', async (req, res) => {
+  const {threadId} = req.body; // Get the post ID from the form body
+
+  try {
+    // Delete the post from your database (adjust according to your database setup)
+    const { data, error } = await supabase
+      .from('forum_threads')  // Replace 'forum_threads' with your actual table name
+      .delete()
+      .eq('id', threadId);  // Match the post by ID
+
+    if (error) {
+      return res.status(500).json({ success: false, error: 'Error deleting post' });
+    }
+
+    res.redirect(`/forum`); // Redirect to the forum after deleting the post
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, error: 'Server error' });
+  }
+});
+
 app.post("/save-profile-changes", upload.single("file"), async (req, res) => {
   const {
     firstname,
