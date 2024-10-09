@@ -60,61 +60,63 @@
 
         <form id="clubform" class="club-form" action="/update-club" method="post" enctype="multipart/form-data">
           <input type="hidden" name="clubid" value="{{club.id}}">
-          
+
           <!-- Club Picture Upload -->
           <div class="clubpic">
             <input type="file" name="clubpicture">
           </div>
-          
+
           <!-- Club Name -->
           <div class="form-group">
             <label for="clubname">Club Name:</label>
             <input type="text" id="clubname" name="clubname" value="{{club.clubname}}" required>
           </div>
-          
+
           <!-- Club Address -->
           <div class="form-group">
             <label for="clubaddress">Club Address:</label>
             <textarea id="clubaddress" name="clubaddress" rows="4" required>{{club.clubaddress}}</textarea>
           </div>
-          
+
           <!-- Email -->
           <div class="form-group">
             <label for="email">Email:</label>
             <input type="email" id="email" name="email" value="{{club.email}}" required>
           </div>
-          
+
           <!-- Phone Number -->
           <div class="form-group">
             <label for="phonenum">Phone Number:</label>
             <input type="text" id="phonenum" name="phonenum" value="{{club.phonenum}}" required>
           </div>
-          
+
           <!-- Region -->
           <div class="form-group">
             <label for="region">Region:</label>
             <input type="text" id="region" name="region" value="{{club.region}}" required>
           </div>
-          
+
           <!-- Brief Description -->
           <div class="form-group">
             <label for="description">Brief Description:</label>
             <textarea id="description" name="description" rows="4">{{club.description}}</textarea>
           </div>
-          
+
           <!-- Access Type -->
           <div class="form-group">
             <label for="accessType">Access Type:</label><br>
-            
+
             <!-- Open to All Option -->
-            <input type="radio" id="openToAll" name="accessType" value="openToAll" {{#if club.isOpenToAll}}checked{{/if}}>
+            <input type="radio" id="openToAll" name="accessType" value="openToAll" {{#if
+              club.isOpenToAll}}checked{{/if}}>
             <label for="openToAll">Open to All</label><br>
-            
+
             <!-- Invite Only Option -->
-            <input type="radio" id="inviteOnly" name="accessType" value="inviteOnly" {{#if club.isInviteOnly}}checked{{/if}}>
+            <input type="radio" id="inviteOnly" name="accessType" value="inviteOnly" {{#if
+              club.isInviteOnly}}checked{{/if}}>
             <label for="inviteOnly">Invite Only</label>
           </div>
-          
+
           <!-- Cancel and Update Buttons -->
           <button onclick="closeModal()" class="cancel">Cancel</button>
           <button type="submit">Update Club</button>

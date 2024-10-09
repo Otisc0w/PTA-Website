@@ -280,7 +280,9 @@ body {
 }
 
 .modal {
-    display: block; /* Hidden by default */
+    display: none; /* Hidden by default */
+    justify-content: center;
+    align-items: center;
     position: fixed;
     z-index: 1;
     left: 0;
@@ -308,10 +310,20 @@ body {
 
 .btn-save{
     background-color: blue;
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
 }
 
 .btn-delete{
     background-color: red;
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
 }
 
 .btn-save:hover{
@@ -324,6 +336,41 @@ body {
     background-color: #db2e5a;
     text-decoration: none;
     cursor: pointer;
+}
+
+/* Close button for modal */
+.modal .close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+}
+
+.modal .close:hover,
+.modal .close:focus {
+    color: #fff;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* Input fields styling */
+input[type="text"], input[type="email"], input[type="password"], textarea {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #444;
+    border-radius: 4px;
+    background-color: #1a1a1a;
+    color: #fff;
+    box-sizing: border-box;
+}
+
+input[type="text"]:focus, input[type="email"]:focus, input[type="password"]:focus, textarea:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
+textarea {
+    resize: vertical;
 }
 
 .footer-content {

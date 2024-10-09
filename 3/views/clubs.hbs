@@ -57,13 +57,13 @@
             <p>Contact Us:
               {{email}}/{{phonenum}}</p>
             <p>Region: {{region}}</p>
-            
+
             <!-- Access type: open to all or invite only -->
             <p>Access Type:
-              {{#if isOpenToAll}}Open to All{{/if}}
-              {{#if isInviteOnly}}Invite Only{{/if}}
+              {{!-- {{#if isOpenToAll}}Open to All{{/if}}
+              {{#if isInviteOnly}}Invite Only{{/if}} --}}
             </p>
-            
+
             <a href="/clubs-details/{{id}}">Read more</a>
           </div>
           {{/each}}

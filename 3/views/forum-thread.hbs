@@ -49,7 +49,7 @@
         <div class="dropdown-content">
           <a href="#">Pin</a>
           {{#if (eq thread.originalposter user.username)}}
-          <a href="#">Edit</a>
+          <a href="#2">Edit</a>
           {{/if}}
         </div>
       </div>
@@ -192,7 +192,7 @@
     }
 
     var modal = document.getElementById("editPostModal");
-    var editLink = document.querySelector(".dropdown-content a[href='#']");
+    var editLink = document.querySelector(".dropdown-content a:contains('Edit')");
     var closeBtn = document.querySelector(".modal .close");
 
     // When the user clicks the edit link, open the modal

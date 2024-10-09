@@ -2822,7 +2822,7 @@ app.get("/clubs-details/:id", async function (req, res) {
   try {
     const { data: club, error: clubsError } = await supabase
       .from("clubs")
-      .select("*, isOpenToAll, isInviteOnly")
+      .select("*")
       .eq("id", id)
       .single();
 
