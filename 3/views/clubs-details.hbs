@@ -60,29 +60,62 @@
 
         <form id="clubform" class="club-form" action="/update-club" method="post" enctype="multipart/form-data">
           <input type="hidden" name="clubid" value="{{club.id}}">
+          
+          <!-- Club Picture Upload -->
           <div class="clubpic">
             <input type="file" name="clubpicture">
           </div>
+          
+          <!-- Club Name -->
           <div class="form-group">
             <label for="clubname">Club Name:</label>
             <input type="text" id="clubname" name="clubname" value="{{club.clubname}}" required>
           </div>
+          
+          <!-- Club Address -->
           <div class="form-group">
             <label for="clubaddress">Club Address:</label>
             <textarea id="clubaddress" name="clubaddress" rows="4" required>{{club.clubaddress}}</textarea>
           </div>
+          
+          <!-- Email -->
           <div class="form-group">
             <label for="email">Email:</label>
             <input type="email" id="email" name="email" value="{{club.email}}" required>
           </div>
+          
+          <!-- Phone Number -->
           <div class="form-group">
             <label for="phonenum">Phone Number:</label>
             <input type="text" id="phonenum" name="phonenum" value="{{club.phonenum}}" required>
           </div>
+          
+          <!-- Region -->
           <div class="form-group">
             <label for="region">Region:</label>
             <input type="text" id="region" name="region" value="{{club.region}}" required>
           </div>
+          
+          <!-- Brief Description -->
+          <div class="form-group">
+            <label for="description">Brief Description:</label>
+            <textarea id="description" name="description" rows="4">{{club.description}}</textarea>
+          </div>
+          
+          <!-- Access Type -->
+          <div class="form-group">
+            <label for="accessType">Access Type:</label><br>
+            
+            <!-- Open to All Option -->
+            <input type="radio" id="openToAll" name="accessType" value="openToAll" {{#if club.isOpenToAll}}checked{{/if}}>
+            <label for="openToAll">Open to All</label><br>
+            
+            <!-- Invite Only Option -->
+            <input type="radio" id="inviteOnly" name="accessType" value="inviteOnly" {{#if club.isInviteOnly}}checked{{/if}}>
+            <label for="inviteOnly">Invite Only</label>
+          </div>
+          
+          <!-- Cancel and Update Buttons -->
           <button onclick="closeModal()" class="cancel">Cancel</button>
           <button type="submit">Update Club</button>
         </form>
@@ -147,61 +180,6 @@
         {{/each}}
       </tbody>
     </table>
-  </div>
-
-  <div class="announcements" hidden>
-    <h2>Announcements</h2>
-    <div class="makeannouncement">
-      {{#if (eq club.registeredby user.id)}}
-      <button class="newannounce" onclick="openannounceModal()">+ Announce</button>
-      {{/if}}
-    </div>
-    {{#reverseEach announcements}}
-    <div class="oneannouncement">
-      <h2>{{title}}</h2>
-      <p>{{subject}}</p>
-      <p>{{body}}</p>
-    </div>
-    {{/reverseEach}}
-  </div>
-
-  <div id="announceModal" class="modal" style="display:none;">
-    <div class="modal-content">
-      <span class="close" onclick="closeannounceModal()">&times;</span>
-      <form action="/create-club-announcement" method="post" class="announceform">
-        <input type="hidden" name="originalposter" value="{{user.username}}">
-        <input type="hidden" name="profilepic" value="{{user.profilepic}}">
-        <input type="hidden" name="clubid" value="{{club.id}}">
-
-        <label for="title">Title:</label>
-        <input type="text" id="title" name="title" required>
-
-        <label for="subject">Subject:</label>
-        <input type="text" id="subject" name="subject" required>
-
-        <label for="body">Body:</label>
-        <textarea id="body" name="body" rows="4" required></textarea>
-
-        <button type="submit" class="submit-announce">Post Announcement</button>
-      </form>
-    </div>
-  </div>
-
-  <div id="inviteModal" class="modal">
-    <div class="modal-content">
-      <span class="close" onclick="closeModal()">&times;</span>
-      <form action="/invite-user" method="post" class="inviteform">
-        <input type="hidden" name="clubname" value="{{club.clubname}}">
-        <input type="hidden" name="club_id" value="{{club.id}}">
-        <label for="invited_user">Invite User:</label>
-        <select name="invited_user" id="invited_user">
-          {{#each allUsers}}
-          <option value="{{id}}">{{firstname}}</option>
-          {{/each}}
-        </select>
-        <button type="submit" class="submit-invite">Invite</button>
-      </form>
-    </div>
   </div>
 
   <footer>

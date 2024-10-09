@@ -51,7 +51,19 @@
           <div class="event">
             <img src="{{clubpic}}" alt="{{clubname}}">
             <h3>{{clubname}} - {{province}}</h3>
-            <p>{{{clubaddress}}}</p>
+            <!-- Add a brief description field -->
+            <p>{{description}}</p>
+            <p>Address: {{{clubaddress}}}</p>
+            <p>Contact Us:
+              {{email}}/{{phonenum}}</p>
+            <p>Region: {{region}}</p>
+            
+            <!-- Access type: open to all or invite only -->
+            <p>Access Type:
+              {{#if isOpenToAll}}Open to All{{/if}}
+              {{#if isInviteOnly}}Invite Only{{/if}}
+            </p>
+            
             <a href="/clubs-details/{{id}}">Read more</a>
           </div>
           {{/each}}

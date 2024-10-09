@@ -2421,21 +2421,16 @@ app.post("/create-club-announcement", async (req, res) => {
 });
 
 app.post("/update-club", upload.single("clubpicture"), async (req, res) => {
-  const {
-    clubid,
-    clubname,
-    clubaddress,
-    email,
-    phonenum,
-    region,
-  } = req.body;
+  const { clubid, clubname, clubaddress, description, email, phonenum, region } = req.body;
+  
+  let clubpictureUrl = null;
 
-  let clubpic = null;
+  // Check if a new picture is being uploaded
   if (req.file) {
     try {
       const filePath = `clubpictures/${Date.now()}-${req.file.originalname}`;
       const { error: uploadError } = await supabase.storage
-        .from("documents")
+        .from("clubpictures")
         .upload(filePath, req.file.buffer, {
           contentType: req.file.mimetype,
         });
@@ -2445,28 +2440,26 @@ app.post("/update-club", upload.single("clubpicture"), async (req, res) => {
         return res.status(500).send("Error uploading club picture");
       }
 
-      clubpic = `${supabaseUrl}/storage/v1/object/public/documents/${filePath}`;
+      clubpictureUrl = `${supabaseUrl}/storage/v1/object/public/clubpictures/${filePath}`;
     } catch (error) {
       console.error("Server error:", error.message);
       return res.status(500).json({ error: error.message });
     }
   }
 
+  // Update the club details in the database
   try {
-    const updateData = {
-      clubname,
-      clubaddress,
-      email,
-      phonenum
-    };
-
-    if (clubpic) {
-      updateData.clubpic = clubpic;
-    }
-
-    const { data, error } = await supabase
+    const { error } = await supabase
       .from("clubs")
-      .update(updateData)
+      .update({
+        clubname,
+        clubaddress,
+        description,
+        email,
+        phonenum,
+        region,
+        clubpicture: clubpictureUrl || undefined, // Only update the picture if a new one was uploaded
+      })
       .eq("id", clubid);
 
     if (error) {
@@ -2480,6 +2473,7 @@ app.post("/update-club", upload.single("clubpicture"), async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+
 
 app.post("/create-event-announcement", async (req, res) => {
   const { title, subject, body, eventid } = req.body;
@@ -2828,9 +2822,10 @@ app.get("/clubs-details/:id", async function (req, res) {
   try {
     const { data: club, error: clubsError } = await supabase
       .from("clubs")
-      .select("*")
+      .select("*, isOpenToAll, isInviteOnly")
       .eq("id", id)
       .single();
+
 
     if (clubsError) {
       return res.status(400).json({ clubsError: clubsError.message });
