@@ -61,20 +61,20 @@
         </select>
       </div>
       <div class="filter-group">
-        <label for="club">Club</label>
-        <select id="club">
-         <!-- Add options here -->
+         <label for="club">Club</label>
+          <select id="club" name="club">
+          {{#each clubs}}
+          <option value="{{id}}">{{this.clubname}}</option>
+          
+          {{/each}}
         </select>
       </div>
       <div class="filter-group">
-        <label for="ranking-points">Ranking Points</label>
-        <select id="ranking-points">
-          <!-- Add options here -->
-        </select>
+        
       </div>
       <div class="filter-group">
-        <label for="athlete-search">Search Athlete</label>
-        <input type="text" id="athlete-search" placeholder="Search...">
+        <label for="searchAthlete">Search Athletes:</label>
+        <input type="text" id="searchAthlete" oninput="filterAthletes()" placeholder="Search athlete...">
       </div>
       <button class="apply-btn">Apply</button>
     </div>
@@ -93,12 +93,12 @@
             <th>Status</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody id="athleteList">
           {{#each athletes}}
-          <tr
+          <tr class="athlete-row"
             onclick="showAthleteDetails('{{id}}', '{{name}}', '{{class}}', '{{height}}', '{{weight}}', '{{clubregion}}', '{{club}}', '{{portrait}}', '{{userid}}')">
             <td>{{@index}}</td>
-            <td>{{name}}</td>
+            <td class"athlete-name">{{name}}</td>
             <td>{{club}}</td>
             <td>{{beltlevel}}</td>
             <td>{{rankingpoints}}</td>
@@ -204,6 +204,23 @@
 
       document.getElementById("athlete-details").style.display = "block"; // Show the athlete details
     }
+
+    // Search Filter Function
+    function filterAthletes() {
+  const searchInput = document.getElementById('searchAthlete').value.toLowerCase();
+  const athleteRows = document.querySelectorAll('#athleteList .athlete-row');
+
+  athleteRows.forEach(row => {
+    const athleteName = row.querySelector('.athlete-name').textContent.toLowerCase();
+    
+    // Check if the athlete's name includes the search input
+    if (athleteName.includes(searchInput)) {
+      row.style.display = ''; // Show the row if the name matches
+    } else {
+      row.style.display = 'none'; // Hide the row if the name doesn't match
+    }
+  });
+}
 
     // Modal functionality
     var modal = document.getElementById("inviteModal");

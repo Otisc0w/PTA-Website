@@ -3255,7 +3255,6 @@ app.get("/athletes", async function (req, res) {
   }
 
   const userId = req.session.user.id;
-
   try {
     // Fetch athletes data sorted by ranking points in descending order
     const { data: athletes, error: athletesError } = await supabase
@@ -3270,13 +3269,12 @@ app.get("/athletes", async function (req, res) {
     // Fetch clubs data
     const { data: clubs, error: clubsError } = await supabase
       .from("clubs")
-      .select("*")
-      .eq("registeredby", userId);
+      .select("clubname")
+      
 
     if (clubsError) {
       return res.status(400).json({ error: clubsError.message });
     }
-
     // Fetch user data to get the club information
     const { data: users, error: usersError } = await supabase
       .from("users")
