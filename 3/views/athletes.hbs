@@ -61,15 +61,11 @@
         </select>
       </div>
       <div class="filter-group">
-        <label for="club">Club</label>
-        <select id="club">
-          <!-- Add options here -->
-        </select>
-      </div>
-      <div class="filter-group">
-        <label for="ranking-points">Ranking Points</label>
-        <select id="ranking-points">
-          <!-- Add options here -->
+         <label for="club">Club</label>
+          <select id="club" name="club">
+          {{#each clubs}}
+          <option value="{{id}}">{{this.clubname}}</option>
+          {{/each}}
         </select>
       </div>
       <div class="filter-group">
