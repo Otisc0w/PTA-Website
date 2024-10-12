@@ -101,6 +101,10 @@ hbs.registerHelper("formatStatus", function (status) {
 hbs.registerHelper('formatDate', function (date, format) {
   return moment(date).format(format);
 });
+hbs.registerHelper('formatCreatedAt', function (created_at) {
+  return moment(created_at).format('MMM D h:mm A');
+});
+
 
 app.use(
   session({
@@ -1057,8 +1061,6 @@ app.post('/forum-thread/update-post', async (req, res) => {
     });
   }
 });
-
-// Create a DELETE route for deleting a post
 app.post('/forum-thread/delete-post', async (req, res) => {
   const {threadId} = req.body; // Get the post ID from the form body
 
@@ -1077,6 +1079,34 @@ app.post('/forum-thread/delete-post', async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ success: false, error: 'Server error' });
+  }
+});
+
+app.post("/delete-notification/:id", async (req, res) => {
+  const { id } = req.params;
+
+  if (!req.session.user) {
+    return res.status(401).send("Unauthorized: No user logged in");
+  }
+
+  const userid = req.session.user.id;
+
+  try {
+    const { data, error } = await supabase
+      .from("notifications")
+      .delete()
+      .eq("id", id)
+      .eq("userid", userid);
+
+    if (error) {
+      console.error("Error deleting notification:", error.message);
+      return res.status(500).send("Error deleting notification");
+    }
+
+    res.redirect("/notifications");
+  } catch (error) {
+    console.error("Server error:", error.message);
+    res.status(500).json({ error: error.message });
   }
 });
 
@@ -1260,7 +1290,7 @@ app.post("/update-nccstatus", async (req, res) => {
       .insert([
       {
         userid: registration.submittedby,
-        type: "registration",
+        type: "Registration",
         message: statusMessage,
       },
       ]);
@@ -2474,7 +2504,6 @@ app.post("/update-club", upload.single("clubpicture"), async (req, res) => {
   }
 });
 
-
 app.post("/create-event-announcement", async (req, res) => {
   const { title, subject, body, eventid } = req.body;
 
@@ -2635,6 +2664,33 @@ app.post("/update-points", async (req, res) => {
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
+});
+
+app.post('/update-athlete-status', (req, res) => {
+  const { athleteId, status } = req.body; // Get the data from the request body
+
+  // Update the athlete's status in the database
+  Athletes.update({ status }, { where: { id: athleteId } })
+    .then(() => {
+      res.json({ success: true }); // Send a success response
+    })
+    .catch(error => {
+      console.error('Error updating athlete status:', error);
+      res.json({ success: false }); // Send a failure response
+    });
+});
+
+app.post('/update-athlete-status', (req, res) => {
+  const { id, status } = req.body;
+  
+  // Update the athlete's status in the database
+  Athlete.update({ _id: id }, { status: status }, (err, result) => {
+    if (err) {
+      console.error("Error updating status:", err);
+      return res.status(500).json({ success: false, message: 'Error updating status' });
+    }
+    res.json({ success: true });
+  });
 });
 
 // VIEWS BELOW
@@ -3836,33 +3892,7 @@ app.get("/membership-club", async (req, res) => {
     res.status(500).send("Server error");
   }
 });
-app.post('/update-athlete-status', (req, res) => {
-  const { athleteId, status } = req.body; // Get the data from the request body
 
-  // Update the athlete's status in the database
-  Athletes.update({ status }, { where: { id: athleteId } })
-    .then(() => {
-      res.json({ success: true }); // Send a success response
-    })
-    .catch(error => {
-      console.error('Error updating athlete status:', error);
-      res.json({ success: false }); // Send a failure response
-    });
-});
-
-// try - 10/08/24
-app.post('/update-athlete-status', (req, res) => {
-  const { id, status } = req.body;
-  
-  // Update the athlete's status in the database
-  Athlete.update({ _id: id }, { status: status }, (err, result) => {
-    if (err) {
-      console.error("Error updating status:", err);
-      return res.status(500).json({ success: false, message: 'Error updating status' });
-    }
-    res.json({ success: true });
-  });
-});
 
 app.get('/athletes', (req, res) => {
   Athlete.find({}, (err, athletes) => {

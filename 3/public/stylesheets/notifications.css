@@ -58,6 +58,7 @@ body {
 .notification-type {
     font-weight: bold;
     margin-right: 10px;
+    width: 110px;
 }
 
 .notification-content {
@@ -69,6 +70,7 @@ body {
     display: block;
     color: #ccc;
     font-size: 12px;
+    float: right;
 }
 
 .delete-button {

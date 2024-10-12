@@ -68,7 +68,7 @@
               <h2>{{title}}</h2>
               <p>{{message}}</p>
               <span class="notification-user">{{user}}</span>
-              <span class="notification-time">{{time}}</span>
+              <span class="notification-time">{{formatCreatedAt created_at}}</span>
             </div>
             <form action="/delete-notification/{{id}}" method="post" style="display: inline;">
               <button class="delete-button" type="submit">&#10005;</button>
