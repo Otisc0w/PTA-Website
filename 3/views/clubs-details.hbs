@@ -47,7 +47,10 @@
     <div class="clubname">
       <span class="name">{{club.clubname}}</span>
       {{#if (ne club.clubname user.club)}}
-      <button class="joinbtn" onclick="/join-club">Join this club</button>
+      <form action="/request-join-club" method="POST">
+        <input type="hidden" name="clubid" value="{{club.id}}">
+        <button type="submit" class="joinbtn">Join this club</button>
+      </form>
       {{/if}}
       {{#if (eq -club.registeredby user.id)}}
       <span><a href="/clubs-manage" class="manage-button"><img src="/images/settings.png">Manage</a></span>

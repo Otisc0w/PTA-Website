@@ -1942,27 +1942,27 @@ app.post("/invite-player", async (req, res) => {
 });
 
 app.post("/request-join-club", async (req, res) => {
-  const { club_id } = req.body;
+  const { clubid } = req.body;
 
   if (!req.session.user) {
     return res.status(401).send("Unauthorized: No user logged in");
   }
 
-  const user_id = req.session.user.id;
+  const userid = req.session.user.id;
   const username = req.session.user.username;
   const useremail = req.session.user.email;
 
   try {
     const { data, error } = await supabase
       .from("club_requests")
-      .insert([{ club_id, user_id, username, useremail }]);
+      .insert([{ clubid, userid }]);
 
     if (error) {
       console.error("Error requesting to join club:", error.message);
       return res.status(500).send("Error requesting to join club");
     }
 
-    res.redirect(`/clubs-details/${club_id}`);
+    res.redirect(`/clubs-details/${clubid}`);
   } catch (error) {
     console.error("Server error:", error.message);
     res.status(500).json({ error: error.message });

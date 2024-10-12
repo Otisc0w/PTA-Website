@@ -21,8 +21,11 @@
         <li class="membership"><a href="membership">Membership</a></li>
         <li class="forum"><a href="forum">Forum</a></li>
         <li class="notifications">
-          <a href="notifications">Notifications <span class="badge">3</span></a>
-        </li>
+          <a href="notifications">Notifications
+            {{#if notifications}}
+            <span class="badge">{{notifications.length}}</span>
+            {{/if}}
+          </a>
         <li class="profile-pic">
           {{#if user.profilepic}}
           <a href="#" onclick="toggleDropdown()"><img src="{{user.profilepic}}" alt="Profile Picture"
@@ -53,7 +56,6 @@
             <h3>{{clubname}} - {{province}}</h3>
             <!-- Add a brief description field -->
             <p>{{{clubaddress}}}</p>
-
             <a href="/clubs-details/{{id}}">Read more</a>
           </div>
           {{/each}}
