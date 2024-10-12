@@ -20,8 +20,11 @@
         <li class="membership"><a href="membership">Membership</a></li>
         <li class="forum"><a href="forum">Forum</a></li>
         <li class="notifications">
-          <a href="notifications">Notifications {{#if
-            notifications}}<span class="badge">{{notifications.length}}{{/if}}</span></a>
+          <a href="notifications">Notifications
+            {{#if notifications}}
+            <span class="badge">{{notifications.length}}</span>
+            {{/if}}
+          </a>
         </li>
         <li class="profile-pic">
           {{#if user.profilepic}}
