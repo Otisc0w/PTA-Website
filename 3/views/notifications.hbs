@@ -43,7 +43,15 @@
   </div>
 
   <div class="notifications-container padding">
-    <h1>Notifications</h1>
+
+    <div>
+      <h1>Notifications</h1>
+      <span class="clearallbtn">
+        <form action="/delete-all-notifications" method="post">
+          <button type="submit">clear all</button>
+        </form>
+      </span>
+    </div>
 
     {{#unless user.athleteverified}}
     <div class="verification-reminder">

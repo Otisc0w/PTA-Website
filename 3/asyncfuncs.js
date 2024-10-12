@@ -32,7 +32,6 @@ async function fetchNotifications(req, res, next) {
   }
 }
 
-// Define fetchUserData middleware
 async function fetchUserData(req, res, next) {
   if (!req.session.user) {
     return next(); // If no user is logged in, skip fetching user data
@@ -99,6 +98,45 @@ async function checkAndExpireNCCRegistrations(req, res, next) {
   next();
 }
 
+async function checkAndExpireInstructorRegistrations(req, res, next) {
+  const currentDate = new Date();
+  const currentDateString = currentDate.toISOString().split('T')[0]; // Get current date in YYYY-MM-DD format
+
+  try {
+    const { data: registrations, error: registrationsError } = await supabase
+      .from("instructor_registrations")
+      .select("*");
+
+    if (registrationsError) {
+      throw new Error(`Error fetching instructor registrations: ${registrationsError.message}`);
+    }
+
+    const expiredRegistrations = registrations.filter(registration => {
+      const expiresOn = new Date(registration.expireson);
+      return expiresOn.toISOString().split('T')[0] === currentDateString;
+    });
+
+    if (expiredRegistrations.length > 0) {
+      const ids = expiredRegistrations.map(registration => registration.id);
+      const { error: updateError } = await supabase
+        .from("instructor_registrations")
+        .update({ status: 5 })
+        .in("id", ids);
+
+      if (updateError) {
+        throw new Error(`Error updating instructor registration status: ${updateError.message}`);
+      }
+
+      console.log(`Updated status to 5 for ${expiredRegistrations.length} instructor registrations.`);
+    }
+    
+  } catch (error) {
+    console.error(error.message);
+  }
+
+  next();
+}
+
 
 module.exports = {
 
@@ -107,5 +145,7 @@ module.exports = {
   fetchUserData,
 
   checkAndExpireNCCRegistrations,
+
+  checkAndExpireInstructorRegistrations
 
 };

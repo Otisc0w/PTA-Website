@@ -31,6 +31,7 @@ app.use(session({
 app.use(asyncfuncs.fetchNotifications);
 app.use(asyncfuncs.fetchUserData);
 app.use(asyncfuncs.checkAndExpireNCCRegistrations);
+app.use(asyncfuncs.checkAndExpireInstructorRegistrations);
 
 
 // Configure Multer for file uploads
@@ -900,11 +901,26 @@ app.post(
     }
 
     try {
-      // Insert the new user into the database
-      const { data, error } = await supabase
+      // Check if a row with the same submittedby already exists
+      const { data: existingRegistration, error: existingRegistrationError } = await supabase
         .from("instructor_registrations")
-        .insert([
-          {
+        .select("*")
+        .eq("submittedby", submittedby)
+        .single();
+
+      if (existingRegistrationError && existingRegistrationError.code !== 'PGRST116') {
+        console.error("Error checking existing registration:", existingRegistrationError.message);
+        return res.status(500).render("membership", {
+          error: "Error checking existing registration.",
+          users: [], // Optionally pass users array if you need it in the view
+        });
+      }
+
+      if (existingRegistration) {
+        // Update the existing registration
+        const { data, error } = await supabase
+          .from("instructor_registrations")
+          .update({
             apptype,
             firstname,
             middlename,
@@ -915,23 +931,57 @@ app.post(
             email,
             clubregion,
             status,
-            submittedby,
             birthcert: birthcertUrl, // Include the birth certificate URL
             portrait: portraitUrl, // Include the portrait URL
             educproof: educproofUrl,
             poomsaecert: poomsaecertUrl,
             kukkiwoncert: kukkiwoncertUrl,
             ptablackbeltcert: ptablackbeltcertUrl,
-          },
-        ]);
+          })
+          .eq("submittedby", submittedby);
 
-      if (error) {
-        console.error("Error creating registration:", error.message);
-        return res.status(500).render("membership", {
-          error: "Error creating registration.",
-          users: [], // Optionally pass users array if you need it in the view
-        });
+        if (error) {
+          console.error("Error updating registration:", error.message);
+          return res.status(500).render("membership", {
+            error: "Error updating registration.",
+            users: [], // Optionally pass users array if you need it in the view
+          });
+        }
+      } else {
+        // Insert a new registration
+        const { data, error } = await supabase
+          .from("instructor_registrations")
+          .insert([
+            {
+              apptype,
+              firstname,
+              middlename,
+              lastname,
+              gender,
+              bday,
+              phonenum,
+              email,
+              clubregion,
+              status,
+              submittedby,
+              birthcert: birthcertUrl, // Include the birth certificate URL
+              portrait: portraitUrl, // Include the portrait URL
+              educproof: educproofUrl,
+              poomsaecert: poomsaecertUrl,
+              kukkiwoncert: kukkiwoncertUrl,
+              ptablackbeltcert: ptablackbeltcertUrl,
+            },
+          ]);
+
+        if (error) {
+          console.error("Error creating registration:", error.message);
+          return res.status(500).render("membership", {
+            error: "Error creating registration.",
+            users: [], // Optionally pass users array if you need it in the view
+          });
+        }
       }
+
       res.redirect("/membership");
     } catch (error) {
       console.error("Server error:", error.message);
@@ -1061,6 +1111,7 @@ app.post('/forum-thread/update-post', async (req, res) => {
     });
   }
 });
+
 app.post('/forum-thread/delete-post', async (req, res) => {
   const {threadId} = req.body; // Get the post ID from the form body
 
@@ -1101,6 +1152,31 @@ app.post("/delete-notification/:id", async (req, res) => {
     if (error) {
       console.error("Error deleting notification:", error.message);
       return res.status(500).send("Error deleting notification");
+    }
+
+    res.redirect("/notifications");
+  } catch (error) {
+    console.error("Server error:", error.message);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.post("/delete-all-notifications", async (req, res) => {
+  if (!req.session.user) {
+    return res.status(401).send("Unauthorized: No user logged in");
+  }
+
+  const userid = req.session.user.id;
+
+  try {
+    const { error } = await supabase
+      .from("notifications")
+      .delete()
+      .eq("userid", userid);
+
+    if (error) {
+      console.error("Error deleting notifications:", error.message);
+      return res.status(500).send("Error deleting notifications");
     }
 
     res.redirect("/notifications");
@@ -1251,7 +1327,7 @@ app.post("/update-nccstatus", async (req, res) => {
     // Update the status of the specific registration in the database
     const { data: registration, error: updateStatusError } = await supabase
       .from("ncc_registrations")
-      .update({ status, expireson: expireson })
+      .update({ status })
       .eq("id", applicationId)
       .select("*")
       .single(); // Fetch the updated registration to get the submittedby value
@@ -1336,6 +1412,17 @@ app.post("/update-nccstatus", async (req, res) => {
       if (updateUserError) {
       console.error("Error updating user:", updateUserError.message);
       return res.status(500).send("Error updating user");
+      }
+
+      // Update the expireson column
+      const { error: updateExpiresOnError } = await supabase
+        .from("ncc_registrations")
+        .update({ expireson })
+        .eq("id", applicationId);
+
+      if (updateExpiresOnError) {
+        console.error("Error updating expireson:", updateExpiresOnError.message);
+        return res.status(500).send("Error updating expireson");
       }
 
       console.log("User updated:", user);
@@ -1441,6 +1528,8 @@ app.post("/update-instructorstatus", async (req, res) => {
     return res.status(401).send("Unauthorized: No user logged in");
   }
 
+  let expireson = new Date();
+  expireson.setFullYear(expireson.getFullYear() + 1);
   const { applicationId, status } = req.body; // Capture application ID and new status from the form
 
   try {
@@ -1459,13 +1548,52 @@ app.post("/update-instructorstatus", async (req, res) => {
 
     console.log("Registration updated:", registration);
 
-    // Check if status is 4, indicating the need to update the user's athleteverified column and insert into athletes table
-    if (status == 4) {
+    // Add a notification for the user about their registration status
+    let statusMessage;
+    const statusInt = parseInt(status, 10);
+
+    switch (statusInt) {
+      case 1:
+        statusMessage = "Your instructor registration is under review.";
+        break;
+      case 2:
+        statusMessage = "Your instructor registration is being processed.";
+        break;
+      case 3:
+        statusMessage = "Your instructor registration is approved.";
+        break;
+      case 4:
+        statusMessage = "Your instructor registration is verified.";
+        break;
+      case 5:
+        statusMessage = "Your instructor registration has been rejected.";
+        break;
+      default:
+        statusMessage = "Unknown status.";
+    }
+
+    const { error: notificationError } = await supabase
+      .from("notifications")
+      .insert([
+        {
+          userid: registration.submittedby,
+          type: "Registration",
+          message: statusMessage,
+        },
+      ]);
+
+    if (notificationError) {
+      console.error("Error creating notification:", notificationError.message);
+      return res.status(500).send("Error creating notification");
+    }
+
+    // Check if status is 4, indicating the need to update the user's instructorverified column
+    if (status == 3) {
       const { submittedby } = registration;
 
       console.log("Updating user with username:", submittedby);
 
-      // Update the corresponding user's registered column to true
+      // Update the corresponding user's instructorverified column to true
       const { data: user, error: updateUserError } = await supabase
         .from("users")
         .update({ instructorverified: true })
@@ -1478,7 +1606,18 @@ app.post("/update-instructorstatus", async (req, res) => {
         return res.status(500).send("Error updating user");
       }
 
-      console.log("Athlete inserted successfully");
+      // Update the expireson column
+      const { error: updateExpiresOnError } = await supabase
+        .from("instructor_registrations")
+        .update({ expireson })
+        .eq("id", applicationId);
+
+      if (updateExpiresOnError) {
+        console.error("Error updating expireson:", updateExpiresOnError.message);
+        return res.status(500).send("Error updating expireson");
+      }
+
+      console.log("Instructor verified successfully");
     }
 
     res.redirect(`/instructor-review/${applicationId}`); // Redirect back to the review page

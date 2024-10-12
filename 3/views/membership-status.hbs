@@ -52,9 +52,9 @@
         <h2>NCC ID's</h2>
         {{#reverseEach ncc_registrations}}
         <div class='post-content'>
-          <span class='small'>Applicant: <h2>{{firstname}} {{lastname}}</h2> on {{created_at}}<br>
+          <span class='small'>Applicant: <h2>{{firstname}} {{lastname}}</h2>{{formatCreatedAt created_at}}<br>
             {{#if (eq status 3)}}
-            expires on {{expireson}}
+            expires on {{formatDate expireson "MM/DD/YYYY"}}
             {{/if}}
           </span>
           <span>
@@ -71,8 +71,8 @@
         <h2>Instructor ID's</h2>
         {{#reverseEach instructor_registrations}}
         <div class='post-content'>
-          <span class='small'>by <h2>{{firstname}} {{lastname}}</h2> on {{created_at}}<br> expires on
-            {{expireson}}</span>
+          <span class='small'>by <h2>{{firstname}} {{lastname}}</h2>{{formatCreatedAt created_at}}<br> expires on
+            {{formatDate expireson "MM/DD/YYYY"}}</span>
           <span>
             <h3>Status: {{{formatStatus status}}}</h3>
           </span>
@@ -87,7 +87,7 @@
         <h2>Club Registrations</h2>
         {{#reverseEach club_registrations}}
         <div class='post-content'>
-          <span class='small'>Applicant: <h2>{{firstname}} {{lastname}}</h2> on {{created_at}}</span>
+          <span class='small'>Applicant: <h2>{{firstname}} {{lastname}}</h2>{{formatCreatedAt created_at}}</span>
           <span>
             <h3>Status: {{{formatStatus status}}}</h3>
           </span>
