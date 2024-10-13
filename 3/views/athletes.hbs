@@ -89,7 +89,7 @@
             <th>Actions</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody id="athletes-tbody">
           {{#each athletes}}
           <tr data-athlete-id="{{id}}"
             onclick="showAthleteDetails('{{id}}', '{{name}}', '{{athleteClass}}', '{{height}}', '{{weight}}', '{{birthplace}}', '{{club}}', '{{image}}', '{{userid}}')">
@@ -260,6 +260,25 @@
           alert('An error occurred while updating the status.');
         });
     }
+
+   
+  document.querySelector('.apply-btn').addEventListener('click', function () {
+    const searchInput = document.getElementById('athlete-search').value.toLowerCase(); // Get the search input
+    console.log("Search input: ", searchInput);
+    // Get all rows in the athlete table
+    const athleteRows = document.querySelectorAll('#athletes-tbody tr');
+
+    athleteRows.forEach(row => {
+      const athleteName = row.querySelector('td:nth-child(2)').textContent.toLowerCase(); // Get athlete's name from the 2nd column
+      console.log("Checking athlete: ", athleteName);
+      // Check if the athlete's name includes the search query
+      if (athleteName.includes(searchInput)) {
+        row.style.display = ''; // Show the row if it matches
+      } else {
+        row.style.display = 'none'; // Hide the row if it doesn't match
+      }
+    });
+  });
 
 
   </script>
