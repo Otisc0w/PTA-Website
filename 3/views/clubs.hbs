@@ -6,7 +6,6 @@
   <link rel="icon" type="image/x-icon" href="../images/favicon.ico" />
   <link rel="stylesheet" type="text/css" href="../stylesheets/navbar.css" />
   <link rel="stylesheet" type="text/css" href="../stylesheets/clubs.css" />
-
 </head>
 
 <body class="container">
@@ -48,14 +47,22 @@
   <div class="home-container">
     <div class="club-name">
       <div class="upcoming-events">
-        <p class="clubs-title">Clubs</p> <!-- 09/25/24 -->
+        <p class="clubs-title">Clubs</p>
         <div id="events" class="horizontal-container">
           {{#each clubs}}
           <div class="event">
             <img src="{{clubpic}}" alt="{{clubname}}">
             <h3>{{clubname}} - {{province}}</h3>
-            <!-- Add a brief description field -->
-            <p>{{{clubaddress}}}</p>
+            <p>{{description}}</p> <!-- Displaying the club description -->
+            <p>Address: {{clubaddress}}</p> <!-- Club address -->
+            <p>Email: {{email}}</p> <!-- Contact details: Email -->
+            <p>Phone: {{phonenum}}</p> <!-- Contact details: Phone number -->
+            <p>Region: {{region}}</p> <!-- Club region -->
+            <p>
+              <!-- Display Access type -->
+              {{#if isOpenToAll}} Open to All {{/if}}
+              {{#if isInviteOnly}} Invite Only {{/if}}
+            </p>
             <a href="/clubs-details/{{id}}">Read more</a>
           </div>
           {{/each}}

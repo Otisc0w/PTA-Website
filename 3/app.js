@@ -2590,16 +2590,24 @@ app.post("/create-club-announcement", async (req, res) => {
 });
 
 app.post("/update-club", upload.single("clubpicture"), async (req, res) => {
-  const { clubid, clubname, clubaddress, description, email, phonenum, region } = req.body;
-  
-  let clubpictureUrl = null;
+  const {
+    clubid,
+    clubname,
+    clubaddress,
+    email,
+    phonenum,
+    region,
+    description,
+    accessType
+  } = req.body;  // Capture user input from the form
 
-  // Check if a new picture is being uploaded
+  let clubpicUrl = null;
+
   if (req.file) {
     try {
       const filePath = `clubpictures/${Date.now()}-${req.file.originalname}`;
       const { error: uploadError } = await supabase.storage
-        .from("clubpictures")
+        .from("documents")
         .upload(filePath, req.file.buffer, {
           contentType: req.file.mimetype,
         });
@@ -2609,39 +2617,39 @@ app.post("/update-club", upload.single("clubpicture"), async (req, res) => {
         return res.status(500).send("Error uploading club picture");
       }
 
-      clubpictureUrl = `${supabaseUrl}/storage/v1/object/public/clubpictures/${filePath}`;
+      clubpicUrl = `${supabaseUrl}/storage/v1/object/public/documents/${filePath}`;
     } catch (error) {
       console.error("Server error:", error.message);
       return res.status(500).json({ error: error.message });
     }
   }
 
-  // Update the club details in the database
   try {
-    const { error } = await supabase
+    const { data, error } = await supabase
       .from("clubs")
       .update({
         clubname,
         clubaddress,
-        description,
         email,
         phonenum,
         region,
-        clubpicture: clubpictureUrl || undefined, // Only update the picture if a new one was uploaded
+        description,
+        accessType,
+        clubpic: clubpicUrl
       })
       .eq("id", clubid);
 
     if (error) {
-      console.error("Error updating club:", error.message);
-      return res.status(500).send("Error updating club");
+      return res.status(500).json({ message: "Error updating club", error });
     }
 
-    res.redirect(`/clubs-details/${clubid}`);
+    res.redirect(`/clubs-details/${clubid}`); // Redirect to the updated club details page
   } catch (error) {
     console.error("Server error:", error.message);
     res.status(500).json({ error: error.message });
   }
 });
+
 
 app.post("/create-event-announcement", async (req, res) => {
   const { title, subject, body, eventid } = req.body;
