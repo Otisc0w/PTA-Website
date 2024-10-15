@@ -2212,6 +2212,7 @@ app.post("/update-event", upload.single("eventpicture"), async (req, res) => {
     starttime,
     endtime,
     agedivision,
+    status,
   } = req.body;
 
   let eventpicture = null;
@@ -2237,13 +2238,29 @@ app.post("/update-event", upload.single("eventpicture"), async (req, res) => {
   }
 
   try {
+    // Fetch the current event details to retain the old event picture if no new one is uploaded
+    if (!eventpicture) {
+      const { data: currentEvent, error: fetchError } = await supabase
+        .from("events")
+        .select("eventpicture")
+        .eq("id", eventid)
+        .single();
+
+      if (fetchError) {
+        console.error("Error fetching current event picture:", fetchError.message);
+        return res.status(500).send("Error fetching current event picture");
+      }
+
+      eventpicture = currentEvent.eventpicture;
+    }
+
     // Update event details in Supabase database
     const { data, error } = await supabase
       .from("events") // Assuming your table is called 'events'
       .update({
         name: name,
         description: description,
-        eventpicture: eventpicture, // Use the public URL of the uploaded image
+        eventpicture: eventpicture, // Use the public URL of the uploaded image or the old one
         date: date,
         eventtype: eventtype,
         createdby: createdby,
@@ -2251,6 +2268,7 @@ app.post("/update-event", upload.single("eventpicture"), async (req, res) => {
         location: location,
         starttime: starttime,
         endtime: endtime,
+        status: status,
         // agedivision: agedivision
       })
       .eq("id", eventid); // Match the event ID

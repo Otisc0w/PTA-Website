@@ -62,7 +62,9 @@
             <img src="{{eventpicture}}" alt="Event {{id}}">
             <h3 class="event-title">{{name}} <br> {{formatDate date "MMMM D, YYYY"}} {{time}}</h3>
             <p>{{eventtype}}</p>
-            <p class="eventstatus">{{status}}</p>
+            {{#if (eq status "Cancelled")}}
+            <p>CANCELLED</p>
+            {{/if}}
             <a href="/events-details/{{id}}">Read More</a>
           </div>
           {{/each}}

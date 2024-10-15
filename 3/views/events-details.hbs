@@ -82,13 +82,16 @@
           <span class="close" onclick="closeModal()">&times;</span>
 
           <form id="eventform" class="event-form" action="/update-event" method="post" enctype="multipart/form-data">
-            {{!-- {{#if (eq eventtype 'kyurogi')}}
-            <h3>Create Kyurogi Event</h3>
-            {{else if (eq eventtype 'poomsae')}}
-            <h3>Create Kyurogi Event</h3>
-            {{else if (eq eventtype 'promo')}}
-            <h3>Create Promotion Test Event</h3>
-            {{/if}} --}}
+
+            <div class="form-group">
+              <label for="eventstatus">Event Status:</label>
+              <select id="eventstatus" name="status">
+                <option value="Active" {{#if (eq event.status "Active" )}}selected{{/if}}>Active</option>
+                <option value="Cancelled" {{#unless (eq event.active "Cancelled" )}}selected{{/unless}}>Cancelled
+                </option>
+              </select>
+            </div>
+
             <input type="hidden" name="eventid" value="{{event.id}}">
             <input type="hidden" value="{{event.eventtype}}" name="eventtype">
             <div class="eventpic">
