@@ -46,7 +46,9 @@
     <div class="filter-panel">
       <div class="filter-group">
         <label for="belt-color">Belt Color</label>
+
         <select id="belt-color">
+          <option>All</option>
           <option value="White Belt">White Belt</option>
           <option value="Low Yellow Belt">Low Yellow Belt</option>
           <option value="High Yellow Belt">High Yellow Belt</option>
@@ -61,8 +63,9 @@
         </select>
       </div>
       <div class="filter-group">
-         <label for="club">Club</label>
-          <select id="club" name="club">
+        <label for="club">Club</label>
+        <select id="club" name="club">
+          <option>All</option>
           {{#each clubs}}
           <option value="{{id}}">{{this.clubname}}</option>
           {{/each}}
@@ -261,24 +264,24 @@
         });
     }
 
-   
-  document.querySelector('.apply-btn').addEventListener('click', function () {
-    const searchInput = document.getElementById('athlete-search').value.toLowerCase(); // Get the search input
-    console.log("Search input: ", searchInput);
-    // Get all rows in the athlete table
-    const athleteRows = document.querySelectorAll('#athletes-tbody tr');
 
-    athleteRows.forEach(row => {
-      const athleteName = row.querySelector('td:nth-child(2)').textContent.toLowerCase(); // Get athlete's name from the 2nd column
-      console.log("Checking athlete: ", athleteName);
-      // Check if the athlete's name includes the search query
-      if (athleteName.includes(searchInput)) {
-        row.style.display = ''; // Show the row if it matches
-      } else {
-        row.style.display = 'none'; // Hide the row if it doesn't match
-      }
+    document.querySelector('.apply-btn').addEventListener('click', function () {
+      const searchInput = document.getElementById('athlete-search').value.toLowerCase(); // Get the search input
+      console.log("Search input: ", searchInput);
+      // Get all rows in the athlete table
+      const athleteRows = document.querySelectorAll('#athletes-tbody tr');
+
+      athleteRows.forEach(row => {
+        const athleteName = row.querySelector('td:nth-child(2)').textContent.toLowerCase(); // Get athlete's name from the 2nd column
+        console.log("Checking athlete: ", athleteName);
+        // Check if the athlete's name includes the search query
+        if (athleteName.includes(searchInput)) {
+          row.style.display = ''; // Show the row if it matches
+        } else {
+          row.style.display = 'none'; // Hide the row if it doesn't match
+        }
+      });
     });
-  });
 
 
   </script>
