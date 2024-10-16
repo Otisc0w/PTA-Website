@@ -816,3 +816,109 @@ h1 {
 #editclubmodal button[type="submit"]:hover {
   background-color: #0056b3;
 }
+
+/* Announcements Section */
+.announcements-section {
+  width: 80%;
+  margin: 40px auto;
+  padding: 20px;
+  background-color: #2e2e2e;
+  border-radius: 10px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
+  display: none; /* Hidden by default, displayed when tab is clicked */
+}
+
+.announcement-block {
+  background-color: #444;
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.announcement-block h3 {
+  color: #fff;
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+.announcement-block h4 {
+  color: #ccc;
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.announcement-block p {
+  color: #fff;
+  font-size: 16px;
+}
+
+.create-announcement-button {
+  background-color: #4CAF50;
+  color: white;
+  padding: 10px 15px;
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-bottom: 20px;
+  transition: background-color 0.3s ease;
+}
+
+.create-announcement-button:hover {
+  background-color: #45a049;
+}
+
+.name {
+  margin-left: 380px;
+}
+
+/* Form fields inside modal */
+#announcementform .form-group {
+  margin-bottom: 15px;
+}
+
+#announcementform label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+#announcementform input[type="text"],
+#announcementform textarea {
+  width: 100%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #333;
+  color: white;
+}
+
+#announcementform button {
+  background-color: #007bff;
+  color: white;
+  padding: 14px 20px;
+  margin-top: 15px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+#announcementform button:hover {
+  background-color: #0056b3;
+}
+
+/* Button for announcement modal */
+#announceModal button {
+  background-color: #007bff;
+  color: white;
+  padding: 14px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+#announceModal button:hover {
+  background-color: #0056b3;
+}
+

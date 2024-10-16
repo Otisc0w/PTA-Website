@@ -47,12 +47,13 @@
   <div class="home-container">
     <div class="club-name">
       <div class="upcoming-events">
-        <p class="clubs-title">Clubs</p>
+        <h2 class="clubs-title">Clubs</h2>
         <div id="events" class="horizontal-container">
           {{#each clubs}}
           <div class="event">
             <img src="{{clubpic}}" alt="{{clubname}}">
             <h3>{{clubname}} - {{province}}</h3>
+            <p>Capacity: {{totalMembers}}</p>
             <p>{{description}}</p> <!-- Displaying the club description -->
             <p>Address: {{clubaddress}}</p> <!-- Club address -->
             <p>Email: {{email}}</p> <!-- Contact details: Email -->

@@ -2614,7 +2614,6 @@ app.post("/update-club", upload.single("clubpicture"), async (req, res) => {
     phonenum,
     region,
     description,
-    accessType
   } = req.body;  // Capture user input from the form
 
   let clubpicUrl = null;
@@ -2650,7 +2649,6 @@ app.post("/update-club", upload.single("clubpicture"), async (req, res) => {
         phonenum,
         region,
         description,
-        accessType,
         clubpic: clubpicUrl
       })
       .eq("id", clubid);
@@ -4081,9 +4079,93 @@ app.get('/clubs-details/:id', async (req, res) => {
   // Fetch club announcements
   const announcements = await db.query('SELECT * FROM club_announcements WHERE clubid = $1 ORDER BY created_at DESC', [clubId]);
 
+  // Count the total members of the club (assuming you have a club_members table)
+  const totalMembers = await db.query('SELECT COUNT(*) FROM club_members WHERE clubid = $1', [clubId]);
+
   res.render('club-details', {
     club: club.rows[0],
     announcements: announcements.rows,
+    totalMembers: totalMembers.rows[0].count, // Pass the total member count
     user: req.session.user // Assuming you have user session
   });
+});
+
+app.post('/update-club', async (req, res) => {
+  const { clubid, clubname, clubaddress, email, phonenum, region, description } = req.body;
+
+  try {
+    const { data, error } = await supabase
+      .from('clubs')
+      .update({
+        clubname,
+        clubaddress,
+        email,
+        phonenum,
+        region,
+        description,
+      })
+      .eq('id', clubid);
+
+    if (error) {
+      return res.status(400).json({ error: 'Error updating club', details: error });
+    }
+
+    res.redirect(`/clubs-details/${clubid}`);
+  } catch (err) {
+    console.error('Error updating club:', err.message);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Route to handle creating an announcement
+app.post("/create-announcement", async (req, res) => {
+  const { title, subject, body, clubid } = req.body;
+
+  if (!req.session || !req.session.user) {
+    return res.status(403).send("User not authenticated");
+  }
+
+  const originalposter = req.session.user.username;
+  const profilepic = req.session.user.profilepic;
+
+  if (!clubid) {
+    return res.status(400).send("Club ID is missing");
+  }
+
+  try {
+    // Log the data being inserted for debugging purposes
+    console.log({
+      title,
+      subject,
+      body,
+      clubid: parseInt(clubid),
+      originalposter,
+      profilepic
+    });
+
+    // Insert the new announcement into 'club_announcements' table
+    const { data, error } = await supabase
+      .from("club_announcements")
+      .insert([
+        {
+          title,
+          subject,
+          body,
+          clubid: parseInt(clubid),
+          originalposter,
+          profilepic
+        },
+      ]);
+
+    if (error) {
+      console.error("Error creating announcement:", error.message);
+      return res.status(500).send("Error creating announcement");
+    }
+
+    // Redirect back to the club details page after successful insertion
+    res.redirect(`/clubs-details/${clubid}`);
+  } catch (error) {
+    console.error("Server error:", error.message);
+    res.status(500).send("Server error while creating announcement");
+  }
 });

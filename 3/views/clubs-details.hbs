@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="UTF-8">
-  <title>PTA | Events</title>
+  <title>PTA | Club Details</title>
   <link rel="icon" type="image/x-icon" href="../images/favicon.ico" />
   <link rel="stylesheet" type="text/css" href="../stylesheets/navbar.css" />
   <link rel="stylesheet" type="text/css" href="../stylesheets/clubs-details.css" />
@@ -43,7 +43,7 @@
   </div>
 
   <div class="events-container">
-    <img src="{{club.clubpic}}" alt="event Picture">
+    <img src="{{club.clubpic}}" alt="Club Picture">
     <div class="clubname">
       <span class="name">{{club.clubname}}</span>
       {{#if (ne club.clubname user.club)}}
@@ -52,15 +52,11 @@
         <button type="submit" class="joinbtn">Join this club</button>
       </form>
       {{/if}}
-      {{#if (eq -club.registeredby user.id)}}
-      <span><a href="/clubs-manage" class="manage-button"><img src="/images/settings.png">Manage</a></span>
-      {{/if}}
     </div>
 
     <div id="editclubmodal" class="modal">
       <div class="modal-content">
         <span class="close" onclick="closeModal()">&times;</span>
-
         <form id="clubform" class="club-form" action="/update-club" method="post" enctype="multipart/form-data">
           <input type="hidden" name="clubid" value="{{club.id}}">
 
@@ -105,21 +101,6 @@
             <textarea id="description" name="description" rows="4">{{club.description}}</textarea>
           </div>
 
-          <!-- Access Type -->
-          <div class="form-group">
-            <label for="accessType">Access Type:</label><br>
-
-            <!-- Open to All Option -->
-            <input type="radio" id="openToAll" name="accessType" value="openToAll" {{#if
-              club.isOpenToAll}}checked{{/if}}>
-            <label for="openToAll">Open to All</label><br>
-
-            <!-- Invite Only Option -->
-            <input type="radio" id="inviteOnly" name="accessType" value="inviteOnly" {{#if
-              club.isInviteOnly}}checked{{/if}}>
-            <label for="inviteOnly">Invite Only</label>
-          </div>
-
           <!-- Cancel and Update Buttons -->
           <button onclick="closeModal()" class="cancel">Cancel</button>
           <button type="submit">Update Club</button>
@@ -128,14 +109,51 @@
     </div>
 
     <div class="clubtabs">
-      <ul>
-        <li><a href="#">Home</a></li>
-        <li><a href="#">Members</a></li>
-        {{#if (or (eq user.ptaverified true) (eq user.club club.clubname) (eq user.instructorverified true))}}
-        <li><a href="#">Announcements</a></li>
-        {{/if}}
-      </ul>
+     <ul>
+  <li><a href="#">Home</a></li>
+  <li><a href="#">Members</a></li>
+      {{#if (or (eq user.ptaverified true) (eq user.club club.clubname) (eq user.instructorverified true) (eq club.registeredby user.id))}}
+  <li><a href="#">Announcements</a></li>
+{{/if}}
+    </ul>
     </div><br>
+
+    <!-- Create Announcement Button (only for Admins and Instructors) -->
+    {{#if (or (eq user.ptaverified true) (eq user.instructorverified true))}}
+    <button class="create-announcement-button" onclick="openannounceModal()">+ Create Announcement</button>
+    {{/if}}
+
+    <!-- Modal for Creating Announcements -->
+    <div id="announceModal" class="modal">
+      <div class="modal-content">
+        <span class="close" onclick="closeannounceModal()">&times;</span>
+        <form id="announcementform" class="announcement-form" action="/create-announcement" method="post">
+          <input type="hidden" name="clubid" value="{{club.id}}">
+
+          <!-- Announcement Title -->
+          <div class="form-group">
+            <label for="title">Title:</label>
+            <input type="text" id="title" name="title" required>
+          </div>
+
+          <!-- Announcement Subject -->
+          <div class="form-group">
+            <label for="subject">Subject:</label>
+            <input type="text" id="subject" name="subject" required>
+          </div>
+
+          <!-- Announcement Body -->
+          <div class="form-group">
+            <label for="body">Body:</label>
+            <textarea id="body" name="body" rows="5" required></textarea>
+          </div>
+
+          <!-- Submit Button -->
+          <button type="submit">Post Announcement</button>
+        </form>
+      </div>
+    </div>
+
     <div class="detailstab">
       <div class="leftside">
         <div class="intro">
@@ -157,6 +175,21 @@
         {{/if}}
       </div>
     </div>
+
+    <!-- Announcements Section -->
+    <div class="announcements-section" id="announcements-section" style="display: none;">
+      <h2>Club Announcements</h2>
+      <div class="announcements-container">
+        {{#each announcements}}
+        <div class="announcement-block">
+          <h3>{{this.title}}</h3>
+          <h4>{{this.subject}}</h4>
+          <p>{{this.body}}</p>
+        </div>
+        {{/each}}
+      </div>
+    </div>
+
   </div>
 
   <div class="participants-container">
@@ -226,47 +259,39 @@
     }
 
     document.addEventListener('DOMContentLoaded', function () {
-      // Get references to the elements
       const participantsTab = document.querySelector('.clubtabs ul li:nth-child(2) a');
       const detailsTab = document.querySelector('.clubtabs ul li:nth-child(1) a');
       const announcementsTab = document.querySelector('.clubtabs ul li:nth-child(3) a');
       const leftside = document.querySelector('.leftside');
       const rightside = document.querySelector('.rightside');
       const participantsContainer = document.querySelector('.participants-container');
-      const announcements = document.querySelector('.announcements');
+      const announcementsSection = document.getElementById('announcements-section');
 
-      // Hide participants container by default
-      participantsContainer.style.display = 'none';
-
-      // Function to show participants container and hide sides
       function showParticipants() {
         leftside.style.display = 'none';
         rightside.style.display = 'none';
         participantsContainer.style.display = 'block';
-        announcements.style.display = 'none';
+        announcementsSection.style.display = 'none';
       }
 
-      // Function to show sides and hide participants container
       function showDetails() {
         leftside.style.display = 'block';
         rightside.style.display = 'block';
         participantsContainer.style.display = 'none';
-        announcements.style.display = 'none';
+        announcementsSection.style.display = 'none';
       }
 
       function showAnnouncements() {
         leftside.style.display = 'none';
         rightside.style.display = 'none';
         participantsContainer.style.display = 'none';
-        announcements.style.display = 'block';
+        announcementsSection.style.display = 'block';
       }
 
-      // Add event listener for the Participants tab
       participantsTab.addEventListener('click', function () {
         showParticipants();
       });
 
-      // Add event listener for the Details tab
       detailsTab.addEventListener('click', function () {
         showDetails();
       });
@@ -276,13 +301,12 @@
       });
     });
 
-
     function openModal() {
-      document.getElementById('inviteModal').style.display = 'block';
+      document.getElementById('editclubmodal').style.display = 'block';
     }
 
     function closeModal() {
-      document.getElementById('inviteModal').style.display = 'none';
+      document.getElementById('editclubmodal').style.display = 'none';
     }
 
     function openannounceModal() {
@@ -295,16 +319,8 @@
 
     window.onclick = function (event) {
       if (event.target == document.getElementById('announceModal')) {
-        closeModal();
+        closeannounceModal();
       }
-    }
-
-    function openModal() {
-      document.getElementById('editclubmodal').style.display = 'block';
-    }
-
-    function closeModal() {
-      document.getElementById('editclubmodal').style.display = 'none';
     }
   </script>
 </body>
