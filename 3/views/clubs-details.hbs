@@ -131,9 +131,8 @@
       <ul>
         <li><a href="#">Home</a></li>
         <li><a href="#">Members</a></li>
-        {{#if (eq user.club club.clubname)}}
+        {{#if (or (eq user.ptaverified true) (eq user.club club.clubname) (eq user.instructorverified true))}}
         <li><a href="#">Announcements</a></li>
-        <li><a href="#">Requests</a></li>
         {{/if}}
       </ul>
     </div><br>
