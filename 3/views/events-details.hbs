@@ -279,13 +279,13 @@
         <div class="makeannouncement">
           <button class="newannounce" onclick="openannounceModal()">+ Announce</button>
         </div>
-        {{#each eventannouncements}}
+        {{#reverseEach eventannouncements}}
         <div class="oneannouncement">
           <h2>{{title}}</h2>
           <p>{{subject}}</p>
           <p>{{body}}</p>
         </div>
-        {{/each}}
+        {{/reverseEach}}
       </div>
 
       <div id="announceModal" class="modal" style="display:none;">

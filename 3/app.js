@@ -1653,8 +1653,6 @@ app.post("/update-clubstatus", async (req, res) => {
     // Check if status is 4, indicating the need to update the user's athleteverified column and insert into athletes table
     if (status == 4) {
       const {
-        firstname,
-        lastname,
         phonenum,
         email,
         clubname,
@@ -1662,12 +1660,12 @@ app.post("/update-clubstatus", async (req, res) => {
         province,
         submittedby,
         clubpic,
+        registeree,
       } = clubregistration;
 
       console.log("Updating user with username:", submittedby);
 
       const registeredby = submittedby;
-      const registeree = firstname + " " + lastname;
 
       const { error: insertClubError } = await supabase.from("clubs").insert([
         {
@@ -3588,7 +3586,8 @@ app.get("/athletes", async function (req, res) {
     // Fetch clubs data
     const { data: clubs, error: clubsError } = await supabase
       .from("clubs")
-      .select("clubname")
+      .select("*")
+      .eq("registeree", userId);
       
 
     if (clubsError) {
