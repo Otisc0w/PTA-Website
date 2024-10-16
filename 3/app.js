@@ -4071,3 +4071,19 @@ app.get('/athletes', (req, res) => {
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
 });
+
+app.get('/clubs-details/:id', async (req, res) => {
+  const clubId = req.params.id;
+  
+  // Fetch club details
+  const club = await db.query('SELECT * FROM clubs WHERE id = $1', [clubId]);
+
+  // Fetch club announcements
+  const announcements = await db.query('SELECT * FROM club_announcements WHERE clubid = $1 ORDER BY created_at DESC', [clubId]);
+
+  res.render('club-details', {
+    club: club.rows[0],
+    announcements: announcements.rows,
+    user: req.session.user // Assuming you have user session
+  });
+});
