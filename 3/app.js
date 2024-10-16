@@ -11,7 +11,7 @@ require("dotenv").config();
 const { createClient } = require("@supabase/supabase-js");
 const asyncfuncs = require("./asyncfuncs");
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 8080;
 
 // Initialize Supabase client
 const supabaseUrl = process.env.SUPABASE_URL;
