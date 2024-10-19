@@ -265,5 +265,5 @@ body {
 
 .notification:hover {
     background-color: #333;
-    transition: background-color 0.1s ease-in-out;
+    transition: background-color 0.1ss ease-in-out;
 }

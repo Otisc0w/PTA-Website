@@ -77,6 +77,7 @@
           <p>Registration Cap: {{registrationcount}} / {{event.registrationcap}}</p>
         </div>
       </div>
+
       <div id="editmodal" class="modal">
         <div class="modal-content">
           <span class="close" onclick="closeModal()">&times;</span>
@@ -168,14 +169,16 @@
 
         </div>
       </div>
+
       <div class="eventmiddleside">
 
-        <div class="ranking">
+        <div class="ranking"> {{!--only for kyorugi --}}
           <h3>Rankings</h3>
           <div class="rank-item">
-            <h4>Champion</h4>
+
             {{#if (eq event.eventtype 'Kyorugi')}}
             {{#if champion}}
+            <h4>Champion</h4>
             <p>{{champion.name}}</p>
             <form action="/update-points" method="post">
               <input type="hidden" name="userid" value="{{champion.userid}}">
@@ -186,9 +189,10 @@
             <p>To be decided</p>
             {{/if}}
           </div>
+
           <div class="rank-item">
-            <h4>2nd Place</h4>
             {{#if secondPlace}}
+            <h4>2nd Place</h4>
             <p>{{secondPlace.name}}</p>
             <form action="/update-points" method="post">
               <input type="hidden" name="userid" value="{{secondPlace.userid}}">
@@ -199,9 +203,10 @@
             <p>To be decided</p>
             {{/if}}
           </div>
+
           <div class="rank-item">
-            <h4>3rd Place</h4>
             {{#if thirdPlace}}
+            <h4>3rd Place</h4>
             <p>{{thirdPlace.name}}</p>
             <form action="/update-points" method="post">
               <input type="hidden" name="userid" value="{{thirdPlace.userid}}">
@@ -215,7 +220,6 @@
           </div>
         </div>
 
-
         <div class="schedule">
           {{#if (and user.ptaverified (me registrationcount event.registrationcap ))}}
           {{#if (eq event.eventtype 'Kyorugi')}}
@@ -224,21 +228,20 @@
           </form>
           {{else if (eq event.eventtype 'Poomsae')}}
           <form action="/begin-poomsae/{{event.id}}" method="post">
-            Number of Groups: <input type="number" id="numGroups" name="numGroups" min="1" required>
             <button type="submit" class="beginpoomsae">Begin Competition</button>
           </form>
           {{/if}}
-
           {{/if}}
+
           <h2>Schedule</h2>
 
-          {{#each poomsaeGroups}}
+          {{#each poomsae_players}}
           <div class="group">
             {{!-- <h3>Group {{groupnum}}</h3> --}}
             <ul>
               <li>
                 <div>
-                  {{athlete_name}} group: {{groupnum}}
+                  {{athlete_name}}
                   <a href="/poomsae-scoresheet/{{this.groupnum}}/{{this.athleteid}}" class="scoresheet-link">View
                     Scoresheet</a>
                 </div>
