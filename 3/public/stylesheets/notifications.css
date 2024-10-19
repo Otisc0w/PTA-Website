@@ -249,3 +249,21 @@ body {
     padding: 8px 11px;
     border-radius: 4px;
 }
+
+.msg {
+    font-size: 18px;
+    color: #ccc;
+    margin: 5px 0;
+    font-weight: bold;
+}
+
+.desc {
+    font-size: 14px;
+    color: #999;
+    margin: 5px 0;
+}
+
+.notification:hover {
+    background-color: #333;
+    transition: background-color 0.1s ease-in-out;
+}

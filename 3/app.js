@@ -1344,21 +1344,23 @@ app.post("/update-nccstatus", async (req, res) => {
     switch (statusInt) {
       case 1:
         statusMessage = "Your NCC registration is under review.";
+        statusDesc = "Your NCC registration is under review. You will receive a notification once your registration has been processed.";
         break;
-      case 2:
+            case 2:
         statusMessage = "Your NCC ID is en route to your regional office.";
+        statusDesc = "Your NCC ID is on its way to your regional office. You will be notified once it arrives.";
         break;
-      case 3:
+            case 3:
         statusMessage = "Your NCC ID is now ready for pickup at your regional office.";
+        statusDesc = "Your NCC ID is ready for pickup at your regional office. Please visit the office to collect it.";
         break;
-      case 4:
-        statusMessage = "Your NCC registration has been approved.";
-        break;
-      case 5:
+            case 4:
         statusMessage = "Your NCC registration has been rejected.";
+        statusDesc = "Sorry, your NCC registration has been rejected. Please contact support for more information.";
         break;
-      default:
+            default:
         statusMessage = "Unknown status.";
+        statusDesc = "The status of your NCC registration is unknown. Please contact support for more information.";
     }
 
     const { error: notificationError } = await supabase
@@ -1368,6 +1370,7 @@ app.post("/update-nccstatus", async (req, res) => {
         userid: registration.submittedby,
         type: "Registration",
         message: statusMessage,
+        desc: statusDesc,
       },
       ]);
 

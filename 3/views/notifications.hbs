@@ -68,16 +68,17 @@
 
     <ul class="notifications-list">
       {{#reverseEach notifications}}
-      {{#if (eq type 'registration')}}
+      {{#if (eq type 'Registration')}}
       <a style="text-decoration:none" href="/membership">
-        {{else if (eq type 'event')}}
+        {{else if (eq type 'Event')}}
         <a style="text-decoration:none" href="/events">
           {{/if}}
           <li class="notification">
             <span class="notification-type {{type}}">{{type}}</span>
             <div class="notification-content">
               <h2>{{title}}</h2>
-              <p>{{message}}</p>
+              <p class="msg">{{message}}</p>
+              <p class="desc">{{desc}}</p>
               <span class="notification-user">{{user}}</span>
               <span class="notification-time">{{formatCreatedAt created_at}}</span>
             </div>
