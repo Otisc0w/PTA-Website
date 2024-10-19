@@ -2384,45 +2384,46 @@ app.post("/begin-competition/:id", async (req, res) => {
 });
 
 app.post("/begin-poomsae/:id", async (req, res) => {
-  async function insertPoomsaePlayers(eventid) {
+
+  const { id: eventid } = req.params; // Get the event ID from the URL
+
     try {
       // Fetch all registered players for the event
       const { data: players, error: playersError } = await supabase
         .from("events_registrations")
         .select("*")
         .eq("eventid", eventid)
-        .eq("registered", "true");
+        .eq("registered", "TRUE");
 
       if (playersError) {
         console.error("Error fetching registered players:", playersError.message);
         return;
       }
+      
+      // Insert all players' userid and athlete id into the poomsae_players table
+      for (const player of players) {
+        const { error: insertError } = await supabase
+          .from("poomsae_players")
+          .insert([
+        {
+          eventid,
+          userid: player.userid,
+          athleteid: player.athleteid,
+          round: 1,
+        },
+          ]);
 
-      // Prepare the data to be inserted into the poomsae_players table
-      const poomsaePlayers = players.map(player => ({
-        eventid,
-        athleteid: player.athleteid,
-        totalscore: 10,
-        schedule: new Date() // Assuming schedule is the current date/time
-      }));
-
-      // Insert the data into the poomsae_players table
-      const { error: insertError } = await supabase
-        .from("poomsae_players")
-        .insert(poomsaePlayers);
-
-      if (insertError) {
-        console.error("Error inserting poomsae players:", insertError.message);
-        return;
+        if (insertError) {
+          console.error("Error inserting poomsae player:", insertError.message);
+        }
       }
+
 
       console.log("Poomsae players inserted successfully");
     } catch (error) {
       console.error("Server error:", error.message);
     }
-  }
 
-  await insertPoomsaePlayers(req.params.id);
   res.redirect(`/events-details/${req.params.id}`);
 });
 
@@ -3438,31 +3439,6 @@ app.get("/events-details/:id", async function (req, res) {
       }
     }
 
-    // Fetch the poomsae groups for the specific event
-    const { data: poomsaeGroups, error: poomsaeGroupsError } = await supabase
-      .from("poomsae_players")
-      .select("*")
-      .eq("eventid", id);
-
-    if (poomsaeGroupsError) {
-      return res.status(400).json({ error: poomsaeGroupsError.message });
-    }
-
-    // Fetch player names for each poomsae group
-    for (let group of poomsaeGroups) {
-      const { data: athlete, error: athleteError } = await supabase
-        .from("athletes")
-        .select("name")
-        .eq("userid", group.userid)
-        .single();
-
-      if (athleteError) {
-        return res.status(400).json({ error: "Error fetching athlete name." });
-      }
-
-      group.athlete_name = athlete.name;
-    }
-
     // Fetch the poomsae players for the specific event
     const { data: poomsaePlayers, error: poomsaePlayersError } = await supabase
       .from("poomsae_players")
@@ -3473,21 +3449,6 @@ app.get("/events-details/:id", async function (req, res) {
       return res.status(400).json({ error: poomsaePlayersError.message });
     }
 
-    // Fetch player names for each poomsae player
-    for (let player of poomsaePlayers) {
-      const { data: athlete, error: athleteError } = await supabase
-        .from("athletes")
-        .select("name")
-        .eq("userid", player.athleteid)
-        .single();
-
-      if (athleteError) {
-        return res.status(400).json({ error: "Error fetching athlete name." });
-      }
-
-      player.athlete_name = athlete.name;
-    }
-
     // Calculate the number of registrations
     const registrationcount = eventregistrations.length;
 
@@ -3496,7 +3457,6 @@ app.get("/events-details/:id", async function (req, res) {
     console.log("Fetched participants data:", participants); // Log the participants data to the console
     console.log("Fetched current registrant data:", currentregistrant); // Log the current registrant data to the console
     console.log("Fetched matches data:", matches); // Log the matches data to the console
-    console.log("Fetched poomsae groups data:", poomsaeGroups); // Log the poomsae groups data to the console
     console.log("Fetched poomsae players data:", poomsaePlayers); // Log the poomsae players data to the console
 
     // Render the events-details.hbs template with the fetched data
@@ -3506,7 +3466,6 @@ app.get("/events-details/:id", async function (req, res) {
       participants,
       currentregistrant,
       matches,
-      poomsaeGroups,
       poomsaePlayers,
       registrationcount,
       registrationcap: event.registration_cap, // Assuming the registration cap is stored in the event table

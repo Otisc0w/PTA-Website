@@ -234,14 +234,13 @@
           {{/if}}
 
           <h2>Schedule</h2>
-
-          {{#each poomsae_players}}
+          {{#if (eq event.eventtype 'Poomsae')}}
+          {{#each poomsaePlayers}}
           <div class="group">
-            {{!-- <h3>Group {{groupnum}}</h3> --}}
             <ul>
               <li>
                 <div>
-                  {{athlete_name}}
+                  <p>{{athleteid}}</p>
                   <a href="/poomsae-scoresheet/{{this.groupnum}}/{{this.athleteid}}" class="scoresheet-link">View
                     Scoresheet</a>
                 </div>
@@ -249,7 +248,9 @@
             </ul>
           </div>
           {{/each}}
+          {{/if}}
 
+          {{#if (eq event.eventtype 'Kyorugi')}}
           {{#each matches}}
           <div class="match">Round {{round}}
             <div class="times">
@@ -274,6 +275,7 @@
 
           </div>
           {{/each}}
+          {{/if}}
         </div>
       </div>
 
