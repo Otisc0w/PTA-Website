@@ -21,7 +21,10 @@
         <li class="membership"><a href="/membership">Membership</a></li>
         <li class="forum"><a href="/forum">Forum</a></li>
         <li class="notifications">
-          <a href="/notifications">Notifications <span class="badge">3</span></a>
+          <a href="/notifications">Notifications
+            {{#if notifications}}
+            <span class="badge">{{notifications.length}}</span>
+            {{/if}}</a>
         </li>
         <li class="profile-pic">
           {{#if user.profilepic}}
@@ -71,8 +74,8 @@
             {{/if}}
           </div>
           <p>{{event.description}}</p>
-          <p>Date: {{event.date}}</p>
-          <p>Time: {{event.starttime}} - {{event.endtime}}</p>
+          <p>Date: {{formatDate event.date "MMMM DD, YYYY"}}</p>
+          <p>Time: {{formatTime event.starttime "h:mm A"}} - {{formatTime event.endtime "h:mm A"}}</p>
           <p>Event Type: {{event.eventtype}}</p>
           <p>Registration Cap: {{registrationcount}} / {{event.registrationcap}}</p>
         </div>
@@ -228,7 +231,7 @@
           </form>
           {{else if (eq event.eventtype 'Poomsae')}}
           <form action="/begin-poomsae/{{event.id}}" method="post">
-            <button type="submit" class="beginpoomsae">Begin Competition</button>
+            <button type="submit" class="begincompe">Begin Competition</button>
           </form>
           {{/if}}
           {{/if}}
@@ -238,15 +241,11 @@
           {{#if (eq event.eventtype 'Poomsae')}}
           {{#each poomsaePlayers}}
           <div class="group">
-            <ul>
-              <li>
-                <div>
-                  <p>{{name}}</p>
-                  <a href="/poomsae-scoresheet/{{this.groupnum}}/{{this.athleteid}}" class="scoresheet-link">View
-                    Scoresheet</a>
-                </div>
-              </li>
-            </ul>
+            <div class="match">
+              <p>{{name}}</p>
+              <a href="/poomsae-scoresheet/{{id}}" class="scoresheet-link">View
+                Scoresheet</a>
+            </div>
           </div>
           {{/each}}
           {{/if}}

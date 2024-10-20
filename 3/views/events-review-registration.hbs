@@ -45,44 +45,45 @@
         <h2>Player Applicant Information</h2>
 
         <input type="hidden" name="applicationId" value="{{eventregistration.id}}">
-				<div>
-					<img src="{{registration.portrait}}">
-				</div>
-				<div>
-					<p><strong>ID:</strong> {{eventregistration.id}}</p>
-					<p><strong>First Name:</strong> {{eventregistration.playername}}</p>
-					<p><strong>Middle Initial:</strong> {{eventregistration.mi}}</p>
-					<p><strong>Last Name:</strong> {{eventregistration.club}}</p>
-					<p><strong>Gender:</strong> {{eventregistration.age}}</p>
-					<p><strong>Birthday:</strong> {{eventregistration.bday}}</p>
-				</div>
-				
+        <div>
+          <img src="{{registration.portrait}}">
+        </div>
+        <div>
+          <p><strong>ID:</strong> {{eventregistration.id}}</p>
+          <p><strong>First Name:</strong> {{eventregistration.playername}}</p>
+          <p><strong>Middle Initial:</strong> {{eventregistration.mi}}</p>
+          <p><strong>Last Name:</strong> {{eventregistration.club}}</p>
+          <p><strong>Gender:</strong> {{eventregistration.age}}</p>
+          <p><strong>Birthday:</strong> {{formatDate eventregistration.bday "MMMM DD, YYYY"}}</p>
+        </div>
+
       </section>
 
       <section class="application-actions">
         <h1 class="status">
           {{#if eventregistration.registered}}
-            <span class="status-shipped">Accepted</span>
+          <span class="status-shipped">Accepted</span>
           {{else}}
-            <span class="status-rejected">Rejected</span>
+          <span class="status-rejected">Rejected</span>
           {{/if}}
         </h1>
         {{#if user.ptaverified}}
-          <div class="action-buttons"> <!-- TYPES NAMES ID'S CLASSES VALUES NEED TO STAY THE SAME -->
-            <button type="button" id="idshipped" class="idshipped">Accept</button>
-            <button type="submit" name="registered" value="false">Reject</button>
-          </div>
+        <div class="action-buttons"> <!-- TYPES NAMES ID'S CLASSES VALUES NEED TO STAY THE SAME -->
+          <button type="button" id="idshipped" class="idshipped">Accept</button>
+          <button type="submit" name="registered" value="false">Reject</button>
+        </div>
 
-          <div class="confirmscreen" id="confirmscreen" style="display: none;">
-            <h3>Are you sure? The player will be notified that his ID is ready. This registration will also disappear after a few days.</h3>
-            <button type="button" class="cancel" id="cancel">Cancel</button>
-            <button type="submit" value="true" name="registered" id="confirm">Confirm</button>
-          </div>
+        <div class="confirmscreen" id="confirmscreen" style="display: none;">
+          <h3>Are you sure? The player will be notified that his ID is ready. This registration will also disappear
+            after a few days.</h3>
+          <button type="button" class="cancel" id="cancel">Cancel</button>
+          <button type="submit" value="true" name="registered" id="confirm">Confirm</button>
+        </div>
         {{/if}}
         <div class="backtolist">
           <a href="/events-details/{{event.id}}">Back to list</a>
         </div>
-        
+
       </section>
 
       <div class="printwindow" id="printableArea">
@@ -95,20 +96,20 @@
       </div>
     </form>
   </main>
-  
+
   <script>
     const confirmscreen = document.getElementById("confirmscreen");
     const actionButtons = document.querySelector(".action-buttons");
     const cancel = document.getElementById("cancel");
     const idshipped = document.getElementById("idshipped");
 
-    cancel.addEventListener("click", function(event) {
+    cancel.addEventListener("click", function (event) {
       event.preventDefault();
       confirmscreen.style.display = "none";
       actionButtons.style.display = "block";
     });
 
-    idshipped.addEventListener("click", function(event) {
+    idshipped.addEventListener("click", function (event) {
       event.preventDefault();
       confirmscreen.style.display = "block";
       actionButtons.style.display = "none";

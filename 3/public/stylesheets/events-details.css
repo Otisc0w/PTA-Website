@@ -789,3 +789,19 @@ h1 {
 .footer-content .social-media img {
   height: 30px;
 }
+
+.begincompe {
+  border: none;
+  padding: 10px 20px;
+  background-color: #0074d9;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  font-weight: bold;
+  font-size: 15px;
+}
+
+.begincompe:hover {
+  background-color: #0056b3;
+}

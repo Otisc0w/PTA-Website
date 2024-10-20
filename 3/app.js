@@ -105,6 +105,9 @@ hbs.registerHelper('formatDate', function (date, format) {
 hbs.registerHelper('formatCreatedAt', function (created_at) {
   return moment(created_at).format('MMM D h:mm A');
 });
+hbs.registerHelper('formatTime', function (time, format) {
+  return moment(time, 'HH:mm:ss').format(format);
+});
 
 
 app.use(
@@ -3287,10 +3290,24 @@ app.get("/events-details/:id", async function (req, res) {
 
     // Fetch the event registrations for the specific event
     const { data: eventregistrations, error: eventregistrationsError } =
-      await supabase.from("events_registrations").select("*").eq("eventid", id);
+      await supabase
+      .from("events_registrations")
+      .select("*")
+      .eq("eventid", id);
 
     if (eventregistrationsError) {
       return res.status(400).json({ error: eventregistrationsError.message });
+    }
+
+    const { data: acceptedregs, error: acceptedregsError } =
+      await supabase
+      .from("events_registrations")
+      .select("*")
+      .eq("eventid", id)
+      .eq("registered", "true");
+
+    if (acceptedregsError) {
+      return res.status(400).json({ error: acceptedregsError.message });
     }
 
     // Fetch the participants for the specific event
@@ -3466,7 +3483,7 @@ app.get("/events-details/:id", async function (req, res) {
     }
 
     // Calculate the number of registrations
-    const registrationcount = eventregistrations.length;
+    const registrationcount = acceptedregs.length;
 
     console.log("Fetched event data:", event); // Log the event data to the console
     console.log("Fetched event registrations data:", eventregistrations); // Log the event registrations data to the console
@@ -3479,6 +3496,7 @@ app.get("/events-details/:id", async function (req, res) {
     res.render("events-details", {
       event,
       eventregistrations,
+      acceptedregs,
       participants,
       currentregistrant,
       matches,
@@ -3760,49 +3778,43 @@ app.get("/kyorugi-scoresheet/:matchid", async function (req, res) {
   }
 });
 
-app.get("/poomsae-scoresheet/:groupnum/:athleteid", async function (req, res) {
+app.get("/poomsae-scoresheet/:id", async function (req, res) {
   if (!req.session.user) {
     return res.redirect("/");
   }
 
-  const { groupnum, athleteid } = req.params; // Get the group and athlete ID from the URL
+  const { id } = req.params; // Get the group and athlete ID from the URL
 
   try {
     // Fetch the poomsae group details from the poomsae_players table
-    const { data: group, error: groupError } = await supabase
+    const { data: players, error: playersError } = await supabase
       .from("poomsae_players")
       .select("*")
-      .eq("groupnum", groupnum)
-      .eq("athleteid", athleteid)
+      .eq("id", id)
       .single(); // Ensure we get a single record
 
-    if (groupError) {
-      return res.status(400).json({ error: groupError.message });
+    if (playersError) {
+      return res.status(400).json({ error: playersError.message });
     }
 
     // Fetch athlete details
     const { data: athlete, error: athleteError } = await supabase
       .from("athletes")
       .select("*")
-      .eq("id", athleteid)
+      .eq("id", players.athleteid)
       .single();
 
     if (athleteError) {
       return res.status(400).json({ error: athleteError.message });
     }
 
-    const scoresheet = {
-      ...group,
-      athlete_name: athlete.name,
-    };
-
-    console.log("Fetched group data:", group); // Log the group data to the console
+    console.log("Fetched players data:", players); // Log the players data to the console
     console.log("Fetched athlete data:", athlete); // Log the athlete data to the console
 
     // Render the poomsae-scoresheet.hbs template with the fetched data
     res.render("poomsae-scoresheet", {
-      scoresheet,
       user: req.session.user,
+      players,
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
