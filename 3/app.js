@@ -2437,6 +2437,15 @@ app.post("/begin-poomsae/:id", async (req, res) => {
         }
       }
 
+      const { error: updateEventError } = await supabase
+        .from("events")
+        .update({ status: "Ongoing" })
+        .eq("id", eventid);
+
+      if (updateEventError) {
+        console.error("Error updating event status:", updateEventError.message);
+        return res.status(500).send("Error updating event status");
+      }
 
       console.log("Poomsae players inserted successfully");
     } catch (error) {
