@@ -2402,19 +2402,35 @@ app.post("/begin-poomsae/:id", async (req, res) => {
       
       // Insert all players' userid and athlete id into the poomsae_players table
       for (const player of players) {
-        const { error: insertError } = await supabase
+        // Check if the player already exists in the poomsae_players table
+        const { data: existingPlayer, error: fetchError } = await supabase
           .from("poomsae_players")
-          .insert([
-        {
-          eventid,
-          userid: player.userid,
-          athleteid: player.athleteid,
-          round: 1,
-        },
-          ]);
+          .select("*")
+          .eq("eventid", eventid)
+          .eq("userid", player.userid)
+          .single();
 
-        if (insertError) {
-          console.error("Error inserting poomsae player:", insertError.message);
+        if (fetchError && fetchError.code !== 'PGRST116') {
+          console.error("Error checking existing poomsae player:", fetchError.message);
+          continue;
+        }
+
+        if (!existingPlayer) {
+          const { error: insertError } = await supabase
+        .from("poomsae_players")
+        .insert([
+          {
+            eventid,
+            userid: player.userid,
+            athleteid: player.athleteid,
+            round: 1,
+            name: player.playername,
+          },
+        ]);
+
+          if (insertError) {
+        console.error("Error inserting poomsae player:", insertError.message);
+          }
         }
       }
 

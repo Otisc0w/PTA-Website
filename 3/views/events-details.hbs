@@ -234,13 +234,14 @@
           {{/if}}
 
           <h2>Schedule</h2>
+
           {{#if (eq event.eventtype 'Poomsae')}}
           {{#each poomsaePlayers}}
           <div class="group">
             <ul>
               <li>
                 <div>
-                  <p>{{athleteid}}</p>
+                  <p>{{name}}</p>
                   <a href="/poomsae-scoresheet/{{this.groupnum}}/{{this.athleteid}}" class="scoresheet-link">View
                     Scoresheet</a>
                 </div>
