@@ -236,7 +236,17 @@
           <form action="/begin-poomsae/{{event.id}}" method="post">
             <button type="submit" class="begincompe">Begin Competition</button>
           </form>
+          {{/if}}
+          {{else if (eq event.status 'Ongoing')}}
+          {{#if (eq event.eventtype 'Kyorugi')}}
+          <form action="/begin-competition/{{event.id}}" method="post">
+            <button type="submit" class="begincompe">Next Round</button>
+          </form>
 
+          {{else if (eq event.eventtype 'Poomsae')}}
+          <form action="/begin-poomsae/{{event.id}}" method="post">
+            <button type="submit" class="begincompe">Begin Competition</button>
+          </form>
           {{/if}}
           {{/if}}
           {{/if}}

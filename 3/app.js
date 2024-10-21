@@ -2455,6 +2455,72 @@ app.post("/begin-poomsae/:id", async (req, res) => {
   res.redirect(`/events-details/${req.params.id}`);
 });
 
+app.post("/next-poomsae-round/:eventid", async (req, res) => {
+  const { eventid } = req.params;
+
+  try {
+    // Fetch the highest round number for the event
+    const { data: highestRound, error: highestRoundError } = await supabase
+      .from("poomsae_players")
+      .select("round")
+      .eq("eventid", eventid)
+      .order("round", { ascending: false })
+      .limit(1)
+      .single();
+
+    if (highestRoundError) {
+      console.error("Error fetching highest round:", highestRoundError.message);
+      return res.status(500).send("Error fetching highest round");
+    }
+
+    const currentRound = highestRound ? highestRound.round : 0;
+
+    // Fetch players who participated in the current round
+    const { data: players, error: playersError } = await supabase
+      .from("poomsae_players")
+      .select("*")
+      .eq("eventid", eventid)
+      .eq("round", currentRound);
+
+    if (playersError) {
+      console.error("Error fetching players:", playersError.message);
+      return res.status(500).send("Error fetching players");
+    }
+
+    // Determine the players who advance to the next round based on their scores
+    const advancingPlayers = players
+      .sort((a, b) => b.total_score - a.total_score)
+      .slice(0, Math.ceil(players.length / 2)); // Top 50% advance
+
+    const nextRound = currentRound + 1;
+
+    // Insert advancing players into the next round
+    for (const player of advancingPlayers) {
+      const { error: insertError } = await supabase
+        .from("poomsae_players")
+        .insert([
+          {
+            eventid,
+            userid: player.userid,
+            athleteid: player.athleteid,
+            round: nextRound,
+            name: player.name,
+          },
+        ]);
+
+      if (insertError) {
+        console.error("Error advancing player:", insertError.message);
+        return res.status(500).send("Error advancing player");
+      }
+    }
+
+    res.redirect(`/events-details/${eventid}`);
+  } catch (error) {
+    console.error("Server error:", error.message);
+    res.status(500).json({ error: error.message });
+  }
+});//not srue
+
 app.post("/update-eventreg-status", async (req, res) => {
   if (!req.session.user) {
     return res.status(401).send("Unauthorized: No user logged in");
