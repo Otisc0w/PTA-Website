@@ -151,8 +151,7 @@
         </h1>
         {{#if user.ptaverified}}
         <div class="action-buttons">
-          <button type="button" onclick="printDiv('printableArea')" class="printbtn"><img src="../images/image.png"
-              alt="Print"></button>
+          <button onclick="printIdCard('printableArea')" class="printbtn">Print ID</button>
           <button type="submit" name="status" value="1">Under Review</button>
           <button type="submit" name="status" value="2">En-route to Regional Office</button>
           <button type="button" id="idshipped" class="idshipped">ID Shipped</button>
@@ -169,14 +168,19 @@
             list</button>
         </div>
       </section>
-      <div class="printwindow" id="printableArea">
-        <p><strong>ID:</strong> {{registration.id}}</p>
-        <p><strong>First Name:</strong> {{registration.firstname}}</p>
-        <p><strong>Middle Initial:</strong> {{registration.mi}}</p>
-        <p><strong>Last Name:</strong> {{registration.lastname}}</p>
-        <a href="{{registration.birthcert}}" target="_blank" download>Birth Certificate</a>
-        <p>submitted by: {{registration.submittedby}}</p>
+      <div id="printableArea">
+        <div class="id-card">
+          <img src="/images/logo.png" alt="PTA logo">
+          <img src="{{registration.portrait}}" alt="Athlete Picture">
+          <p><strong>ID:</strong> {{registration.id}}</p>
+          <p><strong>Name:</strong> {{registration.firstname}} {{registration.middlename}} {{registration.lastname}}</p>
+          <p><strong>Division:</strong> {{registration.division}}</p>
+          <p><strong>Chapter:</strong> {{registration.chapter}}</p>
+          <p><strong>Birthdate:</strong> {{formatDate registration.birthday "MMMM D, YYYY"}}</p>
+        </div>
       </div>
+
+
     </form>
 
   </main>
@@ -199,15 +203,13 @@
       actionButtons.style.display = "none";
     });
 
-    function printDiv(divName) {
+    function printIdCard(divName) {
       var printContents = document.getElementById(divName).innerHTML;
       var originalContents = document.body.innerHTML;
-      document.getElementById(divName).classList.add('visible');
       document.body.innerHTML = printContents;
       window.print();
-      document.body.innerHTML = originalContents;
-      document.getElementById(divName).classList.remove('visible');
-      window.location.reload(); // Reload to reset the page state
+      // Remove the reload to avoid errors after canceling
+      document.body.innerHTML = originalContents; // Restore the original content after print
     }
 
     function toggleDropdown() {
