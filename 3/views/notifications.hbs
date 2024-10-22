@@ -19,9 +19,6 @@
         <li class="events"><a href="events">Events</a></li>
         <li class="membership"><a href="membership">Membership</a></li>
         <li class="forum"><a href="forum">Forum</a></li>
-        {{#if user.ptaverified}}
-        <li><a href="/stats">Stats</a></li>
-        {{/if}}
         <li class="notifications">
           <a href="notifications">Notifications
             {{#if notifications}}
@@ -29,7 +26,9 @@
             {{/if}}
           </a>
         </li>
+        {{#if user.ptaverified}}
         <li class="analytics"><a href="analytics">Analytics</a></li>
+        {{/if}}
         <li class="profile-pic">
           {{#if user.profilepic}}
           <a href="#" onclick="toggleDropdown()"><img src="{{user.profilepic}}" alt="Profile Picture"
