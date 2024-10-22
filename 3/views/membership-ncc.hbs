@@ -19,15 +19,20 @@
 			<li class="membership"><a href="/membership">Membership</a></li>
 			<li class="forum"><a href="/forum">Forum</a></li>
 			<li class="notifications">
-				<a href="/notifications">Notifications <span class="badge">3</span></a>
+				<a href="/notifications">Notifications
+					{{#if notifications}}
+					<span class="badge">{{notifications.length}}</span>
+					{{/if}}
+				</a>
 			</li>
+			<li class="analytics"><a href="analytics">Analytics</a></li>
 			<li class="profile-pic">
 				{{#if user.profilepic}}
 				<a href="#" onclick="toggleDropdown()"><img src="{{user.profilepic}}" alt="Profile Picture"
 						class="profile-picture"></a>
 				{{else}}
-				<a href="#" onclick="toggleDropdown()" class="profile-picture"><img src="/images/none.jpg" alt="Profile Picture"
-						class="profile-picture"></a>
+				<a href="#" onclick="toggleDropdown()" class="profile-picture"><img src="/images/none.jpg"
+						alt="Profile Picture" class="profile-picture"></a>
 				{{/if}}
 				<div id="dropdown" class="dropdown-content">
 					<a href="/profile">Profile</a>
@@ -87,7 +92,8 @@
 						<div class="form-row">
 							<div class="form-group">
 								<label for="phonenum">Mobile Number</label>
-								<input type="tel" id="phonenum" name="phonenum" pattern="\d{4}\d{3}\d{4}" placeholder="0912-345-6789">
+								<input type="tel" id="phonenum" name="phonenum" pattern="\d{4}\d{3}\d{4}"
+									placeholder="0912-345-6789">
 							</div>
 							<div class="form-group">
 								<label for="email">E-mail</label>
@@ -116,15 +122,18 @@
 									<option value="Region VI – Western Visayas">Region VI – Western Visayas</option>
 									<option value="Region VII – Central Visayas">Region VII – Central Visayas</option>
 									<option value="Region VIII – Eastern Visayas">Region VIII – Eastern Visayas</option>
-									<option value="Region IX – Zamboanga Peninsula">Region IX – Zamboanga Peninsula</option>
+									<option value="Region IX – Zamboanga Peninsula">Region IX – Zamboanga Peninsula
+									</option>
 									<option value="Region X – Northern Mindanao">Region X – Northern Mindanao</option>
 									<option value="Region XI – Davao Region">Region XI – Davao Region</option>
 									<option value="Region XII – SOCCSKSARGEN">Region XII – SOCCSKSARGEN</option>
 									<option value="Region XIII – Caraga">Region XIII – Caraga</option>
 									<option value="NCR – National Capital Region">NCR – National Capital Region</option>
-									<option value="CAR – Cordillera Administrative Region">CAR – Cordillera Administrative Region
+									<option value="CAR – Cordillera Administrative Region">CAR – Cordillera
+										Administrative Region
 									</option>
-									<option value="BARMM – Bangsamoro Autonomous Region in Muslim Mindanao">BARMM – Bangsamoro
+									<option value="BARMM – Bangsamoro Autonomous Region in Muslim Mindanao">BARMM –
+										Bangsamoro
 										Autonomous
 										Region in Muslim Mindanao</option>
 								</select>
@@ -166,7 +175,8 @@
 						</div>
 
 						<div class="form-row button-group">
-							<button class="cancel-button" type="button" onclick="window.location.href='membership';">Cancel</button>
+							<button class="cancel-button" type="button"
+								onclick="window.location.href='membership';">Cancel</button>
 							<button class="next-button" type="button" onclick="showNextPage()">Next</button>
 						</div>
 					</div>
@@ -191,8 +201,8 @@
 						<div class="form-row">
 							<div class="form-group">
 								<label for="instructormobile">Instructor Mobile Number</label>
-								<input type="tel" id="instructormobile" name="instructormobile" pattern="\d{4}\d{3}\d{4}"
-									placeholder="0912-345-6789">
+								<input type="tel" id="instructormobile" name="instructormobile"
+									pattern="\d{4}\d{3}\d{4}" placeholder="0912-345-6789">
 							</div>
 							<div class="form-group">
 								<label for="instructoremail">Instructor E-mail</label>
@@ -233,14 +243,19 @@
 								<label for="terms">I AGREE TO THE TERMS OF SERVICE</label>
 								<p>Certification, Waiver and Release Form<br>
 									1. I hereby certify that the above information is true and correct.<br>
-									2. I acknowledge, fully understand and will abide by the rules and regulations of PTA.<br>
-									3. I do hereby waive, release and discharge any and all liabilities from death, injuries or
+									2. I acknowledge, fully understand and will abide by the rules and regulations of
+									PTA.<br>
+									3. I do hereby waive, release and discharge any and all liabilities from death,
+									injuries or
 									damages
-									arising from my own negligence, furthermore I or my family, will waive and release any or all
+									arising from my own negligence, furthermore I or my family, will waive and release
+									any or all
 									rights,
-									claims for damages from the entire PTA body including the PTA Officers, PTA competition officials,
+									claims for damages from the entire PTA body including the PTA Officers, PTA
+									competition officials,
 									PTA
-									instructors, or any department/facility of PTA like PTA Admin, PTA Competitions Management Team or
+									instructors, or any department/facility of PTA like PTA Admin, PTA Competitions
+									Management Team or
 									Digital Team from any Taekwondo related issues.
 								</p>
 							</div>
