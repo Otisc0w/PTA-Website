@@ -2489,12 +2489,12 @@ app.post("/next-poomsae-round/:eventid", async (req, res) => {
 
     // Determine the players who advance to the next round based on their scores
     const advancingPlayers = players
-      .sort((a, b) => b.total_score - a.total_score)
+      .sort((a, b) => b.totalscore - a.totalscore)
       .slice(0, Math.ceil(players.length / 2)); // Top 50% advance
 
     const nextRound = currentRound + 1;
 
-    // Insert advancing players into the next round
+    // Insert advancing players into the next round, carrying over their total scores
     for (const player of advancingPlayers) {
       const { error: insertError } = await supabase
         .from("poomsae_players")
@@ -2505,6 +2505,7 @@ app.post("/next-poomsae-round/:eventid", async (req, res) => {
             athleteid: player.athleteid,
             round: nextRound,
             name: player.name,
+            totalscore: player.totalscore, // Carry over the total score
           },
         ]);
 
@@ -2519,7 +2520,7 @@ app.post("/next-poomsae-round/:eventid", async (req, res) => {
     console.error("Server error:", error.message);
     res.status(500).json({ error: error.message });
   }
-});//not srue
+});
 
 app.post("/update-eventreg-status", async (req, res) => {
   if (!req.session.user) {
@@ -2816,7 +2817,7 @@ app.post("/submit-poomsae-scores", async (req, res) => {
         round: round,
         technical_score: technicalScore,
         presentation_score: presentationScore,
-        total_score: totalScore,
+        totalscore: totalScore,
         performance_time: performanceTime,
         judge_scores: judgeScores,
       },
@@ -3548,14 +3549,23 @@ app.get("/events-details/:id", async function (req, res) {
     }
 
     // Fetch the poomsae players for the specific event
-    const { data: poomsaePlayers, error: poomsaePlayersError } = await supabase
-      .from("poomsae_players")
-      .select("*")
-      .eq("eventid", id);
+    const { data: poomsaePlayers, error } = await supabase
+      .from('poomsae_players')
+      .select('*')
+      .eq('eventid', id);
 
-    if (poomsaePlayersError) {
-      return res.status(400).json({ error: poomsaePlayersError.message });
+    if (error) {
+      throw new Error(error.message);
     }
+
+    const groupedByRound = poomsaePlayers.reduce((acc, player) => {
+      const round = player.round;
+      if (!acc[round]) {
+      acc[round] = [];
+      }
+      acc[round].push(player);
+      return acc;
+    }, {});
 
     // Calculate the number of registrations
     const registrationcount = acceptedregs.length;
@@ -3577,12 +3587,13 @@ app.get("/events-details/:id", async function (req, res) {
       matches,
       poomsaePlayers,
       registrationcount,
-      registrationcap: event.registration_cap, // Assuming the registration cap is stored in the event table
+      registrationcap: event.registrationcap, // Assuming the registration cap is stored in the event table
       user: req.session.user,
       champion,
       secondPlace,
       thirdPlace,
-      eventannouncements
+      eventannouncements,
+      groupedByRound,
     });
   } catch (error) {
     res.status(500).json({ error: error.message });

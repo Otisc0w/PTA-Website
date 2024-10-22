@@ -249,15 +249,24 @@
           <h2>Schedule</h2>
 
           {{#if (eq event.eventtype 'Poomsae')}}
-          {{#each poomsaePlayers}}
-          <div class="group">
-            <div class="match">
-              <p>{{name}}</p>
-              <a href="/poomsae-scoresheet/{{id}}" class="scoresheet-link">View
-                Scoresheet</a>
-            </div>
-          </div>
-          {{/each}}
+            {{#if groupedByRound}}
+              {{#each groupedByRound}}
+                <div class="round"></div>
+                  <h3>Round: {{@key}}</h3>
+                  {{#each this}}
+                    <div class="group">
+                      <div class="match">
+                        <p>{{name}}</p>
+                        <p>{{totalscore}}</p>
+                        <a href="/poomsae-scoresheet/{{id}}" class="scoresheet-link">View Scoresheet</a>
+                      </div>
+                    </div>
+                  {{/each}}
+                </div>
+              {{/each}}
+            {{else}}
+              <p>No rounds available.</p>
+            {{/if}}
           {{/if}}
 
           {{#if (eq event.eventtype 'Kyorugi')}}
