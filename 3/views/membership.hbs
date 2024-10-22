@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <title>PTA | Membership</title>
   <link rel="icon" type="image/x-icon" href="../images/favicon.ico" />
@@ -19,13 +20,20 @@
         <li class="membership"><a href="membership">Membership</a></li>
         <li class="forum"><a href="forum">Forum</a></li>
         <li class="notifications">
-          <a href="notifications">Notifications <span class="badge">3</span></a>
+          <a href="/notifications">Notifications
+            {{#if notifications}}
+            <span class="badge">{{notifications.length}}</span>
+            {{/if}}
+          </a>
         </li>
+        <li class="analytics"><a href="analytics">Analytics</a></li>
         <li class="profile-pic">
           {{#if user.profilepic}}
-          <a href="#" onclick="toggleDropdown()"><img src="{{user.profilepic}}" alt="Profile Picture" class="profile-picture"></a>
+          <a href="#" onclick="toggleDropdown()"><img src="{{user.profilepic}}" alt="Profile Picture"
+              class="profile-picture"></a>
           {{else}}
-          <a href="#" onclick="toggleDropdown()" class="profile-picture"><img src="/images/none.jpg" alt="Profile Picture" class="profile-picture"></a>
+          <a href="#" onclick="toggleDropdown()" class="profile-picture"><img src="/images/none.jpg"
+              alt="Profile Picture" class="profile-picture"></a>
           {{/if}}
           <div id="dropdown" class="dropdown-content">
             <a href="profile">Profile</a>
@@ -51,15 +59,15 @@
         <ul>
           <li class="available"><a href="membership-status">Registration Status &rarr;</a></li>
           {{#if user.club}}
-            <li class="available"><a href="membership-ncc">Apply for NCC ID &rarr;</a></li>
+          <li class="available"><a href="membership-ncc">Apply for NCC ID &rarr;</a></li>
           {{else}}
-            <li class="grayedout"><a >Apply for NCC ID &rarr;</a></li>
+          <li class="grayedout"><a>Apply for NCC ID &rarr;</a></li>
           {{/if}}
           <li class="available"><a href="membership-instructor">Apply for Instructor's License &rarr;</a></li>
           {{#if user.instructorverified}}
-            <li class="available"><a href="membership-club">Register Club &rarr;</a></li>
+          <li class="available"><a href="membership-club">Register Club &rarr;</a></li>
           {{else}}
-            <li class="grayedout"><a>Register Club</a></li>
+          <li class="grayedout"><a>Register Club</a></li>
           {{/if}}
         </ul>
       </div>
@@ -86,4 +94,5 @@
     }
   </script>
 </body>
+
 </html>
