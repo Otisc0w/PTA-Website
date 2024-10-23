@@ -2,42 +2,97 @@
 <html>
 <head>
   <title>Poomsae Scoresheet</title>
+  <link rel="icon" type="image/x-icon" href="../images/favicon.ico" />
+  <link rel="stylesheet" type="text/css" href="../stylesheets/navbar.css" />
   <link rel="stylesheet" type="text/css" href="/stylesheets/scoresheet.css" />
 </head>
 <body>
   <div class="container">
-    <h1>Poomsae Scoresheet for Group {{groupnum}}</h1>
-    <form action="/submit-poomsae-scores" method="POST">
-      <input type="hidden" name="eventid" value="{{eventid}}">
-      <input type="hidden" name="groupnum" value="{{groupnum}}">
-      <table>
-        <thead>
-          <tr>
-            <th>Athlete Name</th>
-            <th>Technical Score</th>
-            <th>Presentation Score</th>
-            <th>Total Score</th>
-            <th>Performance Time</th>
-            <th>Judge Scores</th>
-            <th>Ranking</th>
-          </tr>
-        </thead>
-        <tbody>
-          {{#each athletes}}
-          <tr>
-            <td>{{this.athlete_name}}</td>
-            <td><input type="number" name="technicalscore_{{this.athleteid}}" min="0" max="10" step="0.1" required></td>
-            <td><input type="number" name="presentationscore_{{this.athleteid}}" min="0" max="10" step="0.1" required></td>
-            <td><input type="number" name="totalscore_{{this.athleteid}}" readonly></td>
-            <td><input type="time" name="performancetime_{{this.athleteid}}" required></td>
-            <td><input type="text" name="judgescores_{{this.athleteid}}" required></td>
-            <td><input type="number" name="ranking_{{this.athleteid}}" min="1" required></td>
-          </tr>
-          {{/each}}
-        </tbody>
-      </table>
-      <button type="submit">Submit Scores</button>
-    </form>
+    <div class="score-sheet">
+      <h2 class="title">Judge's Score Sheet</h2>
+      <div class="score-table">
+        <table>
+          <thead>
+            <tr>
+              <th>Category</th>
+              <th>Sub-Category</th>
+              <th>Score Allocation</th>
+              <th>Deductions</th>
+              <th>Final Score</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td rowspan="3"><strong>Accuracy (4.0)</strong></td>
+              <td>Accuracy in basic Movement</td>
+              <td rowspan="3">4.0 (deduct -0.1, -0.3)</td>
+              <td><input type="number" class="deduction-input" step="0.1" min="0" max="4" data-max="4"></td>
+              <td class="final-score" data-base="4">4.0</td>
+            </tr>
+            <tr>
+              <td>Accuracy in individual Movement of the Poomsae</td>
+              <td><input type="number" class="deduction-input" step="0.1" min="0" max="4" data-max="4"></td>
+              <td class="final-score" data-base="4">4.0</td>
+            </tr>
+            <tr>
+              <td>Balance</td>
+              <td><input type="number" class="deduction-input" step="0.1" min="0" max="4" data-max="4"></td>
+              <td class="final-score" data-base="4">4.0</td>
+            </tr>
+            <tr>
+              <td rowspan="3"><strong>Presentation (6.0)</strong></td>
+              <td>Power & Speed</td>
+              <td>2.0</td>
+              <td><input type="number" class="deduction-input" step="0.1" min="0" max="2" data-max="2"></td>
+              <td class="final-score" data-base="2">2.0</td>
+            </tr>
+            <tr>
+              <td>Coordination of rhythm & Tempo and Softness & Power</td>
+              <td>2.0</td>
+              <td><input type="number" class="deduction-input" step="0.1" min="0" max="2" data-max="2"></td>
+              <td class="final-score" data-base="2">2.0</td>
+            </tr>
+            <tr>
+              <td>Expression of Energy</td>
+              <td>2.0</td>
+              <td><input type="number" class="deduction-input" step="0.1" min="0" max="2" data-max="2"></td>
+              <td class="final-score" data-base="2">2.0</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="total-score">
+          <strong>Total Score (10.0):</strong> <span id="total-score">10.0</span>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      document.querySelectorAll('.deduction-input').forEach(input => {
+        input.addEventListener('input', calculateScores);
+      });
+
+      function calculateScores() {
+        let totalScore = 10.0; // Starting score for Poomsae
+
+        document.querySelectorAll('.deduction-input').forEach(input => {
+          const maxScore = parseFloat(input.dataset.max);
+          const deduction = parseFloat(input.value) || 0;
+          const finalScoreElement = input.parentElement.nextElementSibling;
+          const finalScore = Math.max(0, maxScore - deduction); // Avoid negative scores
+
+          // Update the final score display for each row
+          finalScoreElement.textContent = finalScore.toFixed(1);
+
+          // Deduct from the total score
+          totalScore -= deduction;
+        });
+
+        // Update the total score in the UI
+        document.getElementById('total-score').textContent = totalScore.toFixed(1);
+      }
+
+    </script>
+
   </div>
 </body>
 </html>

@@ -3552,7 +3552,8 @@ app.get("/events-details/:id", async function (req, res) {
     const { data: poomsaePlayers, error } = await supabase
       .from('poomsae_players')
       .select('*')
-      .eq('eventid', id);
+      .eq('eventid', id)
+      .order('totalscore', { ascending: false });
 
     if (error) {
       throw new Error(error.message);
@@ -3566,6 +3567,14 @@ app.get("/events-details/:id", async function (req, res) {
       acc[round].push(player);
       return acc;
     }, {});
+
+    // Sort rounds in descending order
+    const sortedGroupedByRound = Object.keys(groupedByRound)
+      .sort((a, b) => b - a)
+      .reduce((acc, key) => {
+      acc[key] = groupedByRound[key];
+      return acc;
+      }, {});
 
     // Calculate the number of registrations
     const registrationcount = acceptedregs.length;
@@ -3593,7 +3602,7 @@ app.get("/events-details/:id", async function (req, res) {
       secondPlace,
       thirdPlace,
       eventannouncements,
-      groupedByRound,
+      sortedGroupedByRound,
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
