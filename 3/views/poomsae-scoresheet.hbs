@@ -21,44 +21,46 @@
               <th>Final Score</th>
             </tr>
           </thead>
-          <tbody>
-            <tr>
-              <td rowspan="3"><strong>Accuracy (4.0)</strong></td>
-              <td>Accuracy in basic Movement</td>
-              <td rowspan="3">4.0 (deduct -0.1, -0.3)</td>
-              <td><input type="number" class="deduction-input" step="0.1" min="0" max="4" data-max="4"></td>
-              <td class="final-score" data-base="4">4.0</td>
-            </tr>
-            <tr>
-              <td>Accuracy in individual Movement of the Poomsae</td>
-              <td><input type="number" class="deduction-input" step="0.1" min="0" max="4" data-max="4"></td>
-              <td class="final-score" data-base="4">4.0</td>
-            </tr>
-            <tr>
-              <td>Balance</td>
-              <td><input type="number" class="deduction-input" step="0.1" min="0" max="4" data-max="4"></td>
-              <td class="final-score" data-base="4">4.0</td>
-            </tr>
-            <tr>
-              <td rowspan="3"><strong>Presentation (6.0)</strong></td>
-              <td>Power & Speed</td>
-              <td>2.0</td>
-              <td><input type="number" class="deduction-input" step="0.1" min="0" max="2" data-max="2"></td>
-              <td class="final-score" data-base="2">2.0</td>
-            </tr>
-            <tr>
-              <td>Coordination of rhythm & Tempo and Softness & Power</td>
-              <td>2.0</td>
-              <td><input type="number" class="deduction-input" step="0.1" min="0" max="2" data-max="2"></td>
-              <td class="final-score" data-base="2">2.0</td>
-            </tr>
-            <tr>
-              <td>Expression of Energy</td>
-              <td>2.0</td>
-              <td><input type="number" class="deduction-input" step="0.1" min="0" max="2" data-max="2"></td>
-              <td class="final-score" data-base="2">2.0</td>
-            </tr>
-          </tbody>
+            <form action="submit-poomsae-scores" method="post">
+            <tbody>
+              <tr>
+                <td rowspan="3"><strong>Technical (4.0)</strong></td>
+                <td>Accuracy in basic Movement</td>
+                <td rowspan="3">4.0 (deduct -0.1, -0.3)</td>
+                <td><input type="number" class="deduction-input" name="basicmovement" step="0.1" min="0" max="4" data-max="4"></td>
+                <td class="final-score" data-base="4">4.0</td>
+              </tr>
+              <tr>
+                <td>Accuracy in individual Movement of the Poomsae</td>
+                <td><input type="number" class="deduction-input" name="indivmovement" step="0.1" min="0" max="4" data-max="4"></td>
+                <td class="final-score" data-base="4">4.0</td>
+              </tr>
+              <tr>
+                <td>Balance</td>
+                <td><input type="number" class="deduction-input" name="balance" step="0.1" min="0" max="4" data-max="4"></td>
+                <td class="final-score" data-base="4">4.0</td>
+              </tr>
+              <tr>
+                <td rowspan="3"><strong>Performance (6.0)</strong></td>
+                <td>Power & Speed</td>
+                <td>2.0</td>
+                <td><input type="number" class="deduction-input" name="powerspeed" step="0.1" min="0" max="2" data-max="2"></td>
+                <td class="final-score" data-base="2">2.0</td>
+              </tr>
+              <tr>
+                <td>Coordination of rhythm & Tempo and Softness & Power</td>
+                <td>2.0</td>
+                <td><input type="number" class="deduction-input" name="coord" step="0.1" min="0" max="2" data-max="2"></td>
+                <td class="final-score" data-base="2">2.0</td>
+              </tr>
+              <tr>
+                <td>Expression of Energy</td>
+                <td>2.0</td>
+                <td><input type="number" class="deduction-input" name="energy" step="0.1" min="0" max="2" data-max="2"></td>
+                <td class="final-score" data-base="2">2.0</td>
+              </tr>
+            </tbody>
+            </form>
         </table>
         <div class="total-score">
           <strong>Total Score (10.0):</strong> <span id="total-score">10.0</span>

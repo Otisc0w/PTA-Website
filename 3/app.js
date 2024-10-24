@@ -2796,32 +2796,28 @@ app.post("/submit-kyorugi-scores", async (req, res) => {
 
 app.post("/submit-poomsae-scores", async (req, res) => {
   const {
-    groupId,
-    eventId,
-    athleteId,
-    round,
-    technicalScore,
-    presentationScore,
-    performanceTime,
-    judgeScores,
+    basicmovement,
+    indivmovement,
+    balance,
+    powerspeed,
+    coord,
+    energy,
+    id,
   } = req.body;
 
-  const totalScore = parseFloat(technicalScore) + parseFloat(presentationScore);
+  
+  const technicalscore = parseFloat(basicmovement) + parseFloat(indivmovement) + parseFloat(balance);
+  const performancescore = parseFloat(powerspeed) + parseFloat(coord) + parseFloat(energy);
+  const totalscore = parseFloat(technicalscore) + parseFloat(performancescore);
 
   try {
-    const { error } = await supabase.from("poomsae_players").insert([
-      {
-        group_id: groupId,
-        event_id: eventId,
-        athlete_id: athleteId,
-        round: round,
-        technical_score: technicalScore,
-        presentation_score: presentationScore,
-        totalscore: totalScore,
-        performance_time: performanceTime,
-        judge_scores: judgeScores,
-      },
-    ]);
+    const { error } = await supabase.from("poomsae_players")
+    .update({ 
+      totalscore: totalscore,
+      performancescore: performancescore,
+      technicalscore: technicalscore, 
+     })
+    .eq("id", id); // Ensure you pass the player ID in the request body
 
     if (error) {
       return res.status(400).json({ error: error.message });

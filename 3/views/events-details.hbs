@@ -251,18 +251,16 @@
           {{#if (eq event.eventtype 'Poomsae')}}
             {{#if sortedGroupedByRound}}
               {{#each sortedGroupedByRound}}
-                
                   <h3>Round: {{@key}}</h3>
                   {{#each this}}
                     <div class="group">
                       <div class="match">
                         <p>{{name}} round: {{round}}</p>
                         <p>pts: {{totalscore}}</p>
-                        <a href="/poomsae-scoresheet/{{id}}" class="scoresheet-link">View Scoresheet</a>
+                        <button onclick="openPoomsaeScoresheet('{{id}}', '{{totalscore}}', '{{technicalscore}}', '{{performancescore}}')" class="openscoresheetbtn">Open Scoresheet</button>
                       </div>
                     </div>
                   {{/each}}
-                
               {{/each}}
             {{else}}
               <p>No rounds available.</p>
@@ -289,12 +287,75 @@
               <p class="match-vs">vs</p>
               <p class="match-players">{{player2_name}}: {{player2score}}</p>
             </div>
-
-            <a href="/kyorugi-scoresheet/{{id}}" class="kyorugi-scoresheet">scoresheet</a>
+            {{!-- <a href="#" onclick="openPoomsaeScoresheet('{{id}}', '{{totalscore}}', '{{technicalscore}}', '{{performancescore}}')" class="poomsae-scoresheet">Open Poomsae Scoresheet</a> --}}
 
           </div>
           {{/each}}
           {{/if}}
+        </div>
+      </div>
+
+      <div class="poomsae-score-sheet">
+        <span class="close" onclick="closePoomsaeScoresheet()">&times;</span>
+        <h2 class="title">Judge's Score Sheet</h2>
+        <div class="score-table">
+          <form action="submit-poomsae-scores" method="post">
+            <table>
+              <thead>
+                <tr>
+                  <th>Category</th>
+                  <th>Sub-Category</th>
+                  <th>Score Allocation</th>
+                  <th>Deductions</th>
+                  <th>Final Score</th>
+                </tr>
+              </thead>
+                  <tbody>
+                    <tr>
+                      <td rowspan="3"><strong>Technical (4.0)</strong></td>
+                      <td>Accuracy in basic Movement</td>
+                      <td rowspan="3">4.0 (deduct -0.1, -0.3)</td>
+                      <td><input type="number" class="deduction-input" name="basicmovement" step="0.1" min="0" max="4" data-max="4"></td>
+                      <td class="final-score" data-base="4">4.0</td>
+                    </tr>
+                    <tr>
+                      <td>Accuracy in individual Movement of the Poomsae</td>
+                      <td><input type="number" class="deduction-input" name="indivmovement" step="0.1" min="0" max="4" data-max="4"></td>
+                      <td class="final-score" data-base="4">4.0</td>
+                    </tr>
+                    <tr>
+                      <td>Balance</td>
+                      <td><input type="number" class="deduction-input" name="balance" step="0.1" min="0" max="4" data-max="4"></td>
+                      <td class="final-score" data-base="4">4.0</td>
+                    </tr>
+                    <tr>
+                      <td rowspan="3"><strong>Performance (6.0)</strong></td>
+                      <td>Power & Speed</td>
+                      <td>2.0</td>
+                      <td><input type="number" class="deduction-input" name="powerspeed" step="0.1" min="0" max="2" data-max="2"></td>
+                      <td class="final-score" data-base="2">2.0</td>
+                    </tr>
+                    <tr>
+                      <td>Coordination of rhythm & Tempo and Softness & Power</td>
+                      <td>2.0</td>
+                      <td><input type="number" class="deduction-input" name="coord" step="0.1" min="0" max="2" data-max="2"></td>
+                      <td class="final-score" data-base="2">2.0</td>
+                    </tr>
+                    <tr>
+                      <td>Expression of Energy</td>
+                      <td>2.0</td>
+                      <td><input type="number" class="deduction-input" name="energy" step="0.1" min="0" max="2" data-max="2"></td>
+                      <td class="final-score" data-base="2">2.0</td>
+                      
+                    </tr>
+                    
+                  </tbody>
+            </table>
+            <div class="total-score">
+              <strong>Total Score (10.0):</strong> <span id="total-score">10.0</span>
+              <button class="submitscores" type="submit">Submit</button>
+            </div>
+          </form>
         </div>
       </div>
 
@@ -418,6 +479,54 @@
   </div>
 
   <script>
+
+    function openPoomsaeScoresheet(id, totalscore, technicalscore, performancescore) {
+      document.querySelector('.poomsae-score-sheet').style.display = 'block';
+      /*const urlParams = new URLSearchParams(window.location.search);
+      const id = urlParams.get('id');
+      const totalscore = urlParams.get('totalscore');
+      const technicalscore = urlParams.get('technicalscore');
+      const performancescore = urlParams.get('performancescore');*/
+
+      document.querySelector('input[name="id"]').value = id;
+      document.querySelector('input[name="basicmovement"]').value = technicalscore;
+      document.querySelector('input[name="indivmovement"]').value = technicalscore;
+      document.querySelector('input[name="balance"]').value = technicalscore;
+      document.querySelector('input[name="powerspeed"]').value = performancescore;
+      document.querySelector('input[name="coord"]').value = performancescore;
+      document.querySelector('input[name="energy"]').value = performancescore;
+      document.getElementById('total-score').innerText = totalscore;
+    }
+
+    function closePoomsaeScoresheet() {
+      document.querySelector('.poomsae-score-sheet').style.display = 'none';
+    }
+
+    document.querySelectorAll('.deduction-input').forEach(input => {
+        input.addEventListener('input', calculateScores);
+      });
+
+      function calculateScores() {
+        let totalScore = 10.0; // Starting score for Poomsae
+
+        document.querySelectorAll('.deduction-input').forEach(input => {
+          const maxScore = parseFloat(input.dataset.max);
+          const deduction = parseFloat(input.value) || 0;
+          const finalScoreElement = input.parentElement.nextElementSibling;
+          const finalScore = Math.max(0, maxScore - deduction); // Avoid negative scores
+
+          // Update the final score display for each row
+          finalScoreElement.textContent = finalScore.toFixed(1);
+
+          // Deduct from the total score
+          totalScore -= deduction;
+        });
+
+        // Update the total score in the UI
+        document.getElementById('total-score').textContent = totalScore.toFixed(1);
+      }
+
+
     function toggleDropdown() {
       document.getElementById("dropdown").classList.toggle("show");
     }
@@ -513,24 +622,22 @@
     function openannounceModal() {
       document.getElementById('announceModal').style.display = 'block';
     }
-
     function closeannounceModal() {
       document.getElementById('announceModal').style.display = 'none';
     }
-
     window.onclick = function (event) {
       if (event.target == document.getElementById('announceModal')) {
         closeModal();
       }
     }
-
     function openModal() {
       document.getElementById('editmodal').style.display = 'block';
     }
-
     function closeModal() {
       document.getElementById('editmodal').style.display = 'none';
     }
+    
+    
   </script>
 </body>
 
