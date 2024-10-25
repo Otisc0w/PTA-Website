@@ -30,10 +30,10 @@
         <li class="analytics"><a href="analytics">Analytics</a></li>
         <li class="profile-pic">
           {{#if user.profilepic}}
-          <a href="#" onclick="toggleDropdown()"><img src="{{user.profilepic}}" alt="Profile Picture"
+          <a href="#" onclick="toggleProfileDropdown()"><img src="{{user.profilepic}}" alt="Profile Picture"
               class="profile-picture"></a>
           {{else}}
-          <a href="#" onclick="toggleDropdown()" class="profile-picture"><img src="/images/none.jpg"
+          <a href="#" onclick="toggleProfileDropdown()" class="profile-picture"><img src="/images/none.jpg"
               alt="Profile Picture" class="profile-picture"></a>
           {{/if}}
           <div id="dropdown" class="dropdown-content">
@@ -115,6 +115,9 @@
                   <!-- <a href="#">Save</a>
                   <a href="#">Hide</a>
                   <a href="#">Report</a> -->
+                  {{#if (eq thread.originalposter user.username)}}
+                    <a href="#2" data-thread-id="{{id}}" onclick="openEditModal(event, '{{id}}')">Edit</a>
+                  {{/if}}
                 </div>
               </div>
               <div class='post-info'>
@@ -181,6 +184,37 @@
       </div>
     </div>
   </div>
+
+<div id="editPostModal" class="modal-edit">
+    <div class="modal-edit-content">
+      <span class="close-edit">&times;</span>
+      <h2>Edit Post</h2>
+      <!-- Form to update the post -->
+      <form action="update-post" method="POST">
+        <div class="form-group">
+          <label for="edit-title">Title:</label>
+          <input type="hidden" name="threadId" >
+          <input type="text" id="title" name="title" value="{{thread.title}}" required>
+        </div>
+        <div class="form-group">
+          <label for="edit-topic">Topic:</label>
+          <input type="text" id="topic" name="topic" value="{{thread.topic}}" required>
+        </div>
+        <div class="form-group">
+          <label for="edit-body">Body:</label>
+          <textarea id="body" name="body" rows="5" required>{{thread.body}}</textarea>
+        </div>
+        <button type="submit" class="btn-save">Save Changes</button>
+      </form>
+
+      <!-- Form to delete the post -->
+      <form action="delete-post" method="POST">
+        <input type="hidden" name="threadId">
+        <button type="submit" id="deleteButton" class="btn-delete">Delete</button>
+      </form>
+    </div>
+  </div>
+
   <footer>
     <div class="footer-content">
       <div class="pta-logo">
@@ -204,7 +238,7 @@
   </footer>
 
   <script>
-    function toggleDropdown() {
+    function toggleProfileDropdown() {
       document.getElementById("dropdown").classList.toggle("show");
     }
 
@@ -229,25 +263,6 @@
       });
     });
 
-    document.getElementById("createPostButton").addEventListener("click", function () {
-      window.location.href = "forum-create";
-    });
-
-    // Search Filter Function
-    function filterThreads() {
-      const searchInput = document.getElementById('searchBar').value.toLowerCase();
-      const posts = document.querySelectorAll('.post-container');
-      posts.forEach(post => {
-        const title = post.querySelector('.post-title').textContent.toLowerCase();
-        const body = post.querySelector('.post-description').textContent.toLowerCase();
-        if (title.includes(searchInput) || body.includes(searchInput)) {
-          post.parentElement.style.display = '';
-        } else {
-          post.parentElement.style.display = 'none';
-        }
-      });
-    }
-
     function toggleDropdown(button) {
       event.stopPropagation();
       var dropdowns = document.getElementsByClassName("dropdown-content");
@@ -271,6 +286,28 @@
         }
       }
     }
+
+
+    document.getElementById("createPostButton").addEventListener("click", function () {
+      window.location.href = "forum-create";
+    });
+
+    // Search Filter Function
+    function filterThreads() {
+      const searchInput = document.getElementById('searchBar').value.toLowerCase();
+      const posts = document.querySelectorAll('.post-container');
+      posts.forEach(post => {
+        const title = post.querySelector('.post-title').textContent.toLowerCase();
+        const body = post.querySelector('.post-description').textContent.toLowerCase();
+        if (title.includes(searchInput) || body.includes(searchInput)) {
+          post.parentElement.style.display = '';
+        } else {
+          post.parentElement.style.display = 'none';
+        }
+      });
+    }
+
+
 
     function submitVote(event) {
       event.preventDefault();
@@ -316,6 +353,65 @@
           modal.style.display = "none";
         }
       }
+    });
+
+
+   document.addEventListener('DOMContentLoaded', function () {
+  var modal = document.getElementById("editPostModal");
+  var closeBtn = document.querySelector(".modal .close");
+
+  // Function to open the Edit Modal and set the threadId in both forms (Edit & Delete)
+  window.openEditModal = function (event, threadId) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    // Set the threadId in both the Edit form and the Delete form
+    document.querySelector("#editPostModal input[name='threadId']").value = threadId;
+
+    // Optionally, populate the form with thread data if needed
+    // document.querySelector("#editPostModal input[name='title']").value = "Thread title";
+    // document.querySelector("#editPostModal input[name='topic']").value = "Thread topic";
+
+    // Show the modal
+    modal.style.display = "flex";
+  };
+
+  // Close the modal when clicking the close button
+  closeBtn.onclick = function () {
+    modal.style.display = "none";
+  };
+
+  // Close the modal when clicking outside of the modal
+  window.onclick = function (event) {
+    if (event.target == modal) {
+      modal.style.display = "none";
+    }
+  };
+});
+
+
+    document.getElementById("deleteButton").addEventListener("click", function () {
+      const threadId = document.querySelector('input[name="threadId"]').value; // Get thread ID from the form
+
+      // Send DELETE request to the server
+      fetch(`/delete-post/${threadId}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            alert("Post deleted successfully!");
+            window.location.href = "/forum";  // Redirect to forum page after deletion
+          } else {
+            alert("Failed to delete the post.");
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+        });
     });
   </script>
 </body>

@@ -117,6 +117,7 @@
 .post-container:hover {
     cursor: pointer;
     background-color: #4e4d4d;
+    z-index: 0;
 }
 
 .post-content {
@@ -349,7 +350,6 @@
 
 /* Dropdown content */
 .dropdown-content {
-    display: none;
     position: absolute;
     right: 0;
     color:white;
@@ -375,6 +375,7 @@
 .dropbtn:hover {
     background-color: #3a3a3a;
     border-radius: 75%;
+    z-index: 10;
 }
 
 /* Show the dropdown content when the dropdown button is clicked */
@@ -463,3 +464,74 @@
 }
 
 
+.modal-edit {
+    display: none; /* Hidden by default */
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.4); /* Black background with transparency */
+    backdrop-filter: blur(10px);
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-edit-content {
+    background-color:#222;
+    margin: 15% auto; /* 15% from the top and centered */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%; /* Could be more or less, depending on screen size */
+    max-width: 500px;
+    border-radius: 10px;
+    color: white;
+
+}
+
+.modal-edit .close-edit {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+}
+
+.modal-edit .close-edit:hover,
+.modal-edit .close-edit:focus {
+    color: #fff;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.btn-save{
+    background-color: blue;
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.btn-delete{
+    background-color: red;
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.btn-save:hover{
+    background-color: #0056b3;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.btn-delete:hover{
+    background-color: #db2e5a;
+    text-decoration: none;
+    cursor: pointer;
+}

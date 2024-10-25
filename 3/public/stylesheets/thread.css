@@ -246,7 +246,6 @@ body {
 
 /* Dropdown content */
 .dropdown-content {
-    display: none;
     position: absolute;
     right: 0;
     color:white;

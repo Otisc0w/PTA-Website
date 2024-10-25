@@ -1081,6 +1081,64 @@ app.post("/create-topic", async (req, res) => {
   }
 });
 
+app.post('/forum/update-post', async (req, res) => {
+  try {
+    // Log the form data for debugging purposes
+    console.log("Form data:", req.body);
+
+    // Extract fields from request body
+    const { title, topic, body, threadId } = req.body;  // Ensure threadId is passed in the form
+
+    // Perform the update in the database
+    const { data, error } = await supabase
+      .from('forum_threads')  // Replace with your actual table name
+      .update({
+        title: title,
+        topic: topic,
+        body: body,
+      })
+      .eq('id', threadId);  // Make sure this is the correct field
+
+    if (error) {
+      console.error("Error updating post:", error.message);
+      return res.status(500).render("forum", {
+        error: "Error updating post.",
+        thread: {},  // Optionally, pass the thread object to show current data if needed
+      });
+    }
+
+    // Redirect to the forum after successful update
+    res.redirect(`/forum`);
+  } catch (err) {
+    console.error("Unexpected error:", err);
+    return res.status(500).render("forum", {
+      error: "An unexpected error occurred.",
+    });
+  }
+});
+
+app.post('/forum/delete-post', async (req, res) => {
+  const { threadId } = req.body;  // Get the post ID from the form body
+
+  console.log("Deleting post with threadId:", threadId);  // Log the threadId for debugging
+
+  try {
+    const { data, error } = await supabase
+      .from('forum_threads')  // Replace 'forum_threads' with your actual table name
+      .delete()
+      .eq('id', threadId);  // Match the post by ID
+
+    if (error) {
+      return res.status(500).json({ success: false, error: 'Error deleting post' });
+    }
+
+    res.redirect(`/forum`);  // Redirect to the forum after deleting the post
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, error: 'Server error' });
+  }
+});
+
 app.post('/forum-thread/update-post', async (req, res) => {
   try {
     // Extract the necessary fields from the request body
