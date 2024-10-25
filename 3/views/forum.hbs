@@ -190,7 +190,7 @@
       <span class="close-edit">&times;</span>
       <h2>Edit Post</h2>
       <!-- Form to update the post -->
-      <form action="update-post" method="POST">
+      <form action="/forum/update-post" method="POST">
         <div class="form-group">
           <label for="edit-title">Title:</label>
           <input type="hidden" name="threadId" >
@@ -208,7 +208,7 @@
       </form>
 
       <!-- Form to delete the post -->
-      <form action="delete-post" method="POST">
+      <form action="/forum/delete-post" method="POST">
         <input type="hidden" name="threadId">
         <button type="submit" id="deleteButton" class="btn-delete">Delete</button>
       </form>
@@ -366,11 +366,8 @@
     event.stopPropagation();
 
     // Set the threadId in both the Edit form and the Delete form
-    document.querySelector("#editPostModal input[name='threadId']").value = threadId;
-
-    // Optionally, populate the form with thread data if needed
-    // document.querySelector("#editPostModal input[name='title']").value = "Thread title";
-    // document.querySelector("#editPostModal input[name='topic']").value = "Thread topic";
+    const hiddenInputs = modal.querySelectorAll("input[name='threadId']");
+    hiddenInputs.forEach(input => input.value = threadId);
 
     // Show the modal
     modal.style.display = "flex";
@@ -388,6 +385,7 @@
     }
   };
 });
+
 
 
     document.getElementById("deleteButton").addEventListener("click", function () {
