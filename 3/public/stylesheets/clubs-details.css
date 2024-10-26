@@ -872,7 +872,7 @@ h1 {
   margin-left: 380px;
 }
 
-/* Form fields inside modal */
+/* Form fields */
 #announcementform .form-group {
   margin-bottom: 15px;
 }
@@ -885,40 +885,28 @@ h1 {
 
 #announcementform input[type="text"],
 #announcementform textarea {
-  width: 100%;
-  padding: 12px 20px;
+  width: calc(100% - 24px); /* Adjust for padding */
+  padding: 12px;
   margin: 8px 0;
   border: 1px solid #ccc;
   border-radius: 4px;
   background-color: #333;
   color: white;
+  box-sizing: border-box;
 }
 
 #announcementform button {
   background-color: #007bff;
   color: white;
-  padding: 14px 20px;
-  margin-top: 15px;
+  padding: 10px 15px;
   border: none;
   border-radius: 4px;
   cursor: pointer;
+  width: 100%;
+  margin-top: 15px;
 }
 
 #announcementform button:hover {
-  background-color: #0056b3;
-}
-
-/* Button for announcement modal */
-#announceModal button {
-  background-color: #007bff;
-  color: white;
-  padding: 14px 20px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-#announceModal button:hover {
   background-color: #0056b3;
 }
 
