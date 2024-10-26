@@ -2861,11 +2861,12 @@ app.post("/submit-poomsae-scores", async (req, res) => {
     coord,
     energy,
     id,
+    eventid,
   } = req.body;
 
   
-  const technicalscore = parseFloat(basicmovement) + parseFloat(indivmovement) + parseFloat(balance);
-  const performancescore = parseFloat(powerspeed) + parseFloat(coord) + parseFloat(energy);
+  const technicalscore = 4-parseFloat(basicmovement) -parseFloat(indivmovement) - parseFloat(balance);
+  const performancescore = 6 - parseFloat(powerspeed) - parseFloat(coord) - parseFloat(energy);
   const totalscore = parseFloat(technicalscore) + parseFloat(performancescore);
 
   try {
@@ -2881,7 +2882,7 @@ app.post("/submit-poomsae-scores", async (req, res) => {
       return res.status(400).json({ error: error.message });
     }
 
-    res.redirect(`/events-details/${eventId}`);
+    res.redirect(`/events-details/${eventid}`);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

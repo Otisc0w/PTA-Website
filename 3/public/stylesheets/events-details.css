@@ -911,3 +911,15 @@ input[type="number"]:focus {
   background-color: #0056b3;
 }
 
+.totalscore {
+  font-size: 24px;
+  font-weight: bold;
+  color: #ffcc00; /* Bright yellow color */
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* Add shadow for pop effect */
+  background-color: #333;
+  padding: 10px;
+  border-radius: 5px;
+  display: inline-block;
+  margin-top: 10px;
+}
+
