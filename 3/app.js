@@ -2734,11 +2734,14 @@ app.post("/update-club", upload.single("clubpicture"), async (req, res) => {
     phonenum,
     region,
     description,
-  } = req.body;  // Capture user input from the form
+    existingClubPicture // The hidden input from the form
+  } = req.body;
 
-  let clubpicUrl = null;
+  // Set `clubpicUrl` to the existing picture by default
+  let clubpicUrl = existingClubPicture;
 
   if (req.file) {
+    // If a new file is uploaded, update `clubpicUrl` with the new file URL
     try {
       const filePath = `clubpictures/${Date.now()}-${req.file.originalname}`;
       const { error: uploadError } = await supabase.storage
@@ -2760,6 +2763,7 @@ app.post("/update-club", upload.single("clubpicture"), async (req, res) => {
   }
 
   try {
+    // Update the club in the database with either the new picture or the existing one
     const { data, error } = await supabase
       .from("clubs")
       .update({
@@ -2769,7 +2773,7 @@ app.post("/update-club", upload.single("clubpicture"), async (req, res) => {
         phonenum,
         region,
         description,
-        clubpic: clubpicUrl
+        clubpic: clubpicUrl // Use the existing or new picture URL
       })
       .eq("id", clubid);
 
@@ -2777,7 +2781,7 @@ app.post("/update-club", upload.single("clubpicture"), async (req, res) => {
       return res.status(500).json({ message: "Error updating club", error });
     }
 
-    res.redirect(`/clubs-details/${clubid}`); // Redirect to the updated club details page
+    res.redirect(`/clubs-details/${clubid}`);
   } catch (error) {
     console.error("Server error:", error.message);
     res.status(500).json({ error: error.message });
@@ -3124,26 +3128,47 @@ app.get("/forum-thread/:id", async function (req, res) {
   }
 });
 
-app.get("/clubs", async function (req, res) {
-  if (!req.session.user) {
-    return res.redirect("/");
-  }
-
+// Route to render the main clubs page
+app.get("/clubs", async (req, res) => {
   try {
-    const { data, error } = await supabase.from("clubs").select("*");
+    const { data: clubs, error } = await supabase
+      .from("clubs")
+      .select("id, clubname, clubpic, clubaddress, email, phonenum, region, description, capacity");
 
     if (error) {
-      return res.status(400).json({ error: error.message });
+      console.error("Error fetching clubs:", error.message);
+      return res.status(500).json({ error: error.message });
     }
 
-    console.log("Fetched data:", data); // Log the data to the console
-
-    // Render the forum.hbs template with the fetched data
-    res.render("clubs", { clubs: data, user: req.session.user });
+    res.render("clubs", { clubs });
   } catch (error) {
+    console.error("Server error:", error.message);
     res.status(500).json({ error: error.message });
   }
 });
+
+// Route to render individual club details
+app.get("/clubs-details/:id", async (req, res) => {
+  const { id } = req.params;
+  try {
+    const { data: club, error } = await supabase
+      .from("clubs")
+      .select("id, clubname, clubpic, clubaddress, email, phonenum, region, description, capacity, registeredby")
+      .eq("id", id)
+      .single();
+
+    if (error) {
+      console.error("Error fetching club details:", error.message);
+      return res.status(500).json({ error: error.message });
+    }
+
+    res.render("club-details", { club });
+  } catch (error) {
+    console.error("Server error:", error.message);
+    res.status(500).json({ error: error.message });
+  }
+});
+
 
 app.get("/clubs-details/:id", async function (req, res) {
   const { id } = req.params;
@@ -4219,32 +4244,6 @@ app.get('/clubs-details/:id', async (req, res) => {
   });
 });
 
-app.post('/update-club', async (req, res) => {
-  const { clubid, clubname, clubaddress, email, phonenum, region, description } = req.body;
-
-  try {
-    const { data, error } = await supabase
-      .from('clubs')
-      .update({
-        clubname,
-        clubaddress,
-        email,
-        phonenum,
-        region,
-        description,
-      })
-      .eq('id', clubid);
-
-    if (error) {
-      return res.status(400).json({ error: 'Error updating club', details: error });
-    }
-
-    res.redirect(`/clubs-details/${clubid}`);
-  } catch (err) {
-    console.error('Error updating club:', err.message);
-    res.status(500).json({ error: err.message });
-  }
-});
 
 // Route to handle creating an announcement
 app.post("/create-announcement", async (req, res) => {

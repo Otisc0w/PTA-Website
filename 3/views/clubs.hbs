@@ -55,17 +55,12 @@
           <div class="event">
             <img src="{{clubpic}}" alt="{{clubname}}">
             <h3>{{clubname}} - {{province}}</h3>
-            <p>Capacity: {{totalMembers}}</p>
+            <p>Capacity: {{capacity}}</p>
             <p>{{description}}</p> <!-- Displaying the club description -->
             <p>Address: {{clubaddress}}</p> <!-- Club address -->
             <p>Email: {{email}}</p> <!-- Contact details: Email -->
             <p>Phone: {{phonenum}}</p> <!-- Contact details: Phone number -->
             <p>Region: {{region}}</p> <!-- Club region -->
-            <p>
-              <!-- Display Access type -->
-              {{#if isOpenToAll}} Open to All {{/if}}
-              {{#if isInviteOnly}} Invite Only {{/if}}
-            </p>
             <a href="/clubs-details/{{id}}">Read more</a>
           </div>
           {{/each}}
