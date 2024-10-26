@@ -21,12 +21,12 @@
         <li class="membership"><a href="/membership">Membership</a></li>
         <li class="forum"><a href="/forum">Forum</a></li>
         <li class="notifications">
-        <a href="/notifications">Notifications
-          {{#if notifications}}
-          <span class="badge">{{notifications.length}}</span>
-          {{/if}}
-        </a>
-      </li>
+          <a href="/notifications">Notifications
+            {{#if notifications}}
+            <span class="badge">{{notifications.length}}</span>
+            {{/if}}
+          </a>
+        </li>
         <li class="analytics"><a href="analytics">Analytics</a></li>
         <li class="profile-pic">
           {{#if user.profilepic}}
@@ -67,6 +67,7 @@
 
           <!-- Club Picture Upload -->
           <div class="clubpic">
+            <input type="hidden" name="existingClubPicture" value="{{club.clubpic}}">
             <input type="file" name="clubpicture">
           </div>
 
@@ -114,14 +115,17 @@
     </div>
 
     <div class="clubtabs">
-     <ul>
-  <li><a href="#">Home</a></li>
-  <li><a href="#">Members</a></li>
-      {{#if (or (eq user.ptaverified true) (eq user.club club.clubname) (eq user.instructorverified true) (eq club.registeredby user.id))}}
-  <li><a href="#">Announcements</a></li>
-{{/if}}
-    </ul>
+      <ul>
+        <li><a href="#">Home</a></li>
+        <li><a href="#">Members</a></li>
+        <li><a href="#">Announcements</a></li>
+      </ul>
     </div><br>
+
+    <!-- Display Club Capacity -->
+    <div class="club-capacity">
+      <p>Capacity: {{club.capacity}}</p>
+    </div>
 
     <!-- Create Announcement Button (only for Admins and Instructors) -->
     {{#if (or (eq user.ptaverified true) (eq user.instructorverified true))}}
