@@ -51,6 +51,9 @@ hbs.registerHelper("eq", function (a, b) {
 hbs.registerHelper("me", function (a, b) {
   return a >= b;
 });
+hbs.registerHelper("le", function (a, b) {
+  return a <= b;
+});
 hbs.registerHelper("ne", function (a, b) {
   return a !== b;
 });
@@ -2347,6 +2350,32 @@ app.post("/update-event", upload.single("eventpicture"), async (req, res) => {
   }
 });
 
+app.post("/delete-event/:id", async (req, res) => {
+  const { id } = req.params;
+
+  if (!req.session.user) {
+    return res.status(401).send("Unauthorized: No user logged in");
+  }
+
+  try {
+    // Delete the event from the database
+    const { error } = await supabase
+      .from("events")
+      .delete()
+      .eq("id", id);
+
+    if (error) {
+      console.error("Error deleting event:", error.message);
+      return res.status(500).send("Error deleting event");
+    }
+
+    res.redirect("/events");
+  } catch (error) {
+    console.error("Server error:", error.message);
+    res.status(500).json({ error: error.message });
+  }
+});
+
 app.post("/submit-player", async (req, res) => {
   const {
     athleteid,
@@ -2497,7 +2526,10 @@ app.post("/begin-poomsae/:id", async (req, res) => {
 
       const { error: updateEventError } = await supabase
         .from("events")
-        .update({ status: "Ongoing" })
+        .update({ 
+          status: "Ongoing",
+          currentround: 1,
+         })
         .eq("id", eventid);
 
       if (updateEventError) {
@@ -2545,10 +2577,21 @@ app.post("/next-poomsae-round/:eventid", async (req, res) => {
       return res.status(500).send("Error fetching players");
     }
 
+    // Update the current round in the events table
+    const { error: updateRoundError } = await supabase
+      .from("events")
+      .update({ currentround: currentRound + 1 })
+      .eq("id", eventid);
+
+    if (updateRoundError) {
+      console.error("Error updating current round:", updateRoundError.message);
+      return res.status(500).send("Error updating current round");
+    }
+
     // Determine the players who advance to the next round based on their scores
     const advancingPlayers = players
       .sort((a, b) => b.totalscore - a.totalscore)
-      .slice(0, Math.ceil(players.length / 2)); // Top 50% advance
+      .slice(0, players.length >= 35 ? 12 : 8); // 12 advance if 35 or more participants, else 8 advance
 
     const nextRound = currentRound + 1;
 
@@ -2570,6 +2613,71 @@ app.post("/next-poomsae-round/:eventid", async (req, res) => {
       if (insertError) {
         console.error("Error advancing player:", insertError.message);
         return res.status(500).send("Error advancing player");
+      }
+    }
+
+    res.redirect(`/events-details/${eventid}`);
+  } catch (error) {
+    console.error("Server error:", error.message);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.post("/decide-poomsae-winners/:eventid", async (req, res) => {
+  const { eventid } = req.params;
+
+  try {
+
+    // Update the current round in the events table
+    const { error: updateRoundError } = await supabase
+      .from("events")
+      .update({ currentround: 3})
+      .eq("id", eventid);
+
+    if (updateRoundError) {
+      console.error("Error updating current round:", updateRoundError.message);
+      return res.status(500).send("Error updating current round");
+    }
+
+    // Fetch the highest round number for the event
+    const { data: highestRound, error: highestRoundError } = await supabase
+      .from("poomsae_players")
+      .select("round")
+      .eq("eventid", eventid)
+      .order("round", { ascending: false })
+      .limit(1)
+      .single();
+
+    if (highestRoundError) {
+      console.error("Error fetching highest round:", highestRoundError.message);
+      return res.status(500).send("Error fetching highest round");
+    }
+
+    const currentRound = highestRound ? highestRound.round : 0;
+
+    // Fetch players who participated in the highest round
+    const { data: players, error: playersError } = await supabase
+      .from("poomsae_players")
+      .select("*")
+      .eq("eventid", eventid)
+      .eq("round", currentRound)
+      .order("totalscore", { ascending: false });
+
+    if (playersError) {
+      console.error("Error fetching players:", playersError.message);
+      return res.status(500).send("Error fetching players");
+    }
+
+    // Update the ranking for all players in the last round
+    for (let i = 0; i < players.length; i++) {
+      const { error: updateError } = await supabase
+        .from("poomsae_players")
+        .update({ ranking: i + 1 })
+        .eq("id", players[i].id);
+
+      if (updateError) {
+        console.error("Error updating ranking:", updateError.message);
+        return res.status(500).send("Error updating ranking");
       }
     }
 
@@ -3659,6 +3767,20 @@ app.get("/events-details/:id", async function (req, res) {
     // Calculate the number of registrations
     const registrationcount = acceptedregs.length;
 
+    // Fetch the top 4 players with the highest totalscore
+    const { data: poomsaetop4, error: poomsaetop4Error } = await supabase
+      .from("poomsae_players")
+      .select("*")
+      .eq("eventid", id)
+      .in("ranking", [1, 2, 3, 4])
+      .order("ranking", { ascending: true });
+
+    if (poomsaetop4Error) {
+      return res.status(400).json({ error: poomsaetop4Error.message });
+    }
+
+    console.log("Fetched top players data:", poomsaetop4); // Log the top players data to the console
+
     console.log("Fetched event data:", event); // Log the event data to the console
     console.log("Fetched event registrations data:", eventregistrations); // Log the event registrations data to the console
     console.log("Fetched participants data:", participants); // Log the participants data to the console
@@ -3683,6 +3805,7 @@ app.get("/events-details/:id", async function (req, res) {
       thirdPlace,
       eventannouncements,
       sortedGroupedByRound,
+      poomsaetop4,
     });
   } catch (error) {
     res.status(500).json({ error: error.message });

@@ -7,6 +7,7 @@
   <link rel="icon" type="image/x-icon" href="../images/favicon.ico" />
   <link rel="stylesheet" type="text/css" href="../stylesheets/navbar.css" />
   <link rel="stylesheet" type="text/css" href="../stylesheets/events-details.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 
 <body class="container">
@@ -73,6 +74,14 @@
             <span>Details</span>
             {{#if user.ptaverified}}
             <button class="edit-button" onclick="openModal()"></button>
+            <button class="deleteevent-button" onclick="confirmDelete()">Delete</button>
+            <div class="confirmdeletescreen" style="display: none;">
+              Are you sure you want to delete this event?<br>
+                <form action="/delete-event/{{event.id}}" method="post">
+                <button class="yesdelete" type="submit">Yes</button>
+                </form>
+              <button class="nodelete" onclick="cancelDelete()">No</button>
+            </div>
             {{/if}}
           </div>
           <p>{{event.description}}</p>
@@ -225,44 +234,59 @@
           </div>
         </div>
 
+        {{#if (eq event.eventtype 'Poomsae')}}
+          {{#if poomsaetop4}}
+            <h3>Poomsae Rankings</h3>
+              {{#each poomsaetop4}}
+                <p>{{ranking}} {{name}}</p>
+              {{/each}}
+          {{/if}}
+        {{/if}}
+
         <div class="schedule">
-          {{#if (and user.ptaverified (me registrationcount event.registrationcap ))}}
-            {{#if (eq event.status 'Active')}}
-              {{#if (eq event.eventtype 'Kyorugi')}}
-              <form action="/begin-competition/{{event.id}}" method="post">
-                <button type="submit" class="begincompe">Begin Competition</button>
-              </form>
-              {{else if (eq event.eventtype 'Poomsae')}}
-              <form action="/begin-poomsae/{{event.id}}" method="post">
-                <button type="submit" class="begincompe">Begin Competition</button>
-              </form>
-              {{/if}}
+            {{#if (and user.ptaverified (me registrationcount event.registrationcap ))}}
+              {{#if (eq event.status 'Active')}}
+                {{#if (eq event.eventtype 'Kyorugi')}}
+                <form action="/begin-competition/{{event.id}}" method="post">
+                  <button type="submit" class="begincompe">Begin Competition</button>
+                </form>
+                {{else if (eq event.eventtype 'Poomsae')}}
+                <form action="/begin-poomsae/{{event.id}}" method="post">
+                  <button type="submit" class="begincompe">Begin Competition</button>
+                </form>
+                {{/if}}
               {{else if (eq event.status 'Ongoing')}}
-              {{#if (eq event.eventtype 'Poomsae')}}
-              <form action="/next-poomsae-round/{{event.id}}" method="post">
-                <button type="submit" class="begincompe">Proceed to next round</button>
-              </form>
+                {{#if (le event.currentround 1)}}
+                  {{#if (eq event.eventtype 'Poomsae')}}
+                  <form action="/next-poomsae-round/{{event.id}}" method="post">
+                    <button type="submit" class="begincompe">Proceed to next round</button>
+                  </form>
+                  {{/if}}
+                {{else}}
+                  <form action="/decide-poomsae-winners/{{event.id}}" method="post">
+                    <button type="submit" class="begincompe">Decide Winners</button>
+                  </form>
+                {{/if}}
               {{/if}}
             {{/if}}
-          {{/if}}
 
           <h2>Schedule</h2>
 
           {{#if (eq event.eventtype 'Poomsae')}}
             {{#if sortedGroupedByRound}}
-              {{#each sortedGroupedByRound}}
-                  <h3>Round: {{@key}}</h3>
-                  {{#each this}}
-                    <div class="group">
-                      <div class="match">
-                        <p>{{name}}</p>
-                        <p class="totalscore">{{totalscore}}</p>
-                        <button onclick="openPoomsaeScoresheet('{{id}}', '{{name}}', '{{totalscore}}', '{{technicalscore}}', '{{performancescore}}')" class="openscoresheetbtn">Open Scoresheet</button>
+                {{#each sortedGroupedByRound}}
+                    <h3>Round: {{@key}}</h3>
+                    {{#each this}}
+                      <div class="group">
+                        <div class="match">
+                          <p>{{name}}</p>
+                          <p class="totalscore">{{totalscore}}</p>
+                          <button onclick="openPoomsaeScoresheet('{{id}}', '{{name}}', '{{totalscore}}', '{{technicalscore}}', '{{performancescore}}')" class="openscoresheetbtn">Open Scoresheet</button>
+                        </div>
                       </div>
-                    </div>
+                    {{/each}}
                   {{/each}}
-              {{/each}}
-            {{else}}
+                {{else}}
               <p>No rounds available.</p>
             {{/if}}
           {{/if}}
@@ -349,7 +373,6 @@
                       <td>2.0</td>
                       <td><input type="number" class="deduction-input" name="energy" step="0.1" min="0" max="2" data-max="2" value="0"></td>
                       <td class="final-score" data-base="2">2.0</td>
-                      
                     </tr>
                     
                   </tbody>
@@ -482,17 +505,9 @@
   </div>
 
   <script>
-
     function openPoomsaeScoresheet(id, name, totalscore, technicalscore, performancescore) {
       document.querySelector('.poomsae-score-sheet').style.display = 'block';
-
       document.querySelector('input[name="id"]').value = id;
-      /*document.querySelector('input[name="basicmovement"]').value = technicalscore;
-      document.querySelector('input[name="indivmovement"]').value = technicalscore;
-      document.querySelector('input[name="balance"]').value = technicalscore;
-      document.querySelector('input[name="powerspeed"]').value = performancescore;
-      document.querySelector('input[name="coord"]').value = performancescore;
-      document.querySelector('input[name="energy"]').value = performancescore;*/
       document.getElementById('total-score').innerText = totalscore;
       document.querySelector('.playername').textContent = 'Player name: ' + name;
     }
@@ -502,29 +517,28 @@
     }
 
     document.querySelectorAll('.deduction-input').forEach(input => {
-        input.addEventListener('input', calculateScores);
+      input.addEventListener('input', calculateScores);
+    });
+
+    function calculateScores() {
+      let totalScore = 10.0; // Starting score for Poomsae
+
+      document.querySelectorAll('.deduction-input').forEach(input => {
+        const maxScore = parseFloat(input.dataset.max);
+        const deduction = parseFloat(input.value) || 0;
+        const finalScoreElement = input.parentElement.nextElementSibling;
+        const finalScore = Math.max(0, maxScore - deduction); // Avoid negative scores
+
+        // Update the final score display for each row
+        finalScoreElement.textContent = finalScore.toFixed(1);
+
+        // Deduct from the total score
+        totalScore -= deduction;
       });
 
-      function calculateScores() {
-        let totalScore = 10.0; // Starting score for Poomsae
-
-        document.querySelectorAll('.deduction-input').forEach(input => {
-          const maxScore = parseFloat(input.dataset.max);
-          const deduction = parseFloat(input.value) || 0;
-          const finalScoreElement = input.parentElement.nextElementSibling;
-          const finalScore = Math.max(0, maxScore - deduction); // Avoid negative scores
-
-          // Update the final score display for each row
-          finalScoreElement.textContent = finalScore.toFixed(1);
-
-          // Deduct from the total score
-          totalScore -= deduction;
-        });
-
-        // Update the total score in the UI
-        document.getElementById('total-score').textContent = totalScore.toFixed(1);
-      }
-
+      // Update the total score in the UI
+      document.getElementById('total-score').textContent = totalScore.toFixed(1);
+    }
 
     function toggleDropdown() {
       document.getElementById("dropdown").classList.toggle("show");
@@ -593,50 +607,51 @@
         announcements.style.display = 'block';
       }
 
-      participantsTab.addEventListener('click', function () {
-        showParticipants();
-      });
-
-      detailsTab.addEventListener('click', function () {
-        showDetails();
-      });
-
-      registrationsTab.addEventListener('click', function () {
-        showRegistrations();
-      });
-
-      announcementsTab.addEventListener('click', function () {
-        showAnnouncements();
-      });
+      participantsTab.addEventListener('click', showParticipants);
+      detailsTab.addEventListener('click', showDetails);
+      registrationsTab.addEventListener('click', showRegistrations);
+      announcementsTab.addEventListener('click', showAnnouncements);
     });
 
     function openModal() {
-      document.getElementById('inviteModal').style.display = 'block';
+      document.getElementById('editmodal').style.display = 'block';
     }
 
     function closeModal() {
-      document.getElementById('inviteModal').style.display = 'none';
+      document.getElementById('editmodal').style.display = 'none';
     }
 
     function openannounceModal() {
       document.getElementById('announceModal').style.display = 'block';
     }
+
     function closeannounceModal() {
       document.getElementById('announceModal').style.display = 'none';
     }
+
+    function confirmDelete() {
+      const confirmDeleteScreen = document.querySelector('.confirmdeletescreen');
+      const deleteEventButton = document.querySelector('.deleteevent-button');
+
+      confirmDeleteScreen.style.display = 'block';
+      deleteEventButton.style.display = 'none';
+    }
+
+    function cancelDelete() {
+      const confirmDeleteScreen = document.querySelector('.confirmdeletescreen');
+      const deleteEventButton = document.querySelector('.deleteevent-button');
+
+      confirmDeleteScreen.style.display = 'none';
+      deleteEventButton.style.display = 'block';
+    }
+
     window.onclick = function (event) {
-      if (event.target == document.getElementById('announceModal')) {
-        closeModal();
-      }
+    if (event.target == document.getElementById('announceModal')) {
+      closeannounceModal();
     }
-    function openModal() {
-      document.getElementById('editmodal').style.display = 'block';
-    }
-    function closeModal() {
-      document.getElementById('editmodal').style.display = 'none';
-    }
+  }
     
-    
+
   </script>
 </body>
 
