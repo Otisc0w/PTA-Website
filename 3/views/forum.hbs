@@ -73,8 +73,6 @@
           </li>
           {{/each}}
         </ul>
-        {{!-- <button id="followButton" onclick="followTopic('{{1}}')">Follow</button>
-        <button id="unfollowButton" onclick="unfollowTopic('{{1}}')" style="display:none;">Unfollow</button> --}}
       </div>
     </div>
 
@@ -112,11 +110,8 @@
                 <button onclick="toggleDropdown(this)" class="dropbtn">...</button>
                 <div class="dropdown-content">
                   <a href="#">Pin</a>
-                  <!-- <a href="#">Save</a>
-                  <a href="#">Hide</a>
-                  <a href="#">Report</a> -->
-                  {{#if (eq thread.originalposter user.username)}}
-                    <a href="#2" data-thread-id="{{id}}" onclick="openEditModal(event, '{{id}}')">Edit</a>
+                  {{#if (eq originalposter user.username)}}
+                    <a href="#2" data-thread-id="{{id}}" onclick="openEditModal(event, '{{id}}')">Edit </a>
                   {{/if}}
                 </div>
               </div>
@@ -126,16 +121,6 @@
                   <div class="dets">
                     <span class="op">{{originalposter}}</span>
                     <span class="tag">
-                      {{!-- {{#if this.user.ptaverified}}
-                      <span class="tag">ADMIN</span>
-                      {{else}}
-                      {{#if this.user.instructorverified}}
-                      <span class="tag">INSTRUCTOR</span>
-                      {{/if}}
-                      {{#if this.user.athleteverified}}
-                      <span class="tag">ATHLETE</span>
-                      {{/if}}
-                      {{/if}} --}}
                     </span>
                   </div>
                 </div><br>
@@ -185,29 +170,27 @@
     </div>
   </div>
 
-<div id="editPostModal" class="modal-edit">
+  <div id="editPostModal" class="modal-edit">
     <div class="modal-edit-content">
       <span class="close-edit">&times;</span>
       <h2>Edit Post</h2>
-      <!-- Form to update the post -->
       <form action="/forum/update-post" method="POST">
         <div class="form-group">
           <label for="edit-title">Title:</label>
           <input type="hidden" name="threadId" >
-          <input type="text" id="title" name="title" value="{{thread.title}}" required>
+          <input type="text" id="title" name="title" value="" required>
         </div>
         <div class="form-group">
           <label for="edit-topic">Topic:</label>
-          <input type="text" id="topic" name="topic" value="{{thread.topic}}" required>
+          <input type="text" id="topic" name="topic" value="" required>
         </div>
         <div class="form-group">
           <label for="edit-body">Body:</label>
-          <textarea id="body" name="body" rows="5" required>{{thread.body}}</textarea>
+          <textarea id="body" name="body" rows="5" required></textarea>
         </div>
         <button type="submit" class="btn-save">Save Changes</button>
       </form>
 
-      <!-- Form to delete the post -->
       <form action="/forum/delete-post" method="POST">
         <input type="hidden" name="threadId">
         <button type="submit" id="deleteButton" class="btn-delete">Delete</button>
@@ -238,178 +221,134 @@
   </footer>
 
   <script>
-    function toggleProfileDropdown() {
-      document.getElementById("dropdown").classList.toggle("show");
-    }
+    document.addEventListener("DOMContentLoaded", function () {
+      // Toggle profile dropdown
+      function toggleProfileDropdown() {
+        document.getElementById("dropdown").classList.toggle("show");
+      }
 
-    window.onclick = function (event) {
-      if (!event.target.matches('.profile-pic img')) {
-        var dropdowns = document.getElementsByClassName("dropdown-content");
-        for (var i = 0; i < dropdowns.length; i++) {
-          var openDropdown = dropdowns[i];
-          if (openDropdown.classList.contains('show')) {
-            openDropdown.classList.remove('show');
+      // Close dropdowns when clicking outside
+      window.onclick = function (event) {
+        if (!event.target.matches('.profile-pic img') && !event.target.matches('.dropbtn')) {
+          var dropdowns = document.getElementsByClassName("dropdown-content");
+          for (var i = 0; i < dropdowns.length; i++) {
+            var openDropdown = dropdowns[i];
+            if (openDropdown.classList.contains('show')) {
+              openDropdown.classList.remove('show');
+            }
           }
         }
       }
-    }
 
-    document.addEventListener("DOMContentLoaded", function () {
+      // Post link redirection
       const postLinks = document.querySelectorAll('.post-link');
       postLinks.forEach(link => {
         link.addEventListener('click', function () {
           window.location.href = this.getAttribute('data-href');
         });
       });
-    });
 
-    function toggleDropdown(button) {
-      event.stopPropagation();
-      var dropdowns = document.getElementsByClassName("dropdown-content");
-      for (var i = 0; i < dropdowns.length; i++) {
-        var openDropdown = dropdowns[i];
-        if (openDropdown !== button.nextElementSibling) {
-          openDropdown.classList.remove('show');
-        }
-      }
-      button.nextElementSibling.classList.toggle("show");
-    }
-
-    window.onclick = function (event) {
-      if (!event.target.matches('.dropbtn')) {
+      // Toggle dropdown for post actions
+      window.toggleDropdown = function (button) {
+        event.stopPropagation();
         var dropdowns = document.getElementsByClassName("dropdown-content");
         for (var i = 0; i < dropdowns.length; i++) {
           var openDropdown = dropdowns[i];
-          if (openDropdown.classList.contains('show')) {
+          if (openDropdown !== button.nextElementSibling) {
             openDropdown.classList.remove('show');
           }
         }
-      }
-    }
-
-
-    document.getElementById("createPostButton").addEventListener("click", function () {
-      window.location.href = "forum-create";
-    });
-
-    // Search Filter Function
-    function filterThreads() {
-      const searchInput = document.getElementById('searchBar').value.toLowerCase();
-      const posts = document.querySelectorAll('.post-container');
-      posts.forEach(post => {
-        const title = post.querySelector('.post-title').textContent.toLowerCase();
-        const body = post.querySelector('.post-description').textContent.toLowerCase();
-        if (title.includes(searchInput) || body.includes(searchInput)) {
-          post.parentElement.style.display = '';
-        } else {
-          post.parentElement.style.display = 'none';
-        }
-      });
-    }
-
-
-
-    function submitVote(event) {
-      event.preventDefault();
-      event.stopPropagation();
-
-      const form = event.target;
-      const formData = new FormData(form);
-
-      fetch(form.action, {
-        method: form.method,
-        body: formData
-      }).then(response => {
-        if (response.ok) {
-          return response.json();
-        } else {
-          throw new Error('Something went wrong');
-        }
-      }).then(data => {
-        // Handle successful vote submission
-        console.log('Vote submitted successfully', data);
-        // Optionally, update the vote count in the UI
-      }).catch(error => {
-        console.error('Error:', error);
-      });
-    }
-
-
-    document.addEventListener('DOMContentLoaded', function () {
-      const modal = document.getElementById("topicModal");
-      const btn = document.getElementById("createtopicButton");
-      const span = document.getElementsByClassName("close")[0];
-
-      btn.onclick = function () {
-        modal.style.display = "block";
+        button.nextElementSibling.classList.toggle("show");
       }
 
-      span.onclick = function () {
-        modal.style.display = "none";
+      // Create post button redirection
+      document.getElementById("createPostButton").addEventListener("click", function () {
+        window.location.href = "forum-create";
+      });
+
+      // Filter threads based on search input
+      function filterThreads() {
+        const searchInput = document.getElementById('searchBar').value.toLowerCase();
+        const posts = document.querySelectorAll('.post-container');
+        posts.forEach(post => {
+          const title = post.querySelector('.post-title').textContent.toLowerCase();
+          const body = post.querySelector('.post-description').textContent.toLowerCase();
+          if (title.includes(searchInput) || body.includes(searchInput)) {
+            post.parentElement.style.display = '';
+          } else {
+            post.parentElement.style.display = 'none';
+          }
+        });
+      }
+
+      // Topic modal handling
+      const topicModal = document.getElementById("topicModal");
+      const createTopicButton = document.getElementById("createtopicButton");
+      const closeTopicModal = document.getElementsByClassName("close")[0];
+
+      createTopicButton.onclick = function () {
+        topicModal.style.display = "block";
+      }
+
+      closeTopicModal.onclick = function () {
+        topicModal.style.display = "none";
       }
 
       window.onclick = function (event) {
-        if (event.target == modal) {
-          modal.style.display = "none";
+        if (event.target == topicModal) {
+          topicModal.style.display = "none";
         }
       }
-    });
 
+      // Edit post modal handling
+      const editPostModal = document.getElementById("editPostModal");
+      const closeEditModal = document.querySelector(".close-edit");
 
-   document.addEventListener('DOMContentLoaded', function () {
-  var modal = document.getElementById("editPostModal");
-  var closeBtn = document.querySelector(".modal .close");
+      window.openEditModal = function (event, threadId) {
+        event.preventDefault();
+        event.stopPropagation();
 
-  // Function to open the Edit Modal and set the threadId in both forms (Edit & Delete)
-  window.openEditModal = function (event, threadId) {
-    event.preventDefault();
-    event.stopPropagation();
+        // Set the threadId in both the Edit form and the Delete form
+        const hiddenInputs = editPostModal.querySelectorAll("input[name='threadId']");
+        hiddenInputs.forEach(input => input.value = threadId);
 
-    // Set the threadId in both the Edit form and the Delete form
-    const hiddenInputs = modal.querySelectorAll("input[name='threadId']");
-    hiddenInputs.forEach(input => input.value = threadId);
+        // Show the modal
+        editPostModal.style.display = "flex";
+      };
 
-    // Show the modal
-    modal.style.display = "flex";
-  };
+      closeEditModal.onclick = function () {
+        editPostModal.style.display = "none";
+      };
 
-  // Close the modal when clicking the close button
-  closeBtn.onclick = function () {
-    modal.style.display = "none";
-  };
-
-  // Close the modal when clicking outside of the modal
-  window.onclick = function (event) {
-    if (event.target == modal) {
-      modal.style.display = "none";
-    }
-  };
-});
-
-
-
-    document.getElementById("deleteButton").addEventListener("click", function () {
-      const threadId = document.querySelector('input[name="threadId"]').value; // Get thread ID from the form
-
-      // Send DELETE request to the server
-      fetch(`/delete-post/${threadId}`, {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json'
+      window.onclick = function (event) {
+        if (event.target == editPostModal) {
+          editPostModal.style.display = "none";
         }
-      })
-        .then(response => response.json())
-        .then(data => {
-          if (data.success) {
-            alert("Post deleted successfully!");
-            window.location.href = "/forum";  // Redirect to forum page after deletion
-          } else {
-            alert("Failed to delete the post.");
+      }
+
+      // Delete post handling
+      document.getElementById("deleteButton").addEventListener("click", function () {
+        const threadId = document.querySelector('input[name="threadId"]').value;
+
+        fetch(`/delete-post/${threadId}`, {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json'
           }
         })
-        .catch(error => {
-          console.error('Error:', error);
-        });
+          .then(response => response.json())
+          .then(data => {
+            if (data.success) {
+              alert("Post deleted successfully!");
+              window.location.href = "/forum";
+            } else {
+              alert("Failed to delete the post.");
+            }
+          })
+          .catch(error => {
+            console.error('Error:', error);
+          });
+      });
     });
   </script>
 </body>
