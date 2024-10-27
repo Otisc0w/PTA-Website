@@ -294,29 +294,29 @@
           {{/if}}
 
           {{#if (eq event.eventtype 'Kyorugi')}}
-          {{#each matches}}
-          <div class="match">Round {{round}}
-            <div class="times">
-              {{#if matchtime}}
-              <p class="match-time">{{matchtime}}</p>
-              {{else}}
-              <form action="/update-matchtime" method="post">
-                <input type="hidden" name="id" value="{{id}}">
-                <input type="hidden" name="eventid" value="{{eventid}}">
-                <input type="time" class="matchtime" name="matchtime">
-                <button type="submit">OK</button>
-              </form>
-              {{/if}}
-            </div>
-            <div class="match-info">
-              <p class="match-players">{{player1_name}}: {{player1score}}</p>
-              <p class="match-vs">vs</p>
-              <p class="match-players">{{player2_name}}: {{player2score}}</p>
-            </div>
-            {{!-- <a href="#" onclick="openPoomsaeScoresheet('{{id}}', '{{totalscore}}', '{{technicalscore}}', '{{performancescore}}')" class="poomsae-scoresheet">Open Poomsae Scoresheet</a> --}}
-
-          </div>
-          {{/each}}
+            {{#each matches}}
+              <div class="match">Round {{round}}
+                <div class="times">
+                  {{#if matchtime}}
+                  <p class="match-time">{{matchtime}}</p>
+                  {{else}}
+                  <form action="/update-matchtime" method="post">
+                    <input type="hidden" name="id" value="{{id}}">
+                    <input type="hidden" name="eventid" value="{{eventid}}">
+                    <input type="time" class="matchtime" name="matchtime">
+                    <button type="submit">OK</button>
+                  </form>
+                  {{/if}}
+                </div>
+                <div class="match-info">
+                  <p class="match-players">{{player1_name}}: {{player1score}}</p>
+                  <p class="match-vs">vs</p>
+                  <p class="match-players">{{player2_name}}: {{player2score}}</p>
+                </div>
+                <button href="#" onclick="openKyorugiScoresheet('{{id}}', '{{player1score}}', '{{player2score}}', '{{winner}}', '{{matchtime}}')" class="poomsae-scoresheet">Scoresheet -></button>
+                <a href="/kyorugi-scoresheet/214">here</a>
+              </div>
+            {{/each}}
           {{/if}}
         </div>
       </div>
@@ -387,6 +387,61 @@
         </div>
       </div>
 
+      <div class="kyorugi-scoresheet">
+        <span class="close" onclick="closeKyorugiScoresheet()">&times;</span>
+        <h1>Kyorugi Scoresheet</h1>
+        <div class="match-info">
+          <p><strong>Match:</strong> {{player1_name}} vs {{player2_name}}</p>
+          <p><strong>Time:</strong> {{match.matchtime}}</p>
+        </div>
+        <div class="scores">
+          <h2>Scores</h2>
+          <form action="/submit-kyorugi-scores" method="POST">
+            <input type="hidden" name="eventid" value="{{match.eventid}}">
+            <input type="hidden" name="matchid" value="{{match.id}}">
+            <input type="hidden" name="player1" value="{{match.player1}}">
+            <input type="hidden" name="player2" value="{{match.player2}}">
+            <table>
+              <thead>
+                <tr>
+                  <th>Round</th>
+                  <th>{{player1_name}}</th>
+                  <th>{{player2_name}}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>1</td>
+                  <td><input type="number" name="player1_round1" required></td>
+                  <td><input type="number" name="player2_round1" required></td>
+                </tr>
+                <tr>
+                  <td>2</td>
+                  <td><input type="number" name="player1_round2" ></td>
+                  <td><input type="number" name="player2_round2" ></td>
+                </tr>
+                <tr>
+                  <td>3</td>
+                  <td><input type="number" name="player1_round3" ></td>
+                  <td><input type="number" name="player2_round3" ></td>
+                </tr>
+                <tr>
+                  <td>OT</td>
+                  <td><input type="number" name="player1_ot" ></td>
+                  <td><input type="number" name="player2_ot" ></td>
+                </tr>
+                <tr>
+                  <td>Total</td>
+                  <td><input type="number" name="player1_total" readonly></td>
+                  <td><input type="number" name="player2_total" readonly></td>
+                </tr>
+              </tbody>
+            </table>
+            <button type="submit">Submit Scores</button>
+          </form>
+        </div>
+      </div>
+
       <div class="announcements" hidden>
         <h2>Announcements</h2>
         <div class="makeannouncement">
@@ -429,7 +484,11 @@
             {{#unless champion}}
             {{#if user.athleteverified}}
             {{#unless (or currentregistrant (me registrationcount event.registrationcap))}}
-            <a href="/events-registration/{{event.id}}" class="register-button">Register</a>
+              {{#if (eq event.status 'Active')}}
+                <a href="/events-registration/{{event.id}}" class="register-button">Register</a>
+              {{else}}
+                <h3>This event has been<br> CANCELLED</h3>
+              {{/if}}
             {{else if currentregistrant.registered}}
             <p>Your check-in code is:</p>
             <h1 class="code">{{currentregistrant.id}}</h1>
@@ -508,14 +567,32 @@
 
   <script>
     function openPoomsaeScoresheet(id, name, totalscore, technicalscore, performancescore) {
-      document.querySelector('.poomsae-score-sheet').style.display = 'block';
-      document.querySelector('input[name="id"]').value = id;
+      const poomsaeSheet = document.querySelector('.poomsae-score-sheet');
+      poomsaeSheet.style.display = 'block';
+      poomsaeSheet.querySelector('input[name="id"]').value = id;
+      poomsaeSheet.querySelector('.playername').textContent = 'Player name: ' + name;
       document.getElementById('total-score').innerText = totalscore;
-      document.querySelector('.playername').textContent = 'Player name: ' + name;
+    }
+
+    function openKyorugiScoresheet(id, player1score, player2score, winner, matchtime) {
+      const kyorugiSheet = document.querySelector('.kyorugi-scoresheet');
+      kyorugiSheet.style.display = 'block';
+      kyorugiSheet.querySelector('input[name="matchid"]').value = id;
+      kyorugiSheet.querySelector('input[name="player1_round1"]').value = player1score;
+      kyorugiSheet.querySelector('input[name="player2_round1"]').value = player2score;
+      kyorugiSheet.querySelector('.match-info').innerHTML = `<p><strong>Match:</strong> ${player1_name} vs ${player2_name}</p><p><strong>Time:</strong> ${matchtime}</p>`;
+    }
+
+    function closeScoresheet(selector) {
+      document.querySelector(selector).style.display = 'none';
+    }
+
+    function closeKyorugiScoresheet() {
+      closeScoresheet('.kyorugi-scoresheet');
     }
 
     function closePoomsaeScoresheet() {
-      document.querySelector('.poomsae-score-sheet').style.display = 'none';
+      closeScoresheet('.poomsae-score-sheet');
     }
 
     document.querySelectorAll('.deduction-input').forEach(input => {
@@ -526,16 +603,16 @@
       let totalScore = 10.0; // Starting score for Poomsae
 
       document.querySelectorAll('.deduction-input').forEach(input => {
-        const maxScore = parseFloat(input.dataset.max);
-        const deduction = parseFloat(input.value) || 0;
-        const finalScoreElement = input.parentElement.nextElementSibling;
-        const finalScore = Math.max(0, maxScore - deduction); // Avoid negative scores
+      const maxScore = parseFloat(input.dataset.max);
+      const deduction = parseFloat(input.value) || 0;
+      const finalScoreElement = input.parentElement.nextElementSibling;
+      const finalScore = Math.max(0, maxScore - deduction); // Avoid negative scores
 
-        // Update the final score display for each row
-        finalScoreElement.textContent = finalScore.toFixed(1);
+      // Update the final score display for each row
+      finalScoreElement.textContent = finalScore.toFixed(1);
 
-        // Deduct from the total score
-        totalScore -= deduction;
+      // Deduct from the total score
+      totalScore -= deduction;
       });
 
       // Update the total score in the UI
@@ -548,71 +625,51 @@
 
     window.onclick = function (event) {
       if (!event.target.matches('.profile-pic img')) {
-        var dropdowns = document.getElementsByClassName("dropdown-content");
-        for (var i = 0; i < dropdowns.length; i++) {
-          var openDropdown = dropdowns[i];
-          if (openDropdown.classList.contains('show')) {
-            openDropdown.classList.remove('show');
-          }
+      document.querySelectorAll(".dropdown-content").forEach(dropdown => {
+        if (dropdown.classList.contains('show')) {
+        dropdown.classList.remove('show');
         }
+      });
       }
     }
 
     document.addEventListener('DOMContentLoaded', function () {
-      const participantsTab = document.getElementById('participants-tab');
-      const detailsTab = document.getElementById('details-tab');
-      const registrationsTab = document.getElementById('registrations-tab');
-      const announcementsTab = document.getElementById('announcements-tab');
-      const eventleftside = document.querySelector('.eventleftside');
-      const eventrightside = document.querySelector('.eventrightside');
-      const eventmiddleside = document.querySelector('.eventmiddleside');
-      const participantsContainer = document.querySelector('.participants-container');
-      const registrationsContainer = document.querySelector('.registrations-container');
-      const announcements = document.querySelector('.announcements');
+      const tabs = {
+      participantsTab: document.getElementById('participants-tab'),
+      detailsTab: document.getElementById('details-tab'),
+      registrationsTab: document.getElementById('registrations-tab'),
+      announcementsTab: document.getElementById('announcements-tab')
+      };
 
-      participantsContainer.style.display = 'none';
-      registrationsContainer.style.display = 'none';
+      const sections = {
+      eventleftside: document.querySelector('.eventleftside'),
+      eventrightside: document.querySelector('.eventrightside'),
+      eventmiddleside: document.querySelector('.eventmiddleside'),
+      participantsContainer: document.querySelector('.participants-container'),
+      registrationsContainer: document.querySelector('.registrations-container'),
+      announcements: document.querySelector('.announcements')
+      };
 
-      function showParticipants() {
-        eventleftside.style.display = 'none';
-        eventrightside.style.display = 'none';
-        eventmiddleside.style.display = 'none';
-        participantsContainer.style.display = 'block';
-        registrationsContainer.style.display = 'none';
-        announcements.style.display = 'none';
+      function hideAllSections() {
+      Object.values(sections).forEach(section => section.style.display = 'none');
       }
 
-      function showDetails() {
-        eventleftside.style.display = 'block';
-        eventrightside.style.display = 'block';
-        eventmiddleside.style.display = 'block';
-        participantsContainer.style.display = 'none';
-        registrationsContainer.style.display = 'none';
-        announcements.style.display = 'none';
+      function showSection(section) {
+      hideAllSections();
+      section.style.display = 'block';
       }
 
-      function showRegistrations() {
-        eventleftside.style.display = 'none';
-        eventrightside.style.display = 'none';
-        eventmiddleside.style.display = 'none';
-        participantsContainer.style.display = 'none';
-        registrationsContainer.style.display = 'block';
-        announcements.style.display = 'none';
-      }
-
-      function showAnnouncements() {
-        eventleftside.style.display = 'none';
-        eventrightside.style.display = 'none';
-        eventmiddleside.style.display = 'none';
-        participantsContainer.style.display = 'none';
-        registrationsContainer.style.display = 'none';
-        announcements.style.display = 'block';
-      }
-
-      participantsTab.addEventListener('click', showParticipants);
-      detailsTab.addEventListener('click', showDetails);
-      registrationsTab.addEventListener('click', showRegistrations);
-      announcementsTab.addEventListener('click', showAnnouncements);
+      tabs.participantsTab.addEventListener('click', () => showSection(sections.participantsContainer));
+      tabs.detailsTab.addEventListener('click', () => {
+      sections.eventleftside.style.display = 'block';
+      sections.eventrightside.style.display = 'block';
+      sections.eventmiddleside.style.display = 'block';
+      sections.participantsContainer.style.display = 'none';
+      sections.registrationsContainer.style.display = 'none';
+      sections.announcements.style.display = 'none';
+      });
+      tabs.registrationsTab.addEventListener('click', () => showSection(sections.registrationsContainer));
+      tabs.announcementsTab.addEventListener('click', () => showSection(sections.announcements));
     });
 
     function openModal() {
@@ -626,33 +683,26 @@
     function openannounceModal() {
       document.getElementById('announceModal').style.display = 'block';
     }
-
+    
     function closeannounceModal() {
       document.getElementById('announceModal').style.display = 'none';
     }
-
+    
     function confirmDelete() {
-      const confirmDeleteScreen = document.querySelector('.confirmdeletescreen');
-      const deleteEventButton = document.querySelector('.deleteevent-button');
-
-      confirmDeleteScreen.style.display = 'block';
-      deleteEventButton.style.display = 'none';
+      document.querySelector('.confirmdeletescreen').style.display = 'block';
+      document.querySelector('.deleteevent-button').style.display = 'none';
     }
 
     function cancelDelete() {
-      const confirmDeleteScreen = document.querySelector('.confirmdeletescreen');
-      const deleteEventButton = document.querySelector('.deleteevent-button');
-
-      confirmDeleteScreen.style.display = 'none';
-      deleteEventButton.style.display = 'block';
+      document.querySelector('.confirmdeletescreen').style.display = 'none';
+      document.querySelector('.deleteevent-button').style.display = 'block';
     }
 
     window.onclick = function (event) {
-    if (event.target == document.getElementById('announceModal')) {
+      if (event.target == document.getElementById('announceModal')) {
       closeannounceModal();
+      }
     }
-  }
-    
 
   </script>
 </body>

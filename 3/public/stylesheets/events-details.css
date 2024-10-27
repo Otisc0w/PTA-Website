@@ -100,10 +100,6 @@
   vertical-align: middle;
   margin-left: 10px;
 }
-.intro:hover {
-  background-color: #444; 
-  transition: background-color 0.3s ease-in-out;
-}
 
 .details {
   display: flex;
@@ -923,6 +919,122 @@ input[type="number"]:focus {
   margin-top: 10px;
 }
 
+.kyorugi-scoresheet {
+  max-width: 800px;
+  margin: auto; /* Center the modal */
+  top: 50%; /* Center vertically */
+  left: 50%; /* Center horizontally */
+  transform: translate(-50%, -50%); /* Adjust for centering */
+  padding: 20px;
+  background-color: #444;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+  display: none; /* Hide by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  overflow: auto; /* Enable scroll if needed */
+}
+
+.kyorugi-scoresheet .title {
+  text-align: center;
+  color: #fff;
+  font-size: 1.5rem;
+  margin-bottom: 20px;
+}
+
+.kyorugi-scoresheet .score-table {
+  width: 100%;
+}
+
+.kyorugi-scoresheet table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+}
+
+.kyorugi-scoresheet th, .kyorugi-scoresheet td {
+  padding: 12px;
+  text-align: left;
+  border: 1px solid #555;
+}
+
+.kyorugi-scoresheet th {
+  background-color: #555;
+  color: #fff;
+  font-weight: bold;
+}
+
+.kyorugi-scoresheet td {
+  background-color: #666;
+}
+
+.kyorugi-scoresheet input[type="number"] {
+  width: 60px;
+  padding: 5px;
+  background-color: #333;
+  color: #fff;
+  border: 1px solid #555;
+  border-radius: 4px;
+}
+
+.kyorugi-scoresheet input[type="number"]:focus {
+  outline: none;
+  border-color: #777;
+}
+
+.kyorugi-scoresheet .total-score {
+  text-align: right;
+  font-size: 1.2rem;
+  color: #f0f0f0;
+}
+
+.kyorugi-scoresheet .total-score span {
+  background-color: #333;
+  padding: 4px 10px;
+  border-radius: 4px;
+  display: inline-block;
+}
+
+.kyorugi-scoresheet .submitscores {
+  background-color: #007bff;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  text-align: center;
+  font-size: 16px;
+  font-weight: bold;
+  margin-left: 20px;
+}
+
+.kyorugi-scoresheet .openscoresheetbtn {
+  background-color: #007bff;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.kyorugi-scoresheet .submitscores:hover, .kyorugi-scoresheet .openscoresheetbtn:hover {
+  background-color: #0056b3;
+}
+
+.kyorugi-scoresheet .totalscore {
+  font-size: 24px;
+  font-weight: bold;
+  color: #ffcc00; /* Bright yellow color */
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* Add shadow for pop effect */
+  background-color: #333;
+  padding: 10px;
+  border-radius: 5px;
+  display: inline-block;
+  margin-top: 10px;
+}
+
 .deleteevent-button{
   background: url('/images/delete.png') no-repeat center center;
   height: 20px;
@@ -932,6 +1044,7 @@ input[type="number"]:focus {
   cursor: pointer;
   vertical-align: middle;
   float: right;
+  padding: 5px 10px;
 }
 
 .confirmdeletescreen{
