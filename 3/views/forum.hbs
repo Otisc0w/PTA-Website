@@ -110,7 +110,7 @@
                 <button onclick="toggleDropdown(this)" class="dropbtn">...</button>
                 <div class="dropdown-content">
                   <a href="#">Pin</a>
-                  {{#if (eq originalposter user.username)}}
+                    {{#if (eq originalposter ../user.username)}}
                     <a href="#2" data-thread-id="{{id}}" onclick="openEditModal(event, '{{id}}')">Edit </a>
                   {{/if}}
                 </div>
