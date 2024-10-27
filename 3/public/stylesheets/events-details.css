@@ -923,31 +923,50 @@ input[type="number"]:focus {
   margin-top: 10px;
 }
 
-.manageeventbtn {
-  background: none;
-  border: none;
-  color: white;
-  font-size: 14px;
-  cursor: pointer;
-  padding: 10px;
-  border-radius: 25px;
-  transition: background-color 0.3s;
-  font-weight: bold;
-  vertical-align: text-top;
-}
-
-.manageeventbtn:hover {
-  background-color: #2d2d2d;
-  color: white;
-}
-
 .deleteevent-button{
+  background: url('/images/delete.png') no-repeat center center;
+  height: 20px;
+  width: 20px;
   background-size: contain;
   border: none;
-  background: none;
   cursor: pointer;
-  justify-content: flex-end;
-  background: url('/images/delete.png') no-repeat center center;
-  width: 20px;
-  height: 20px;
+  vertical-align: middle;
+  float: right;
+}
+
+.confirmdeletescreen{
+  float:right;
+  font-size: 15px;
+  color: #ffcc00;
+  font-weight: bold;
+}
+
+.confirmdeletescreen .yesdelete,
+.confirmdeletescreen .nodelete {
+  background-color: #d32f2f;
+  color: white;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  margin-left: 10px;
+  margin-top: 5px;
+  float: right;
+}
+
+.confirmdeletescreen .yesdelete:hover {
+  background-color: #f44336;
+}
+
+.confirmdeletescreen .nodelete {
+  background-color: #f44336;
+}
+
+.confirmdeletescreen .nodelete:hover {
+  background-color: #d32f2f;
+}
+
+.titleandbuttons{
+  width: 400px;
 }

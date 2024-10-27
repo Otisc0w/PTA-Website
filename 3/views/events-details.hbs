@@ -71,18 +71,20 @@
       <div class="eventleftside">
         <div class="intro">
           <div class="details">
-            <span>Details</span>
-            {{#if user.ptaverified}}
-            <button class="edit-button" onclick="openModal()"></button>
-            <button class="deleteevent-button" onclick="confirmDelete()">Delete</button>
-            <div class="confirmdeletescreen" style="display: none;">
-              Are you sure you want to delete this event?<br>
-                <form action="/delete-event/{{event.id}}" method="post">
-                <button class="yesdelete" type="submit">Yes</button>
-                </form>
-              <button class="nodelete" onclick="cancelDelete()">No</button>
+            <div class="titleandbuttons">
+              <span>Details</span>
+              {{#if user.ptaverified}}
+              <button class="edit-button" onclick="openModal()"></button>
+              <button class="deleteevent-button" onclick="confirmDelete()"></button>
+              <div class="confirmdeletescreen" style="display: none;">
+                Are you sure you <br>want to delete this event?<br>
+                  <form action="/delete-event/{{event.id}}" method="post">
+                  <button class="yesdelete" type="submit">Yes</button>
+                  </form>
+                <button class="nodelete" onclick="cancelDelete()">No</button>
+              </div>
+              {{/if}}
             </div>
-            {{/if}}
           </div>
           <p>{{event.description}}</p>
           <p>Date: {{formatDate event.date "MMMM DD, YYYY"}}</p>
