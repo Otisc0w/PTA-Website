@@ -4343,30 +4343,15 @@ app.get('/athletes', (req, res) => {
   });
 });
 
+app.get('/analytics', (req, res) => {
+  res.render('analytics');
+});
+
 
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
 });
 
-app.get('/clubs-details/:id', async (req, res) => {
-  const clubId = req.params.id;
-  
-  // Fetch club details
-  const club = await db.query('SELECT * FROM clubs WHERE id = $1', [clubId]);
-
-  // Fetch club announcements
-  const announcements = await db.query('SELECT * FROM club_announcements WHERE clubid = $1 ORDER BY created_at DESC', [clubId]);
-
-  // Count the total members of the club (assuming you have a club_members table)
-  const totalMembers = await db.query('SELECT COUNT(*) FROM club_members WHERE clubid = $1', [clubId]);
-
-  res.render('club-details', {
-    club: club.rows[0],
-    announcements: announcements.rows,
-    totalMembers: totalMembers.rows[0].count, // Pass the total member count
-    user: req.session.user // Assuming you have user session
-  });
-});
 
 
 // Route to handle creating an announcement
