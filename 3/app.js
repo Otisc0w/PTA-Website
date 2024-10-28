@@ -4333,6 +4333,14 @@ app.get('/athletes', (req, res) => {
   });
 });
 
+app.get("/analytics", async function (req, res) {
+  if (!req.session.user) {
+      return res.redirect("/"); // Redirect to home if no user session exists
+  }
+  res.render("analytics"); // Render the analytics.hbs file if the user is authenticated
+});
+
+
 
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
@@ -4411,3 +4419,4 @@ app.post("/create-announcement", async (req, res) => {
     res.status(500).send("Server error while creating announcement");
   }
 });
+
