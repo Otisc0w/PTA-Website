@@ -1,5 +1,6 @@
 @import url('https://fonts.cdnfonts.com/css/sf-pro-display');
 
+
 html, body {
     height: 100%; /* Make sure the body takes up the full height */
     margin: 0;
@@ -7,23 +8,20 @@ html, body {
 }
 
 body {
+    background-color: #2e2e2e;
+    color: #ffffff;
+    margin: 0;
+    overflow-x: hidden;
     display: flex; /* Use flexbox for the body */
     flex-direction: column; /* Arrange children in a column */
     font-family: 'SF Pro Display', Arial, sans-serif;
-    background-color: #2C2C2C; /* Dark background */
-    color: #FFFFFF; /* White text for contrast */
-}
-
-.header {
-    text-align: center;
-    margin-bottom: 20px;
 }
 
 .analytics-container {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 20px;
-    padding: 20px; /* Add padding around the container */
+    padding: 10px; /* Add padding around the container */
     margin-top: 20px; /* Space between the navbar and the analytics container */
     flex-grow: 1; /* Allow this container to grow and fill available space */
 }
@@ -47,8 +45,8 @@ body {
 .header {
     font-size: 24px;
     margin-bottom: 10px;
-    border-bottom: 2px solid #007BFF; /* Accent line below header */
-    padding-bottom: 10px; /* Padding below header */
+   /* border-bottom: 2px solid #007BFF; /* Accent line below header */
+   /* padding-bottom: 10px; /* Padding below header */
     text-align: center; /* Center the header text */
     background-color: #333;
 }
@@ -71,6 +69,28 @@ body {
     margin-bottom: 10px; /* Adjust margin for summaries */
     font-size: 16px; /* Increase font size for better visibility */
 }
+
+.create-report-container {
+    text-align: right; /* Align button to the right */
+    padding: 20px; /* Padding around the container */
+}
+
+.create-report-button {
+    background-color: #007BFF;
+    color: white;
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    text-decoration: none;
+    margin-left: 20px; /* Added margin to the left */
+}
+
+.create-report-button:hover {
+    background-color: #0056b3; /* Darker color on hover */
+}
+
 
 /* Footer */
 
