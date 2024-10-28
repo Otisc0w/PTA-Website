@@ -3291,6 +3291,11 @@ app.get("/forum-thread/:id", async function (req, res) {
 
 // Route to render the main clubs page
 app.get("/clubs", async (req, res) => {
+
+  if (!req.session.user) {
+    return res.redirect("/");
+  }
+
   try {
     const { data: clubs, error } = await supabase
       .from("clubs")
@@ -3301,13 +3306,15 @@ app.get("/clubs", async (req, res) => {
       return res.status(500).json({ error: error.message });
     }
 
-    res.render("clubs", { clubs });
+    res.render("clubs", { clubs, user: req.session.user });
   } catch (error) {
     console.error("Server error:", error.message);
     res.status(500).json({ error: error.message });
   }
 });
 
+
+// Route to render individual club details
 app.get("/clubs-details/:id", async function (req, res) {
   const { id } = req.params;
 
@@ -3322,7 +3329,6 @@ app.get("/clubs-details/:id", async function (req, res) {
       .eq("id", id)
       .single();
 
-
     if (clubsError) {
       return res.status(400).json({ clubsError: clubsError.message });
     }
@@ -3335,23 +3341,30 @@ app.get("/clubs-details/:id", async function (req, res) {
       return res.status(400).json({ allUsersError: allUsersError.message });
     }
 
-    const { data: athletes, error: athleteserror } = await supabase
+    const { data: athletes, error: athletesError } = await supabase
       .from("athletes")
       .select("*");
 
-    if (athleteserror) {
-      return res.status(400).json({ athleteserror: athleteserror.message });
+    if (athletesError) {
+      return res.status(400).json({ athletesError: athletesError.message });
     }
 
-    const { data: announcements, error: announcementserror } = await supabase
+    const {data: club_requests, error: clubRequestsError} = await supabase
+      .from("club_requests")
+      .select("*")
+      .eq("clubid", id);
+
+    if (clubRequestsError) {
+      return res.status(400).json({ clubRequestsError: clubRequestsError.message });
+    }
+
+    const { data: announcements, error: announcementsError } = await supabase
       .from("club_announcements")
       .select("*")
       .eq("clubid", id);
 
-    if (announcementserror) {
-      return res
-        .status(400)
-        .json({ announcementserror: announcementserror.message });
+    if (announcementsError) {
+      return res.status(400).json({ announcementsError: announcementsError.message });
     }
 
     const clubMembers = athletes.filter(
@@ -3364,6 +3377,7 @@ app.get("/clubs-details/:id", async function (req, res) {
       allUsers,
       clubMembers,
       announcements,
+      club_requests,
       user: req.session.user,
     });
   } catch (error) {
@@ -4350,6 +4364,14 @@ app.get('/athletes', (req, res) => {
     res.render('athletes', { athletes: athletes });
   });
 });
+
+app.get("/analytics", async function (req, res) {
+  if (!req.session.user) {
+      return res.redirect("/"); // Redirect to home if no user session exists
+  }
+  res.render("analytics"); // Render the analytics.hbs file if the user is authenticated
+});
+
 
 
 app.listen(port, () => {

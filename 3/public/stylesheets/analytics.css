@@ -1,0 +1,54 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 20px;
+}
+
+.analytics-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.card {
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.header {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+.chart {
+    width: 100%;
+    height: 200px;
+    background: #e9e9e9;
+    border-radius: 8px;
+    position: relative;
+}
+
+.data-point {
+    position: absolute;
+    bottom: 0;
+    border-radius: 50%;
+}
+
+.summary {
+    margin-bottom: 20px;
+}
+
+.footer-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.icons img {
+    width: 30px;
+    margin-left: 10px;
+}

@@ -43,13 +43,15 @@ async function fetchUserData(req, res, next) {
     const { data: userData, error: userError } = await supabase
       .from('users')
       .select('*')
-      .eq('id', userId);
+      .eq('id', userId)
+      .single(); // Ensure only one user is fetched
 
     if (userError) {
       console.error('Error fetching user data:', userError.message);
       return next(); // Skip user data if there's an error
     }
 
+    req.session.user = userData; // Store user data into req.session.user
     res.locals.userData = userData; // Attach user data to res.locals
     next();
   } catch (error) {

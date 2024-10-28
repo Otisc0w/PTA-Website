@@ -118,20 +118,12 @@
       <ul>
         <li><a href="#">Home</a></li>
         <li><a href="#">Members</a></li>
+        {{#if (eq club.registeredby user.id)}}
         <li><a href="#">Announcements</a></li>
+        <li><a href="#">Requests</a></li>
+        {{/if}}
       </ul>
     </div><br>
-
-    <!-- Display Club Capacity -->
-    <div class="club-capacity">
-      <p>Capacity: {{club.capacity}}</p>
-    </div>
-
-    <!-- Create Announcement Button (only for Admins and Instructors) -->
-    {{#if (or (eq user.ptaverified true) (eq user.instructorverified true))}}
-    <button class="create-announcement-button" onclick="openannounceModal()">+ Create Announcement</button>
-    {{/if}}
-
     <!-- Modal for Creating Announcements -->
     <div id="announceModal" class="modal">
       <div class="modal-content">
@@ -187,6 +179,9 @@
 
     <!-- Announcements Section -->
     <div class="announcements-section" id="announcements-section" style="display: none;">
+      {{#if (eq club.registeredby user.id)}}
+        <button class="create-announcement-button" onclick="openannounceModal()">+ Create Announcement</button>
+      {{/if}}
       <h2>Club Announcements</h2>
       <div class="announcements-container">
         {{#each announcements}}
@@ -205,7 +200,7 @@
     <div class="participants-title">
       Head Instructor: <h2>{{club.registeree}}</h2>
     </div>
-    <div class="participants-title">Members of this club</div>
+    <div class="participants-title">Members of this club:</div>
     <table class="participants-table">
       <thead>
         <tr>
@@ -226,6 +221,14 @@
         {{/each}}
       </tbody>
     </table>
+  </div>
+
+  <div class="clubrequests" style="display: none;">
+    <h2>Club Requests:</h2>
+    {{#each club_requests}}
+      {{userid}}
+      {{status}}
+    {{/each}}
   </div>
 
   <footer>
@@ -271,16 +274,19 @@
       const participantsTab = document.querySelector('.clubtabs ul li:nth-child(2) a');
       const detailsTab = document.querySelector('.clubtabs ul li:nth-child(1) a');
       const announcementsTab = document.querySelector('.clubtabs ul li:nth-child(3) a');
+      const clubRequestsTab = document.querySelector('.clubtabs ul li:nth-child(4) a');
       const leftside = document.querySelector('.leftside');
       const rightside = document.querySelector('.rightside');
       const participantsContainer = document.querySelector('.participants-container');
       const announcementsSection = document.getElementById('announcements-section');
+      const clubRequests = document.querySelector('.clubrequests');
 
       function showParticipants() {
         leftside.style.display = 'none';
         rightside.style.display = 'none';
         participantsContainer.style.display = 'block';
         announcementsSection.style.display = 'none';
+        clubRequests.style.display = 'none';
       }
 
       function showDetails() {
@@ -288,6 +294,7 @@
         rightside.style.display = 'block';
         participantsContainer.style.display = 'none';
         announcementsSection.style.display = 'none';
+        clubRequests.style.display = 'none';
       }
 
       function showAnnouncements() {
@@ -295,10 +302,20 @@
         rightside.style.display = 'none';
         participantsContainer.style.display = 'none';
         announcementsSection.style.display = 'block';
+        clubRequests.style.display = 'none';
+      }
+
+      function showClubRequests() {
+        leftside.style.display = 'none';
+        rightside.style.display = 'none';
+        participantsContainer.style.display = 'none';
+        announcementsSection.style.display = 'none';
+        clubRequests.style.display = 'block';
       }
 
       participantsTab.addEventListener('click', function () {
         showParticipants();
+        
       });
 
       detailsTab.addEventListener('click', function () {
@@ -307,6 +324,10 @@
 
       announcementsTab.addEventListener('click', function () {
         showAnnouncements();
+      });
+      
+      clubRequestsTab.addEventListener('click', function () {
+        showClubRequests();
       });
     });
 
