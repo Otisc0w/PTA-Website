@@ -9,7 +9,6 @@
     <link rel="stylesheet" type="text/css" href="../stylesheets/analytics.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-
 </head>
 
 <body class="container">
@@ -68,7 +67,8 @@
 
             <button class="apply-btn">Apply</button>
         </div>
-        <a href="create-report" class="create-report-button">+ Create Report</a>
+        <!-- Changed to button with onclick event -->
+        <button type="button" class="create-report-button" onclick="openModal()">+ Create Report</button>
     </div>
 
     <div class="analytics-container">
@@ -112,6 +112,57 @@
             </ul>
         </div>
     </div>
+
+    <div id="createReportModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" onclick="closeModal()">&times;</span>
+            <h2>Create Report</h2>
+
+            <!-- Report Form -->
+            <form class="report-form">
+                <div class="form-group">
+                    <label for="report-title">Report Title:</label>
+                    <input type="text" id="report-title" placeholder="Enter report title">
+                </div>
+
+                <div class="form-group">
+                    <label for="report-description">Description:</label>
+                    <textarea id="report-description" placeholder="Enter report description"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="report-start-date">Start Date:</label>
+                    <input type="text" id="report-start-date" class="datepicker">
+
+                    <label for="report-end-date">End Date:</label>
+                    <input type="text" id="report-end-date" class="datepicker">
+
+                </div>
+
+                <div class="form-group">
+                    <label for="report-type">Report Type:</label>
+                    <select id="report-type">
+                        <option value="top-performers">Top Performers</option>
+                        <option value="upcoming-events">Upcoming Events</option>
+                        <option value="clubs">Clubs</option>
+                        <option value="member-engagement">Member Engagement</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="report-format">Format:</label>
+                    <select id="report-format">
+                        <option value="pdf">PDF</option>
+                        <option value="excel">Excel</option>
+                        <option value="word">Word</option>
+                    </select>
+                </div>
+
+                <button type="button" class="submit-report-button" onclick="submitReport()">Submit Report</button>
+            </form>
+        </div>
+    </div>
+
 
     <footer>
         <div class="footer-content">
@@ -164,13 +215,45 @@
                 dateFormat: "Y-m-d", // Format as YYYY-MM-DD
                 allowInput: true // Allow manual input as well
             });
-
-            // Set today's date in the Date Today field
-            const today = new Date();
-            const formattedDate = today.toISOString().split("T")[0];
-            document.getElementById("date-today").value = formattedDate;
         });
 
+        // Get the modal element
+        var modal = document.getElementById("createReportModal");
+
+        // Function to open the modal
+        function openModal() {
+            modal.style.display = "flex";
+        }
+
+        // Function to close the modal
+        function closeModal() {
+            modal.style.display = "none";
+        }
+
+        // Close the modal if user clicks outside of the modal content
+        window.onclick = function (event) {
+            if (event.target == modal) {
+                closeModal();
+            }
+        }
+
+        // Example function to handle form submission
+        function submitReport() {
+            // You can add your form submission logic here
+            alert("Report Submitted!");
+            closeModal();
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            flatpickr("#report-start-date", {
+                dateFormat: "Y-m-d",
+                allowInput: true
+            });
+            flatpickr("#report-end-date", {
+                dateFormat: "Y-m-d",
+                allowInput: true
+            });
+        });
 
     </script>
 </body>
