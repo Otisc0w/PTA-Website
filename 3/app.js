@@ -3239,6 +3239,11 @@ app.get("/forum-thread/:id", async function (req, res) {
 
 // Route to render the main clubs page
 app.get("/clubs", async (req, res) => {
+
+  if (!req.session.user) {
+    return res.redirect("/");
+  }
+
   try {
     const { data: clubs, error } = await supabase
       .from("clubs")
@@ -3249,7 +3254,10 @@ app.get("/clubs", async (req, res) => {
       return res.status(500).json({ error: error.message });
     }
 
-    res.render("clubs", { clubs });
+    res.render("clubs", { 
+      clubs,
+      user: req.session.user,
+     });
   } catch (error) {
     console.error("Server error:", error.message);
     res.status(500).json({ error: error.message });
