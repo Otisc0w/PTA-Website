@@ -4344,7 +4344,7 @@ app.get('/athletes', (req, res) => {
 });
 
 app.get('/analytics', (req, res) => {
-  res.render('analytics');
+  res.render('analytics', { user: req.session.user });
 });
 
 
