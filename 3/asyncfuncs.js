@@ -141,87 +141,74 @@ async function checkAndExpireInstructorRegistrations(req, res, next) {
 }
 
 async function checkUpcomingEvents(req, res, next) {
-  const currentDate = moment().format('YYYY-MM-DD');
-  const currentTime = moment().format('HH:mm:ss');
-  const fiveMinutesFromNow = moment().add(5, 'minutes');
+  const currentDate = new Date();
+  const fiveMinutesLater = new Date(currentDate.getTime() + 5 * 60000); // Current time + 5 minutes
 
   try {
-    // Step 2: Query the events table to find events happening in 5 minutes
-    const { data: upcomingEvents, error: eventsError } = await supabase
-      .from('events')
-      .select('*')
-      .eq('date', currentDate)
-      .gte('starttime', currentTime)
-      .lte('starttime', fiveMinutesFromNow.format('HH:mm:ss'));
+    const { data: events, error: eventsError } = await supabase
+      .from("events")
+      .select("*")
+      .gte("starttime", moment(currentDate).format("YYYY-MM-DD HH:mm:ss"))
+      .lte("starttime", moment(fiveMinutesLater).format("YYYY-MM-DD HH:mm:ss"));
 
     if (eventsError) {
-      throw new Error(eventsError.message);
+      throw new Error(`Error fetching events: ${eventsError.message}`);
     }
 
-    if (upcomingEvents.length === 0) {
-      console.log('No events happening in the next 5 minutes.');
-      return;
-    }
+    if (events.length > 0) {
+      const eventIds = events.map(event => event.id);
 
-    // Step 3: Query the events_registrations table to find users registered for those events
-    const eventIds = upcomingEvents.map(event => event.id);
-    const { data: registeredUsers, error: registrationsError } = await supabase
-      .from('events_registrations')
-      .select('*')
-      .in('eventid', eventIds)
-      .eq('registered', true);
+      const { data: eventRegistrations, error: eventRegistrationsError } = await supabase
+        .from("events_registrations")
+        .select("*")
+        .in("eventid", eventIds);
 
-    if (registrationsError) {
-      throw new Error(registrationsError.message);
-    }
-
-    if (registeredUsers.length === 0) {
-      console.log('No users registered for upcoming events.');
-      return;
-    }
-
-    // Step 4: Send notifications to those users
-    const notificationPromises = registeredUsers.map(async user => {
-      const message = `Reminder: Your event is starting in 5 minutes!`;
-
-      // Check if a notification already exists
-      const { data: existingNotifications, error: checkError } = await supabase
-      .from('notifications')
-      .select('*')
-      .eq('userid', user.userid)
-      .eq('message', message)
-      .single();
-
-      if (checkError && checkError.code !== 'PGRST116') { // PGRST116 means no rows found
-      throw new Error(`Error checking existing notifications: ${checkError.message}`);
+      if (eventRegistrationsError) {
+        throw new Error(`Error fetching event registrations: ${eventRegistrationsError.message}`);
       }
 
-      if (!existingNotifications) {
-      return supabase
-        .from('notifications')
-        .insert([
-        {
-          userid: user.userid,
-          message: message,
-          type: 'Event'
+      const userIds = eventRegistrations.map(registration => registration.userid);
+
+      // Create notifications for users
+      const notifications = [];
+
+      events.forEach(event => {
+        userIds.forEach(userId => {
+          notifications.push({
+            userid: userId,
+            message: `${event.name} is starting soon!`,
+            type: "Event"
+          });
+        });
+      });
+
+      for (const notification of notifications) {
+        const { data: existingNotification, error: existingNotificationError } = await supabase
+          .from("notifications")
+          .select("*")
+          .eq("userid", notification.userid)
+          .eq("message", notification.message)
+          .single();
+
+        if (existingNotificationError && existingNotificationError.code !== 'PGRST116') {
+          throw new Error(`Error checking existing notifications: ${existingNotificationError.message}`);
         }
-        ]);
-      } else {
-      return { error: null }; // No need to insert, return a resolved promise
+
+        if (!existingNotification) {
+          const { error: notificationError } = await supabase
+        .from("notifications")
+        .insert(notification);
+
+          if (notificationError) {
+        throw new Error(`Error inserting notifications: ${notificationError.message}`);
+          }
+        }
       }
-    });
 
-    const notificationResults = await Promise.all(notificationPromises);
-
-    notificationResults.forEach((result, index) => {
-      if (result.error) {
-        console.error(`Error sending notification to user ${registeredUsers[index].userid}:`, result.error.message);
-      }
-    });
-
-    console.log('Notifications sent successfully.');
+      console.log(`Notified users with IDs: ${userIds.join(", ")}`);
+    }
   } catch (error) {
-    console.error('Error checking upcoming events:', error.message);
+    console.error(error.message);
   }
 
   next();
