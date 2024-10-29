@@ -3271,7 +3271,7 @@ app.get("/clubs-details/:id", async (req, res) => {
       return res.status(500).json({ error: error.message });
     }
 
-    res.render("club-details", { club });
+    res.render("clubs-details", { club });
   } catch (error) {
     console.error("Server error:", error.message);
     res.status(500).json({ error: error.message });
