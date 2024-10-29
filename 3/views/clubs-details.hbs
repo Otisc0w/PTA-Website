@@ -122,8 +122,10 @@
         <li><a href="#">Announcements</a></li>
         <li><a href="#">Requests</a></li>
         {{/if}}
+        <li><a href="#" id="activity-tab">Activity</a></li>
       </ul>
-    </div><br>
+    </div>
+    <br>
     <!-- Modal for Creating Announcements -->
     <div id="announceModal" class="modal">
       <div class="modal-content">
@@ -193,7 +195,10 @@
         {{/each}}
       </div>
     </div>
-
+    <div class="activity-section" id="activity-section" style="display: none;">
+        <h2>Upcoming Events</h2>
+        <div id="calendar"></div> <!-- Calendar Placeholder -->
+    </div>
   </div>
 
   <div class="participants-container">

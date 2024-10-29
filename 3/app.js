@@ -3256,28 +3256,6 @@ app.get("/clubs", async (req, res) => {
   }
 });
 
-// Route to render individual club details
-app.get("/clubs-details/:id", async (req, res) => {
-  const { id } = req.params;
-  try {
-    const { data: club, error } = await supabase
-      .from("clubs")
-      .select("id, clubname, clubpic, clubaddress, email, phonenum, region, description, capacity, registeredby")
-      .eq("id", id)
-      .single();
-
-    if (error) {
-      console.error("Error fetching club details:", error.message);
-      return res.status(500).json({ error: error.message });
-    }
-
-    res.render("clubs-details", { club });
-  } catch (error) {
-    console.error("Server error:", error.message);
-    res.status(500).json({ error: error.message });
-  }
-});
-
 
 app.get("/clubs-details/:id", async function (req, res) {
   const { id } = req.params;
@@ -4404,5 +4382,91 @@ app.post("/create-announcement", async (req, res) => {
   } catch (error) {
     console.error("Server error:", error.message);
     res.status(500).send("Server error while creating announcement");
+  }
+});
+
+// Fetch club events for the "Activity" tab calendar
+app.get('/get-club-events', async (req, res) => {
+  try {
+    const clubId = req.query.clubId; // Assume clubId is passed as a query parameter
+
+    // Fetch events from the database for the specific club
+    const { data: events, error } = await supabase
+      .from('events')
+      .select('id, name, description, date, starttime, endtime, location, status')
+      .eq('club_id', clubId)
+      .eq('status', 'Active'); // Fetch only active events
+
+    if (error) {
+      console.error('Error fetching club events:', error);
+      return res.status(500).json({ error: 'Failed to fetch club events' });
+    }
+
+    // Map events to match the expected calendar format
+    const formattedEvents = events.map(event => ({
+      id: event.id,
+      title: event.name,
+      description: event.description,
+      start: `${event.date}T${event.starttime}`, // Format start time for calendar
+      end: `${event.date}T${event.endtime}`,     // Format end time for calendar
+      location: event.location,
+      status: event.status,
+    }));
+
+    res.json(formattedEvents);
+  } catch (error) {
+    console.error('Error fetching club events:', error);
+    res.status(500).json({ error: 'Failed to fetch club events' });
+  }
+});
+
+// Handle RSVP for an event
+app.post('/rsvp', async (req, res) => {
+  try {
+    const { eventId, userId, registered } = req.body; // `registered` is a boolean indicating RSVP status
+
+    // Check if an RSVP already exists
+    const { data: existingRSVP, error: fetchError } = await supabase
+      .from('events_registrations')
+      .select('*')
+      .eq('eventid', eventId)
+      .eq('userid', userId)
+      .single();
+
+    if (fetchError && fetchError.code !== 'PGRST116') { // 'PGRST116' is "no rows returned" error
+      return res.status(400).json({ message: 'Error fetching RSVP status', error: fetchError });
+    }
+
+    let response;
+    if (existingRSVP) {
+      // Update existing RSVP
+      const { error: updateError } = await supabase
+        .from('events_registrations')
+        .update({ registered })
+        .eq('eventid', eventId)
+        .eq('userid', userId);
+
+      if (updateError) {
+        console.error('Error updating RSVP:', updateError);
+        return res.status(400).json({ error: 'Failed to update RSVP' });
+      }
+      response = { message: 'RSVP updated successfully' };
+    } else {
+      // Insert new RSVP
+      const { error: insertError } = await supabase
+        .from('events_registrations')
+        .insert([{ eventid: eventId, userid: userId, registered }]);
+
+      if (insertError) {
+        console.error('Error adding RSVP:', insertError);
+        return res.status(400).json({ error: 'Failed to add RSVP' });
+      }
+      response = { message: 'RSVP created successfully' };
+    }
+
+    res.status(200).json(response);
+  } catch (error) {
+    console.error('Error handling RSVP:', error);
+    res.status(500).json({ error: 'RSVP failed' });
   }
 });
