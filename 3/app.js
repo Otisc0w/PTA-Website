@@ -19,6 +19,10 @@ const supabaseKey = process.env.SUPABASE_KEY;
 const supabase = createClient(supabaseUrl, supabaseKey);
 exports.supabase = supabase;
 
+hbs.registerHelper('json', function (context) {
+  return JSON.stringify(context, null, 2);
+});
+
 // Middleware to parse JSON
 app.use(express.json());
 app.use(express.urlencoded({ extended: true })); // Middleware to parse URL-encoded data
@@ -3234,6 +3238,19 @@ app.get("/forum", async function (req, res) {
       return res.status(400).json({ error: threadsError.message });
     }
 
+    const { data: userData, error: userError } = await supabase
+      .from("users") // Replace "users" with your actual user table name
+      .select("ptaverified")
+      .eq("id", userId)
+      .single();
+
+    if (userError) {
+      return res.status(400).json({ error: userError.message });
+    }
+
+    // Determine if the user is an admin based on ptaverified
+    const isAdmin = userData.ptaverified === true;
+
     console.log("Fetched threads:", threads); // Log the threads data to the console
     console.log("Fetched topics:", markedTopics); // Log the topics data to the console
 
@@ -3241,10 +3258,33 @@ app.get("/forum", async function (req, res) {
     res.render("forum", {
       forum_threads: threads,
       forum_topics: markedTopics,
-      user: req.session.user,
+      user: { ...req.session.user, isAdmin },
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
+  }
+});
+
+app.post("/delete-topic/:id", async (req, res) => {
+  
+
+  const topicId = req.params.id;
+
+  try {
+    const { error } = await supabase
+      .from("forum_topics")
+      .delete()
+      .eq("id", topicId);
+
+    if (error) {
+      console.error("Error deleting topic:", error.message);
+      return res.status(500).send("Error deleting topic");
+    }
+
+    res.redirect("/forum"); // Redirect after successful deletion
+  } catch (error) {
+    console.error("Unexpected error:", error);
+    res.status(500).send("Server error");
   }
 });
 

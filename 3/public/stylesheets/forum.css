@@ -535,3 +535,12 @@
     text-decoration: none;
     cursor: pointer;
 }
+
+.deletebtn {
+    background-color: red;
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
