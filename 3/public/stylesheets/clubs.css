@@ -118,6 +118,8 @@ body {
     background-color: #1A1A1A;
 }
 
+/* Footer */
+
 .footer-content {
     background-color: #333;
     color: #fff;
@@ -126,11 +128,11 @@ body {
     align-items: center;
     padding: 20px;
     height: 100px;
-    margin-top: auto;
+    margin-top: auto; 
 }
 
 .footer-content .pta-logo img {
-    height: 50px;
+    height: 100%; 
 }
 
 .footer-content .contact-info {
@@ -164,7 +166,6 @@ body {
 
 .footer-content .social-media img {
     height: 30px;
-    width: 30px;
 }
 
 .notifications {
