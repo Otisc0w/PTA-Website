@@ -32,6 +32,7 @@ app.use(asyncfuncs.fetchNotifications);
 app.use(asyncfuncs.fetchUserData);
 app.use(asyncfuncs.checkAndExpireNCCRegistrations);
 app.use(asyncfuncs.checkAndExpireInstructorRegistrations);
+// app.use(asyncfuncs.checkUpcomingEvents);
 
 
 // Configure Multer for file uploads
