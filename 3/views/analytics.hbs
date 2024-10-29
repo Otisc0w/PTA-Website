@@ -7,6 +7,8 @@
     <link rel="stylesheet" type="text/css" href="../stylesheets/home.css" />
     <link rel="stylesheet" type="text/css" href="../stylesheets/navbar.css" />
     <link rel="stylesheet" type="text/css" href="../stylesheets/analytics.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 </head>
 
 <body class="container">
@@ -51,38 +53,22 @@
     <div class="action-bar">
         <div class="filter-panel">
             <div class="filter-group">
-                <label for="belt-color">Belt Color</label>
-                <select id="belt-color">
-                    <option>All</option>
-                    <option value="White Belt">White Belt</option>
-                    <option value="Low Yellow Belt">Low Yellow Belt</option>
-                    <option value="High Yellow Belt">High Yellow Belt</option>
-                    <option value="Low Blue Belt">Low Blue Belt</option>
-                    <option value="High Blue Belt">High Blue Belt</option>
-                    <option value="Low Red Belt">Low Red Belt</option>
-                    <option value="High Red Belt">High Red Belt</option>
-                    <option value="Low Brown Belt">Low Brown Belt</option>
-                    <option value="High Brown Belt">High Brown Belt</option>
-                    <option value="Junior/Poom Black Belt">Junior/Poom Black Belt</option>
-                    <option value="Black/Dan Belt">Black/Dan Belt</option>
-                </select>
+                <label for="date-today">Date Today:</label>
+                <input type="text" id="date-today" placeholder="Search...">
             </div>
             <div class="filter-group">
-                <label for="club">Club</label>
-                <select id="club" name="club">
-                    <option>All</option>
-                    {{#each clubs}}
-                    <option value="{{id}}">{{this.clubname}}</option>
-                    {{/each}}
-                </select>
+                <label for="start-date">Start Date</label>
+                <input type="text" id="start-date" class="datepicker">
             </div>
             <div class="filter-group">
-                <label for="athlete-search">Search Athlete</label>
-                <input type="text" id="athlete-search" placeholder="Search...">
+                <label for="end-date">End Date</label>
+                <input type="text" id="end-date" class="datepicker">
             </div>
+
             <button class="apply-btn">Apply</button>
         </div>
-        <a href="create-report" class="create-report-button">+ Create Report</a>
+        <!-- Changed to button with onclick event -->
+        <button type="button" class="create-report-button" onclick="openModal()">+ Create Report</button>
     </div>
 
     <div class="analytics-container">
@@ -127,6 +113,57 @@
         </div>
     </div>
 
+    <div id="createReportModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" onclick="closeModal()">&times;</span>
+            <h2>Create Report</h2>
+
+            <!-- Report Form -->
+            <form class="report-form">
+                <div class="form-group">
+                    <label for="report-title">Report Title:</label>
+                    <input type="text" id="report-title" placeholder="Enter report title">
+                </div>
+
+                <div class="form-group">
+                    <label for="report-description">Description:</label>
+                    <textarea id="report-description" placeholder="Enter report description"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="report-start-date">Start Date:</label>
+                    <input type="text" id="report-start-date" class="datepicker">
+
+                    <label for="report-end-date">End Date:</label>
+                    <input type="text" id="report-end-date" class="datepicker">
+
+                </div>
+
+                <div class="form-group">
+                    <label for="report-type">Report Type:</label>
+                    <select id="report-type">
+                        <option value="top-performers">Top Performers</option>
+                        <option value="upcoming-events">Upcoming Events</option>
+                        <option value="clubs">Clubs</option>
+                        <option value="member-engagement">Member Engagement</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="report-format">Format:</label>
+                    <select id="report-format">
+                        <option value="pdf">PDF</option>
+                        <option value="excel">Excel</option>
+                        <option value="word">Word</option>
+                    </select>
+                </div>
+
+                <button type="button" class="submit-report-button" onclick="submitReport()">Submit Report</button>
+            </form>
+        </div>
+    </div>
+
+
     <footer>
         <div class="footer-content">
             <div class="pta-logo">
@@ -165,6 +202,61 @@
                 }
             }
         }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const today = new Date();
+            const formattedDate = today.toISOString().split("T")[0]; // YYYY-MM-DD format
+            document.getElementById("date-today").value = formattedDate;
+        });
+
+        document.addEventListener("DOMContentLoaded", function () {
+            // Initialize Flatpickr on elements with the 'datepicker' class
+            flatpickr(".datepicker", {
+                dateFormat: "Y-m-d", // Format as YYYY-MM-DD
+                allowInput: true // Allow manual input as well
+            });
+        });
+
+        var modal = document.getElementById("createReportModal");
+
+        function openModal() {
+            modal.style.display = "flex";
+        }
+
+        function closeModal() {
+            modal.style.display = "none";
+        }
+
+        window.onclick = function (event) {
+            if (event.target == modal) {
+                closeModal();
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            flatpickr("#report-start-date", {
+                dateFormat: "Y-m-d",
+                allowInput: true
+            });
+            flatpickr("#report-end-date", {
+                dateFormat: "Y-m-d",
+                allowInput: true
+            });
+        });
+
+        function submitReport() {
+            const reportTitle = document.getElementById("report-title").value;
+            const reportType = document.getElementById("report-type").value;
+
+            if (reportType === "top-performers") {
+                const listItem = document.createElement("li");
+                listItem.textContent = reportTitle;
+                document.getElementById("top-performers-list").appendChild(listItem);
+            }
+
+            closeModal();
+        }
+
     </script>
 </body>
 
