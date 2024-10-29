@@ -7,6 +7,9 @@
     <link rel="stylesheet" type="text/css" href="../stylesheets/home.css" />
     <link rel="stylesheet" type="text/css" href="../stylesheets/navbar.css" />
     <link rel="stylesheet" type="text/css" href="../stylesheets/analytics.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
 </head>
 
 <body class="container">
@@ -51,35 +54,18 @@
     <div class="action-bar">
         <div class="filter-panel">
             <div class="filter-group">
-                <label for="belt-color">Belt Color</label>
-                <select id="belt-color">
-                    <option>All</option>
-                    <option value="White Belt">White Belt</option>
-                    <option value="Low Yellow Belt">Low Yellow Belt</option>
-                    <option value="High Yellow Belt">High Yellow Belt</option>
-                    <option value="Low Blue Belt">Low Blue Belt</option>
-                    <option value="High Blue Belt">High Blue Belt</option>
-                    <option value="Low Red Belt">Low Red Belt</option>
-                    <option value="High Red Belt">High Red Belt</option>
-                    <option value="Low Brown Belt">Low Brown Belt</option>
-                    <option value="High Brown Belt">High Brown Belt</option>
-                    <option value="Junior/Poom Black Belt">Junior/Poom Black Belt</option>
-                    <option value="Black/Dan Belt">Black/Dan Belt</option>
-                </select>
+                <label for="date-today">Date Today:</label>
+                <input type="text" id="date-today" placeholder="Search...">
             </div>
             <div class="filter-group">
-                <label for="club">Club</label>
-                <select id="club" name="club">
-                    <option>All</option>
-                    {{#each clubs}}
-                    <option value="{{id}}">{{this.clubname}}</option>
-                    {{/each}}
-                </select>
+                <label for="start-date">Start Date</label>
+                <input type="text" id="start-date" class="datepicker">
             </div>
             <div class="filter-group">
-                <label for="athlete-search">Search Athlete</label>
-                <input type="text" id="athlete-search" placeholder="Search...">
+                <label for="end-date">End Date</label>
+                <input type="text" id="end-date" class="datepicker">
             </div>
+
             <button class="apply-btn">Apply</button>
         </div>
         <a href="create-report" class="create-report-button">+ Create Report</a>
@@ -165,6 +151,27 @@
                 }
             }
         }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const today = new Date();
+            const formattedDate = today.toISOString().split("T")[0]; // YYYY-MM-DD format
+            document.getElementById("date-today").value = formattedDate;
+        });
+
+        document.addEventListener("DOMContentLoaded", function () {
+            // Initialize Flatpickr on elements with the 'datepicker' class
+            flatpickr(".datepicker", {
+                dateFormat: "Y-m-d", // Format as YYYY-MM-DD
+                allowInput: true // Allow manual input as well
+            });
+
+            // Set today's date in the Date Today field
+            const today = new Date();
+            const formattedDate = today.toISOString().split("T")[0];
+            document.getElementById("date-today").value = formattedDate;
+        });
+
+
     </script>
 </body>
 
