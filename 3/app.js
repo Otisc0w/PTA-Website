@@ -2718,6 +2718,24 @@ app.post("/decide-poomsae-winners/:eventid", async (req, res) => {
       }
     }
 
+    // Insert each player's match history into the match_history table
+    for (const player of players) {
+      const { error: matchHistoryError } = await supabase
+        .from("match_history")
+        .insert([
+          {
+            eventid,
+            athleteid: player.athleteid,
+            ranking: player.ranking,
+          },
+        ]);
+
+      if (matchHistoryError) {
+        console.error("Error inserting match history:", matchHistoryError.message);
+        return res.status(500).send("Error inserting match history");
+      }
+    }
+
     res.redirect(`/events-details/${eventid}`);
   } catch (error) {
     console.error("Server error:", error.message);
