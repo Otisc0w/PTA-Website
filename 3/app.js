@@ -2246,6 +2246,7 @@ app.post("/create-event", upload.single("eventpicture"), async (req, res) => {
           starttime,
           endtime,
           location,
+          status: "Active",
         },
       ])
       .select(); // Ensure the data is returned
@@ -2343,7 +2344,7 @@ app.post("/update-event", upload.single("eventpicture"), async (req, res) => {
       return res.status(500).json({ message: "Failed to update event", error });
     }
 
-    res.redirect("/events"); // Redirect to a success page or another appropriate route
+    res.redirect(`/events-details/${eventid}`);
   } catch (error) {
     console.error("Server error:", error.message);
     res.status(500).json({ message: "Server error, unable to update event" });
@@ -2421,6 +2422,37 @@ app.post("/submit-player", async (req, res) => {
     if (registrationError) {
       console.error("Error creating registration:", registrationError.message);
       return res.status(500).send("Error creating registration.");
+    }
+
+        // Fetch the event details from the events table
+    const { data: thisevent, error: thiseventError } = await supabase
+      .from("events")
+      .select("*")
+      .eq("id", eventid)
+      .single();
+
+    if (thiseventError) {
+      console.error("Error fetching event details:", thiseventError.message);
+      return res.status(500).send("Error fetching event details.");
+    }
+
+    console.log("Fetched event details:", thisevent); // Log the event details to the console
+
+    // Insert a notification for the player about their registration
+    const { error: notificationError } = await supabase
+      .from("notifications")
+      .insert([
+      {
+      userid: userid,
+      type: "Event",
+      message: `You have successfully registered for ${thisevent.name}`,
+      desc: `Your registration for the event ${thisevent.name} has been successfully submitted. Please wait for approval from the event organizer.`,
+      },
+      ]);
+
+    if (notificationError) {
+      console.error("Error creating notification:", notificationError.message);
+      return res.status(500).send("Error creating notification");
     }
 
     res.redirect(`/events-details/${eventid}`);
@@ -2708,7 +2740,61 @@ app.post("/update-eventreg-status", async (req, res) => {
       return res.status(500).send("Error updating status");
     }
 
-    // Optionally, handle post-acceptance actions, like notifying the user or updating other related tables
+    // Fetch the event registration details using the applicationId
+    const { data: eventRegistration, error: eventRegistrationError } = await supabase
+      .from("events_registrations")
+      .select("*")
+      .eq("id", applicationId)
+      .single();
+
+    if (eventRegistrationError) {
+      console.error("Error fetching event registration:", eventRegistrationError.message);
+      return res.status(500).send("Error fetching event registration");
+    }
+
+    // Add a notification for the user about their event registration status
+    const { data: user, error: userError } = await supabase
+      .from("users")
+      .select("username")
+      .eq("id", eventRegistration.userid)
+      .single();
+
+    if (userError) {
+      console.error("Error fetching user:", userError.message);
+      return res.status(500).send("Error fetching user");
+    }
+
+    // Fetch the event details from the events table
+    const { data: event, error: eventError } = await supabase
+      .from("events")
+      .select("*")
+      .eq("id", eventRegistration.eventid)
+      .single();
+
+    if (eventError) {
+      console.error("Error fetching event details:", eventError.message);
+      return res.status(500).send("Error fetching event details");
+    }
+
+    const notificationMessage = registered === "true" 
+      ? `Your registration for the event ${event.name} has been accepted.` 
+      : `Your registration for the event ${event.name} has been rejected.`;
+
+    const { error: notificationError } = await supabase
+      .from("notifications")
+      .insert([
+        {
+          userid: eventRegistration.userid,
+          type: "Event",
+          message: notificationMessage,
+          desc: `You are now listed to compete at ${event.name}. Take note of your check-in code for easy entry`,
+        },
+      ]);
+
+    if (notificationError) {
+      console.error("Error creating notification:", notificationError.message);
+      return res.status(500).send("Error creating notification");
+    }
 
     console.log("Registration updated:", registration);
     res.redirect(`/events-review-registration/${applicationId}`);
