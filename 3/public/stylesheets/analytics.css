@@ -1,60 +1,84 @@
 @import url('https://fonts.cdnfonts.com/css/sf-pro-display');
 
-
 html, body {
-    height: 100%; /* Make sure the body takes up the full height */
+    height: 100%;
     margin: 0;
     padding: 0;
 }
 
 body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
     background-color: #2e2e2e;
     color: #ffffff;
-    margin: 0;
-    overflow-x: hidden;
-    display: flex; /* Use flexbox for the body */
-    flex-direction: column; /* Arrange children in a column */
     font-family: 'SF Pro Display', Arial, sans-serif;
 }
 
 .analytics-container {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: 2fr 1fr 1fr; /* Make the first column wider */
+    grid-template-rows: 320px 320px; /* Set each row height */
+    grid-template-areas: 
+        "summary top-performers upcoming-events"
+        "summary clubs member-engagement";
     gap: 20px;
-    padding: 10px; /* Add padding around the container */
-    margin-top: 20px; /* Space between the navbar and the analytics container */
-    flex-grow: 1; /* Allow this container to grow and fill available space */
+    padding: 10px;
+    margin-top: 20px;
+    max-width: 1200px;
+    width: 100%;
+    margin: 0 auto;
+    flex-grow: 1; /* Allows this container to expand and push footer down */
 }
 
+.summary-card {
+    grid-area: summary;
+    height: 95%;
+}
+
+.top-performers-card {
+    grid-area: top-performers;
+}
+
+.upcoming-events-card {
+    grid-area: upcoming-events;
+}
+
+.clubs-card {
+    grid-area: clubs;
+}
+
+.member-engagement-card {
+    grid-area: member-engagement;
+}
+
+/* Card Styling */
 .card {
-    background: #3c3c3c; /* Slightly lighter background for cards */
+    background: #3c3c3c;
     border-radius: 8px;
     padding: 20px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5); /* Stronger shadow for depth */
-    transition: transform 0.2s; /* Smooth scaling effect */
-    height: 300px; /* Fixed height for equal card sizes */
-    display: flex; /* Use flexbox for alignment */
-    flex-direction: column; /* Arrange items in a column */
-    justify-content: space-between; /* Space items evenly */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    transition: transform 0.2s;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 .card:hover {
-    transform: scale(1.05); /* Slight zoom on hover */
+    transform: scale(1.05);
 }
 
 .header {
     font-size: 24px;
     margin-bottom: 10px;
-   /* border-bottom: 2px solid #007BFF; /* Accent line below header */
-   /* padding-bottom: 10px; /* Padding below header */
-    text-align: center; /* Center the header text */
+    text-align: center;
     background-color: #333;
 }
 
 .chart {
     width: 100%;
     height: 200px;
-    background: #333; /* Background color for charts */
+    background: #333;
     border-radius: 8px;
     position: relative;
 }
@@ -65,10 +89,26 @@ body {
     border-radius: 50%;
 }
 
-.summary {
-    margin-bottom: 10px; /* Adjust margin for summaries */
-    font-size: 16px; /* Increase font size for better visibility */
+.summary-list {
+    margin-bottom: 10px;
+    font-size: 16px;
 }
+
+.see-more-button {
+    background-color: #007BFF;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 15px;
+    align-self: center;
+}
+
+.see-more-button:hover {
+    background-color: #0056b3;
+}
+
 
 .create-report-container {
     text-align: right; /* Align button to the right */
@@ -83,7 +123,7 @@ body {
     border-radius: 4px;
     cursor: pointer;
     text-decoration: none;
-    margin-left: 20px; /* Added margin to the left */
+    margin-right: 20px; /* Added margin to the left */
 }
 
 .create-report-button:hover {
