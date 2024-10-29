@@ -6,7 +6,7 @@
     <link rel="icon" type="image/x-icon" href="/images/favicon.ico" />
     <link rel="stylesheet" type="text/css" href="../stylesheets/home.css" />
     <link rel="stylesheet" type="text/css" href="../stylesheets/navbar.css" />
-    <link rel="stylesheet" type="text/css" href="../stylesheets/analytics.css" /> <!-- Link to the new CSS file -->
+    <link rel="stylesheet" type="text/css" href="../stylesheets/analytics.css" />
 </head>
 
 <body class="container">
@@ -30,9 +30,11 @@
                 <li class="analytics"><a href="analytics">Analytics</a></li>
                 <li class="profile-pic">
                     {{#if user.profilepic}}
-                    <a href="#" onclick="toggleDropdown()"><img src="{{user.profilepic}}" alt="Profile Picture" class="profile-picture"></a>
+                    <a href="#" onclick="toggleDropdown()"><img src="{{user.profilepic}}" alt="Profile Picture"
+                            class="profile-picture"></a>
                     {{else}}
-                    <a href="#" onclick="toggleDropdown()" class="profile-picture"><img src="/images/none.jpg" alt="Profile Picture" class="profile-picture"></a>
+                    <a href="#" onclick="toggleDropdown()" class="profile-picture"><img src="/images/none.jpg"
+                            alt="Profile Picture" class="profile-picture"></a>
                     {{/if}}
                     <div id="dropdown" class="dropdown-content">
                         <a href="profile">Profile</a>
@@ -45,56 +47,53 @@
         </div>
     </div>
 
-     <div class="create-report-container">
+    <div class="create-report-container">
         <a href="create-report" class="create-report-button">+ Create Report</a>
     </div>
 
     <div class="analytics-container">
-        <div class="card">
-            <div class="header">Summary</div>
-            <div class="summary">Total Participants: 250</div>
-            <div class="summary">Total Events: 15</div>
-            <div class="summary">Total Medals: 45</div>
-        </div>
-
-        <div class="card">
-            <div class="header">Top Performers</div>
-            <div class="summary">1. John Doe - 5 Medals</div>
-            <div class="summary">2. Jane Smith - 4 Medals</div>
-            <div class="summary">3. Emily Johnson - 3 Medals</div>
-        </div>
-
-        <div class="card">
-            <div class="header">Upcoming Events</div>
-            <div class="summary">Event 1: National Championships - Nov 15</div>
-            <div class="summary">Event 2: Regional Meet - Dec 10</div>
-        </div>
-
-        <div class="card">
-            <div class="header">Performance Over Time</div>
-            <div class="chart">
-                <div class="data-point" style="left: 10%; height: 50%; background: blue;"></div>
-                <div class="data-point" style="left: 30%; height: 70%; background: blue;"></div>
-                <div class="data-point" style="left: 50%; height: 90%; background: blue;"></div>
-                <div class="data-point" style="left: 70%; height: 30%; background: blue;"></div>
-                <div class="data-point" style="left: 90%; height: 60%; background: blue;"></div>
-            </div>
-        </div>
-
-        <div class="card">
-            <div class="header">Costs vs. Revenue</div>
-            <div class="chart">
-                <div class="data-point" style="left: 20%; height: 40%; background: red;"></div>
-                <div class="data-point" style="left: 60%; height: 80%; background: green;"></div>
-            </div>
-        </div>
-
-        <div class="card">
-            <div class="header">Member Engagement</div>
-            <div class="summary">Active Members: 200</div>
-            <div class="summary">Inactive Members: 50</div>
-        </div>
+    <div class="card summary-card">
+        <div class="header">Summary</div>
+        <ul class="summary-list">
+            <li>Top Performers of the Year</li>
+            <li>Total Events in the Year</li>
+            <li>Total Clubs in a year</li>
+            <li>Total Participants in a year</li>
+        </ul>
+        <button class="see-more-button">See more</button>
     </div>
+
+    <div class="card top-performers-card">
+        <div class="header">Top Performers</div>
+        <ul>
+            <li>John Doe - 5 Medals</li>
+            <li>Jane Smith - 4 Medals</li>
+            <li>Emily Johnson - 3 Medals</li>
+        </ul>
+    </div>
+
+    <div class="card upcoming-events-card">
+        <div class="header">Upcoming Events</div>
+        <ul>
+            <li>Event 1: National Championships - Nov 15</li>
+            <li>Event 2: Regional Meet - Dec 10</li>
+        </ul>
+    </div>
+
+    <div class="card clubs-card">
+        <div class="header">Clubs</div>
+        <!-- Clubs data would go here -->
+    </div>
+
+    <div class="card member-engagement-card">
+        <div class="header">Member Engagement</div>
+        <ul>
+            <li>Active Members: 200</li>
+            <li>Inactive Members: 50</li>
+        </ul>
+    </div>
+</div>
+
 
     <footer>
         <div class="footer-content">
