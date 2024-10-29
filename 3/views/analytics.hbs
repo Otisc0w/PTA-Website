@@ -47,53 +47,85 @@
         </div>
     </div>
 
-    <div class="create-report-container">
+    <!-- Filter and Create Report Section -->
+    <div class="action-bar">
+        <div class="filter-panel">
+            <div class="filter-group">
+                <label for="belt-color">Belt Color</label>
+                <select id="belt-color">
+                    <option>All</option>
+                    <option value="White Belt">White Belt</option>
+                    <option value="Low Yellow Belt">Low Yellow Belt</option>
+                    <option value="High Yellow Belt">High Yellow Belt</option>
+                    <option value="Low Blue Belt">Low Blue Belt</option>
+                    <option value="High Blue Belt">High Blue Belt</option>
+                    <option value="Low Red Belt">Low Red Belt</option>
+                    <option value="High Red Belt">High Red Belt</option>
+                    <option value="Low Brown Belt">Low Brown Belt</option>
+                    <option value="High Brown Belt">High Brown Belt</option>
+                    <option value="Junior/Poom Black Belt">Junior/Poom Black Belt</option>
+                    <option value="Black/Dan Belt">Black/Dan Belt</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="club">Club</label>
+                <select id="club" name="club">
+                    <option>All</option>
+                    {{#each clubs}}
+                    <option value="{{id}}">{{this.clubname}}</option>
+                    {{/each}}
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="athlete-search">Search Athlete</label>
+                <input type="text" id="athlete-search" placeholder="Search...">
+            </div>
+            <button class="apply-btn">Apply</button>
+        </div>
         <a href="create-report" class="create-report-button">+ Create Report</a>
     </div>
 
     <div class="analytics-container">
-    <div class="card summary-card">
-        <div class="header">Summary</div>
-        <ul class="summary-list">
-            <li>Top Performers of the Year</li>
-            <li>Total Events in the Year</li>
-            <li>Total Clubs in a year</li>
-            <li>Total Participants in a year</li>
-        </ul>
-        <button class="see-more-button">See more</button>
-    </div>
+        <div class="card summary-card">
+            <div class="header">Summary</div>
+            <ul class="summary-list">
+                <li>Top Performers of the Year</li>
+                <li>Total Events in the Year</li>
+                <li>Total Clubs in a year</li>
+                <li>Total Participants in a year</li>
+            </ul>
+            <button class="see-more-button">See more</button>
+        </div>
 
-    <div class="card top-performers-card">
-        <div class="header">Top Performers</div>
-        <ul>
-            <li>John Doe - 5 Medals</li>
-            <li>Jane Smith - 4 Medals</li>
-            <li>Emily Johnson - 3 Medals</li>
-        </ul>
-    </div>
+        <div class="card top-performers-card">
+            <div class="header">Top Performers</div>
+            <ul>
+                <li>John Doe - 5 Medals</li>
+                <li>Jane Smith - 4 Medals</li>
+                <li>Emily Johnson - 3 Medals</li>
+            </ul>
+        </div>
 
-    <div class="card upcoming-events-card">
-        <div class="header">Upcoming Events</div>
-        <ul>
-            <li>Event 1: National Championships - Nov 15</li>
-            <li>Event 2: Regional Meet - Dec 10</li>
-        </ul>
-    </div>
+        <div class="card upcoming-events-card">
+            <div class="header">Upcoming Events</div>
+            <ul>
+                <li>Event 1: National Championships - Nov 15</li>
+                <li>Event 2: Regional Meet - Dec 10</li>
+            </ul>
+        </div>
 
-    <div class="card clubs-card">
-        <div class="header">Clubs</div>
-        <!-- Clubs data would go here -->
-    </div>
+        <div class="card clubs-card">
+            <div class="header">Clubs</div>
+        </div>
 
-    <div class="card member-engagement-card">
-        <div class="header">Member Engagement</div>
-        <ul>
-            <li>Active Members: 200</li>
-            <li>Inactive Members: 50</li>
-        </ul>
+        <div class="card member-engagement-card">
+            <div class="header">Member Engagement</div>
+            <ul>
+                <li>Active Members: 200</li>
+                <li>Inactive Members: 50</li>
+            </ul>
+        </div>
     </div>
-</div>
-
 
     <footer>
         <div class="footer-content">
