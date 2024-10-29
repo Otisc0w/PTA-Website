@@ -217,31 +217,20 @@
             });
         });
 
-        // Get the modal element
         var modal = document.getElementById("createReportModal");
 
-        // Function to open the modal
         function openModal() {
             modal.style.display = "flex";
         }
 
-        // Function to close the modal
         function closeModal() {
             modal.style.display = "none";
         }
 
-        // Close the modal if user clicks outside of the modal content
         window.onclick = function (event) {
             if (event.target == modal) {
                 closeModal();
             }
-        }
-
-        // Example function to handle form submission
-        function submitReport() {
-            // You can add your form submission logic here
-            alert("Report Submitted!");
-            closeModal();
         }
 
         document.addEventListener("DOMContentLoaded", function () {
@@ -254,6 +243,19 @@
                 allowInput: true
             });
         });
+
+        function submitReport() {
+            const reportTitle = document.getElementById("report-title").value;
+            const reportType = document.getElementById("report-type").value;
+
+            if (reportType === "top-performers") {
+                const listItem = document.createElement("li");
+                listItem.textContent = reportTitle;
+                document.getElementById("top-performers-list").appendChild(listItem);
+            }
+
+            closeModal();
+        }
 
     </script>
 </body>
