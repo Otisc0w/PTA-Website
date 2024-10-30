@@ -4636,3 +4636,4 @@ app.post('/rsvp', async (req, res) => {
     res.status(500).json({ error: 'RSVP failed' });
   }
 });
+
