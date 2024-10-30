@@ -4624,3 +4624,20 @@ app.post("/create-announcement", async (req, res) => {
     res.status(500).send("Server error while creating announcement");
   }
 });
+
+app.get('/events-data', async (req, res) => {
+  try {
+    const { data: events, error } = await supabase
+      .from('events')
+      .select('id, name, date, location, description');
+
+    if (error) {
+      res.status(500).json({ error: error.message });
+    } else {
+      res.json(events);
+    }
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+

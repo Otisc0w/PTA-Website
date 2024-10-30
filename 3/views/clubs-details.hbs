@@ -122,9 +122,15 @@
         <li><a href="#">Announcements</a></li>
         <li><a href="#">Requests</a></li>
         {{/if}}
-        <li><a href="#">Activity</a></li>
+        <li><a href="#" id="activity-tab">Activity</a></li>
       </ul>
     </div>
+
+    <div class="events-list" id="activity-events-section" style="display: none;">
+      <h2>Club Events</h2>
+      <div id="events-content"></div>
+    </div>
+
     <br>
     <!-- Modal for Creating Announcements -->
     <div id="announceModal" class="modal">
@@ -358,6 +364,73 @@
         closeannounceModal();
       }
     }
+  document.addEventListener('DOMContentLoaded', function () {
+  const activityTab = document.getElementById('activity-tab');
+  const eventsSection = document.getElementById('activity-events-section');
+  const eventsContent = document.getElementById('events-content');
+  
+  // Get other tabs
+  const homeTab = document.querySelector('.clubtabs ul li:nth-child(1) a');
+  const membersTab = document.querySelector('.clubtabs ul li:nth-child(2) a');
+  const announcementsTab = document.querySelector('.clubtabs ul li:nth-child(3) a');
+  const requestsTab = document.querySelector('.clubtabs ul li:nth-child(4) a');
+
+  // Other sections
+  const leftside = document.querySelector('.leftside');
+  const rightside = document.querySelector('.rightside');
+  const participantsContainer = document.querySelector('.participants-container');
+  const announcementsSection = document.getElementById('announcements-section');
+  const clubRequests = document.querySelector('.clubrequests');
+
+  // Function to show the Activity Events section
+  async function showActivityEvents() {
+    // Hide other sections
+    leftside.style.display = 'none';
+    rightside.style.display = 'none';
+    participantsContainer.style.display = 'none';
+    announcementsSection.style.display = 'none';
+    clubRequests.style.display = 'none';
+    
+    // Show the events section
+    eventsSection.style.display = 'block';
+
+    // Fetch events from the backend
+    const response = await fetch('/events-data');
+    const events = await response.json();
+    
+    eventsContent.innerHTML = ''; // Clear any previous events
+
+    // Loop through events and add each to the HTML
+    events.forEach(event => {
+      const eventDiv = document.createElement('div');
+      eventDiv.className = 'event-item';
+      eventDiv.innerHTML = `
+        <h3>${event.name}</h3>
+        <p>Date: ${event.date}</p>
+        <p>Location: ${event.location}</p>
+        <p>Description: ${event.description}</p>
+      `;
+      eventsContent.appendChild(eventDiv);
+    });
+  }
+
+  // Function to hide the Activity Events section
+  function hideActivityEvents() {
+    eventsSection.style.display = 'none';
+  }
+
+  // Event listener for the "Activity" tab
+  activityTab.addEventListener('click', function () {
+    showActivityEvents();
+  });
+
+  // Event listeners for other tabs to hide the Activity section
+  homeTab.addEventListener('click', hideActivityEvents);
+  membersTab.addEventListener('click', hideActivityEvents);
+  announcementsTab.addEventListener('click', hideActivityEvents);
+  requestsTab.addEventListener('click', hideActivityEvents);
+});
+
   </script>
 </body>
 
