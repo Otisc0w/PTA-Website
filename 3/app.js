@@ -2536,7 +2536,7 @@ app.post("/submit-player", async (req, res) => {
   }
 });
 
-app.post("/begin-competition/:id", async (req, res) => {
+app.post("/begin-kyorugi-competition/:id", async (req, res) => {
   const { id: eventid } = req.params; // Get the event ID from the URL
 
   try {
@@ -2579,7 +2579,7 @@ app.post("/begin-competition/:id", async (req, res) => {
   }
 });
 
-app.post("/begin-poomsae/:id", async (req, res) => {
+app.post("/begin-poomsae-competition/:id", async (req, res) => {
 
   const { id: eventid } = req.params; // Get the event ID from the URL
 
