@@ -110,14 +110,14 @@ body {
     border-radius: 5px;
 }
 
+/* Header Styling */
 .analytics-container .card .header {
     font-size: 1.2em;
     font-weight: bold;
-    margin: 0;
-    padding: 0;
     text-align: center;
     background-color: #333;
-    padding-bottom: 10px; /* Optional: adds a bit of space within the header itself */
+    padding-bottom: 15px; /* Adds space within the header */
+    margin-bottom: 15px; /* Adds space between the header and the content */
 }
 
 /* ------------------ Report List Styling ------------------ */
@@ -133,18 +133,18 @@ body {
     flex-direction: column;
     align-items: flex-start;
     padding: 8px;
-    margin-bottom: 5px;
+    margin-bottom: 10px; /* Add space between report items */
     background-color: #333;
     border-radius: 3px;
     color: #f1f1f1;
     box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.2);
 }
 
-.analytics-container .card ul li:first-child {
-    margin-top: 0; /* Ensure there's no space at the top of the first item */
-    padding-top: 0; /* Remove any padding on top of the first item */
+/* Remove margin from the last item to avoid extra space at the bottom of the list */
+.analytics-container .card ul li:last-child {
+    margin-bottom: 0;
+    padding-top: 0;
 }
-
 .report-title-item,
 .report-description,
 .report-date {
