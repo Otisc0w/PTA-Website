@@ -2664,6 +2664,19 @@ app.post("/decide-poomsae-winners/:eventid", async (req, res) => {
   const { eventid } = req.params;
 
   try {
+
+    // Fetch all events using eventid
+    const { data: events, error: eventsError } = await supabase
+      .from("events")
+      .select("*")
+      .eq("id", eventid);
+
+    if (eventsError) {
+      console.error("Error fetching events:", eventsError.message);
+      return res.status(500).send("Error fetching events");
+    }
+
+    console.log("Fetched events data:", events); // Log the events data to the console
     // Update the current round in the events table
     const { error: updateRoundError } = await supabase
       .from("events")
@@ -2726,6 +2739,7 @@ app.post("/decide-poomsae-winners/:eventid", async (req, res) => {
             eventid,
             athleteid: player.athleteid,
             ranking: player.ranking,
+            eventname: events[0].name,
           },
         ]);
 
