@@ -2664,11 +2664,10 @@ app.post("/decide-poomsae-winners/:eventid", async (req, res) => {
   const { eventid } = req.params;
 
   try {
-
     // Update the current round in the events table
     const { error: updateRoundError } = await supabase
       .from("events")
-      .update({ currentround: 3})
+      .update({ currentround: 3 })
       .eq("id", eventid);
 
     if (updateRoundError) {
