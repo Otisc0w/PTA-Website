@@ -31,34 +31,65 @@ body {
     flex-grow: 1; /* Allows this container to expand and push footer down */
 }
 
-/* Style for report list items */
+/* Style for each report list item within the card */
 .analytics-container .card ul li {
     display: flex;
     flex-direction: column;
-    padding: 8px;
-    margin-bottom: 5px;
-    background-color: #333; /* Adjust color as needed */
+    align-items: flex-start;
+    padding: 10px;
+    margin-bottom: 8px;
+    background-color: #333; /* Background color for each item */
     border-radius: 5px;
-    color: #f1f1f1; /* Text color for better readability */
+    color: #f1f1f1;
+    box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.2);
 }
 
-/* Report title */
+/* Ensure each card’s content area is scrollable if it overflows */
+.analytics-container .card ul {
+    max-height: 200px; /* Adjust height as needed */
+    overflow-y: auto;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+
+/* Consistent padding within cards */
+.analytics-container .card {
+    padding: 15px;
+}
+
+/* Report title styling */
 .analytics-container .card ul li .report-title {
     font-weight: bold;
     font-size: 1.1em;
     margin-bottom: 4px;
 }
 
-/* Report description */
+/* Report description styling */
 .analytics-container .card ul li .report-description {
     font-size: 0.9em;
     margin-bottom: 4px;
 }
 
-/* Date range */
+/* Date range styling */
 .analytics-container .card ul li .report-date {
     font-size: 0.85em;
-    color: #bbb; /* Slightly muted color */
+    color: #bbb;
+}
+
+/* Handle spacing between reports when there are multiple items */
+.analytics-container .card ul li:not(:last-child) {
+    margin-bottom: 10px;
+}
+
+/* Scrollbar customization (optional) */
+.analytics-container .card ul::-webkit-scrollbar {
+    width: 6px;
+}
+
+.analytics-container .card ul::-webkit-scrollbar-thumb {
+    background-color: #555;
+    border-radius: 5px;
 }
 
 .summary-card {
@@ -81,6 +112,7 @@ body {
 .member-engagement-card {
     grid-area: member-engagement;
 }
+
 
 /* Card Styling */
 .card {
@@ -348,4 +380,25 @@ textarea {
 
 .footer-content .social-media img {
     height: 30px;
+}
+
+/* Style for report titles displayed under each summary item */
+.report-titles {
+    margin-top: 8px;
+    padding-left: 10px;
+    font-size: 0.9em;
+    color: #f1f1f1;
+}
+
+/* Style each report title item */
+.report-title-item {
+    margin-bottom: 4px;
+    font-weight: bold;
+}
+
+/* Style for the message when no reports are available */
+.no-reports-message {
+    color: #bbb;
+    font-style: italic;
+    margin-top: 4px;
 }
