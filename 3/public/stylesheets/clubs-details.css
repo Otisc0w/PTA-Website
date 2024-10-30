@@ -919,6 +919,7 @@ h1 {
   color: #fff;
 }
 
+<<<<<<< Updated upstream
 .event-item h3 {
   font-size: 18px;
   margin-top: 0;
@@ -926,7 +927,55 @@ h1 {
 
 .event-item p {
   margin: 5px 0;
+=======
+
+.clubrequests {
+  width: 80%;
+  margin: 40px auto;
+  padding: 20px;
+  background-color: #2e2e2e;
+  border-radius: 10px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
+}
+
+.clubrequests h2 {
+  color: #fff;
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.clubrequests .request {
+  background-color: #444;
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.clubrequests .request p {
+  color: #fff;
+  font-size: 16px;
+  margin: 10px 0;
+}
+
+.clubrequests .accept-btn {
+  background-color: #4CAF50;
+  color: white;
+  padding: 10px 15px;
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.clubrequests .accept-btn:hover {
+  background-color: #45a049;
+>>>>>>> Stashed changes
 }
 
 
 
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes

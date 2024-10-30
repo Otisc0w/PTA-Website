@@ -2043,33 +2043,48 @@ app.post("/request-join-club", async (req, res) => {
   }
 });
 
-app.post("/accept-join-club-request/:id", async (req, res) => {
-  const { id } = req.params;
+app.post("/accept-join-club-request", async (req, res) => {
+  const { id, userid } = req.body;
 
   if (!req.session.user) {
     return res.status(401).send("Unauthorized: No user logged in");
   }
 
-  const userid = req.session.user.id;
-
   try {
     // Fetch the join request details to get the clubname
+    // Fetch the join request details to get the clubid
     const { data: joinRequest, error: fetchError } = await supabase
       .from("club_requests")
       .select("*")
       .eq("id", id)
-      .eq("userid", userid)
       .single();
 
     if (fetchError || !joinRequest) {
       console.error(
-        "Error fetching join request:",
-        fetchError ? fetchError.message : "Join request not found"
+      "Error fetching join request:",
+      fetchError ? fetchError.message : "Join request not found"
       );
       return res.status(500).send("Error fetching join request");
     }
 
-    const clubname = joinRequest.clubname;
+    const clubid = joinRequest.clubid;
+
+    // Fetch the club name from the clubs table using the clubid
+    const { data: club, error: clubError } = await supabase
+      .from("clubs")
+      .select("clubname")
+      .eq("id", clubid)
+      .single();
+
+    if (clubError || !club) {
+      console.error(
+      "Error fetching club name:",
+      clubError ? clubError.message : "Club not found"
+      );
+      return res.status(500).send("Error fetching club name");
+    }
+
+    const clubname = club.clubname;
 
     // Update the join request status to 'accepted'
     const { error: updateRequestError } = await supabase
@@ -2080,8 +2095,8 @@ app.post("/accept-join-club-request/:id", async (req, res) => {
 
     if (updateRequestError) {
       console.error(
-        "Error accepting join request:",
-        updateRequestError.message
+      "Error accepting join request:",
+      updateRequestError.message
       );
       return res.status(500).send("Error accepting join request");
     }
@@ -2095,6 +2110,23 @@ app.post("/accept-join-club-request/:id", async (req, res) => {
     if (updateUserError) {
       console.error("Error updating user club:", updateUserError.message);
       return res.status(500).send("Error updating user club");
+    }
+
+    // Add a notification for the user about their club join request acceptance
+    const { error: notificationError } = await supabase
+      .from("notifications")
+      .insert([
+      {
+        userid,
+        type: "Club",
+        message: `Your request to join the club ${clubname} has been accepted.`,
+        desc: `Congratulations! Your request to join the club ${clubname} has been accepted. You are now a member of the club.`,
+      },
+      ]);
+
+    if (notificationError) {
+      console.error("Error creating notification:", notificationError.message);
+      return res.status(500).send("Error creating notification");
     }
 
     // Update the session with the new club
@@ -3543,6 +3575,34 @@ app.get("/clubs-details/:id", async function (req, res) {
         .json({ announcementserror: announcementserror.message });
     }
 
+    const { data: club_requests, error: club_requestsError } = await supabase
+      .from("club_requests")
+      .select("*")
+      .eq("clubid", id);
+
+    if (club_requestsError) {
+      return res.status(400).json({ club_requestsError: club_requestsError.message });
+    }
+
+    const { data: users, error: usersError } = await supabase
+      .from("users")
+      .select("id, firstname, lastname");
+
+    if (usersError) {
+      return res.status(400).json({ usersError: usersError.message });
+    }
+
+    // Merge user data with club requests
+    const clubRequestsWithUserDetails = club_requests.map((request) => {
+      const user = users.find((user) => user.id === request.userid);
+      return {
+        ...request,
+        firstname: user ? user.firstname : null,
+        lastname: user ? user.lastname : null,
+      };
+    });
+    
+
     const clubMembers = athletes.filter(
       (athlete) => athlete.club === club.clubname
     );
@@ -3553,6 +3613,8 @@ app.get("/clubs-details/:id", async function (req, res) {
       allUsers,
       clubMembers,
       announcements,
+      club_requests,
+      clubRequestsWithUserDetails,
       user: req.session.user,
     });
   } catch (error) {
