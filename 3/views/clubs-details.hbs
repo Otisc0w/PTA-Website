@@ -233,6 +233,11 @@
     {{#each club_requests}}
       {{userid}}
       {{status}}
+      <form action="/accept-join-club-request" method="POST">
+        <input type="hidden" name="userid" value="{{userid}}">
+        <input type="hidden" name="clubid" value="{{clubid}}">
+        <button type="submit">Accept</button>
+      </form>
     {{/each}}
   </div>
 

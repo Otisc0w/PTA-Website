@@ -2025,7 +2025,11 @@ app.post("/request-join-club", async (req, res) => {
   try {
     const { data, error } = await supabase
       .from("club_requests")
-      .insert([{ clubid, userid }]);
+      .insert([{
+        clubid, 
+        userid,
+        status: "pending",
+       }]);
 
     if (error) {
       console.error("Error requesting to join club:", error.message);
@@ -2037,6 +2041,71 @@ app.post("/request-join-club", async (req, res) => {
     console.error("Server error:", error.message);
     res.status(500).json({ error: error.message });
   }
+});
+
+app.post("/accept-join-club-request/:id", async (req, res) => {
+  const { id } = req.params;
+
+  if (!req.session.user) {
+    return res.status(401).send("Unauthorized: No user logged in");
+  }
+
+  const userid = req.session.user.id;
+
+  try {
+    // Fetch the join request details to get the clubname
+    const { data: joinRequest, error: fetchError } = await supabase
+      .from("club_requests")
+      .select("*")
+      .eq("id", id)
+      .eq("userid", userid)
+      .single();
+
+    if (fetchError || !joinRequest) {
+      console.error(
+        "Error fetching join request:",
+        fetchError ? fetchError.message : "Join request not found"
+      );
+      return res.status(500).send("Error fetching join request");
+    }
+
+    const clubname = joinRequest.clubname;
+
+    // Update the join request status to 'accepted'
+    const { error: updateRequestError } = await supabase
+      .from("club_requests")
+      .update({ status: "accepted" })
+      .eq("id", id)
+      .eq("userid", userid);
+
+    if (updateRequestError) {
+      console.error(
+        "Error accepting join request:",
+        updateRequestError.message
+      );
+      return res.status(500).send("Error accepting join request");
+    }
+
+    // Update the club column in the users table
+    const { error: updateUserError } = await supabase
+      .from("users")
+      .update({ club: clubname })
+      .eq("id", userid);
+
+    if (updateUserError) {
+      console.error("Error updating user club:", updateUserError.message);
+      return res.status(500).send("Error updating user club");
+    }
+
+    // Update the session with the new club
+    req.session.user.club = clubname;
+
+    res.redirect("/notifications");
+  } catch (error) {
+    console.error("Server error:", error.message);
+    res.status(500).json({ error: error.message });
+  }
+
 });
 
 app.post("/accept-invitation/:id", async (req, res) => {
@@ -3071,7 +3140,12 @@ app.post("/submit-kyorugi-scores", async (req, res) => {
   try {
     const { error } = await supabase
       .from("kyorugi_matches")
-      .update({ player1score, player2score, winner, loser })
+      .update({ 
+        player1score,
+        player2score, 
+        winner, 
+        loser
+      })
       .eq("id", matchid);
 
     if (error) {
