@@ -4622,3 +4622,18 @@ app.post('/rsvp', async (req, res) => {
     res.status(500).json({ error: 'RSVP failed' });
   }
 });
+
+//try
+// Middleware to restrict analytics access to admins only
+function isAdmin(req, res, next) {
+  if (req.session.user && req.session.user.ptaverified === true) {
+    next(); // User is admin, allow access
+  } else {
+    res.status(403).send("Access Denied: Admins only"); // Deny access if not admin
+  }
+}
+
+// Route for analytics page with admin-only access
+app.get("/analytics", isAdmin, (req, res) => {
+  res.render("analytics");
+});
