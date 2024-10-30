@@ -263,8 +263,26 @@
 
         function addReportToUI(report) {
             let listItem = document.createElement("li");
-            listItem.textContent = `${report.title} - ${report.description} (From: ${report.startDate} To: ${report.endDate})`;
 
+            // Create elements for each part of the report and add classes for styling
+            let titleElement = document.createElement("span");
+            titleElement.classList.add("report-title");
+            titleElement.textContent = report.title;
+
+            let descriptionElement = document.createElement("span");
+            descriptionElement.classList.add("report-description");
+            descriptionElement.textContent = report.description;
+
+            let dateElement = document.createElement("span");
+            dateElement.classList.add("report-date");
+            dateElement.textContent = `(From: ${report.startDate} To: ${report.endDate})`;
+
+            // Append each part to the list item
+            listItem.appendChild(titleElement);
+            listItem.appendChild(descriptionElement);
+            listItem.appendChild(dateElement);
+
+            // Add the list item to the appropriate section
             switch (report.type) {
                 case "top-performers":
                     document.getElementById("top-performers-content").appendChild(listItem);
@@ -282,6 +300,7 @@
                     alert("Invalid report type.");
             }
         }
+
         document.addEventListener("DOMContentLoaded", function () {
             const today = new Date();
             const formattedDate = today.toISOString().split("T")[0];
