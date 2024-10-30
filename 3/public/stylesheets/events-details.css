@@ -921,6 +921,7 @@ input[type="number"]:focus {
 
 .kyorugi-scoresheet {
   max-width: 800px;
+  width: 800px;
   margin: auto; /* Center the modal */
   top: 50%; /* Center vertically */
   left: 50%; /* Center horizontally */
@@ -1082,4 +1083,18 @@ input[type="number"]:focus {
 
 .titleandbuttons{
   width: 400px;
+}
+
+.open-kyorugi-scoresheet{
+  background-color: #333;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  }
+
+  .open-kyorugi-scoresheet:hover {
+    background-color: #666;
 }
