@@ -31,6 +31,36 @@ body {
     flex-grow: 1; /* Allows this container to expand and push footer down */
 }
 
+/* Style for report list items */
+.analytics-container .card ul li {
+    display: flex;
+    flex-direction: column;
+    padding: 8px;
+    margin-bottom: 5px;
+    background-color: #333; /* Adjust color as needed */
+    border-radius: 5px;
+    color: #f1f1f1; /* Text color for better readability */
+}
+
+/* Report title */
+.analytics-container .card ul li .report-title {
+    font-weight: bold;
+    font-size: 1.1em;
+    margin-bottom: 4px;
+}
+
+/* Report description */
+.analytics-container .card ul li .report-description {
+    font-size: 0.9em;
+    margin-bottom: 4px;
+}
+
+/* Date range */
+.analytics-container .card ul li .report-date {
+    font-size: 0.85em;
+    color: #bbb; /* Slightly muted color */
+}
+
 .summary-card {
     grid-area: summary;
     height: 95%;
