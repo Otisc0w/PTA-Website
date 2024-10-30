@@ -67,7 +67,6 @@
 
             <button class="apply-btn">Apply</button>
         </div>
-        <!-- Changed to button with onclick event -->
         <button type="button" class="create-report-button" onclick="openModal()">+ Create Report</button>
     </div>
 
@@ -83,32 +82,25 @@
             <button class="see-more-button">See more</button>
         </div>
 
-        <div class="card top-performers-card">
+        <div class="card top-performers-card" id="top-performers-list">
             <div class="header">Top Performers</div>
-            <ul>
-                <li>John Doe - 5 Medals</li>
-                <li>Jane Smith - 4 Medals</li>
-                <li>Emily Johnson - 3 Medals</li>
-            </ul>
+            <ul id="top-performers-content"></ul>
         </div>
 
-        <div class="card upcoming-events-card">
+        <div class="card upcoming-events-card" id="upcoming-events-list">
             <div class="header">Upcoming Events</div>
-            <ul>
-                <li>Event 1: National Championships - Nov 15</li>
-                <li>Event 2: Regional Meet - Dec 10</li>
+            <ul id="upcoming-events-content">
             </ul>
         </div>
 
-        <div class="card clubs-card">
+        <div class="card clubs-card" id="clubs-list">
             <div class="header">Clubs</div>
+            <ul id="clubs-content"></ul>
         </div>
 
-        <div class="card member-engagement-card">
+        <div class="card member-engagement-card" id="member-engagement-list">
             <div class="header">Member Engagement</div>
-            <ul>
-                <li>Active Members: 200</li>
-                <li>Inactive Members: 50</li>
+            <ul id="member-engagement-content">
             </ul>
         </div>
     </div>
@@ -133,10 +125,8 @@
                 <div class="form-group">
                     <label for="report-start-date">Start Date:</label>
                     <input type="text" id="report-start-date" class="datepicker">
-
                     <label for="report-end-date">End Date:</label>
                     <input type="text" id="report-end-date" class="datepicker">
-
                 </div>
 
                 <div class="form-group">
@@ -162,7 +152,6 @@
             </form>
         </div>
     </div>
-
 
     <footer>
         <div class="footer-content">
@@ -207,10 +196,7 @@
             const today = new Date();
             const formattedDate = today.toISOString().split("T")[0]; // YYYY-MM-DD format
             document.getElementById("date-today").value = formattedDate;
-        });
 
-        document.addEventListener("DOMContentLoaded", function () {
-            // Initialize Flatpickr on elements with the 'datepicker' class
             flatpickr(".datepicker", {
                 dateFormat: "Y-m-d", // Format as YYYY-MM-DD
                 allowInput: true // Allow manual input as well
@@ -233,29 +219,109 @@
             }
         }
 
-        document.addEventListener("DOMContentLoaded", function () {
-            flatpickr("#report-start-date", {
-                dateFormat: "Y-m-d",
-                allowInput: true
-            });
-            flatpickr("#report-end-date", {
-                dateFormat: "Y-m-d",
-                allowInput: true
-            });
-        });
-
         function submitReport() {
             const reportTitle = document.getElementById("report-title").value;
+            const reportDescription = document.getElementById("report-description").value;
+            const reportStartDate = document.getElementById("report-start-date").value;
+            const reportEndDate = document.getElementById("report-end-date").value;
             const reportType = document.getElementById("report-type").value;
 
-            if (reportType === "top-performers") {
-                const listItem = document.createElement("li");
-                listItem.textContent = reportTitle;
-                document.getElementById("top-performers-list").appendChild(listItem);
-            }
+            // Create a report object with all details
+            const report = {
+                title: reportTitle,
+                description: reportDescription,
+                startDate: reportStartDate,
+                endDate: reportEndDate,
+                type: reportType
+            };
+
+            // Save the report to local storage
+            saveReportToLocalStorage(report);
+
+            // Add the report to the UI
+            addReportToUI(report);
+
+            // Clear form inputs after submission
+            document.getElementById("report-title").value = "";
+            document.getElementById("report-description").value = "";
+            document.getElementById("report-start-date").value = "";
+            document.getElementById("report-end-date").value = "";
+            document.getElementById("report-type").value = "";
+            document.getElementById("report-format").value = "pdf";
 
             closeModal();
         }
+
+        function saveReportToLocalStorage(report) {
+            // Get existing reports from local storage or initialize an empty array
+            let reports = JSON.parse(localStorage.getItem("reports")) || [];
+            // Add the new report
+            reports.push(report);
+            // Save back to local storage
+            localStorage.setItem("reports", JSON.stringify(reports));
+        }
+
+        function addReportToUI(report) {
+            let listItem = document.createElement("li");
+
+            // Create elements for each part of the report and add classes for styling
+            let titleElement = document.createElement("span");
+            titleElement.classList.add("report-title");
+            titleElement.textContent = report.title;
+
+            let descriptionElement = document.createElement("span");
+            descriptionElement.classList.add("report-description");
+            descriptionElement.textContent = report.description;
+
+            let dateElement = document.createElement("span");
+            dateElement.classList.add("report-date");
+            dateElement.textContent = `(From: ${report.startDate} To: ${report.endDate})`;
+
+            // Append each part to the list item
+            listItem.appendChild(titleElement);
+            listItem.appendChild(descriptionElement);
+            listItem.appendChild(dateElement);
+
+            // Add the list item to the appropriate section
+            switch (report.type) {
+                case "top-performers":
+                    document.getElementById("top-performers-content").appendChild(listItem);
+                    break;
+                case "upcoming-events":
+                    document.getElementById("upcoming-events-content").appendChild(listItem);
+                    break;
+                case "clubs":
+                    document.getElementById("clubs-content").appendChild(listItem);
+                    break;
+                case "member-engagement":
+                    document.getElementById("member-engagement-content").appendChild(listItem);
+                    break;
+                default:
+                    alert("Invalid report type.");
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const today = new Date();
+            const formattedDate = today.toISOString().split("T")[0];
+            document.getElementById("date-today").value = formattedDate;
+
+            flatpickr(".datepicker", {
+                dateFormat: "Y-m-d",
+                allowInput: true
+            });
+
+            // Load reports from local storage and display them
+            loadReportsFromLocalStorage();
+        });
+
+        function loadReportsFromLocalStorage() {
+            let reports = JSON.parse(localStorage.getItem("reports")) || [];
+            reports.forEach(report => {
+                addReportToUI(report);
+            });
+        }
+
 
     </script>
 </body>
