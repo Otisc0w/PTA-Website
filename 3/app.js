@@ -2496,6 +2496,32 @@ app.post("/delete-event/:id", async (req, res) => {
   }
 });
 
+app.post("/delete-club/:id", async (req, res) => {
+  const { id } = req.params;
+
+  if (!req.session.user) {
+    return res.status(401).send("Unauthorized: No user logged in");
+  }
+
+  try {
+    // Delete the club from the database
+    const { error } = await supabase
+      .from("clubs")
+      .delete()
+      .eq("id", id);
+
+    if (error) {
+      console.error("Error deleting club:", error.message);
+      return res.status(500).send("Error deleting club");
+    }
+
+    res.redirect("/clubs");
+  } catch (error) {
+    console.error("Server error:", error.message);
+    res.status(500).json({ error: error.message });
+  }
+});
+
 app.post("/submit-player", async (req, res) => {
   const {
     athleteid,

@@ -100,7 +100,7 @@
         <tbody id="athletes-tbody">
           {{#each athletes}}
           <tr data-athlete-id="{{id}}"
-            onclick="showAthleteDetails('{{id}}', '{{name}}', '{{athleteClass}}', '{{height}}', '{{weight}}', '{{birthplace}}', '{{club}}', '{{image}}', '{{userid}}')">
+            onclick="showAthleteDetails('{{id}}', '{{name}}', '{{athleteClass}}', '{{height}}', '{{weight}}', '{{birthplace}}', '{{club}}', '{{portrait}}', '{{userid}}')">
             <td>{{@index}}</td>
             <td>{{name}}</td>
             <td>{{club}}</td>
@@ -209,13 +209,13 @@
       }
     }
 
-    function showAthleteDetails(id, name, athleteClass, height, weight, birthplace, club, image, userid) {
+    function showAthleteDetails(id, name, athleteClass, height, weight, birthplace, club, portrait, userid) {
       document.getElementById("athlete-name").textContent = name;
       document.getElementById("athlete-class").textContent = "Class: " + athleteClass;
       document.getElementById("athlete-height-weight").textContent = "HT/WT: " + height + " cm, " + weight + " kg";
       document.getElementById("athlete-birthplace").textContent = "Location: " + birthplace;
       document.getElementById("athlete-club").textContent = "Club: " + club;
-      document.getElementById("athlete-image").src = image;
+      document.getElementById("athlete-image").src = portrait;
       document.getElementById("modal-userid").value = userid;
       document.getElementById("more-details-link").href = "/athletes-profile/" + id;
       document.getElementById("athlete-details").style.display = "block"; // Show the athlete details
