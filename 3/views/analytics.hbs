@@ -74,13 +74,27 @@
         <div class="card summary-card">
             <div class="header">Summary</div>
             <ul class="summary-list">
-                <li>Top Performers of the Year</li>
-                <li>Total Events in the Year</li>
-                <li>Total Clubs in a year</li>
-                <li>Total Participants in a year</li>
+                <li>
+                    <span onclick="displayReportTitles('top-performers')">Top Performers of the Year</span>
+                    <div id="top-performers-titles" class="report-titles"></div>
+                </li>
+                <li>
+                    <span onclick="displayReportTitles('upcoming-events')">Total Events in the Year</span>
+                    <div id="upcoming-events-titles" class="report-titles"></div>
+                </li>
+                <li>
+                    <span onclick="displayReportTitles('clubs')">Total Clubs in a year</span>
+                    <div id="clubs-titles" class="report-titles"></div>
+                </li>
+                <li>
+                    <span onclick="displayReportTitles('member-engagement')">Total Participants in a year</span>
+                    <div id="member-engagement-titles" class="report-titles"></div>
+                </li>
             </ul>
             <button class="see-more-button">See more</button>
         </div>
+
+
 
         <div class="card top-performers-card" id="top-performers-list">
             <div class="header">Top Performers</div>
@@ -321,6 +335,49 @@
                 addReportToUI(report);
             });
         }
+function displayReportTitles(reportType) {
+    // Clear previous content from all report title display areas
+    document.querySelectorAll(".report-titles").forEach(div => div.innerHTML = "");
+
+    // Determine the target element to display report titles based on report type
+    let targetDiv;
+    switch (reportType) {
+        case "top-performers":
+            targetDiv = document.getElementById("top-performers-titles");
+            break;
+        case "upcoming-events":
+            targetDiv = document.getElementById("upcoming-events-titles");
+            break;
+        case "clubs":
+            targetDiv = document.getElementById("clubs-titles");
+            break;
+        case "member-engagement":
+            targetDiv = document.getElementById("member-engagement-titles");
+            break;
+        default:
+            return;
+    }
+
+    // Retrieve the reports from local storage and filter by type
+    let reports = JSON.parse(localStorage.getItem("reports")) || [];
+    let filteredReports = reports.filter(report => report.type === reportType);
+
+    // Populate the target div with the titles of the filtered reports
+    if (filteredReports.length > 0) {
+        filteredReports.forEach(report => {
+            let titleElement = document.createElement("div");
+            titleElement.classList.add("report-title-item");
+            titleElement.textContent = report.title;
+            targetDiv.appendChild(titleElement);
+        });
+    } else {
+        // If no reports are found, display a message
+        let noReportsMessage = document.createElement("div");
+        noReportsMessage.classList.add("no-reports-message");
+        noReportsMessage.textContent = "No reports available for this category.";
+        targetDiv.appendChild(noReportsMessage);
+    }
+}
 
 
     </script>
