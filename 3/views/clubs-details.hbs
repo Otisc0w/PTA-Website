@@ -170,11 +170,20 @@
             <span>Details</span>
             {{#if (eq club.registeredby user.id)}}
             <button class="edit-button" onclick="openModal()"></button>
+            <button class="deleteclub-button" onclick="confirmDelete()"></button>
+              <div class="confirmdeletescreen" style="display: none;">
+                Are you sure you <br>want to delete this club?<br>
+                  <form action="/delete-club/{{club.id}}" method="post">
+                  <button class="yesdelete" type="submit">Yes</button>
+                  </form>
+                <button class="nodelete" onclick="cancelDelete()">No</button>
+              </div>
             {{/if}}
           </div>
           <p>{{club.clubaddress}}</p>
           <p>{{club.email}}</p>
           <p>{{club.phonenum}}</p>
+          <p>{{club.description}}</p>
         </div>
       </div>
 
@@ -270,6 +279,17 @@
   </footer>
 
   <script>
+
+    function confirmDelete() {
+      document.querySelector('.confirmdeletescreen').style.display = 'block';
+      document.querySelector('.deleteevent-button').style.display = 'none';
+    }
+
+    function cancelDelete() {
+      document.querySelector('.confirmdeletescreen').style.display = 'none';
+      document.querySelector('.deleteevent-button').style.display = 'block';
+    }
+
     function toggleDropdown() {
       document.getElementById("dropdown").classList.toggle("show");
     }

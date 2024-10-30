@@ -552,9 +552,7 @@ app.post("/submit-signup", async (req, res) => {
   }
 });
 
-app.post(
-  "/submit-ncc",
-  upload.fields([
+app.post("/submit-ncc", upload.fields([
     { name: "birthcert", maxCount: 1 },
     { name: "portrait", maxCount: 1 },
   ]),
@@ -729,6 +727,23 @@ app.post(
         }
       }
 
+      // Add a notification for the user about their NCC registration submission
+      const { error: notificationError } = await supabase
+        .from("notifications")
+        .insert([
+          {
+            userid: submittedby,
+            type: "Registration",
+            message: "Your NCC registration has been successfully submitted.",
+            desc: "Your NCC registration has been successfully submitted and is now awaiting review. You will receive notifications for the status of your application.",
+          },
+        ]);
+
+      if (notificationError) {
+        console.error("Error creating notification:", notificationError.message);
+        return res.status(500).send("Error creating notification");
+      }
+
       res.redirect("/membership");
     } catch (error) {
       console.error("Server error:", error.message);
@@ -737,9 +752,7 @@ app.post(
   }
 );
 
-app.post(
-  "/submit-instructor",
-  upload.fields([
+app.post("/submit-instructor", upload.fields([
     { name: "birthcert", maxCount: 1 },
     { name: "portrait", maxCount: 1 },
     { name: "educproof", maxCount: 1 },
