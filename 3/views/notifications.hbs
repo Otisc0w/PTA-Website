@@ -59,42 +59,49 @@
       </span>
     </div>
 
-    {{#unless user.athleteverified}}
-    <div class="verification-reminder">
-      <h2>You don't have a club</h2>
-      <p>Join your real-life club first before applying to be verified! You can either</p>
-      <a href="clubs" class="button-3 bg-blue">Join a club</a>
-      <p>or</p>
-      <a href="membership" class="button-3 bg-blue">Register your club</a>
-    </div>
-    {{/unless}}
+    
 
     <ul class="notifications-list">
-      {{#reverseEach notifications}}
-      {{#if (eq type 'Registration')}}
-        <a style="text-decoration:none" href="/membership-status">
-      {{else if (eq type 'Event')}}
-        <a style="text-decoration:none" href="/events">
-      {{else if (eq type 'Club')}}
-        <a style="text-decoration:none" href="/clubs">
-      {{/if}}
-          <li class="notification">
-            <span class="notification-type {{type}}">{{type}}</span>
-            <div class="notification-content">
-              <h2>{{title}}</h2>
-              <p class="msg">{{message}}</p>
-              <p class="desc">{{desc}}</p>
-              <span class="notification-user">{{user}}</span>
-              <span class="notification-time">{{formatCreatedAt created_at}}</span>
-            </div>
-            <form action="/delete-notification/{{id}}" method="post" style="display: inline;">
-              <button class="delete-button" type="submit">&#10005;</button>
-            </form>
+      {{#unless user.athleteverified}}
+        <a style="text-decoration:none" href="/membership">
+          <li class="welcomenotification">
+            <span class="notification-type {{type}}"><strong>Welcome</strong></span>
+              <div class="notification-content">
+                <h2></h2>
+                <p class="msg">Welcome to the PTA Website!</p>
+                <p class="desc">To get started, complete your membership registration and join a club.</p>
+                <span class="notification-time">forever</span>
+              </div>
           </li>
-          {{else}}
-          <li class="no-notifs">No notifications available</li>
         </a>
-        {{/reverseEach}}
+      {{/unless}}
+      {{#reverseEach notifications}}
+        {{#if (eq type 'Registration')}}
+          <a style="text-decoration:none" href="/membership-status">
+        {{else if (eq type 'Event')}}
+          <a style="text-decoration:none" href="/events">
+        {{else if (eq type 'Club')}}
+          <a style="text-decoration:none" href="/clubs">
+        {{else if (eq type 'Welcome')}}
+          <a style="text-decoration:none" href="/membership">
+        {{/if}}
+            <li class="notification">
+              <span class="notification-type {{type}}">{{type}}</span>
+              <div class="notification-content">
+                <h2>{{title}}</h2>
+                <p class="msg">{{message}}</p>
+                <p class="desc">{{desc}}</p>
+                <span class="notification-user">{{user}}</span>
+                <span class="notification-time">{{formatCreatedAt created_at}}</span>
+              </div>
+              <form action="/delete-notification/{{id}}" method="post" style="display: inline;">
+                <button class="delete-button" type="submit">&#10005;</button>
+              </form>
+            </li>
+            {{else}}
+            <li class="no-notifs">No notifications available</li>
+          </a>
+      {{/reverseEach}}
     </ul>
 
     <ul>

@@ -267,3 +267,21 @@ body {
     background-color: #333;
     transition: background-color 0.1ss ease-in-out;
 }
+
+.welcomenotification {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #007BFF;
+    color: white;
+    padding: 20px;
+    margin: 10px 0;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px (0, 0, 0, 0.2);
+    width: 100%;
+}
+
+.welcomenotification:hover {
+    background-color: #2b90fc;
+    transition: background-color 0.1ss ease-in-out;
+}
