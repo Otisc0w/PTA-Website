@@ -66,10 +66,12 @@
         <label for="name">Event Name:</label>
         <input type="text" id="name" name="name" required>
       </div>
+      
       <div class="form-group">
         <label for="description">Event Description:</label>
         <textarea id="description" name="description" rows="4" required></textarea>
       </div>
+      
       <div class="form-group">
         <label for="beltlevel">Belt Level:</label>
         <select id="beltlevel" name="beltlevel" >
@@ -81,6 +83,7 @@
           <option value="black">Black</option>
         </select>
       </div>
+      
       <div class="form-group">
         <label for="gender">Gender:</label>
         <select id="gender" name="gender" required>
@@ -88,6 +91,7 @@
           <option value="female">Female</option>
         </select>
       </div>
+      
       <div class="form-group">
         <label for="weightclass">Weight Class:</label>
         <select id="weightclass" name="weightclass">
@@ -100,6 +104,7 @@
           <option value="87+kg">87+kg</option>
         </select>
       </div>
+      
       <div class="form-group">
         <label for="division">Age Division:</label>
         <select id="division" name="agedivision">
@@ -110,24 +115,29 @@
           <option value="Ultra">Ultra</option>
         </select>
       </div>
+      
       <div class="form-group">
         <label for="date">Event Date:</label>
         <input type="date" id="date" name="date" value="{{event.date}}">
       </div>
+      
       <div class="form-group">
         <label for="starttime">Start Time:</label>
         <input type="time" id="starttime" name="starttime" value="{{event.starttime}}" required>
         <label for="endtime">End Time:</label>
         <input type="time" id="endtime" name="endtime" value="{{event.endtime}}" required>
       </div>
+      
       <div class="form-group">
         <label for="registrationcap">Registration Cap:</label>
         <input type="number" id="registrationcap" name="registrationcap" value="{{event.registrationcap}}" required>
       </div>
+      
       <div class="form-group">
         <label for="location">Location:</label>
         <input type="text" id="location" name="location" value="{{event.location}}" required>
       </div>
+      
       <button type="button" class="cancel" onclick="window.location.href='/events'">Cancel</button>
       <button type="submit">Create Event</button>
     </form>

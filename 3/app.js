@@ -3902,15 +3902,15 @@ app.get("/events-details/:id", async function (req, res) {
       return res.status(400).json({ error: eventregistrationsError.message });
     }
 
-    const { data: acceptedregs, error: acceptedregsError } =
-      await supabase
+    const { data: pendingregs, error: pendingregsError } = await supabase
       .from("events_registrations")
       .select("*")
       .eq("eventid", id)
-      .eq("registered", "true");
+      .eq("registered", "false")
+      .order("created_at", { ascending: true });
 
-    if (acceptedregsError) {
-      return res.status(400).json({ error: acceptedregsError.message });
+    if (pendingregsError) {
+      return res.status(400).json({ error: pendingregsError.message });
     }
 
     // Fetch the participants for the specific event
@@ -4104,7 +4104,7 @@ app.get("/events-details/:id", async function (req, res) {
       }, {});
 
     // Calculate the number of registrations
-    const registrationcount = acceptedregs.length;
+    const registrationcount = participants.length;
 
     // Fetch the top 4 players with the highest totalscore
     const { data: poomsaetop4, error: poomsaetop4Error } = await supabase
@@ -4131,8 +4131,8 @@ app.get("/events-details/:id", async function (req, res) {
     res.render("events-details", {
       event,
       eventregistrations,
-      acceptedregs,
       participants,
+      pendingregs,
       currentregistrant,
       matches,
       poomsaePlayers,

@@ -86,11 +86,16 @@
               {{/if}}
             </div>
           </div>
-          <p>{{event.description}}</p>
-          <p>Date: {{formatDate event.date "MMMM DD, YYYY"}}</p>
-          <p>Time: {{formatTime event.starttime "h:mm A"}} - {{formatTime event.endtime "h:mm A"}}</p>
-          <p>Event Type: {{event.eventtype}}</p>
-          <p>Registration Cap: {{registrationcount}} / {{event.registrationcap}}</p>
+            <p>{{event.description}}</p>
+            <p><strong>Time:</strong> {{formatTime event.starttime "h:mm A"}} - {{formatTime event.endtime "h:mm A"}}</p>
+            <p><strong>Location:</strong> {{event.location}}</p>
+            <p><strong>Gender:</strong> {{event.gender}}</p>
+            <p><strong>Belt Level:</strong> {{event.beltlevel}}</p>
+            <p><strong>Age Division:</strong> {{event.agedivision}}</p>
+            <p><strong>Weight Class:</strong> {{event.weightclass}}</p>
+            <p><strong>Event Type:</strong> {{event.eventtype}}</p>
+            <p><strong>Registration Cap:</strong> {{registrationcount}} / {{event.registrationcap}}</p>
+
         </div>
       </div>
 
@@ -536,6 +541,7 @@
 
   <div class="registrations-container">
     <div class="registrations-title">Pending Registrations</div>
+    {{#if pendingregs}}
     <table class="registrations-table">
       <thead>
         <tr>
@@ -548,7 +554,7 @@
         </tr>
       </thead>
       <tbody>
-        {{#each eventregistrations}}
+        {{#each pendingregs}}
         <tr>
           <td>{{this.playername}}</td>
           <td>{{this.club}}</td>
@@ -560,6 +566,37 @@
         {{/each}}
       </tbody>
     </table>
+    {{else}}
+    <h1>No pending registrations</h1>
+    {{/if}}
+
+    <div class="registrations-title">Accepted Registrations</div>
+    <table class="registrations-table">
+      <thead>
+        <tr>
+          <th>Player</th>
+          <th>Club</th>
+          <th>Height</th>
+          <th>Weight</th>
+          <th>Registered?</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each participants}}
+        <tr>
+          <td>{{this.playername}}</td>
+          <td>{{this.club}}</td>
+          <td>{{this.height}}</td>
+          <td>{{this.weight}}</td>
+          <td>{{this.registered}}</td>
+          <td><a href="/events-review-registration/{{this.id}}">review</a></td>
+        </tr>
+        {{/each}}
+      </tbody>
+    </table>
+
+    
   </div>
 
   <script>
