@@ -893,17 +893,7 @@ input[type="number"]:focus {
   margin-left:20px;
 }
 
-.openscoresheetbtn{
-  background-color: #007bff;
-  color: white;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-.submitscores:hover, .openscoresheetbtn:hover {
+.submitscores:hover{
   background-color: #0056b3;
 }
 
@@ -1085,7 +1075,7 @@ input[type="number"]:focus {
   width: 400px;
 }
 
-.open-kyorugi-scoresheet{
+.open-kyorugi-scoresheet, .open-poomsae-scoresheet{
   background-color: #333;
   color: white;
   padding: 10px 20px;
@@ -1093,8 +1083,8 @@ input[type="number"]:focus {
   border-radius: 5px;
   cursor: pointer;
   transition: background-color 0.3s;
-  }
+}
 
-  .open-kyorugi-scoresheet:hover {
-    background-color: #666;
+.open-kyorugi-scoresheet:hover, .open-poomsae-scoresheet:hover {
+  background-color: #666;
 }

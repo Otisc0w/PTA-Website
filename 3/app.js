@@ -71,6 +71,11 @@ hbs.handlebars.registerHelper("and", function (a, b) {
 hbs.registerHelper("arraySize", function (array) {
   return array.length;
 });
+hbs.registerHelper('ordinal', function (number) {
+  const suffixes = ["th", "st", "nd", "rd"];
+  const v = number % 100;
+  return number + (suffixes[(v - 20) % 10] || suffixes[v] || suffixes[0]);
+});
 hbs.registerHelper("renderComments", function (comments, options) {
   function renderNestedComments(comments, parentId) {
     let out = "<ul>";
@@ -2809,7 +2814,8 @@ app.post("/decide-poomsae-winners/:eventid", async (req, res) => {
     const { data: events, error: eventsError } = await supabase
       .from("events")
       .select("*")
-      .eq("id", eventid);
+      .eq("id", eventid)
+      .single();
 
     if (eventsError) {
       console.error("Error fetching events:", eventsError.message);
@@ -2859,14 +2865,15 @@ app.post("/decide-poomsae-winners/:eventid", async (req, res) => {
 
     // Update the ranking for all players in the last round
     for (let i = 0; i < players.length; i++) {
+      const ranking = i < 4 ? i + 1 : 0; // Assign ranking 1-4, and 0 for others
       const { error: updateError } = await supabase
-        .from("poomsae_players")
-        .update({ ranking: i + 1 })
-        .eq("id", players[i].id);
+      .from("poomsae_players")
+      .update({ ranking })
+      .eq("id", players[i].id);
 
       if (updateError) {
-        console.error("Error updating ranking:", updateError.message);
-        return res.status(500).send("Error updating ranking");
+      console.error("Error updating ranking:", updateError.message);
+      return res.status(500).send("Error updating ranking");
       }
     }
 
@@ -2879,7 +2886,8 @@ app.post("/decide-poomsae-winners/:eventid", async (req, res) => {
             eventid,
             athleteid: player.athleteid,
             ranking: player.ranking,
-            eventname: events[0].name,
+            eventname: events.name,
+            eventlocation: events.location,
           },
         ]);
 
@@ -4241,7 +4249,7 @@ app.get("/athletes-profile/:athleteid", async function (req, res) {
     // Fetch match data
     const { data: matchdata, error: matchError } = await supabase
       .from("match_history")
-      .select("*")
+      .select("*, events(name, date, location)")
       .eq("athleteid", athleteid);
 
     if (matchError) {
@@ -4260,6 +4268,26 @@ app.get("/athletes-profile/:athleteid", async function (req, res) {
       return res.status(400).json({ error: recentmatchError.message });
     }
 
+    // Fetch events data
+    const { data: events, error: eventsError } = await supabase
+      .from("events")
+      .select("id, name, date, location");
+
+    if (eventsError) {
+      return res.status(400).json({ error: eventsError.message });
+    }
+
+    // Merge event data with match history
+    const matchDataWithEventDetails = matchdata.map((match) => {
+      const event = events.find((event) => event.id === match.eventid);
+      return {
+        ...match,
+        eventName: event ? event.name : null,
+        eventDate: event ? event.date : null,
+        eventLocation: event ? event.location : null,
+      };
+    });
+
     console.log("Fetched athlete data:", athlete); // Log athlete data to the console
     console.log("Fetched match data:", matchdata); // Log match data to the console
     console.log("Fetched recent match data:", recentmatch); // Log recent match data to the console
@@ -4269,6 +4297,7 @@ app.get("/athletes-profile/:athleteid", async function (req, res) {
       athlete,
       matchdata,
       recentmatch,
+      matchDataWithEventDetails,
       user: req.session.user,
     });
   } catch (error) {

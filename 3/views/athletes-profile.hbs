@@ -54,11 +54,11 @@
       </div>
       <div class="athlete-stats">
         <div class="stat">
-          <span class="label">Kyurogi Ranking Points</span>
-          <span class="value">{{athlete.rankingpoints}}1</span>
+          <span class="label">Kyorugi Golds</span>
+          <span class="value">{{athlete.rankingpoints}}</span>
         </div>
         <div class="stat">
-          <span class="label">Poomsae Ranking Points</span>
+          <span class="label">Poomsae Golds</span>
           <span class="value">{{athlete.poomsaerankingpoints}}</span>
         </div>
       </div>
@@ -69,21 +69,21 @@
         <table class="career-stats">
           <thead>
             <tr>
-              <th>Event</th>
               <th>Date</th>
+              <th>Event</th>
               <th>Location</th>
               <th>Division</th>
               <th>Place</th>
             </tr>
           </thead>
           <tbody>
-            {{#reverseEach matchdata}}
+            {{#reverseEach recentMatchWithEventDetails}}
             <tr>
-              <td>{{eventname}}</td>
               <td>{{formatCreatedAt created_at}}</td>
+              <td>{{name}}</td>
               <td>{{location}}</td>
               <td>{{division}}</td>
-              <td>{{ranking}}</td>
+                <td>{{ordinal ranking}}</td>
             </tr>
             {{/reverseEach}}
           </tbody>
