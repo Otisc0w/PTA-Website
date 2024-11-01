@@ -4249,7 +4249,7 @@ app.get("/athletes-profile/:athleteid", async function (req, res) {
     // Fetch match data
     const { data: matchdata, error: matchError } = await supabase
       .from("match_history")
-      .select("*, events(name, date, location)")
+      .select("*")
       .eq("athleteid", athleteid);
 
     if (matchError) {
@@ -4268,25 +4268,29 @@ app.get("/athletes-profile/:athleteid", async function (req, res) {
       return res.status(400).json({ error: recentmatchError.message });
     }
 
-    // Fetch events data
-    const { data: events, error: eventsError } = await supabase
-      .from("events")
-      .select("id, name, date, location");
+    // Fetch event details for each match
+    const matchDataWithEventDetails = await Promise.all(
+      matchdata.map(async (match) => {
+        const { data: event, error: eventError } = await supabase
+          .from("events")
+          .select("*")
+          .eq("id", match.eventid)
+          .single();
 
-    if (eventsError) {
-      return res.status(400).json({ error: eventsError.message });
-    }
+        if (eventError) {
+          console.error("Error fetching event details:", eventError.message);
+          return { ...match, eventName: null, eventDate: null, eventLocation: null, ageDivision: null };
+        }
 
-    // Merge event data with match history
-    const matchDataWithEventDetails = matchdata.map((match) => {
-      const event = events.find((event) => event.id === match.eventid);
-      return {
-        ...match,
-        eventName: event ? event.name : null,
-        eventDate: event ? event.date : null,
-        eventLocation: event ? event.location : null,
-      };
-    });
+        return {
+          ...match,
+          eventName: event.name,
+          eventDate: event.date,
+          eventLocation: event.location,
+          ageDivision: event.agedivision,
+        };
+      })
+    );
 
     console.log("Fetched athlete data:", athlete); // Log athlete data to the console
     console.log("Fetched match data:", matchdata); // Log match data to the console

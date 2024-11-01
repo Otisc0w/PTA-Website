@@ -20,9 +20,9 @@
         <li class="forum"><a href="/forum">Forum</a></li>
         <li class="notifications">
         <a href="/notifications">Notifications
-          {{#if notifications}}
+          {{!-- {{#if notifications}}
           <span class="badge">{{notifications.length}}</span>
-          {{/if}}
+          {{/if}} --}}
         </a>
       </li>
         <li class="analytics"><a href="analytics">Analytics</a></li>
@@ -77,13 +77,13 @@
             </tr>
           </thead>
           <tbody>
-            {{#reverseEach recentMatchWithEventDetails}}
+            {{#reverseEach matchDataWithEventDetails}}
             <tr>
               <td>{{formatCreatedAt created_at}}</td>
-              <td>{{name}}</td>
-              <td>{{location}}</td>
-              <td>{{division}}</td>
-                <td>{{ordinal ranking}}</td>
+              <td>{{eventName}}</td>
+              <td>{{eventLocation}}</td>
+              <td>{{ageDivision}}</td>
+              <td>{{ordinal ranking}}</td>
             </tr>
             {{/reverseEach}}
           </tbody>
