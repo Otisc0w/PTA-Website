@@ -2410,6 +2410,8 @@ app.post("/update-event", upload.single("eventpicture"), async (req, res) => {
     starttime,
     endtime,
     agedivision,
+    beltlevel,
+    weightclass,
     status,
     gender,
   } = req.body;
@@ -2907,6 +2909,17 @@ app.post("/decide-poomsae-winners/:eventid", async (req, res) => {
         console.error("Error inserting match history:", matchHistoryError.message);
         return res.status(500).send("Error inserting match history");
       }
+    }
+
+    // Update the event status to "Concluded"
+    const { error: updateEventStatusError } = await supabase
+      .from("events")
+      .update({ status: "Concluded" })
+      .eq("id", eventid);
+
+    if (updateEventStatusError) {
+      console.error("Error updating event status:", updateEventStatusError.message);
+      return res.status(500).send("Error updating event status");
     }
 
     res.redirect(`/events-details/${eventid}`);

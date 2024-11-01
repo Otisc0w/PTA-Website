@@ -109,7 +109,7 @@
               <label for="eventstatus">Event Status:</label>
               <select id="eventstatus" name="status">
                 <option value="Active" {{#if (eq event.status "Active" )}}selected{{/if}}>Active</option>
-                <option value="Cancelled" {{#unless (eq event.active "Cancelled" )}}selected{{/unless}}>Cancelled
+                <option value="Cancelled" {{#if (eq event.status "Cancelled" )}}selected{{/if}}>Cancelled
                 </option>
               </select>
             </div>
@@ -135,7 +135,7 @@
                 <option value="green" {{#if (eq event.beltlevel "green")}}selected{{/if}}>Green</option>
                 <option value="blue" {{#if (eq event.beltlevel "blue")}}selected{{/if}}>Blue</option>
                 <option value="red" {{#if (eq event.beltlevel "red")}}selected{{/if}}>Red</option>
-                <option value="black" {{#if (eq event.beltlevel "black")}}selected{{/if}}>Black sdfgsdfgz{{event.beltlevel}}</option>
+                <option value="black" {{#if (eq event.beltlevel "black")}}selected{{/if}}>Black</option>
               </select>
 
 
@@ -190,10 +190,46 @@
 
         </div>
       </div>
+      
+      {{!--------------------------------------------------------------------------------- MIDDLE SIDE OF THIS PAGE --------------------------------------------------------------------}}
 
-      <div class="eventmiddleside">
+      <div class="eventmiddleside"> 
+      {{#if (eq event.status 'Cancelled')}}
+        <h1 style="color: red">This event has been<br> CANCELLED</h1>
+      {{else}}
+        
 
-        <div class="ranking"> {{!--only for kyorugi --}}
+        {{#if (eq event.eventtype 'Poomsae')}}
+          {{#if poomsaetop4}}
+            <div class="leaderboard">
+              <h3>Poomsae Rankings</h3>
+              <table class="leaderboard-table">
+                <thead>
+                  <tr>
+                    <th>Ranking</th>
+                    <th>Name</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {{#each poomsaetop4}}
+                    <tr class="leaderboard-item {{#if (eq ranking 1)}}first-place{{/if}}">
+                      <td class="ranking">{{ranking}}</td>
+                      <td class="name">{{name}}</td>
+                    </tr>
+                  {{/each}}
+                </tbody>
+              </table>
+            </div>
+          {{/if}}
+          
+        {{else if (eq event.eventtype 'Kyorugi')}}
+          {{#if kyorugitop4}}
+            <h3>Kyorugi Rankings</h3>
+            {{#each kyorugitop4}}
+              <p>{{ranking}} {{name}}</p>
+            {{/each}}
+          {{/if}}
+        <div class="ranking">
           <h3>Rankings</h3>
           <div class="rank-item">
 
@@ -240,14 +276,6 @@
             {{/if}}
           </div>
         </div>
-
-        {{#if (eq event.eventtype 'Poomsae')}}
-          {{#if poomsaetop4}}
-            <h3>Poomsae Rankings</h3>
-              {{#each poomsaetop4}}
-                <p>{{ranking}} {{name}}</p>
-              {{/each}}
-          {{/if}}
         {{/if}}
 
         <div class="schedule">
@@ -323,7 +351,41 @@
             {{/each}}
           {{/if}}
         </div>
+      
       </div>
+
+      <div class="eventrightside">
+        <div class="eventregistercodediv">
+          <div class="buttondiv">
+            {{#unless champion}}
+            {{#if user.athleteverified}}
+            {{#unless (or currentregistrant (me registrationcount event.registrationcap))}}
+              {{#if (eq event.status 'Active')}}
+                <a href="/events-registration/{{event.id}}" class="register-button">Register</a>
+              {{else}}
+                <h3>This event has been<br> CANCELLED</h3>
+              {{/if}}
+            {{else if currentregistrant.registered}}
+            <p>Your check-in code is:</p>
+            <h1 class="code">{{currentregistrant.id}}</h1>
+            {{else if currentregistrant}}
+            <p>Your check-in code is:</p>
+            <h1 class="pending">pending</h1>
+            {{else}}
+            <h1 class="pending">Registration Limit Reached</h1>
+            {{/unless}}
+            {{else}}
+            <a class="grayed-register-button">Not Registered</a>
+            {{/if}}
+            {{else}}
+            <h1 class="pending">This Competition has</h1>
+            <h1 class="pending"> Concluded</h1>
+            {{/unless}}
+          </div>
+        </div>
+      </div>
+      {{/if}}
+
 
       <div class="poomsae-score-sheet">
         <span class="close" onclick="closePoomsaeScoresheet()">&times;</span>
@@ -480,36 +542,6 @@
         </div>
       </div>
 
-      <div class="eventrightside">
-        <div class="eventregistercodediv">
-          <div class="buttondiv">
-            {{#unless champion}}
-            {{#if user.athleteverified}}
-            {{#unless (or currentregistrant (me registrationcount event.registrationcap))}}
-              {{#if (eq event.status 'Active')}}
-                <a href="/events-registration/{{event.id}}" class="register-button">Register</a>
-              {{else}}
-                <h3>This event has been<br> CANCELLED</h3>
-              {{/if}}
-            {{else if currentregistrant.registered}}
-            <p>Your check-in code is:</p>
-            <h1 class="code">{{currentregistrant.id}}</h1>
-            {{else if currentregistrant}}
-            <p>Your check-in code is:</p>
-            <h1 class="pending">pending</h1>
-            {{else}}
-            <h1 class="pending">Registration Limit Reached</h1>
-            {{/unless}}
-            {{else}}
-            <a class="grayed-register-button">Not Registered</a>
-            {{/if}}
-            {{else}}
-            <h1 class="pending">This Competition has</h1>
-            <h1 class="pending"> Concluded</h1>
-            {{/unless}}
-          </div>
-        </div>
-      </div>
     </div>
   </div>
 
