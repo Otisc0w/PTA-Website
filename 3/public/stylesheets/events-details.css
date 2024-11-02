@@ -604,6 +604,7 @@ h1 {
   background-color: #0074d9;
   color: white;
   border-radius: 4px;
+  margin-bottom: 30px;
 }
 
 .begincompe:hover {
@@ -1146,4 +1147,20 @@ input[type="number"]:focus {
 
 .winnersviewathlete:hover {
   background-color: #007bff;
+}
+
+.results-table, .resultstitle{
+  width: 60%;
+  margin: 0 auto;
+}
+
+.results-table {
+  margin-bottom: 50px;
+}
+
+.noresultsavailable{
+  text-align: center;
+  font-size: 20px;
+  color: #fff;
+  font-weight: bold;
 }

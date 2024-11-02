@@ -64,9 +64,9 @@
         {{#if (or currentregistrant user.ptaverified)}}
         <li><a href="#" id="announcements-tab">Announcements</a></li>
         {{/if}}
-        {{#if (eq event.status 'Concluded')}}
-        <li><a href="#" id="results-tab">Results</a></li>
-        {{/if}}
+        
+        <li {{#unless (eq event.status 'Concluded')}}style="display: none"{{/unless}}><a href="#" id="results-tab">Results</a></li>
+        
       </ul>
     </div><br>
 
@@ -197,11 +197,9 @@
       {{!--------------------------------------------------------------------------------- MIDDLE SIDE OF THIS PAGE --------------------------------------------------------------------}}
 
       <div class="eventmiddleside"> 
-      {{#if (eq event.status 'Cancelled')}}
-        <h1 style="color: red">This event has been<br> CANCELLED</h1>
-      {{else}}
-        
-
+        {{#if (eq event.status 'Cancelled')}}
+          <h1 style="color: red">This event has been<br> CANCELLED</h1>
+        {{else}}
           {{#if (eq event.eventtype 'Poomsae')}}
             {{#if poomsaetop4}}
               <h3>Poomsae Winners</h3>
@@ -298,8 +296,6 @@
                 {{/if}}
               {{/if}}
             {{/if}}
-
-          <h2>Schedule</h2>
           
           {{#if (eq event.eventtype 'Poomsae')}}
             {{#if sortedGroupedByRound}}
@@ -371,7 +367,6 @@
             </table>
           {{/if}}
         </div>
-      
       </div>
 
       <div class="eventrightside">
@@ -650,7 +645,7 @@
   </div>
 
   <div class="results-container" style="display: none;">
-    <h2>Results</h2>
+    <h2 class="resultstitle">Results</h2><br>
     {{#if poomsaeresults}}
       <table class="results-table">
         <thead>
@@ -675,7 +670,7 @@
         </tbody>
       </table>
     {{else}}
-      <p>No results available.</p>
+      <p class="noresultsavailable">No results available.</p>
     {{/if}}
   </div>
 
@@ -812,8 +807,7 @@
       });
     });
 
-    document.addEventListener('DOMContentLoaded', function () { ulateScores);
-      });
+    document.addEventListener('DOMContentLoaded', function () {
 
       function calculateScores() {
         let totalScore = 10.0; // Starting score for Poomsae
