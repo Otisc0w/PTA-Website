@@ -4131,6 +4131,16 @@ app.get("/events-details/:id", async function (req, res) {
       return res.status(400).json({ error: poomsaetop4Error.message });
     }
 
+    const { data: poomsaeresults, error: poomsaeresultsError } = await supabase
+      .from("poomsae_players")
+      .select("*")
+      .eq("eventid", id)
+      .order("totalscore", { ascending: false });
+
+    if (poomsaeresultsError) {
+      return res.status(400).json({ error: poomsaeresultsError.message });
+    }
+
     console.log("Fetched top players data:", poomsaetop4); // Log the top players data to the console
 
     console.log("Fetched event data:", event); // Log the event data to the console
@@ -4149,6 +4159,7 @@ app.get("/events-details/:id", async function (req, res) {
       currentregistrant,
       matches,
       poomsaePlayers,
+      poomsaeresults,
       registrationcount,
       registrationcap: event.registrationcap, // Assuming the registration cap is stored in the event table
       user: req.session.user,

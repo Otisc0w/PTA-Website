@@ -64,6 +64,9 @@
         {{#if (or currentregistrant user.ptaverified)}}
         <li><a href="#" id="announcements-tab">Announcements</a></li>
         {{/if}}
+        {{#if (eq event.status 'Concluded')}}
+        <li><a href="#" id="results-tab">Results</a></li>
+        {{/if}}
       </ul>
     </div><br>
 
@@ -644,8 +647,36 @@
         {{/each}}
       </tbody>
     </table>
+  </div>
 
-    
+  <div class="results-container" style="display: none;">
+    <h2>Results</h2>
+    {{#if poomsaeresults}}
+      <table class="results-table">
+        <thead>
+          <tr>
+            <th>Rank</th>
+            <th>Player</th>
+            <th>Techniscal</th>
+            <th>Performance</th>
+            <th>Total Score</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each poomsaeresults}}
+            <tr>
+              <td>{{ranking}}</td>
+              <td>{{name}}</td>
+              <td>{{technicalscore}}</td>
+              <td>{{performancescore}}</td>
+              <td>{{totalscore}}</td>
+            </tr>
+          {{/each}}
+        </tbody>
+      </table>
+    {{else}}
+      <p>No results available.</p>
+    {{/if}}
   </div>
 
   <script>
@@ -743,7 +774,8 @@
       participantsTab: document.getElementById('participants-tab'),
       detailsTab: document.getElementById('details-tab'),
       registrationsTab: document.getElementById('registrations-tab'),
-      announcementsTab: document.getElementById('announcements-tab')
+      announcementsTab: document.getElementById('announcements-tab'),
+      resultsTab: document.getElementById('results-tab')
       };
 
       const sections = {
@@ -752,7 +784,8 @@
       eventmiddleside: document.querySelector('.eventmiddleside'),
       participantsContainer: document.querySelector('.participants-container'),
       registrationsContainer: document.querySelector('.registrations-container'),
-      announcements: document.querySelector('.announcements')
+      announcements: document.querySelector('.announcements'),
+      resultsContainer: document.querySelector('.results-container')
       };
 
       function hideAllSections() {
@@ -764,7 +797,10 @@
       section.style.display = 'block';
       }
 
+      tabs.registrationsTab.addEventListener('click', () => showSection(sections.registrationsContainer));
+      tabs.announcementsTab.addEventListener('click', () => showSection(sections.announcements));
       tabs.participantsTab.addEventListener('click', () => showSection(sections.participantsContainer));
+      tabs.resultsTab.addEventListener('click', () => showSection(sections.resultsContainer));
       tabs.detailsTab.addEventListener('click', () => {
       sections.eventleftside.style.display = 'block';
       sections.eventrightside.style.display = 'block';
@@ -772,9 +808,9 @@
       sections.participantsContainer.style.display = 'none';
       sections.registrationsContainer.style.display = 'none';
       sections.announcements.style.display = 'none';
+      sections.resultsContainer.style.display = 'none';
       });
-      tabs.registrationsTab.addEventListener('click', () => showSection(sections.registrationsContainer));
-      tabs.announcementsTab.addEventListener('click', () => showSection(sections.announcements));
+      
     });
 
     function openModal() {
