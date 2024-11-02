@@ -48,35 +48,59 @@
   </div>
 
   <div class="events-container">
-    <div class="search-create-container">
-      <div class="search-container">
-        <input type="text" id="search-input" placeholder="Search event...">
-        <button onclick="searchEvents()">Search</button>
-      </div>
-      {{#if user.ptaverified}}
-      <a onclick="openModal()" class="create-event-button">+ Create Event</a>
-      {{/if}}
+  <div class="search-create-container">
+    <div class="search-container">
+      <input type="text" id="search-input" placeholder="Search event...">
+      <button onclick="searchEvents()">Search</button>
     </div>
-    <div class="main-panel">
-      <div class="news">
-        <h2 class="left-align-title">Upcoming Events</h2>
-        <div id="events" class="horizontal-container">
-          {{#each events}}
+    {{#if user.ptaverified}}
+    <a onclick="openModal()" class="create-event-button">+ Create Event</a>
+    {{/if}}
+  </div>
+  
+  <!-- Upcoming Events Section -->
+  <div class="main-panel">
+    <div class="news">
+      <h2 class="left-align-title">Upcoming Events</h2>
+      <div id="events" class="horizontal-container">
+        {{#each events}}
+          {{#unless (eq status "Completed")}} <!-- Exclude completed events -->
           <div class="event event-card">
             <img src="{{eventpicture}}" alt="Event {{id}}">
             <h3 class="event-title">{{name}} <br> {{formatDate date "MMMM D, YYYY"}} {{time}}</h3>
             <p>{{eventtype}}</p>
             {{#if (eq status "Cancelled")}}
-              <a href="/events-details/{{id}}" style=" color: gray;">Cancelled</a>
+              <a href="/events-details/{{id}}" style="color: gray;">Cancelled</a>
             {{else}}
               <a href="/events-details/{{id}}">Read More</a>
             {{/if}}
           </div>
-          {{/each}}
-        </div>
+          {{/unless}}
+        {{/each}}
       </div>
     </div>
   </div>
+
+  <!-- Past Events Section -->
+  <div class="main-panel">
+    <div class="news">
+      <h2 class="left-align-title">Past Events</h2>
+      <div id="past-events" class="horizontal-container">
+        {{#each events}}
+          {{#if (eq status "Completed")}} <!-- Only include completed events -->
+          <div class="event event-card">
+            <img src="{{eventpicture}}" alt="Event {{id}}">
+            <h3 class="event-title">{{name}} <br> {{formatDate date "MMMM D, YYYY"}} {{time}}</h3>
+            <p>{{eventtype}}</p>
+            <a href="/events-details/{{id}}" style="color: green;">Completed</a>
+          </div>
+          {{/if}}
+        {{/each}}
+      </div>
+    </div>
+  </div>
+</div>
+
 
   <div id="createmodal" class="modal">
     <div class="modal-content">
