@@ -810,7 +810,52 @@
       sections.announcements.style.display = 'none';
       sections.resultsContainer.style.display = 'none';
       });
-      
+    });
+
+    document.addEventListener('DOMContentLoaded', function () { ulateScores);
+      });
+
+      function calculateScores() {
+        let totalScore = 10.0; // Starting score for Poomsae
+
+        document.querySelectorAll('.deduction-input').forEach(input => {
+          const maxScore = parseFloat(input.dataset.max);
+          const deduction = parseFloat(input.value) || 0;
+          const finalScoreElement = input.parentElement.nextElementSibling;
+          const finalScore = Math.max(0, maxScore - deduction); // Avoid negative scores
+
+          // Update the final score display for each row
+          finalScoreElement.textContent = finalScore.toFixed(1);
+
+          // Deduct from the total score
+          totalScore -= deduction;
+        });
+
+        // Update the total score in the UI
+        document.getElementById('total-score').textContent = totalScore.toFixed(1);
+      }
+
+      document.addEventListener('input', function() {
+        let player1_total = 0;
+        let player2_total = 0;
+        const player1_rounds = document.querySelectorAll('input[name^="player1_round"]');
+        const player2_rounds = document.querySelectorAll('input[name^="player2_round"]');
+        const player1_ot = document.querySelector('input[name="player1_ot"]');
+        const player2_ot = document.querySelector('input[name="player2_ot"]');
+        
+        player1_rounds.forEach(input => player1_total += parseInt(input.value) || 0);
+        player2_rounds.forEach(input => player2_total += parseInt(input.value) || 0);
+        
+        if (player1_ot) {
+          player1_total += parseInt(player1_ot.value) || 0;
+        }
+        if (player2_ot) {
+          player2_total += parseInt(player2_ot.value) || 0;
+        }
+        
+        document.querySelector('input[name="player1_total"]').value = player1_total;
+        document.querySelector('input[name="player2_total"]').value = player2_total;
+      });
     });
 
     function openModal() {
