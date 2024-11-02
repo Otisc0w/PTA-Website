@@ -113,6 +113,8 @@
               <select id="eventstatus" name="status">
                 <option value="Active" {{#if (eq event.status "Active" )}}selected{{/if}}>Active</option>
                 <option value="Cancelled" {{#if (eq event.status "Cancelled" )}}selected{{/if}}>Cancelled
+          <!-- try -->        
+                <option value="Completed" {{#if (eq event.status "Completed" )}}selected{{/if}}>Completed</option>
                 </option>
               </select>
             </div>
@@ -199,6 +201,9 @@
       <div class="eventmiddleside"> 
         {{#if (eq event.status 'Cancelled')}}
           <h1 style="color: red">This event has been<br> CANCELLED</h1>
+          <!-- try -->
+           {{else if (eq event.status 'Completed')}}
+        <h1 style="color: green">This event has been<br> COMPLETED</h1>
         {{else}}
           {{#if (eq event.eventtype 'Poomsae')}}
             {{#if poomsaetop4}}
