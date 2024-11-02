@@ -45,6 +45,10 @@
     position: relative;
 }
 
+.notfollowedtopic form {
+    display: inline-block;
+}
+
 .followedtopic{
     background-color: #444;
     padding: 8px 8px;
@@ -536,11 +540,19 @@
     cursor: pointer;
 }
 
-.deletebtn {
-    background-color: red;
+.deletetopic {
+    background: none;
     border: none;
-    color: white;
-    padding: 10px 20px;
-    border-radius: 5px;
+    color: inherit;
+    font: inherit;
     cursor: pointer;
-  }
+    padding: 3px 5px 4px 5px;
+    border-radius: 10px;
+    float: right;
+    vertical-align: middle;
+}
+
+.deletetopic:hover{
+    background-color: #db2e5a;
+}
+
