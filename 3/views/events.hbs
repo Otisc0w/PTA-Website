@@ -58,7 +58,6 @@
       {{/if}}
     </div>
     <div class="main-panel">
-      <!-- upcoming events -->
       <div class="news">
         <h2 class="left-align-title">Upcoming Events</h2>
         <div id="events" class="horizontal-container">
@@ -68,33 +67,14 @@
             <h3 class="event-title">{{name}} <br> {{formatDate date "MMMM D, YYYY"}} {{time}}</h3>
             <p>{{eventtype}}</p>
             {{#if (eq status "Cancelled")}}
-            <p>CANCELLED</p>
+              <a href="/events-details/{{id}}" style=" color: gray;">Cancelled</a>
+            {{else}}
+              <a href="/events-details/{{id}}">Read More</a>
             {{/if}}
-            <a href="/events-details/{{id}}">Read More</a>
           </div>
           {{/each}}
         </div>
       </div>
-
-      <!-- promotion tests -->
-      {{!-- <div class="news">
-        <h2 class="left-align-title">Promotion Tests</h2>
-        <div id="promotion-tests" class="horizontal-container">
-          {{#each promotionTests}}
-          <div class="event event-card">
-            <img src="{{eventpicture}}" alt="Promotion Test {{id}}">
-            <h3 class="event-title">{{name}} - {{date}} {{time}}</h3>
-            <p>{{eventtype}}</p>
-            <a href="/events-details/{{id}}">Read More</a>
-            {{#if user.registered}}
-            <a href="/events-registration/{{id}}">Register</a>
-            {{else}}
-            <a class="grayed-register-button">Not Registered</a>
-            {{/if}}
-          </div>
-          {{/each}}
-        </div>
-      </div> --}}
     </div>
   </div>
 
