@@ -199,84 +199,75 @@
       {{else}}
         
 
-        {{#if (eq event.eventtype 'Poomsae')}}
-          {{#if poomsaetop4}}
-            <div class="leaderboard">
-              <h3>Poomsae Rankings</h3>
-              <table class="leaderboard-table">
-                <thead>
-                  <tr>
-                    <th>Ranking</th>
-                    <th>Name</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {{#each poomsaetop4}}
-                    <tr class="leaderboard-item {{#if (eq ranking 1)}}first-place{{/if}}">
-                      <td class="ranking">{{ranking}}</td>
-                      <td class="name">{{name}}</td>
-                    </tr>
-                  {{/each}}
-                </tbody>
-              </table>
-            </div>
-          {{/if}}
+          {{#if (eq event.eventtype 'Poomsae')}}
+            {{#if poomsaetop4}}
+              <h3>Poomsae Winners</h3>
+              <div class="leaderboard-list">
+              {{#each poomsaetop4}}
+                <div class="leaderboard-item {{#if (eq ranking 1)}}first-place{{/if}}">
+                <span class="ranking">{{ranking}}</span>
+                <span class="name">{{name}}</span>
+                <button class="winnersviewathlete" onclick="window.location.href='/athletes-profile/{{athleteid}}'">&#8614;</button>
+                </div>
+              {{/each}}
+              </div>
+            {{/if}}
           
-        {{else if (eq event.eventtype 'Kyorugi')}}
-          {{#if kyorugitop4}}
-            <h3>Kyorugi Rankings</h3>
-            {{#each kyorugitop4}}
-              <p>{{ranking}} {{name}}</p>
-            {{/each}}
+          {{else if (eq event.eventtype 'Kyorugi')}}
+            {{#if kyorugitop4}}
+              <h3>Kyorugi Rankings</h3>
+              {{#each kyorugitop4}}
+                <p>{{ranking}} {{name}}</p>
+              {{/each}}
+            {{/if}}
+          <div class="ranking">
+            <h3>Rankings</h3>
+            <div class="rank-item">
+
+              {{#if (eq event.eventtype 'Kyorugi')}}
+              {{#if champion}}
+              <h4>Champion</h4>
+              <p>{{champion.name}}</p>
+              <form action="/update-points" method="post">
+                <input type="hidden" name="userid" value="{{champion.userid}}">
+                <input type="number" name="points" placeholder="Enter points" required>
+                <button type="submit">Update Points</button>
+              </form>
+              {{else}}
+              <p>To be decided</p>
+              {{/if}}
+            </div>
+
+            <div class="rank-item">
+              {{#if secondPlace}}
+              <h4>2nd Place</h4>
+              <p>{{secondPlace.name}}</p>
+              <form action="/update-points" method="post">
+                <input type="hidden" name="userid" value="{{secondPlace.userid}}">
+                <input type="number" name="points" placeholder="Enter points" required>
+                <button type="submit">Update Points</button>
+              </form>
+              {{else}}
+              <p>To be decided</p>
+              {{/if}}
+            </div>
+
+            <div class="rank-item">
+              {{#if thirdPlace}}
+              <h4>3rd Place</h4>
+              <p>{{thirdPlace.name}}</p>
+              <form action="/update-points" method="post">
+                <input type="hidden" name="userid" value="{{thirdPlace.userid}}">
+                <input type="number" name="points" placeholder="Enter points" required>
+                <button type="submit">Update Points</button>
+              </form>
+              {{else}}
+              <p>To be decided</p>
+              {{/if}}
+              {{/if}}
+            </div>
+          </div>
           {{/if}}
-        <div class="ranking">
-          <h3>Rankings</h3>
-          <div class="rank-item">
-
-            {{#if (eq event.eventtype 'Kyorugi')}}
-            {{#if champion}}
-            <h4>Champion</h4>
-            <p>{{champion.name}}</p>
-            <form action="/update-points" method="post">
-              <input type="hidden" name="userid" value="{{champion.userid}}">
-              <input type="number" name="points" placeholder="Enter points" required>
-              <button type="submit">Update Points</button>
-            </form>
-            {{else}}
-            <p>To be decided</p>
-            {{/if}}
-          </div>
-
-          <div class="rank-item">
-            {{#if secondPlace}}
-            <h4>2nd Place</h4>
-            <p>{{secondPlace.name}}</p>
-            <form action="/update-points" method="post">
-              <input type="hidden" name="userid" value="{{secondPlace.userid}}">
-              <input type="number" name="points" placeholder="Enter points" required>
-              <button type="submit">Update Points</button>
-            </form>
-            {{else}}
-            <p>To be decided</p>
-            {{/if}}
-          </div>
-
-          <div class="rank-item">
-            {{#if thirdPlace}}
-            <h4>3rd Place</h4>
-            <p>{{thirdPlace.name}}</p>
-            <form action="/update-points" method="post">
-              <input type="hidden" name="userid" value="{{thirdPlace.userid}}">
-              <input type="number" name="points" placeholder="Enter points" required>
-              <button type="submit">Update Points</button>
-            </form>
-            {{else}}
-            <p>To be decided</p>
-            {{/if}}
-            {{/if}}
-          </div>
-        </div>
-        {{/if}}
 
         <div class="schedule">
             {{#if (and user.ptaverified (me registrationcount event.registrationcap ))}}
@@ -306,49 +297,75 @@
             {{/if}}
 
           <h2>Schedule</h2>
-
+          
           {{#if (eq event.eventtype 'Poomsae')}}
             {{#if sortedGroupedByRound}}
                 {{#each sortedGroupedByRound}}
-                    <h3>Round: {{@key}}</h3>
-                    {{#each this}}
-                      <div class="group">
-                        <div class="match">
-                          <p>{{name}}</p>
-                          <p class="totalscore">{{totalscore}}</p>
-                          <button onclick="openPoomsaeScoresheet('{{id}}', '{{name}}', '{{totalscore}}', '{{technicalscore}}', '{{performancescore}}')" class="open-poomsae-scoresheet">Open Scoresheet -></button>
-                        </div>
-                      </div>
-                    {{/each}}
-                  {{/each}}
+                  <h3>Round: {{@key}}</h3>
+                  <table class="schedule-table">
+                    <thead>
+                      <tr>
+                        <th>Name</th>
+                        <th>Schedule</th>
+                        <th>Total Score</th>
+                        <th>Action</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {{#each this}}
+                        <tr>
+                          <td>{{name}}</td>
+                          <td>{{schedule}}</td>
+                          <td class="totalscore">{{totalscore}}</td>
+                          <td>
+                            <button onclick="openPoomsaeScoresheet('{{id}}', '{{name}}', '{{totalscore}}', '{{technicalscore}}', '{{performancescore}}')" class="open-poomsae-scoresheet">Open Scoresheet -></button>
+                          </td>
+                        </tr>
+                      {{/each}}
+                    </tbody>
+                  </table>
+                {{/each}}
                 {{else}}
               <p>No rounds available.</p>
             {{/if}}
           {{/if}}
 
           {{#if (eq event.eventtype 'Kyorugi')}}
-            {{#each matches}}
-              <div class="match">Round {{round}}
-                <div class="times">
-                  {{#if matchtime}}
-                  <p class="match-time">{{matchtime}}</p>
-                  {{else}}
-                  <form action="/update-matchtime" method="post">
-                    <input type="hidden" name="id" value="{{id}}">
-                    <input type="hidden" name="eventid" value="{{eventid}}">
-                    <input type="time" class="matchtime" name="matchtime">
-                    <button type="submit">OK</button>
-                  </form>
-                  {{/if}}
-                </div>
-                <div class="match-info">
-                  <p class="match-players">{{player1}}: {{player1score}}</p>
-                  <p class="match-vs">vs</p>
-                  <p class="match-players">{{player2}}: {{player2score}}</p>
-                </div>
-                <button href="#" onclick="openKyorugiScoresheet('{{id}}', '{{player1}}', '{{player2}}', '{{player1score}}', '{{player2score}}', '{{matchtime}}', '{{winner}}', '{{loser}}', '{{matchttype}}', '{{round}}', '{{status}}')" class="open-kyorugi-scoresheet">Scoresheet -></button>
-              </div>
-            {{/each}}
+            <table class="matches-table">
+              <thead>
+                <tr>
+                  <th>Round</th>
+                  <th>Match Time</th>
+                  <th>Player 1</th>
+                  <th>Player 2</th>
+                  <th>Scoresheet</th>
+                </tr>
+              </thead>
+              <tbody>
+                {{#each matches}}
+                  <tr>
+                    <td>{{round}}</td>
+                    <td>
+                      {{#if matchtime}}
+                        <p class="match-time">{{matchtime}}</p>
+                      {{else}}
+                        <form action="/update-matchtime" method="post">
+                          <input type="hidden" name="id" value="{{id}}">
+                          <input type="hidden" name="eventid" value="{{eventid}}">
+                          <input type="time" class="matchtime" name="matchtime">
+                          <button type="submit">OK</button>
+                        </form>
+                      {{/if}}
+                    </td>
+                    <td>{{player1}}: {{player1score}}</td>
+                    <td>{{player2}}: {{player2score}}</td>
+                    <td>
+                      <button href="#" onclick="openKyorugiScoresheet('{{id}}', '{{player1}}', '{{player2}}', '{{player1score}}', '{{player2score}}', '{{matchtime}}', '{{winner}}', '{{loser}}', '{{matchttype}}', '{{round}}', '{{status}}')" class="open-kyorugi-scoresheet">Scoresheet -></button>
+                    </td>
+                  </tr>
+                {{/each}}
+              </tbody>
+            </table>
           {{/if}}
         </div>
       
