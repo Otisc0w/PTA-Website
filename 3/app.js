@@ -123,14 +123,21 @@ hbs.registerHelper('formatTime', function (time, format) {
 });
 
 
-app.use(
-  session({
+app.use( session({
     secret: "your_secret_key", // Replace with a secure secret key
     resave: false,
     saveUninitialized: true,
     cookie: { secure: false }, // Set to true if using HTTPS
   })
 );
+
+function createPairs(winners) {
+  const pairs = [];
+  for (let i = 0; i < winners.length; i += 2) {
+    pairs.push([winners[i], winners[i + 1] || null]); // Handle odd number of winners
+  }
+  return pairs;
+}
 
 async function createMatches(eventid, registrations) {
   function createKnockoutPairs(registrations) {
@@ -165,167 +172,6 @@ async function createMatches(eventid, registrations) {
     }
   }
 }
-
-// async function createNextRound(eventid) {
-//   const { data: highestRound, error: roundError } = await supabase
-//     .from("kyorugi_matches")
-//     .select("round")
-//     .eq("eventid", eventid)
-//     .order("round", { ascending: false })
-//     .limit(1)
-//     .single();
-
-//   if (roundError) {
-//     console.error("Error fetching highest round:", roundError.message);
-//     return;
-//   }
-
-//   const currentRound = highestRound ? highestRound.round : 0;
-
-//   const { data: matches, error: matchesError } = await supabase
-//     .from("kyorugi_matches")
-//     .select("*")
-//     .eq("eventid", eventid)
-//     .eq("round", currentRound)
-//     .eq("matchtype", "regular");
-
-//   if (matchesError) {
-//     console.error("Error fetching matches:", matchesError.message);
-//     return;
-//   }
-
-//   const allMatchesCompleted = matches.every(
-//     (match) => match.winner !== null && match.loser !== null
-//   );
-//   if (!allMatchesCompleted) {
-//     console.log("Not all matches are completed.");
-//     return;
-//   }
-
-//   const winners = matches
-//     .map((match) => match.winner)
-//     .filter((winner) => winner !== 0);
-//   const losers = matches
-//     .map((match) => match.loser)
-//     .filter((loser) => loser !== 0);
-
-//   if (winners.length === 1) {
-//     const champion = winners[0];
-
-//     try {
-//       const { error: eventError } = await supabase
-//         .from("events")
-//         .update({ champion })
-//         .eq("id", eventid);
-
-//       if (eventError) {
-//         console.error("Error declaring champion:", eventError.message);
-//       } else {
-//         console.log("Champion declared:", champion);
-//       }
-
-//       const finalMatch = matches.find((match) => match.round === currentRound);
-//       const secondPlace =
-//         finalMatch.player1 === champion
-//           ? finalMatch.player2
-//           : finalMatch.player1;
-
-//       const semiFinals = matches.filter(
-//         (match) => match.round === currentRound - 1
-//       );
-//       const thirdPlaceMatch = semiFinals.find(
-//         (match) => match.winner !== champion && match.winner !== secondPlace
-//       );
-//       const thirdPlace = thirdPlaceMatch ? thirdPlaceMatch.winner : null;
-
-//       console.log(`Champion: ${champion}`);
-//       console.log(`Second Place: ${secondPlace}`);
-//       console.log(`Third Place: ${thirdPlace}`);
-
-//       await awardRankingPoints(eventid, champion, secondPlace, [thirdPlace]);
-//     } catch (error) {
-//       console.error("Server error:", error.message);
-//     }
-
-//     return;
-//   }
-
-//   const pairs = createPairs(winners);
-//   const nextRound = currentRound + 1;
-
-//   if (matches.length === 2) {
-//     const [firstMatch, secondMatch] = matches;
-//     const thirdPlaceMatchPlayers = [firstMatch.loser, secondMatch.loser].filter(
-//       (player) => player !== null
-//     );
-
-//     const { error: finalMatchError } = await supabase
-//       .from("kyorugi_matches")
-//       .insert([
-//         {
-//           eventid,
-//           player1: pairs[0][0],
-//           player2: pairs[0][1] || null,
-//           round: nextRound,
-//           matchtype: "final",
-//         },
-//       ]);
-
-//     if (finalMatchError) {
-//       console.error("Error creating final match:", finalMatchError.message);
-//     }
-
-//     const { error: thirdPlaceMatchError } = await supabase
-//       .from("kyorugi_matches")
-//       .insert([
-//         {
-//           eventid,
-//           player1: thirdPlaceMatchPlayers[0],
-//           player2: thirdPlaceMatchPlayers[1] || null,
-//           round: nextRound,
-//           matchtype: "thirdPlace",
-//         },
-//       ]);
-
-//     if (thirdPlaceMatchError) {
-//       console.error(
-//         "Error creating 3rd place match:",
-//         thirdPlaceMatchError.message
-//       );
-//     }
-
-//     console.log("Final and 3rd place matches created.");
-//   } else {
-//     for (const pair of pairs) {
-//       const { error } = await supabase
-//         .from("kyorugi_matches")
-//         .insert([
-//           {
-//             eventid,
-//             player1: pair[0],
-//             player2: pair[1] || null,
-//             round: nextRound,
-//             matchtype: "regular",
-//           },
-//         ]);
-
-//       if (error) {
-//         console.error("Error creating next round match:", error.message);
-//       }
-//     }
-
-//     console.log("Next round matches created.");
-//   }
-// }
-
-// function createPairs(winners) {
-//   const pairs = [];
-//   for (let i = 0; i < winners.length; i += 2) {
-//     pairs.push([winners[i], winners[i + 1] || null]); // Handle odd number of winners
-//   }
-//   return pairs;
-// }
-
 
 // Set up Handlebars view engine
 app.set("view engine", "hbs");
@@ -2605,6 +2451,167 @@ app.post("/begin-kyorugi-competition/:id", async (req, res) => {
     // Check if the registration cap has been reached
     if (eventregistrations.length >= event.registrationcap) {
       await createMatches(eventid, eventregistrations); // Trigger match creation
+    }
+
+    res.redirect(`/events-details/${eventid}`);
+  } catch (error) {
+    console.error("Server error:", error.message);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.post("/next-kyorugi-round/:eventid", async (req, res) => {
+  const { eventid } = req.params;
+
+  try {
+    const { data: highestRound, error: roundError } = await supabase
+      .from("kyorugi_matches")
+      .select("round")
+      .eq("eventid", eventid)
+      .order("round", { ascending: false })
+      .limit(1)
+      .single();
+
+    if (roundError) {
+      console.error("Error fetching highest round:", roundError.message);
+      return res.status(500).send("Error fetching highest round");
+    }
+
+    const currentRound = highestRound ? highestRound.round : 0;
+
+    const { data: matches, error: matchesError } = await supabase
+      .from("kyorugi_matches")
+      .select("*")
+      .eq("eventid", eventid)
+      .eq("round", currentRound)
+      .eq("matchtype", "regular");
+
+    if (matchesError) {
+      console.error("Error fetching matches:", matchesError.message);
+      return res.status(500).send("Error fetching matches");
+    }
+
+    const allMatchesCompleted = matches.every(
+      (match) => match.winner !== null && match.loser !== null
+    );
+    if (!allMatchesCompleted) {
+      console.log("Not all matches are completed.");
+      return res.status(400).send("Not all matches are completed.");
+    }
+
+    const winners = matches
+      .map((match) => match.winner)
+      .filter((winner) => winner !== 0);
+    const losers = matches
+      .map((match) => match.loser)
+      .filter((loser) => loser !== 0);
+
+    if (winners.length === 1) {
+      const champion = winners[0];
+
+      try {
+        const { error: eventError } = await supabase
+          .from("events")
+          .update({ champion })
+          .eq("id", eventid);
+
+        if (eventError) {
+          console.error("Error declaring champion:", eventError.message);
+        } else {
+          console.log("Champion declared:", champion);
+        }
+
+        const finalMatch = matches.find((match) => match.round === currentRound);
+        const secondPlace =
+          finalMatch.player1 === champion
+            ? finalMatch.player2
+            : finalMatch.player1;
+
+        const semiFinals = matches.filter(
+          (match) => match.round === currentRound - 1
+        );
+        const thirdPlaceMatch = semiFinals.find(
+          (match) => match.winner !== champion && match.winner !== secondPlace
+        );
+        const thirdPlace = thirdPlaceMatch ? thirdPlaceMatch.winner : null;
+
+        console.log(`Champion: ${champion}`);
+        console.log(`Second Place: ${secondPlace}`);
+        console.log(`Third Place: ${thirdPlace}`);
+
+        await awardRankingPoints(eventid, champion, secondPlace, [thirdPlace]);
+      } catch (error) {
+        console.error("Server error:", error.message);
+      }
+
+      return res.redirect(`/events-details/${eventid}`);
+    }
+
+    const pairs = createPairs(winners);
+    const nextRound = currentRound + 1;
+
+    if (matches.length === 2) {
+      const [firstMatch, secondMatch] = matches;
+      const thirdPlaceMatchPlayers = [firstMatch.loser, secondMatch.loser].filter(
+        (player) => player !== null
+      );
+
+      const { error: finalMatchError } = await supabase
+        .from("kyorugi_matches")
+        .insert([
+          {
+            eventid,
+            player1: pairs[0][0],
+            player2: pairs[0][1] || null,
+            round: nextRound,
+            matchtype: "final",
+          },
+        ]);
+
+      if (finalMatchError) {
+        console.error("Error creating final match:", finalMatchError.message);
+      }
+
+      const { error: thirdPlaceMatchError } = await supabase
+        .from("kyorugi_matches")
+        .insert([
+          {
+            eventid,
+            player1: thirdPlaceMatchPlayers[0],
+            player2: thirdPlaceMatchPlayers[1] || null,
+            round: nextRound,
+            matchtype: "thirdPlace",
+          },
+        ]);
+
+      if (thirdPlaceMatchError) {
+        console.error(
+          "Error creating 3rd place match:",
+          thirdPlaceMatchError.message
+        );
+      }
+
+      console.log("Final and 3rd place matches created.");
+    } else {
+      for (const pair of pairs) {
+        const { error } = await supabase
+          .from("kyorugi_matches")
+          .insert([
+            {
+              eventid,
+              player1: pair[0],
+              player2: pair[1] || null,
+              round: nextRound,
+              matchtype: "regular",
+            },
+          ]);
+
+        if (error) {
+          console.error("Error creating next round match:", error.message);
+        }
+      }
+
+      console.log("Next round matches created.");
     }
 
     res.redirect(`/events-details/${eventid}`);

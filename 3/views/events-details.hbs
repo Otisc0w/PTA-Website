@@ -290,14 +290,24 @@
               {{else if (eq event.status 'Ongoing')}}
                 {{#if (le event.currentround 1)}}
                   {{#if (eq event.eventtype 'Poomsae')}}
-                  <form action="/next-poomsae-round/{{event.id}}" method="post">
-                    <button type="submit" class="begincompe">Proceed to next round</button>
-                  </form>
+                    <form action="/next-poomsae-round/{{event.id}}" method="post">
+                      <button type="submit" class="begincompe">Proceed to next round</button>
+                    </form>
+                  {{else if (eq event.eventtype 'Kyorugi')}}
+                    <form action="/next-kyorugi-round/{{event.id}}" method="post">
+                      <button type="submit" class="begincompe">Proceed to next round</button>
+                    </form>
                   {{/if}}
                 {{else}}
-                  <form action="/decide-poomsae-winners/{{event.id}}" method="post">
-                    <button type="submit" class="begincompe">Decide Winners</button>
-                  </form>
+                  {{#if (eq event.eventtype 'Poomsae')}}
+                    <form action="/decide-poomsae-winners/{{event.id}}" method="post">
+                      <button type="submit" class="begincompe">Decide Winners</button>
+                    </form>
+                  {{else if (eq event.eventtype 'Kyorugi')}}
+                    <form action="/decide-kyorugi-winners/{{event.id}}" method="post">
+                      <button type="submit" class="begincompe">Decide Winners</button>
+                    </form>
+                  {{/if}}
                 {{/if}}
               {{/if}}
             {{/if}}
