@@ -64,7 +64,7 @@
       <h2 class="left-align-title">Upcoming Events</h2>
       <div id="events" class="horizontal-container">
         {{#each events}}
-          {{#unless (eq status "Completed")}} <!-- Exclude completed events -->
+          {{#unless (eq status "Concluded")}} <!-- Exclude Concluded events -->
           <div class="event event-card">
             <img src="{{eventpicture}}" alt="Event {{id}}">
             <h3 class="event-title">{{name}} <br> {{formatDate date "MMMM D, YYYY"}} {{time}}</h3>
@@ -81,18 +81,18 @@
     </div>
   </div>
 
-  <!-- Past Events Section -->
+  <!-- Concluded Events Section -->
   <div class="main-panel">
     <div class="news">
-      <h2 class="left-align-title">Past Events</h2>
+      <h2 class="left-align-title">Concluded Events</h2>
       <div id="past-events" class="horizontal-container">
         {{#each events}}
-          {{#if (eq status "Completed")}} <!-- Only include completed events -->
+          {{#if (eq status "Concluded")}} <!-- Only include Concluded events -->
           <div class="event event-card">
             <img src="{{eventpicture}}" alt="Event {{id}}">
             <h3 class="event-title">{{name}} <br> {{formatDate date "MMMM D, YYYY"}} {{time}}</h3>
             <p>{{eventtype}}</p>
-            <a href="/events-details/{{id}}" style="color: green;">Completed</a>
+            <a href="/events-details/{{id}}" style="color: green;">Concluded</a>
           </div>
           {{/if}}
         {{/each}}
