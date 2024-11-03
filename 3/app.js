@@ -2591,6 +2591,17 @@ app.post("/begin-kyorugi-competition/:id", async (req, res) => {
       return res.status(500).send("Error fetching event details.");
     }
 
+    // Update the event status to 'Ongoing'
+    const { error: updateEventStatusError } = await supabase
+      .from("events")
+      .update({ status: "Ongoing" })
+      .eq("id", eventid);
+
+    if (updateEventStatusError) {
+      console.error("Error updating event status:", updateEventStatusError.message);
+      return res.status(500).send("Error updating event status.");
+    }
+
     // Check if the registration cap has been reached
     if (eventregistrations.length >= event.registrationcap) {
       await createMatches(eventid, eventregistrations); // Trigger match creation
