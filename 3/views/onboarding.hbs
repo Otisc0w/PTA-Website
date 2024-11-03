@@ -1,0 +1,127 @@
+<!-- onboarding.hbs -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Onboarding</title>
+  <style>
+    /* Onboarding Screens Styles */
+    .onboarding-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: #1e1e1e;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+
+    .onboarding-slide {
+      max-width: 600px;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .onboarding-slide h2 {
+      font-size: 32px;
+      margin-bottom: 10px;
+    }
+
+    .onboarding-slide p {
+      font-size: 18px;
+      margin-bottom: 20px;
+    }
+
+    .onboarding-slide button {
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .onboarding-slide button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+
+<div id="onboardingScreens" class="onboarding-container">
+  <!-- Slide 1 - Welcome -->
+  <div class="onboarding-slide" id="slide1">
+    <h2>Welcome to Taekwondo World!</h2>
+    <p>Discover the world of Taekwondo. Get started by exploring the actions available for you!</p>
+    <button onclick="nextSlide()">Next</button>
+  </div>
+
+  <!-- Slide 2 - Select Role -->
+  <div class="onboarding-slide" id="slide2" style="display: none;">
+    <h2>Select Your Role</h2>
+    <p>Choose your role to customize your Taekwondo experience.</p>
+    <button onclick="selectRole('athlete')">Athlete</button>
+    <button onclick="selectRole('instructor')">Instructor</button>
+    <button onclick="selectRole('admin')">Admin</button>
+  </div>
+
+  <!-- Athlete Role Actions -->
+  <div class="onboarding-slide" id="athleteActions" style="display: none;">
+    <h2>Athlete Actions</h2>
+    <p>As an athlete, start by joining a club to connect with other enthusiasts.</p>
+    <button onclick="redirectTo('/clubs')">Join Club</button>
+    <button onclick="redirectTo('/membership-ncc')">Apply for NCC ID</button>
+    <button onclick="redirectTo('/events')">Join Events</button>
+  </div>
+
+  <!-- Instructor Role Actions -->
+  <div class="onboarding-slide" id="instructorActions" style="display: none;">
+    <h2>Instructor Actions</h2>
+    <p>As an instructor, start by applying for your license to teach Taekwondo.</p>
+    <button onclick="redirectTo('/membership-instructor')">Apply for License</button>
+    <button onclick="redirectTo('/clubs-details')">Create Club</button>
+  </div>
+
+</div>
+
+<script>
+  let currentSlide = 1;
+  let userRole = '';
+
+  function nextSlide() {
+    document.getElementById(`slide${currentSlide}`).style.display = 'none';
+    currentSlide += 1;
+    document.getElementById(`slide${currentSlide}`).style.display = 'block';
+  }
+
+  function selectRole(role) {
+    userRole = role;
+    document.getElementById('slide2').style.display = 'none';
+
+    if (role === 'athlete') {
+      document.getElementById('athleteActions').style.display = 'block';
+    } else if (role === 'instructor') {
+      document.getElementById('instructorActions').style.display = 'block';
+    } else if (role === 'admin') {
+      redirectToHome();
+    }
+  }
+
+  function redirectTo(path) {
+    fetch('/clearFirstLoginFlag', { method: 'POST' })
+      .then(() => window.location.href = path);
+  }
+
+  function redirectToHome() {
+    fetch('/clearFirstLoginFlag', { method: 'POST' })
+      .then(() => window.location.href = '/home');
+  }
+</script>
+
+</body>
+</html>
