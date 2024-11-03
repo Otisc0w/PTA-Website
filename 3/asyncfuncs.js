@@ -214,6 +214,48 @@ async function checkUpcomingEvents(req, res, next) {
   next();
 }
 
+function createPairs(winners) {
+  const pairs = [];
+  for (let i = 0; i < winners.length; i += 2) {
+    pairs.push([winners[i], winners[i + 1] || null]); // Handle odd number of winners
+  }
+  return pairs;
+}
+
+async function createMatches(eventid, registrations) {
+  function createKnockoutPairs(registrations) {
+    const pairs = [];
+    for (let i = 0; i < registrations.length; i += 2) {
+      if (registrations[i + 1]) {
+        pairs.push([registrations[i], registrations[i + 1]]);
+      } else {
+        pairs.push([registrations[i]]); // Handle odd number of participants
+      }
+    }
+    return pairs;
+  }
+
+  const pairs = createKnockoutPairs(registrations);
+  const round = 1;
+  for (const pair of pairs) {
+    const { error } = await supabase
+      .from("kyorugi_matches")
+      .insert([
+        {
+          eventid,
+          player1: pair[0].userid,
+          player2: pair[1]?.userid,
+          round,
+          matchtype: "regular",
+        },
+      ]);
+
+    if (error) {
+      throw new Error(error.message);
+    }
+  }
+}
+
 
 module.exports = {
 
@@ -225,6 +267,10 @@ module.exports = {
 
   checkAndExpireInstructorRegistrations,
 
-  checkUpcomingEvents
+  checkUpcomingEvents,
+
+  createPairs,
+
+  createMatches,
 
 };
