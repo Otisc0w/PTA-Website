@@ -37,8 +37,7 @@ app.use(asyncfuncs.fetchUserData);
 app.use(asyncfuncs.checkAndExpireNCCRegistrations);
 app.use(asyncfuncs.checkAndExpireInstructorRegistrations);
 app.use(asyncfuncs.checkUpcomingEvents);
-app.use(asyncfuncs.createPairs);
-app.use(asyncfuncs.createMatches);
+
 
 
 // Configure Multer for file uploads
@@ -2412,7 +2411,39 @@ app.post("/begin-kyorugi-competition/:id", async (req, res) => {
 
     // Check if the registration cap has been reached
     if (eventregistrations.length >= event.registrationcap) {
-      await createMatches(eventid, eventregistrations); // Trigger match creation
+      // Create pairs for the knockout matches
+      function createKnockoutPairs(registrations) {
+        const pairs = [];
+        for (let i = 0; i < registrations.length; i += 2) {
+          if (registrations[i + 1]) {
+            pairs.push([registrations[i], registrations[i + 1]]);
+          } else {
+            pairs.push([registrations[i]]); // Handle odd number of participants
+          }
+        }
+        return pairs;
+      }
+
+      const pairs = createKnockoutPairs(eventregistrations);
+      const round = 1;
+      for (const pair of pairs) {
+        const { error } = await supabase
+          .from("kyorugi_matches")
+          .insert([
+            {
+              eventid,
+              player1: pair[0].userid,
+              player2: pair[1]?.userid,
+              round,
+              matchtype: "regular",
+            },
+          ]);
+
+        if (error) {
+          console.error("Error creating matches:", error.message);
+          return res.status(500).send("Error creating matches.");
+        }
+      }
     }
 
     res.redirect(`/events-details/${eventid}`);

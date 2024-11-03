@@ -223,6 +223,7 @@ function createPairs(winners) {
 }
 
 async function createMatches(eventid, registrations) {
+  
   function createKnockoutPairs(registrations) {
     const pairs = [];
     for (let i = 0; i < registrations.length; i += 2) {
@@ -254,7 +255,10 @@ async function createMatches(eventid, registrations) {
       throw new Error(error.message);
     }
   }
+
+  next();
 }
+
 
 
 module.exports = {
@@ -267,10 +271,6 @@ module.exports = {
 
   checkAndExpireInstructorRegistrations,
 
-  checkUpcomingEvents,
-
-  createPairs,
-
-  createMatches,
+  checkUpcomingEvents
 
 };
