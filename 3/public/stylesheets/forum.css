@@ -45,9 +45,7 @@
     position: relative;
 }
 
-.notfollowedtopic form {
-    display: inline-block;
-}
+
 
 .followedtopic{
     background-color: #444;
@@ -56,6 +54,8 @@
     margin: 7px 0;
     position: relative;
 }
+
+
 
 .notfollowedtopic:hover{
     background-color: #444;
@@ -546,10 +546,9 @@
     color: inherit;
     font: inherit;
     cursor: pointer;
-    padding: 3px 5px 4px 5px;
-    border-radius: 10px;
+    border-radius: 8px;
     float: right;
-    vertical-align: middle;
+    
 }
 
 .deletetopic:hover{
