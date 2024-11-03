@@ -2520,19 +2520,13 @@ app.post("/next-kyorugi-round/:eventid", async (req, res) => {
             ? finalMatch.player2
             : finalMatch.player1;
 
-        const semiFinals = matches.filter(
-          (match) => match.round === currentRound - 1
-        );
-        const thirdPlaceMatch = semiFinals.find(
-          (match) => match.winner !== champion && match.winner !== secondPlace
-        );
-        const thirdPlace = thirdPlaceMatch ? thirdPlaceMatch.winner : null;
+        const thirdPlace = losers;
 
         console.log(`Champion: ${champion}`);
         console.log(`Second Place: ${secondPlace}`);
         console.log(`Third Place: ${thirdPlace}`);
 
-        await awardRankingPoints(eventid, champion, secondPlace, [thirdPlace]);
+        await awardRankingPoints(eventid, champion, secondPlace, thirdPlace);
       } catch (error) {
         console.error("Server error:", error.message);
       }
@@ -2540,14 +2534,23 @@ app.post("/next-kyorugi-round/:eventid", async (req, res) => {
       return res.redirect(`/events-details/${eventid}`);
     }
 
+    function createPairs(players) {
+      const pairs = [];
+      for (let i = 0; i < players.length; i += 2) {
+        if (players[i + 1]) {
+          pairs.push([players[i], players[i + 1]]);
+        } else {
+          pairs.push([players[i]]); // Handle odd number of participants
+        }
+      }
+      return pairs;
+    }
+
     const pairs = createPairs(winners);
     const nextRound = currentRound + 1;
 
     if (matches.length === 2) {
       const [firstMatch, secondMatch] = matches;
-      const thirdPlaceMatchPlayers = [firstMatch.loser, secondMatch.loser].filter(
-        (player) => player !== null
-      );
 
       const { error: finalMatchError } = await supabase
         .from("kyorugi_matches")
@@ -2565,26 +2568,7 @@ app.post("/next-kyorugi-round/:eventid", async (req, res) => {
         console.error("Error creating final match:", finalMatchError.message);
       }
 
-      const { error: thirdPlaceMatchError } = await supabase
-        .from("kyorugi_matches")
-        .insert([
-          {
-            eventid,
-            player1: thirdPlaceMatchPlayers[0],
-            player2: thirdPlaceMatchPlayers[1] || null,
-            round: nextRound,
-            matchtype: "thirdPlace",
-          },
-        ]);
-
-      if (thirdPlaceMatchError) {
-        console.error(
-          "Error creating 3rd place match:",
-          thirdPlaceMatchError.message
-        );
-      }
-
-      console.log("Final and 3rd place matches created.");
+      console.log("Final match created.");
     } else {
       for (const pair of pairs) {
         const { error } = await supabase
@@ -2605,6 +2589,17 @@ app.post("/next-kyorugi-round/:eventid", async (req, res) => {
       }
 
       console.log("Next round matches created.");
+    }
+
+    // Update the current round in the events table
+    const { error: updateRoundError } = await supabase
+      .from("events")
+      .update({ currentround: nextRound })
+      .eq("id", eventid);
+
+    if (updateRoundError) {
+      console.error("Error updating current round:", updateRoundError.message);
+      return res.status(500).send("Error updating current round");
     }
 
     res.redirect(`/events-details/${eventid}`);
