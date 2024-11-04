@@ -2,14 +2,18 @@
 
 
 .upcoming-events {
-    overflow-x: auto; /* Enable horizontal scrolling */
-    overflow-y: hidden; /* Hide vertical overflow */
-    white-space: nowrap; /* Prevent line breaks */
+    overflow-x: auto;
+    /* Enable horizontal scrolling */
+    overflow-y: hidden;
+    /* Hide vertical overflow */
+    white-space: nowrap;
+    /* Prevent line breaks */
     width: auto;
 }
 
 .upcoming-events .event {
-    display: inline-block; /* Display events in a single line */
+    display: inline-block;
+    /* Display events in a single line */
 }
 
 .poster {
@@ -20,16 +24,18 @@
 .poster-image {
     width: 100%;
     height: auto;
-    max-width: 1200px; /* Adjust max-width as needed */
+    max-width: 1200px;
+    /* Adjust max-width as needed */
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .home-container {
-    margin-top: 60px; /* Add margin to prevent content from being hidden behind the navbar */
+    margin-top: 60px;
+    /* Add margin to prevent content from being hidden behind the navbar */
     display: flex;
     padding: 20px;
-    flex-grow:1;
+    flex-grow: 1;
 }
 
 .main-panel {
@@ -42,19 +48,24 @@
     margin-bottom: 20px;
 }
 
-.upcoming-events h2, .news h2 {
+.upcoming-events h2,
+.news h2 {
     color: white;
 }
 
-.event, .news-item {
+.event,
+.news-item {
     background-color: #1E1E1E;
     color: white;
     padding: 20px;
-    box-sizing: border-box; /* Ensures padding is included in the width/height */
+    box-sizing: border-box;
+    /* Ensures padding is included in the width/height */
     margin: 10px;
     font-size: 16px;
-    height: 400px; /* Ensure all event containers have the same height */
-    width: 300px; /* Ensure all event containers have the same width */
+    height: 400px;
+    /* Ensure all event containers have the same height */
+    width: 300px;
+    /* Ensure all event containers have the same width */
     text-align: center;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
@@ -65,15 +76,19 @@
 }
 
 
-.event img, .news-item img {
+.event img,
+.news-item img {
     width: 100%;
     height: 250px;
-    object-fit: cover; /* Ensure the image covers the container */
-    object-position: center; /* Center the image within the container */
+    object-fit: cover;
+    /* Ensure the image covers the container */
+    object-position: center;
+    /* Center the image within the container */
     border-radius: 4px 4px 0 0;
 }
 
-.event h3, .news-item h3 {
+.event h3,
+.news-item h3 {
     margin-top: 10px;
     font-size: 18px;
     font-weight: bold;
@@ -82,18 +97,20 @@
     text-overflow: ellipsis;
 }
 
-.event p, .news-item p {
+.event p,
+.news-item p {
     font-size: 14px;
     margin: 10px 0;
     overflow: hidden;
     text-overflow: ellipsis;
     display: -webkit-box;
-   /* -webkit-line-clamp: 2; /* Limits text to 2 lines */
+    /* -webkit-line-clamp: 2; /* Limits text to 2 lines */
     -webkit-box-orient: vertical;
 }
 
 
-.event a, .news-item a {
+.event a,
+.news-item a {
     display: inline-block;
     padding: 10px 15px;
     color: #007BFF;
@@ -101,19 +118,26 @@
     border-radius: 5px;
     background-color: #2E2E2E;
     transition: background-color 0.3s;
-    margin-top: auto; /* Ensure the button stays at the bottom */
-    align-self: center; /* Align the button horizontally at the center */
+    margin-top: auto;
+    /* Ensure the button stays at the bottom */
+    align-self: center;
+    /* Align the button horizontally at the center */
 }
 
 .horizontal-container {
     display: flex;
-    justify-content: center; /* Center the container horizontally */
-    align-items: center; /* Center the container vertically */
-    width: 100%; /* Ensure the container takes full width */
-    height: auto; /* Adjust height as needed */
+    justify-content: center;
+    /* Center the container horizontally */
+    align-items: center;
+    /* Center the container vertically */
+    width: 100%;
+    /* Ensure the container takes full width */
+    height: auto;
+    /* Adjust height as needed */
 }
 
-.event a:hover, .news-item a:hover {
+.event a:hover,
+.news-item a:hover {
     background-color: #1A1A1A;
 }
 
@@ -125,11 +149,11 @@
     align-items: center;
     padding: 20px;
     height: 100px;
-    margin-top: auto; 
+    margin-top: auto;
 }
 
 .footer-content .pta-logo img {
-    height: 100%; 
+    height: 100%;
 }
 
 .footer-content .contact-info {
@@ -168,36 +192,65 @@
 /* 09/25/24 */
 /* Style for the "Clubs" title */
 .clubs-title {
-    text-align: left;  /* Align the text to the left */
-    font-size: 36px;   /* Increase the font size for visibility */
-    font-weight: bold; /* Make the text bold for better readability */
-    color: white;      /* Ensure the text color contrasts with the background */
-    margin-left: 20px; /* Add some left margin for spacing */
-    margin-top: 20px;  /* Add top margin to prevent it from sticking to the navbar */
+    text-align: left;
+    /* Align the text to the left */
+    font-size: 36px;
+    /* Increase the font size for visibility */
+    font-weight: bold;
+    /* Make the text bold for better readability */
+    color: white;
+    /* Ensure the text color contrasts with the background */
+    margin-left: 20px;
+    /* Add some left margin for spacing */
+    margin-top: 20px;
+    /* Add top margin to prevent it from sticking to the navbar */
 }
 
 /* Full-screen overlay for onboarding container */
 #onboarding-container {
+    margin-top: 20px;
+    /* Adds space between the image and onboarding */
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    background-color: rgba(0, 0, 0, 0.8); /* Dark background overlay */
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
     text-align: center;
-    color: white;
-    z-index: 1000; /* Ensure it's above other content */
+    background-color: #444;
+    /* Optional: set a background color */
+    padding: 20px;
+    border-radius: 12px;
+    /* Optional: rounded corners */
+    width: 80%;
+    /* Adjust width as needed */
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    /* Add shadow for depth */
+    color: #fff;
+    /* Make text color white for readability */
 }
+
+/* Font sizes for onboarding text */
+#onboarding-container h1 {
+    font-size: 2.5em;
+    /* Larger font for the title */
+    margin-bottom: 20px;
+    font-weight: bold;
+}
+
+#onboarding-container p {
+    font-size: 1.2em;
+    /* Larger font for the paragraph */
+    margin-bottom: 30px;
+}
+
 
 /* Style for the onboarding image */
 .onboarding-image {
     max-width: 80%;
     height: auto;
-    margin-bottom: 20px; /* Space between image and content */
+    margin-bottom: 20px;
+    /* Space between image and content */
 }
 
 /* Center the container content */
@@ -207,7 +260,9 @@
     align-items: center;
 }
 
-.next-btn, .type-btn, .finish-btn {
+.next-btn,
+.type-btn,
+.finish-btn {
     margin-top: 15px;
     padding: 10px 20px;
     font-size: 16px;
@@ -219,6 +274,61 @@
     border-radius: 5px;
 }
 
-.next-btn:hover, .type-btn:hover, .finish-btn:hover {
+.next-btn:hover,
+.type-btn:hover,
+.finish-btn:hover {
     background-color: #0052cc;
+}
+
+/* Style for links in the onboarding screen */
+#onboarding-container a {
+    color: #ffffff;
+    /* Set to white for better visibility */
+    text-decoration: none;
+}
+
+#onboarding-container a:hover {
+    color: #ffcc00;
+    /* Change to yellow on hover for contrast */
+    text-decoration: underline;
+    /* Add underline on hover */
+    padding: 10px;
+}
+
+#onboarding-container ul {
+    list-style-type: none;
+    /* Remove bullet points */
+    padding: 0;
+}
+
+#onboarding-container ul li {
+    font-size: 1.2em;
+    /* Increase font size */
+    margin-bottom: 10px;
+    /* Add space between items */
+    color: #ffffff;
+    /* Ensure text is visible */
+}
+
+
+/* Button style for Finish button */
+.finish-btn {
+    background-color: #007bff;
+    /* Set to a visible blue color */
+    color: #ffffff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.finish-btn:hover {
+    background-color: #0056b3;
+    /* Darken on hover */
+}
+
+.user-text {
+    font-size: 2em;
+    font-weight: bold;
+    color: #ffffff;
 }
