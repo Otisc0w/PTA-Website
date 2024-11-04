@@ -182,3 +182,79 @@ body {
     top: -10px;
     right: -10px;
 }
+
+.event:hover { transform: translateY(-10px); box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4); }
+
+.event a:hover {
+    background-color: #616161;
+    transform: translateY(-3px);
+}
+
+.contact-info p, .region p, .description p {
+    display: flex;
+    align-items: center;
+    font-size: 15px; /* Uniform font size */
+    color: #d1d1d1; /* Light gray text to match theme */
+    margin: 8px 0; /* Consistent spacing */
+}
+
+.contact-info p i, .region p i, .description p i {
+    margin-right: 10px; /* Space between icon and text */
+    color: #d1d1d1; /* Matching gray color for icons */
+    font-size: 18px; /* Uniform icon size */
+}
+
+.event {
+    background-color: #1E1E1E; /* Matching card background color */
+    color: white;
+    padding: 20px;
+    margin: 15px;
+    font-size: 16px;
+    width: 320px; /* Fixed width for uniformity */
+    height: auto;
+    text-align: left;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 10px; /* Consistent spacing between elements */
+}
+
+.event img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+.event h3 {
+    font-size: 20px;
+    font-weight: bold;
+    color: #f7f7f7;
+    text-align: center;
+    margin: 10px 0; /* Consistent spacing */
+}
+
+.event .description, .event .contact-info, .event .region {
+    background-color: #292929; /* Subtle contrast background */
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #444; /* Uniform border for sections */
+}
+
+.event a {
+    padding: 10px 20px;
+    color: #d1d1d1; /* Matching text color for button */
+    text-decoration: none;
+    border-radius: 8px;
+    background-color: #333;
+    transition: background-color 0.3s;
+    margin-top: auto;
+    text-align: center;
+}
+
+.event a:hover {
+    background-color: #444;
+}
+
