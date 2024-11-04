@@ -4750,31 +4750,3 @@ app.get('/events-data', async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
-
-app.post('/login', (req, res) => {
-  // Perform authentication and login logic
-  // Assuming user authentication is successful
-
-  // Check if it's the user's first login
-  const isFirstTimeUser = true; // Replace this with actual check from your database
-  if (isFirstTimeUser) {
-    req.session.firstLogin = true;
-    res.redirect('/onboarding'); // Redirect to the onboarding route for first-time users
-  } else {
-    req.session.firstLogin = false;
-    res.redirect('/home'); // Redirect directly to the home page if not a first-time user
-  }
-});
-
-app.get('/onboarding', (req, res) => {
-  if (req.session.firstLogin) {
-    res.render('onboarding'); // Render the onboarding page
-  } else {
-    res.redirect('/home'); // Redirect to home if it's not the first login
-  }
-});
-
-app.post('/clearFirstLoginFlag', (req, res) => {
-  req.session.firstLogin = false;
-  res.sendStatus(200);
-});
