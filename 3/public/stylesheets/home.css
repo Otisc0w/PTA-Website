@@ -175,3 +175,50 @@
     margin-left: 20px; /* Add some left margin for spacing */
     margin-top: 20px;  /* Add top margin to prevent it from sticking to the navbar */
 }
+
+/* Full-screen overlay for onboarding container */
+#onboarding-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.8); /* Dark background overlay */
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    text-align: center;
+    color: white;
+    z-index: 1000; /* Ensure it's above other content */
+}
+
+/* Style for the onboarding image */
+.onboarding-image {
+    max-width: 80%;
+    height: auto;
+    margin-bottom: 20px; /* Space between image and content */
+}
+
+/* Center the container content */
+.onboarding-screen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.next-btn, .type-btn, .finish-btn {
+    margin-top: 15px;
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    background-color: #0066ff;
+    color: white;
+    border-radius: 5px;
+}
+
+.next-btn:hover, .type-btn:hover, .finish-btn:hover {
+    background-color: #0052cc;
+}
