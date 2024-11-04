@@ -4750,3 +4750,55 @@ app.get('/events-data', async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+
+//11-04-24
+
+// Middleware to mock user login for testing
+app.use((req, res, next) => {
+    // Simulate logged-in user data. Replace this with actual user data from your database.
+    req.user = {
+        userType: 'athlete', // Change to 'instructor' or 'admin' as needed for testing
+        onboardingCompleted: false // Set to true once onboarding is complete
+    };
+    next();
+});
+
+// Login route that redirects to onboarding if not completed
+app.post('/login', (req, res) => {
+    const user = req.user;
+
+    if (!user.onboardingCompleted) {
+        res.redirect('/onboarding'); // Redirect to onboarding if not completed
+    } else {
+        res.redirect('/home'); // Go to home if onboarding is complete
+    }
+});
+
+// Onboarding route
+app.get('/onboarding', (req, res) => {
+    const user = req.user;
+
+    if (user.userType === 'admin') {
+        res.redirect('/home'); // Admins go directly to the home page
+    } else {
+        res.render('onboarding', { userType: user.userType }); // Render onboarding screen for athletes and instructors
+    }
+});
+
+// Route to mark onboarding as complete
+app.post('/complete-onboarding', (req, res) => {
+    req.user.onboardingCompleted = true; // Set onboarding status to completed
+    // Save the onboarding completion in the session or database if needed
+    res.redirect('/home'); // Redirect to home page after completion
+});
+
+// Home route
+app.get('/home', (req, res) => {
+    res.render('home'); // Render the home page
+});
+
+// Start the server
+const PORT = 3000;
+app.listen(PORT, () => {
+    console.log(`Server is running on http://localhost:${PORT}`);
+});
