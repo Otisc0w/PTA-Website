@@ -369,3 +369,16 @@ body {
 .show {
     display: block;
 }
+
+.status-content{
+    color: white;
+}
+
+.status-click{
+    color: white;
+}
+
+.status-click:hover{
+    background-color: #b22222;
+    border-radius: 5px;
+}

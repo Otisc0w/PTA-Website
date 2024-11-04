@@ -3296,32 +3296,30 @@ app.post("/update-points", async (req, res) => {
   }
 });
 
-app.post('/update-athlete-status', (req, res) => {
-  const { athleteId, status } = req.body; // Get the data from the request body
-
-  // Update the athlete's status in the database
-  Athletes.update({ status }, { where: { id: athleteId } })
-    .then(() => {
-      res.json({ success: true }); // Send a success response
-    })
-    .catch(error => {
-      console.error('Error updating athlete status:', error);
-      res.json({ success: false }); // Send a failure response
-    });
-});
-
-app.post('/update-athlete-status', (req, res) => {
+app.post('/update-athlete-status', async (req, res) => {
   const { id, status } = req.body;
-  
-  // Update the athlete's status in the database
-  Athlete.update({ _id: id }, { status: status }, (err, result) => {
-    if (err) {
-      console.error("Error updating status:", err);
-      return res.status(500).json({ success: false, message: 'Error updating status' });
+
+  try {
+    // Update the status in the database using Supabase
+    const { error } = await supabase
+      .from('athletes') // Ensure this table name matches your actual table name
+      .update({ status: status })
+      .eq('id', id); // Ensure you're updating the correct row based on the athlete ID
+
+    if (error) {
+      console.error('Error updating status:', error);
+      return res.status(500).json({ success: false, error: 'Database update failed' });
     }
+
     res.json({ success: true });
-  });
+  } catch (err) {
+    console.error('Unexpected error:', err);
+    res.status(500).json({ success: false, error: 'Server error' });
+  }
 });
+
+
+
 
 // VIEWS BELOW
 
@@ -3388,7 +3386,7 @@ app.get("/forum", async function (req, res) {
     }
 
     const { data: userData, error: userError } = await supabase
-      .from("users") // Replace "users" with your actual user table name
+      .from("users")
       .select("ptaverified")
       .eq("id", userId)
       .single();
@@ -4226,6 +4224,19 @@ app.get("/athletes", async function (req, res) {
       return res.status(400).json({ error: usersError.message });
     }
 
+    const { data: userData, error: userError } = await supabase
+    .from("users")
+    .select("ptaverified")
+    .eq("id", userId)
+    .single();
+
+  if (userError) {
+    return res.status(400).json({ error: userError.message });
+  }
+
+  // Determine if the user is an admin based on ptaverified
+  const isAdmin = userData.ptaverified === true;
+
     // Merge the club information with the athletes data
     athletes.forEach((athlete) => {
       const user = users.find((user) => user.id === athlete.userid);
@@ -4236,7 +4247,7 @@ app.get("/athletes", async function (req, res) {
     console.log("Fetched clubs data:", clubs); // Log the clubs data to the console
 
     // Render the athletes.hbs template with the fetched data
-    res.render("athletes", { athletes, clubs, user: req.session.user });
+    res.render("athletes", { athletes, clubs, user: { ...req.session.user, isAdmin }, });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

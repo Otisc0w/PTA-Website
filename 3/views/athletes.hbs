@@ -51,7 +51,7 @@
     <div class="filter-panel">
       <div class="filter-group">
         <label for="belt-color">Belt Color</label>
-
+        
         <select id="belt-color">
           <option>All</option>
           <option value="White Belt">White Belt</option>
@@ -85,6 +85,7 @@
 
     <div class="rank-panel">
       <h3>Athlete Rankings</h3>
+      <p>{{user.username}}</p>
       <table class="rankings">
         <thead>
           <tr>
@@ -94,7 +95,9 @@
             <th>Belt Level</th>
             <th>Games Played</th>
             <th>Status</th>
+            {{#if user.isAdmin}}
             <th>Actions</th>
+            {{/if}}
           </tr>
         </thead>
         <tbody id="athletes-tbody">
@@ -107,17 +110,18 @@
             <td>{{beltlevel}}</td>
             <td>{{rankingpoints}}</td>
             <td class="status">{{status}}</td>
+            {{#if ../user.isAdmin}}
             <td>
               <div class="dropdown-container">
-                <button onclick="toggleDropdown(this)" class="dropbtn">...</button>
-                <div class="dropdown-content">
-                  <a href="#" onclick="updateStatus('{{id}}', 'Active')">Activate</a>
-                  <a href="#" onclick="updateStatus('{{id}}', 'Banned')">Ban</a>
-                  <a href="#" onclick="updateStatus('{{id}}', 'Suspended')">Suspend</a>
-                  <a href="#" onclick="updateStatus('{{id}}', 'Deleted')">Delete</a>
+                
+                <div id="status-athlete" class="status-content">
+                  <a href="#" onclick="updateStatus('{{id}}', 'Active')" class="status-click">Activate</a>
+                  <a href="#" onclick="updateStatus('{{id}}', 'Banned')" class="status-click">Ban</a>
+                  <a href="#" onclick="updateStatus('{{id}}', 'Suspended')" class="status-click">Suspend</a>
                 </div>
               </div>
             </td>
+            {{/if}}
           </tr>
           {{/each}}
         </tbody>
@@ -210,6 +214,44 @@
       }
     }
 
+    function toggleDropdownStatus() {
+      document.getElementById("dropdown1").classList.toggle("show");
+    }
+
+    window.onclick = function (event) {
+      if (!event.target.matches('.profile-pic img')) {
+        var dropdowns = document.getElementsByClassName("dropdown-content");
+        for (var i = 0; i < dropdowns.length; i++) {
+          var openDropdown = dropdowns[i];
+          if (openDropdown.classList.contains('show')) {
+            openDropdown.classList.remove('show');
+          }
+        }
+      }
+    }
+
+function toggleStatusDropdown(dropdownId) {
+  // Close all other status dropdowns first
+  document.querySelectorAll(".status-dropdown-content").forEach(dropdown => {
+    if (dropdown.id !== dropdownId) {
+      dropdown.classList.remove("show");
+    }
+  });
+
+  // Toggle the specific status dropdown
+  const dropdown = document.getElementById(dropdownId);
+  dropdown.classList.toggle("show");
+
+  // Close the dropdown when clicking outside
+  document.addEventListener("click", function closeStatusDropdown(event) {
+    if (!dropdown.contains(event.target)) {
+      dropdown.classList.remove("show");
+      document.removeEventListener("click", closeStatusDropdown);
+    }
+  });
+}
+
+
     function showAthleteDetails(id, name, athleteClass, height, weight, birthplace, club, portrait, userid) {
       document.getElementById("athlete-name").textContent = name;
       document.getElementById("athlete-class").textContent = "Class: " + athleteClass;
@@ -241,34 +283,37 @@
     }
 
     // try
-    function updateStatus(athleteId, newStatus) {
-      var statusCell = document.querySelector(`tr[data-athlete-id='${athleteId}'] .status`);
+function updateStatus(athleteId, newStatus) {
+  var statusCell = document.querySelector(`tr[data-athlete-id='${athleteId}'] .status`);
 
-      statusCell.textContent = newStatus;
+  // Update the status in the UI
+  statusCell.textContent = newStatus;
 
-      fetch('/update-athlete-status', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          id: athleteId,
-          status: newStatus
-        })
-      })
-        .then(response => response.json())
-        .then(data => {
-          if (data.success) {
-            alert('Status updated successfully!');
-          } else {
-            alert('Failed to update status.');
-          }
-        })
-        .catch(error => {
-          console.error('Error updating status:', error);
-          alert('An error occurred while updating the status.');
-        });
+  // Send the new status to the server
+  fetch('/update-athlete-status', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      id: athleteId,
+      status: newStatus
+    })
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.success) {
+      alert('Status updated successfully!');
+    } else {
+      alert('Failed to update status.');
     }
+  })
+  .catch(error => {
+    console.error('Error updating status:', error);
+    alert('An error occurred while updating the status.');
+  });
+}
+
 
 
     document.querySelector('.apply-btn').addEventListener('click', function () {
