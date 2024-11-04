@@ -212,6 +212,7 @@ h2 {
   border-radius: 5px;
   cursor: pointer;
   transition: background-color 0.3s;
+  margin-left: 10px;
 }
 
 .invite-button:hover {
@@ -586,75 +587,16 @@ h1 {
   to { opacity: 1; }
 }
 
-/* 09/25/24*/
-
-.footer-content {
-  background-color: #333;
-  color: #fff;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20px;
- /* height: 100px;
-  margin-top: auto; */
-}
-
-.footer-content .pta-logo img {
-  height: 100%; 
-}
-
-.footer-content .contact-info {
-  flex: 1;
-  text-align: center;
-  padding: 0 20px;
-}
-
-.footer-content .contact-info p {
-  margin: 5px 0;
-}
-
-.footer-content .social-media {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-}
-
-.footer-content .social-media p {
-  margin-bottom: 5px;
-}
-
-.footer-content .social-media .icons {
-  display: flex;
-  align-items: center;
-}
-
-.footer-content .social-media a {
-  margin-left: 10px;
-}
-.footer-content .contact-info p, .footer-content .social-media p {
-  margin: 5px 0;
-  font-size: 14px;
-}
-
-.footer-content .social-media a img {
-  height: 30px;
-  margin-left: 10px;
-}
-
-.footer-content .social-media img {
-  height: 30px;
-}
-
 .joinbtn {
   background-color: #007bff;
   color: white;
   border: none;
-  padding: 10px 20px;
+  padding: 15px 25px;
   border-radius: 5px;
   cursor: pointer;
   outline: inherit;
   transition: background-color 0.3s;
-  margin-left: 12px;
+  margin-left: 20px;
 }
 
 .joinbtn:hover {
@@ -694,7 +636,7 @@ h1 {
   background: url('/images/edit.png') no-repeat center center;
   background-size: contain;
   vertical-align: middle;
-  margin-left: 5px;
+  margin-left: 10px;
 }
 
 
@@ -938,6 +880,7 @@ h1 {
   vertical-align: middle;
   float: right;
   padding: 5px 10px;
+
 }
 
 .confirmdeletescreen{
@@ -974,3 +917,52 @@ h1 {
 }
 
 
+
+/* 11/4/24*/
+.footer-content {
+  background-color: #333;
+  color: #fff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  height: 100px;
+  margin-top: auto; 
+}
+
+.footer-content .pta-logo img {
+  height: 100%; 
+}
+
+.footer-content .contact-info {
+  flex: 1;
+  text-align: center;
+  padding: 0 20px;
+}
+
+.footer-content .contact-info p {
+  margin: 5px 0;
+}
+
+.footer-content .social-media {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.footer-content .social-media p {
+  margin-bottom: 5px;
+}
+
+.footer-content .social-media .icons {
+  display: flex;
+  align-items: center;
+}
+
+.footer-content .social-media a {
+  margin-left: 10px;
+}
+
+.footer-content .social-media img {
+  height: 30px;
+}
