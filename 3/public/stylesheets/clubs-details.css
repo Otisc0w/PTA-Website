@@ -966,3 +966,9 @@ h1 {
 .footer-content .social-media img {
   height: 30px;
 }
+
+.modal-invite-button {
+  display: block;
+  margin: 20px auto 0; /* Centering within the modal */
+  width: fit-content;
+}
