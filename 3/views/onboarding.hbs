@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Onboarding - Taekwondo World</title>
+    <link rel="stylesheet" href="/stylesheets/onboarding.css"> <!-- Link to your CSS file -->
+</head>
+<body>
+    <div class="onboarding-container">
+        <h1>Welcome to Taekwondo World!</h1>
+
+        {{!-- Athlete Onboarding --}}
+        {{#if (eq userType "athlete")}}
+            <div class="onboarding-steps">
+                <h2>Welcome, Athlete!</h2>
+                <button onclick="window.location.href='/clubs'">Join Club</button>
+                <button onclick="window.location.href='/membership-ncc'">Apply for NCC ID</button>
+                <button onclick="window.location.href='/events'">Join Events</button>
+            </div>
+        {{/if}}
+
+        {{!-- Instructor Onboarding --}}
+        {{#if (eq userType "instructor")}}
+            <div class="onboarding-steps">
+                <h2>Welcome, Instructor!</h2>
+                <button onclick="window.location.href='/membership-instructor'">Apply for License</button>
+                <button onclick="window.location.href='/clubs-details'">Create Club</button>
+            </div>
+        {{/if}}
+
+        {{!-- Admin Onboarding --}}
+        {{#if (eq userType "admin")}}
+            {{!-- Admins skip onboarding and go straight to the home page --}}
+            <script>
+                window.location.href = "/home";
+            </script>
+        {{/if}}
+
+        {{!-- Button to complete onboarding for athletes and instructors --}}
+        {{#if (or (eq userType "athlete") (eq userType "instructor"))}}
+            <form action="/complete-onboarding" method="POST">
+                <button type="submit" class="complete-onboarding-btn">Complete Onboarding</button>
+            </form>
+        {{/if}}
+    </div>
+
+</body>
+</html>
