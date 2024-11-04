@@ -59,14 +59,14 @@
         <!-- First Screen: Welcome Message -->
         <div class="onboarding-screen" id="welcome-screen">
           <h1>Welcome to Taekwondo World!</h1>
-          <p>You’re now part of our incredible and dynamic community. Let's get started!</p>
+          <p class="user-text">You’re now part of our incredible and dynamic community. Let's get started!</p>
           <button class="next-btn" onclick="nextScreen('user-type-screen')">Next</button>
         </div>
 
         <!-- Second Screen: User Type Selection -->
         <div class="onboarding-screen" id="user-type-screen" style="display: none;">
           <h1>Choose Your Role</h1>
-          <p>Select your user type:</p>
+          <p class="user-text">Select your user type: </p>
           <button class="type-btn" onclick="selectUserType('athlete')">Athlete</button>
           <button class="type-btn" onclick="selectUserType('instructor')">Instructor</button>
           <button class="type-btn" onclick="selectUserType('admin')">Admin</button>
@@ -75,13 +75,14 @@
         <!-- Third Screen: Options Based on User Type -->
         <div class="onboarding-screen" id="athlete-options" style="display: none;">
           <h1>Welcome, Athlete!</h1>
-          <p>Here are some options to get started:</p>
+          <p class="user-text">Here are some options to get started:</p>
           <ul>
             <li><a href="/clubs">Join a Club</a></li>
             <li><a href="/membership-ncc">Register for NCC</a></li>
             <li><a href="/events">View Events</a></li>
           </ul>
-           <button class="finish-btn" onclick="completeOnboarding()">Finish</button>
+          <button class="finish-btn" onclick="resetOnboarding()">Finish</button>
+
         </div>
 
         <div class="onboarding-screen" id="instructor-options" style="display: none;">
@@ -91,13 +92,17 @@
             <li><a href="/membership-instructor">Apply for Instructor License</a></li>
             <li><a href="/clubs-details">View Club Details</a></li>
           </ul>
-          <button class="finish-btn" onclick="completeOnboarding()">Finish</button>
+          <button class="finish-btn" onclick="resetOnboarding()">Finish</button>
+
+
         </div>
 
         <div class="onboarding-screen" id="admin-options" style="display: none;">
           <h1>Welcome, Admin!</h1>
-          <p>Access the home page to manage everything.</p>
-            <a href="/home" class="finish-btn" onclick="completeOnboarding()">Go to Home</a>
+          <p class="user-text">Access the home page to manage everything.</p>
+          <button class="finish-btn" onclick="resetOnboarding()">Finish</button>
+
+
         </div>
       </div>
       <!-- Upcoming events section -->
@@ -185,21 +190,12 @@
     function selectUserType(userType) {
       nextScreen(userType + '-options');
     }
-    // Function to complete onboarding
-    function completeOnboarding() {
-      // Hide the onboarding container
-      document.getElementById('onboarding-container').style.display = 'none';
 
-      // Set a flag in localStorage to mark onboarding as complete
-      localStorage.setItem('onboardingComplete', 'true');
+    // Function to reset onboarding to the first screen
+    function resetOnboarding() {
+      nextScreen('welcome-screen'); // Show the welcome message screen
     }
 
-    // Automatically show onboarding on login if it hasn't been completed
-    window.onload = function () {
-      if (!localStorage.getItem('onboardingComplete')) {
-        document.getElementById('onboarding-container').style.display = 'flex';
-      }
-    };
   </script>
 </body>
 
