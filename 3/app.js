@@ -3901,6 +3901,45 @@ app.get("/events-details/:id", async function (req, res) {
     if (matchesError) {
       return res.status(400).json({ error: matchesError.message });
     }
+    // Fetch kyorugi matches and combine with athlete data
+    const { data: kyorugiMatches, error: kyorugiMatchesError } = await supabase
+      .from("kyorugi_matches")
+      .select("*")
+      .eq("eventid", id);
+
+    if (kyorugiMatchesError) {
+      return res.status(400).json({ error: kyorugiMatchesError.message });
+    }
+
+    // Fetch athlete data for player1 and player2
+    const playerIds = [
+      ...new Set([
+      ...kyorugiMatches.map((match) => match.player1),
+      ...kyorugiMatches.map((match) => match.player2),
+      ]),
+    ];
+
+    // const { data: athletes, error: athletesError } = await supabase
+    //   .from("athletes")
+    //   .select("*")
+    //   .in("userid", playerIds);
+
+    // if (athletesError) {
+    //   return res.status(400).json({ error: athletesError.message });
+    // }
+
+    // // Combine kyorugi matches with athlete data
+    // const combinedMatches = kyorugiMatches.map((match) => {
+    //   const player1 = athletes.find((athlete) => athlete.userid === match.player1);
+    //   const player2 = athletes.find((athlete) => athlete.userid === match.player2);
+    //   return {
+    //     ...match,
+    //     player1_name: player1 ? player1.name : "Unknown",
+    //     player2_name: player2 ? player2.name : "Unknown",
+    //   };
+    // });
+
+    // console.log("Combined kyorugi matches with athlete data:", combinedMatches); // Log the combined data to the console
 
     const { data: eventannouncements } = await supabase
       .from("event_announcements")
