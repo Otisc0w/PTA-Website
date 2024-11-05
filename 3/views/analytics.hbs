@@ -278,34 +278,34 @@
         }
 
 
-       function saveReportEdits() {
-    // Get the edited values
-    const updatedTitle = document.getElementById("edit-title").value;
-    const updatedDescription = document.getElementById("edit-description").value; // Remove .replace(/\n/g, "<br>")
-    const updatedStartDate = document.getElementById("edit-start-date").value;
-    const updatedEndDate = document.getElementById("edit-end-date").value;
+        function saveReportEdits() {
+            // Get the edited values
+            const updatedTitle = document.getElementById("edit-title").value;
+            const updatedDescription = document.getElementById("edit-description").value; // Remove .replace(/\n/g, "<br>")
+            const updatedStartDate = document.getElementById("edit-start-date").value;
+            const updatedEndDate = document.getElementById("edit-end-date").value;
 
-    // Retrieve reports from localStorage and find the report by ID
-    let reports = JSON.parse(localStorage.getItem("reports")) || [];
-    const reportIndex = reports.findIndex(report => report.id === currentEditingReportId);
+            // Retrieve reports from localStorage and find the report by ID
+            let reports = JSON.parse(localStorage.getItem("reports")) || [];
+            const reportIndex = reports.findIndex(report => report.id === currentEditingReportId);
 
-    if (reportIndex !== -1) {
-        // Update the report data
-        reports[reportIndex].title = updatedTitle;
-        reports[reportIndex].description = updatedDescription;
-        reports[reportIndex].startDate = updatedStartDate;
-        reports[reportIndex].endDate = updatedEndDate;
+            if (reportIndex !== -1) {
+                // Update the report data
+                reports[reportIndex].title = updatedTitle;
+                reports[reportIndex].description = updatedDescription;
+                reports[reportIndex].startDate = updatedStartDate;
+                reports[reportIndex].endDate = updatedEndDate;
 
-        // Save back to localStorage
-        localStorage.setItem("reports", JSON.stringify(reports));
+                // Save back to localStorage
+                localStorage.setItem("reports", JSON.stringify(reports));
 
-        // Refresh the display, close the modal, and reset the edit state
-        loadReportsFromLocalStorage();
-        closeViewModal();
-    } else {
-        alert("Error: Report not found.");
-    }
-}
+                // Refresh the display, close the modal, and reset the edit state
+                loadReportsFromLocalStorage();
+                closeViewModal();
+            } else {
+                alert("Error: Report not found.");
+            }
+        }
 
 
         function addReportToUI(report) {
@@ -368,27 +368,24 @@
             // Load reports from local storage and display them
             loadReportsFromLocalStorage();
         });
-function loadReportsFromLocalStorage() {
-    // Clear existing content to prevent duplication
+       function loadReportsFromLocalStorage() {
     document.getElementById("top-performers-content").innerHTML = "";
     document.getElementById("upcoming-events-content").innerHTML = "";
     document.getElementById("clubs-content").innerHTML = "";
     document.getElementById("member-engagement-content").innerHTML = "";
 
-    // Load reports from local storage
     let reports = JSON.parse(localStorage.getItem("reports")) || [];
 
-    // Remove any <br> tags in the description for each report
+    // Remove <br> tags in descriptions
     reports = reports.map(report => {
         report.description = report.description.replace(/<br>/g, "");
         return report;
     });
 
-    // Save cleaned reports back to localStorage
     localStorage.setItem("reports", JSON.stringify(reports));
 
-    // Proceed with loading cleaned reports
     reports.sort((a, b) => new Date(a.startDate) - new Date(b.startDate));
+
     const currentMonths = {
         "top-performers": "",
         "upcoming-events": "",
@@ -398,6 +395,8 @@ function loadReportsFromLocalStorage() {
 
     reports.forEach(report => {
         const reportMonth = new Date(report.startDate).toLocaleString('default', { month: 'long' });
+
+        // Only add the month label if it's different from the previous one
         if (reportMonth !== currentMonths[report.type]) {
             currentMonths[report.type] = reportMonth;
             addMonthLabelToUI(reportMonth, report.type);
@@ -409,30 +408,35 @@ function loadReportsFromLocalStorage() {
 }
 
 
-        // Function to add a month label to the appropriate section
-        function addMonthLabelToUI(month, reportType) {
-            const monthLabel = document.createElement("div");
-            monthLabel.classList.add("month-label");
-            monthLabel.textContent = month;
 
-            // Add the label to the correct section based on report type
-            switch (reportType) {
-                case "top-performers":
-                    document.getElementById("top-performers-content").appendChild(monthLabel);
-                    break;
-                case "upcoming-events":
-                    document.getElementById("upcoming-events-content").appendChild(monthLabel);
-                    break;
-                case "clubs":
-                    document.getElementById("clubs-content").appendChild(monthLabel);
-                    break;
-                case "member-engagement":
-                    document.getElementById("member-engagement-content").appendChild(monthLabel);
-                    break;
-                default:
-                    console.warn("Invalid report type.");
-            }
-        }
+       function addMonthLabelToUI(month, reportType) {
+    const monthId = `${reportType}-${month}`;
+    if (document.getElementById(monthId)) return; // Exit if label already exists
+
+    const monthLabel = document.createElement("div");
+    monthLabel.classList.add("month-label");
+    monthLabel.textContent = month;
+    monthLabel.id = monthId; // Unique ID to prevent duplication
+
+    // Add the label to the correct section based on report type
+    switch (reportType) {
+        case "top-performers":
+            document.getElementById("top-performers-content").appendChild(monthLabel);
+            break;
+        case "upcoming-events":
+            document.getElementById("upcoming-events-content").appendChild(monthLabel);
+            break;
+        case "clubs":
+            document.getElementById("clubs-content").appendChild(monthLabel);
+            break;
+        case "member-engagement":
+            document.getElementById("member-engagement-content").appendChild(monthLabel);
+            break;
+        default:
+            console.warn("Invalid report type.");
+    }
+}
+
 
 
         function displayReportTitles(reportType) {
@@ -616,29 +620,29 @@ function loadReportsFromLocalStorage() {
             document.getElementById("save-button").style.display = "inline-block";
         }
 
-       function saveReportEdits() {
-    const updatedTitle = document.getElementById("edit-title").value;
-    const updatedDescription = document.getElementById("edit-description").value; // No .replace here
-    const updatedStartDate = document.getElementById("edit-start-date").value;
-    const updatedEndDate = document.getElementById("edit-end-date").value;
+        function saveReportEdits() {
+            const updatedTitle = document.getElementById("edit-title").value;
+            const updatedDescription = document.getElementById("edit-description").value; // No .replace here
+            const updatedStartDate = document.getElementById("edit-start-date").value;
+            const updatedEndDate = document.getElementById("edit-end-date").value;
 
-    let reports = JSON.parse(localStorage.getItem("reports")) || [];
-    const reportIndex = reports.findIndex(report => report.id === currentEditingReportId);
+            let reports = JSON.parse(localStorage.getItem("reports")) || [];
+            const reportIndex = reports.findIndex(report => report.id === currentEditingReportId);
 
-    if (reportIndex !== -1) {
-        reports[reportIndex].title = updatedTitle;
-        reports[reportIndex].description = updatedDescription;
-        reports[reportIndex].startDate = updatedStartDate;
-        reports[reportIndex].endDate = updatedEndDate;
+            if (reportIndex !== -1) {
+                reports[reportIndex].title = updatedTitle;
+                reports[reportIndex].description = updatedDescription;
+                reports[reportIndex].startDate = updatedStartDate;
+                reports[reportIndex].endDate = updatedEndDate;
 
-        localStorage.setItem("reports", JSON.stringify(reports));
+                localStorage.setItem("reports", JSON.stringify(reports));
 
-        loadReportsFromLocalStorage();
-        closeViewModal();
-    } else {
-        alert("Error: Report not found.");
-    }
-}
+                loadReportsFromLocalStorage();
+                closeViewModal();
+            } else {
+                alert("Error: Report not found.");
+            }
+        }
 
 
         function closeViewModal() {
