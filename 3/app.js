@@ -4865,7 +4865,25 @@ app.get('/athletes', (req, res) => {
   });
 });
 
-app.get('/analytics', (req, res) => {
+app.get('/analytics', async (req, res) => {
+
+  try {
+    const { data: athleteresults, error } = await supabase
+      .from('athletes')
+      .select('*')
+      .order('bday', { ascending: true })
+      .limit(5);
+
+    if (error) {
+      console.error('Error fetching athleteresults:', error.message);
+      return res.status(500).json({ error: error.message });
+    }
+
+    res.render('analytics', { user: req.session.user, athleteresults });
+  } catch (error) {
+    console.error('Server error:', error.message);
+    res.status(500).json({ error: error.message });
+  }
   res.render('analytics', { user: req.session.user });
 });
 

@@ -2,674 +2,677 @@
 <html>
 
 <head>
-    <title>PTA | Analytics</title>
-    <link rel="icon" type="image/x-icon" href="/images/favicon.ico" />
-    <link rel="stylesheet" type="text/css" href="../stylesheets/home.css" />
-    <link rel="stylesheet" type="text/css" href="../stylesheets/navbar.css" />
-    <link rel="stylesheet" type="text/css" href="../stylesheets/analytics.css" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  <title>PTA | Analytics</title>
+  <link rel="icon" type="image/x-icon" href="/images/favicon.ico" />
+  <link rel="stylesheet" type="text/css" href="../stylesheets/home.css" />
+  <link rel="stylesheet" type="text/css" href="../stylesheets/navbar.css" />
+  <link rel="stylesheet" type="text/css" href="../stylesheets/analytics.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 </head>
 
 <body class="container">
-    <div class="header">
-        <div class="navbar">
-            <a href="home"><img src="/images/logo.png" class="logo" alt="Logo"></a>
-            <ul class="tabs">
-                <li class="home"><a href="home">Home</a></li>
-                <li class="athletes"><a href="athletes">Athletes</a></li>
-                <li class="clubs"><a href="clubs">Clubs</a></li>
-                <li class="events"><a href="events">Events</a></li>
-                <li class="membership"><a href="membership">Membership</a></li>
-                <li class="forum"><a href="forum">Forum</a></li>
-                <li class="notifications">
-                    <a href="notifications">Notifications
-                        {{#if notifications}}
-                        <span class="badge">{{notifications.length}}</span>
-                        {{/if}}
-                    </a>
-                </li>
-                <li class="analytics"><a href="analytics">Analytics</a></li>
-                <li class="profile-pic">
-                    {{#if user.profilepic}}
-                    <a href="#" onclick="toggleDropdown()"><img src="{{user.profilepic}}" alt="Profile Picture"
-                            class="profile-picture"></a>
-                    {{else}}
-                    <a href="#" onclick="toggleDropdown()" class="profile-picture"><img src="/images/none.jpg"
-                            alt="Profile Picture" class="profile-picture"></a>
-                    {{/if}}
-                    <div id="dropdown" class="dropdown-content">
-                        <a href="profile">Profile</a>
-                        <a href="settings">Settings</a>
-                        <a href="help-center">FAQs</a>
-                        <a href="/">Logout</a>
-                    </div>
-                </li>
-            </ul>
-        </div>
+  <div class="header">
+    <div class="navbar">
+      <a href="home"><img src="/images/logo.png" class="logo" alt="Logo"></a>
+      <ul class="tabs">
+        <li class="home"><a href="home">Home</a></li>
+        <li class="athletes"><a href="athletes">Athletes</a></li>
+        <li class="clubs"><a href="clubs">Clubs</a></li>
+        <li class="events"><a href="events">Events</a></li>
+        <li class="membership"><a href="membership">Membership</a></li>
+        <li class="forum"><a href="forum">Forum</a></li>
+        <li class="notifications">
+          <a href="notifications">Notifications
+            {{#if notifications}}
+            <span class="badge">{{notifications.length}}</span>
+            {{/if}}
+          </a>
+        </li>
+        <li class="analytics"><a href="analytics">Analytics</a></li>
+        <li class="profile-pic">
+          {{#if user.profilepic}}
+          <a href="#" onclick="toggleDropdown()"><img src="{{user.profilepic}}" alt="Profile Picture"
+              class="profile-picture"></a>
+          {{else}}
+          <a href="#" onclick="toggleDropdown()" class="profile-picture"><img src="/images/none.jpg"
+              alt="Profile Picture" class="profile-picture"></a>
+          {{/if}}
+          <div id="dropdown" class="dropdown-content">
+            <a href="profile">Profile</a>
+            <a href="settings">Settings</a>
+            <a href="help-center">FAQs</a>
+            <a href="/">Logout</a>
+          </div>
+        </li>
+      </ul>
     </div>
+  </div>
 
-    <!-- Filter and Create Report Section -->
-    <div class="action-bar">
-        <div class="filter-panel">
-            <div class="filter-group">
-                <label for="date-today">Date Today:</label>
-                <input type="text" id="date-today" placeholder="Search...">
-            </div>
-            <div class="filter-group">
-                <label for="start-date">Start Date</label>
-                <input type="text" id="start-date" class="datepicker">
-            </div>
-            <div class="filter-group">
-                <label for="end-date">End Date</label>
-                <input type="text" id="end-date" class="datepicker">
-            </div>
+  <!-- Filter and Create Report Section -->
+  <div class="action-bar">
+    <div class="filter-panel">
+      <div class="filter-group">
+        <label for="date-today">Date Today:</label>
+        <input type="text" id="date-today" placeholder="Search...">
+      </div>
+      <div class="filter-group">
+        <label for="start-date">Start Date</label>
+        <input type="text" id="start-date" class="datepicker">
+      </div>
+      <div class="filter-group">
+        <label for="end-date">End Date</label>
+        <input type="text" id="end-date" class="datepicker">
+      </div>
 
-            <button class="apply-btn" onclick="filterReportsByDate()">Apply</button>
-            <button class="reset-btn" onclick="resetFilter()">Reset</button>
-        </div>
-        <button type="button" class="create-report-button" onclick="openModal()">+ Create Report</button>
+      <button class="apply-btn" onclick="filterReportsByDate()">Apply</button>
+      <button class="reset-btn" onclick="resetFilter()">Reset</button>
     </div>
+    <button type="button" class="create-report-button" onclick="openModal()">+ Create Report</button>
+  </div>
 
-    <div class="analytics-container">
-        <div class="card summary-card">
-            <div class="header">Summary</div>
-            <ul class="summary-list">
-                <li>
-                    <span onclick="displayReportTitles('top-performers')">Top Performers of the Year (<span
-                            id="top-performers-count">0</span>)</span>
-                    <div id="top-performers-titles" class="report-titles"></div>
-                </li>
-                <li>
-                    <span onclick="displayReportTitles('upcoming-events')">Total Events in the Year (<span
-                            id="upcoming-events-count">0</span>)</span>
-                    <div id="upcoming-events-titles" class="report-titles"></div>
-                </li>
-                <li>
-                    <span onclick="displayReportTitles('clubs')">Total Clubs in a Year (<span
-                            id="clubs-count">0</span>)</span>
-                    <div id="clubs-titles" class="report-titles"></div>
-                </li>
-                <li>
-                    <span onclick="displayReportTitles('member-engagement')">Total Participants in a Year (<span
-                            id="member-engagement-count">0</span>)</span>
-                    <div id="member-engagement-titles" class="report-titles"></div>
-                </li>
-            </ul>
+  <div class="analytics-container">
+    <div class="card summary-card">
+      <div class="header">Summary</div>
+      <ul class="summary-list">
+        <li>
+          <span onclick="displayReportTitles('top-performers')">Top Performers of the Year (<span
+              id="top-performers-count">0</span>)</span>
+							{{#each athleteresults}}
+								{{name}}<br>
+							{{/each}}
+          <div id="top-performers-titles" class="report-titles"></div>
+        </li>
+        <li>
+          <span onclick="displayReportTitles('upcoming-events')">Total Events in the Year (<span
+              id="upcoming-events-count">0</span>)</span>
+          <div id="upcoming-events-titles" class="report-titles"></div>
+        </li>
+        <li>
+          <span onclick="displayReportTitles('clubs')">Total Clubs in a Year (<span
+              id="clubs-count">0</span>)</span>
+          <div id="clubs-titles" class="report-titles"></div>
+        </li>
+        <li>
+          <span onclick="displayReportTitles('member-engagement')">Total Participants in a Year (<span
+              id="member-engagement-count">0</span>)</span>
+          <div id="member-engagement-titles" class="report-titles"></div>
+        </li>
+      </ul>
 
-            <button class="see-more-button">See more</button>
-        </div>
-
-
-
-        <div class="card top-performers-card" id="top-performers-list">
-            <div class="header">Top Performers</div>
-            <ul id="top-performers-content"></ul>
-        </div>
-
-        <div class="card upcoming-events-card" id="upcoming-events-list">
-            <div class="header">Upcoming Events</div>
-            <ul id="upcoming-events-content">
-            </ul>
-        </div>
-
-        <div class="card clubs-card" id="clubs-list">
-            <div class="header">Clubs</div>
-            <ul id="clubs-content"></ul>
-        </div>
-
-        <div class="card member-engagement-card" id="member-engagement-list">
-            <div class="header">Member Engagement</div>
-            <ul id="member-engagement-content">
-            </ul>
-        </div>
-    </div>
-
-    <div id="createReportModal" class="modal">
-        <div class="modal-content">
-            <span class="close-button" onclick="closeModal()">&times;</span>
-            <h2>Create Report</h2>
-
-            <!-- Report Form -->
-            <form class="report-form">
-                <div class="form-group">
-                    <label for="report-title">Report Title:</label>
-                    <input type="text" id="report-title" placeholder="Enter report title">
-                </div>
-
-                <div class="form-group">
-                    <label for="report-description">Description:</label>
-                    <textarea id="report-description" placeholder="Enter report description"></textarea>
-                </div>
-
-                <div class="form-group">
-                    <label for="report-start-date">Start Date:</label>
-                    <input type="text" id="report-start-date" class="datepicker">
-                    <label for="report-end-date">End Date:</label>
-                    <input type="text" id="report-end-date" class="datepicker">
-                </div>
-
-                <div class="form-group">
-                    <label for="report-type">Report Type:</label>
-                    <select id="report-type">
-                        <option value="top-performers">Top Performers</option>
-                        <option value="upcoming-events">Upcoming Events</option>
-                        <option value="clubs">Clubs</option>
-                        <option value="member-engagement">Member Engagement</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label for="report-format">Format:</label>
-                    <select id="report-format">
-                        <option value="pdf">PDF</option>
-                        <option value="excel">Excel</option>
-                        <option value="word">Word</option>
-                    </select>
-                </div>
-
-                <button type="button" class="submit-report-button" onclick="submitReport()">Submit Report</button>
-            </form>
-        </div>
-    </div>
-
-    <div id="viewReportModal" class="modal">
-        <div class="modal-content">
-            <span class="close-button" onclick="closeViewModal()">&times;</span>
-            <h2 id="report-view-title"></h2>
-            <p id="report-view-description"></p>
-            <p id="report-view-dates"></p>
-
-            <button id="edit-button" onclick="enableEditMode()">Edit</button>
-            <button id="save-button" style="display: none;" onclick="saveReportEdits()">Save</button>
-        </div>
+      <button class="see-more-button">See more</button>
     </div>
 
 
-    <footer>
-        <div class="footer-content">
-            <div class="pta-logo">
-                <img src="/images/logo.png" alt="PTA Logo">
-            </div>
-            <div class="contact-info">
-                <p>Philippine Taekwondo Central Headquarters</p>
-                <p>Rizal Memorial Coliseum, Manila, Philippines</p>
-                <p>0977 384 5879</p>
-                <p>pthtkd@gmail.com</p>
-            </div>
-            <div class="social-media">
-                <p>Follow us</p>
-                <div class="icons">
-                    <a href="https://www.facebook.com"><img src="/images/homepage/fb.png" alt="Facebook"></a>
-                    <a href="https://www.instagram.com"><img src="/images/homepage/ig.png" alt="Instagram"></a>
-                    <a href="https://www.twitch.com"><img src="/images/homepage/twitch.webp" alt="Twitch"></a>
-                </div>
-            </div>
-        </div>
-    </footer>
 
-    <script>
-        function toggleDropdown() {
-            document.getElementById("dropdown").classList.toggle("show");
+    <div class="card top-performers-card" id="top-performers-list">
+      <div class="header">Top Performers</div>
+      <ul id="top-performers-content"></ul>
+    </div>
+
+    <div class="card upcoming-events-card" id="upcoming-events-list">
+      <div class="header">Upcoming Events</div>
+      <ul id="upcoming-events-content">
+      </ul>
+    </div>
+
+    <div class="card clubs-card" id="clubs-list">
+      <div class="header">Clubs</div>
+      <ul id="clubs-content"></ul>
+    </div>
+
+    <div class="card member-engagement-card" id="member-engagement-list">
+      <div class="header">Member Engagement</div>
+      <ul id="member-engagement-content">
+      </ul>
+    </div>
+  </div>
+
+  <div id="createReportModal" class="modal">
+    <div class="modal-content">
+      <span class="close-button" onclick="closeModal()">&times;</span>
+      <h2>Create Report</h2>
+
+      <!-- Report Form -->
+      <form class="report-form">
+        <div class="form-group">
+          <label for="report-title">Report Title:</label>
+          <input type="text" id="report-title" placeholder="Enter report title">
+        </div>
+
+        <div class="form-group">
+          <label for="report-description">Description:</label>
+          <textarea id="report-description" placeholder="Enter report description"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="report-start-date">Start Date:</label>
+          <input type="text" id="report-start-date" class="datepicker">
+          <label for="report-end-date">End Date:</label>
+          <input type="text" id="report-end-date" class="datepicker">
+        </div>
+
+        <div class="form-group">
+          <label for="report-type">Report Type:</label>
+          <select id="report-type">
+            <option value="top-performers">Top Performers</option>
+            <option value="upcoming-events">Upcoming Events</option>
+            <option value="clubs">Clubs</option>
+            <option value="member-engagement">Member Engagement</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="report-format">Format:</label>
+          <select id="report-format">
+            <option value="pdf">PDF</option>
+            <option value="excel">Excel</option>
+            <option value="word">Word</option>
+          </select>
+        </div>
+
+        <button type="button" class="submit-report-button" onclick="submitReport()">Submit Report</button>
+      </form>
+    </div>
+  </div>
+
+  <div id="viewReportModal" class="modal">
+    <div class="modal-content">
+      <span class="close-button" onclick="closeViewModal()">&times;</span>
+      <h2 id="report-view-title"></h2>
+      <p id="report-view-description"></p>
+      <p id="report-view-dates"></p>
+
+      <button id="edit-button" onclick="enableEditMode()">Edit</button>
+      <button id="save-button" style="display: none;" onclick="saveReportEdits()">Save</button>
+    </div>
+  </div>
+
+
+  <footer>
+    <div class="footer-content">
+      <div class="pta-logo">
+        <img src="/images/logo.png" alt="PTA Logo">
+      </div>
+      <div class="contact-info">
+        <p>Philippine Taekwondo Central Headquarters</p>
+        <p>Rizal Memorial Coliseum, Manila, Philippines</p>
+        <p>0977 384 5879</p>
+        <p>pthtkd@gmail.com</p>
+      </div>
+      <div class="social-media">
+        <p>Follow us</p>
+        <div class="icons">
+          <a href="https://www.facebook.com"><img src="/images/homepage/fb.png" alt="Facebook"></a>
+          <a href="https://www.instagram.com"><img src="/images/homepage/ig.png" alt="Instagram"></a>
+          <a href="https://www.twitch.com"><img src="/images/homepage/twitch.webp" alt="Twitch"></a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    function toggleDropdown() {
+      document.getElementById("dropdown").classList.toggle("show");
+    }
+
+    window.onclick = function (event) {
+      if (!event.target.matches('.profile-pic img')) {
+        var dropdowns = document.getElementsByClassName("dropdown-content");
+        for (var i = 0; i < dropdowns.length; i++) {
+          var openDropdown = dropdowns[i];
+          if (openDropdown.classList.contains('show')) {
+            openDropdown.classList.remove('show');
+          }
         }
+      }
+    }
 
-        window.onclick = function (event) {
-            if (!event.target.matches('.profile-pic img')) {
-                var dropdowns = document.getElementsByClassName("dropdown-content");
-                for (var i = 0; i < dropdowns.length; i++) {
-                    var openDropdown = dropdowns[i];
-                    if (openDropdown.classList.contains('show')) {
-                        openDropdown.classList.remove('show');
-                    }
-                }
-            }
+    document.addEventListener("DOMContentLoaded", function () {
+      const today = new Date();
+      const formattedDate = today.toISOString().split("T")[0]; // YYYY-MM-DD format
+      document.getElementById("date-today").value = formattedDate;
+
+      flatpickr(".datepicker", {
+        dateFormat: "Y-m-d", // Format as YYYY-MM-DD
+        allowInput: true // Allow manual input as well
+      });
+    });
+
+    var modal = document.getElementById("createReportModal");
+
+    function openModal() {
+      modal.style.display = "flex";
+    }
+
+    function closeModal() {
+      modal.style.display = "none";
+    }
+
+    window.onclick = function (event) {
+      if (event.target == modal) {
+        closeModal();
+      }
+    }
+
+    function submitReport() {
+      const reportTitle = document.getElementById("report-title").value;
+      const reportDescription = document.getElementById("report-description").value;
+      const reportStartDate = document.getElementById("report-start-date").value;
+      const reportEndDate = document.getElementById("report-end-date").value;
+      const reportType = document.getElementById("report-type").value;
+      const reportFormat = document.getElementById("report-format").value;
+
+      if (!reportTitle || !reportDescription || !reportStartDate || !reportEndDate || !reportType || !reportFormat) {
+        alert("Please fill in all fields before submitting.");
+        return;
+      }
+      const reportId = Date.now();
+
+      const report = {
+        id: reportId,
+        title: reportTitle,
+        description: reportDescription,
+        startDate: reportStartDate,
+        endDate: reportEndDate,
+        type: reportType,
+        format: reportFormat
+      };
+      let reports = JSON.parse(localStorage.getItem("reports")) || [];
+      reports.push(report);
+      localStorage.setItem("reports", JSON.stringify(reports));
+
+      //saveReportToLocalStorage(report);
+      addReportToUI(report); // Update the UI immediately
+
+      updateReportCounts();
+      closeModal();
+
+      document.getElementById("createReportForm").reset();
+    }
+
+
+    function saveReportEdits() {
+      const updatedTitle = document.getElementById("edit-title").value;
+      const updatedDescription = document.getElementById("edit-description").value;
+      const updatedStartDate = document.getElementById("edit-start-date").value;
+      const updatedEndDate = document.getElementById("edit-end-date").value;
+
+      let reports = JSON.parse(localStorage.getItem("reports")) || [];
+      const reportIndex = reports.findIndex(report => report.id === currentEditingReportId);
+
+      if (reportIndex !== -1) {
+        reports[reportIndex].title = updatedTitle;
+        reports[reportIndex].description = updatedDescription;
+        reports[reportIndex].startDate = updatedStartDate;
+        reports[reportIndex].endDate = updatedEndDate;
+
+        localStorage.setItem("reports", JSON.stringify(reports));
+        console.log("Report saved:", reports[reportIndex]); // Debugging line
+
+        loadReportsFromLocalStorage();
+        closeViewModal();
+      } else {
+        alert("Error: Report not found.");
+      }
+    }
+
+
+
+    function addReportToUI(report) {
+      const monthLabel = getMonthLabel(report.startDate);
+
+      let monthContainer = document.querySelector(`#${report.type}-${monthLabel}`);
+      if (!monthContainer) {
+        monthContainer = document.createElement("div");
+        monthContainer.id = `${report.type}-${monthLabel}`;
+        monthContainer.classList.add("month-label-container");
+
+        const monthLabelElement = document.createElement("div");
+        monthLabelElement.classList.add("month-label");
+        monthLabelElement.textContent = monthLabel;
+
+        monthContainer.appendChild(monthLabelElement);
+        document.getElementById(`${report.type}-content`).appendChild(monthContainer);
+      }
+
+      const listItem = document.createElement("li");
+      listItem.classList.add("report-item");
+      listItem.onclick = () => viewReportDetails(report);
+
+      const titleElement = document.createElement("span");
+      titleElement.classList.add("report-title");
+      titleElement.textContent = report.title;
+
+      const descriptionElement = document.createElement("span");
+      descriptionElement.classList.add("report-description");
+      descriptionElement.innerHTML = report.description.replace(/\n/g, "<br>"); // Convert newlines to <br> tags
+
+      const dateElement = document.createElement("span");
+      dateElement.classList.add("report-date");
+      dateElement.textContent = `(From: ${report.startDate} To: ${report.endDate})`;
+
+      listItem.appendChild(titleElement);
+      listItem.appendChild(descriptionElement);
+      listItem.appendChild(dateElement);
+
+      monthContainer.appendChild(listItem);
+    }
+
+
+
+    document.addEventListener("DOMContentLoaded", function () {
+      const today = new Date();
+      const formattedDate = today.toISOString().split("T")[0];
+      document.getElementById("date-today").value = formattedDate;
+
+      flatpickr(".datepicker", {
+        dateFormat: "Y-m-d",
+        allowInput: true
+      });
+
+      // Load reports from local storage and display them
+      loadReportsFromLocalStorage();
+    });
+    function loadReportsFromLocalStorage() {
+      document.getElementById("top-performers-content").innerHTML = "";
+      document.getElementById("upcoming-events-content").innerHTML = "";
+      document.getElementById("clubs-content").innerHTML = "";
+      document.getElementById("member-engagement-content").innerHTML = "";
+
+      const reports = JSON.parse(localStorage.getItem("reports")) || [];
+      reports.forEach(report => addReportToUI(report));  // Add each report to the UI
+      updateReportCounts();
+
+      /*
+      let reports = JSON.parse(localStorage.getItem("reports")) || [];
+
+      // Remove <br> tags in descriptions
+      reports = reports.map(report => {
+        report.description = report.description.replace(/<br>/g, "");
+        return report;
+      });
+
+      localStorage.setItem("reports", JSON.stringify(reports));
+
+      reports.sort((a, b) => new Date(a.startDate) - new Date(b.startDate));
+
+      const currentMonths = {
+        "top-performers": "",
+        "upcoming-events": "",
+        "clubs": "",
+        "member-engagement": ""
+      };
+
+      reports.forEach(report => {
+        const reportMonth = new Date(report.startDate).toLocaleString('default', { month: 'long' });
+
+        // Only add the month label if it's different from the previous one
+        if (reportMonth !== currentMonths[report.type]) {
+          currentMonths[report.type] = reportMonth;
+          addMonthLabelToUI(reportMonth, report.type);
         }
+        addReportToUI(report);
+      });
 
-        document.addEventListener("DOMContentLoaded", function () {
-            const today = new Date();
-            const formattedDate = today.toISOString().split("T")[0]; // YYYY-MM-DD format
-            document.getElementById("date-today").value = formattedDate;
+      updateReportCounts();
+    }*/
+    }
 
-            flatpickr(".datepicker", {
-                dateFormat: "Y-m-d", // Format as YYYY-MM-DD
-                allowInput: true // Allow manual input as well
-            });
+
+
+    function addMonthLabelToUI(month, reportType) {
+      const monthId = `${reportType}-${month}`;
+      if (document.getElementById(monthId)) return; // Exit if label already exists
+
+      const monthLabel = document.createElement("div");
+      monthLabel.classList.add("month-label");
+      monthLabel.textContent = month;
+      monthLabel.id = monthId; // Unique ID to prevent duplication
+
+      // Add the label to the correct section based on report type
+      switch (reportType) {
+        case "top-performers":
+          document.getElementById("top-performers-content").appendChild(monthLabel);
+          break;
+        case "upcoming-events":
+          document.getElementById("upcoming-events-content").appendChild(monthLabel);
+          break;
+        case "clubs":
+          document.getElementById("clubs-content").appendChild(monthLabel);
+          break;
+        case "member-engagement":
+          document.getElementById("member-engagement-content").appendChild(monthLabel);
+          break;
+        default:
+          console.warn("Invalid report type.");
+      }
+    }
+
+
+
+    function displayReportTitles(reportType) {
+      // Clear previous content from all report title display areas
+      document.querySelectorAll(".report-titles").forEach(div => div.innerHTML = "");
+
+      // Determine the target element to display report titles based on report type
+      let targetDiv;
+      switch (reportType) {
+        case "top-performers":
+          targetDiv = document.getElementById("top-performers-titles");
+          break;
+        case "upcoming-events":
+          targetDiv = document.getElementById("upcoming-events-titles");
+          break;
+        case "clubs":
+          targetDiv = document.getElementById("clubs-titles");
+          break;
+        case "member-engagement":
+          targetDiv = document.getElementById("member-engagement-titles");
+          break;
+        default:
+          return;
+      }
+
+      // Retrieve the reports from local storage and filter by type
+      let reports = JSON.parse(localStorage.getItem("reports")) || [];
+      let filteredReports = reports.filter(report => report.type === reportType);
+
+      // Populate the target div with the titles of the filtered reports
+      if (filteredReports.length > 0) {
+        filteredReports.forEach(report => {
+          let titleElement = document.createElement("div");
+          titleElement.classList.add("report-title-item");
+          titleElement.textContent = report.title;
+          targetDiv.appendChild(titleElement);
         });
-
-        var modal = document.getElementById("createReportModal");
-
-        function openModal() {
-            modal.style.display = "flex";
-        }
-
-        function closeModal() {
-            modal.style.display = "none";
-        }
-
-        window.onclick = function (event) {
-            if (event.target == modal) {
-                closeModal();
-            }
-        }
-
-        function submitReport() {
-            const reportTitle = document.getElementById("report-title").value;
-            const reportDescription = document.getElementById("report-description").value;
-            const reportStartDate = document.getElementById("report-start-date").value;
-            const reportEndDate = document.getElementById("report-end-date").value;
-            const reportType = document.getElementById("report-type").value;
-            const reportFormat = document.getElementById("report-format").value;
-
-            if (!reportTitle || !reportDescription || !reportStartDate || !reportEndDate || !reportType || !reportFormat) {
-                alert("Please fill in all fields before submitting.");
-                return;
-            }
-            const reportId = Date.now();
-
-            const report = {
-                id: reportId,
-                title: reportTitle,
-                description: reportDescription,
-                startDate: reportStartDate,
-                endDate: reportEndDate,
-                type: reportType,
-                format: reportFormat
-            };
-            let reports = JSON.parse(localStorage.getItem("reports")) || [];
-            reports.push(report);
-            localStorage.setItem("reports", JSON.stringify(reports));
-
-            //saveReportToLocalStorage(report);
-            addReportToUI(report); // Update the UI immediately
-
-            updateReportCounts();
-            closeModal();
-
-            document.getElementById("createReportForm").reset();
-        }
-
-
-        function saveReportEdits() {
-            const updatedTitle = document.getElementById("edit-title").value;
-            const updatedDescription = document.getElementById("edit-description").value;
-            const updatedStartDate = document.getElementById("edit-start-date").value;
-            const updatedEndDate = document.getElementById("edit-end-date").value;
-
-            let reports = JSON.parse(localStorage.getItem("reports")) || [];
-            const reportIndex = reports.findIndex(report => report.id === currentEditingReportId);
-
-            if (reportIndex !== -1) {
-                reports[reportIndex].title = updatedTitle;
-                reports[reportIndex].description = updatedDescription;
-                reports[reportIndex].startDate = updatedStartDate;
-                reports[reportIndex].endDate = updatedEndDate;
-
-                localStorage.setItem("reports", JSON.stringify(reports));
-                console.log("Report saved:", reports[reportIndex]); // Debugging line
-
-                loadReportsFromLocalStorage();
-                closeViewModal();
-            } else {
-                alert("Error: Report not found.");
-            }
-        }
-
-
-
-        function addReportToUI(report) {
-            const monthLabel = getMonthLabel(report.startDate);
-
-            let monthContainer = document.querySelector(`#${report.type}-${monthLabel}`);
-            if (!monthContainer) {
-                monthContainer = document.createElement("div");
-                monthContainer.id = `${report.type}-${monthLabel}`;
-                monthContainer.classList.add("month-label-container");
-
-                const monthLabelElement = document.createElement("div");
-                monthLabelElement.classList.add("month-label");
-                monthLabelElement.textContent = monthLabel;
-
-                monthContainer.appendChild(monthLabelElement);
-                document.getElementById(`${report.type}-content`).appendChild(monthContainer);
-            }
-
-            const listItem = document.createElement("li");
-            listItem.classList.add("report-item");
-            listItem.onclick = () => viewReportDetails(report);
-
-            const titleElement = document.createElement("span");
-            titleElement.classList.add("report-title");
-            titleElement.textContent = report.title;
-
-            const descriptionElement = document.createElement("span");
-            descriptionElement.classList.add("report-description");
-            descriptionElement.innerHTML = report.description.replace(/\n/g, "<br>"); // Convert newlines to <br> tags
-
-            const dateElement = document.createElement("span");
-            dateElement.classList.add("report-date");
-            dateElement.textContent = `(From: ${report.startDate} To: ${report.endDate})`;
-
-            listItem.appendChild(titleElement);
-            listItem.appendChild(descriptionElement);
-            listItem.appendChild(dateElement);
-
-            monthContainer.appendChild(listItem);
-        }
-
-
-
-        document.addEventListener("DOMContentLoaded", function () {
-            const today = new Date();
-            const formattedDate = today.toISOString().split("T")[0];
-            document.getElementById("date-today").value = formattedDate;
-
-            flatpickr(".datepicker", {
-                dateFormat: "Y-m-d",
-                allowInput: true
-            });
-
-            // Load reports from local storage and display them
-            loadReportsFromLocalStorage();
-        });
-        function loadReportsFromLocalStorage() {
-            document.getElementById("top-performers-content").innerHTML = "";
-            document.getElementById("upcoming-events-content").innerHTML = "";
-            document.getElementById("clubs-content").innerHTML = "";
-            document.getElementById("member-engagement-content").innerHTML = "";
-
-            const reports = JSON.parse(localStorage.getItem("reports")) || [];
-            reports.forEach(report => addReportToUI(report));  // Add each report to the UI
-            updateReportCounts();
-
-            /*
-            let reports = JSON.parse(localStorage.getItem("reports")) || [];
-
-            // Remove <br> tags in descriptions
-            reports = reports.map(report => {
-                report.description = report.description.replace(/<br>/g, "");
-                return report;
-            });
-
-            localStorage.setItem("reports", JSON.stringify(reports));
-
-            reports.sort((a, b) => new Date(a.startDate) - new Date(b.startDate));
-
-            const currentMonths = {
-                "top-performers": "",
-                "upcoming-events": "",
-                "clubs": "",
-                "member-engagement": ""
-            };
-
-            reports.forEach(report => {
-                const reportMonth = new Date(report.startDate).toLocaleString('default', { month: 'long' });
-
-                // Only add the month label if it's different from the previous one
-                if (reportMonth !== currentMonths[report.type]) {
-                    currentMonths[report.type] = reportMonth;
-                    addMonthLabelToUI(reportMonth, report.type);
-                }
-                addReportToUI(report);
-            });
-
-            updateReportCounts();
-        }*/
-        }
-
-
-
-        function addMonthLabelToUI(month, reportType) {
-            const monthId = `${reportType}-${month}`;
-            if (document.getElementById(monthId)) return; // Exit if label already exists
-
-            const monthLabel = document.createElement("div");
-            monthLabel.classList.add("month-label");
-            monthLabel.textContent = month;
-            monthLabel.id = monthId; // Unique ID to prevent duplication
-
-            // Add the label to the correct section based on report type
-            switch (reportType) {
-                case "top-performers":
-                    document.getElementById("top-performers-content").appendChild(monthLabel);
-                    break;
-                case "upcoming-events":
-                    document.getElementById("upcoming-events-content").appendChild(monthLabel);
-                    break;
-                case "clubs":
-                    document.getElementById("clubs-content").appendChild(monthLabel);
-                    break;
-                case "member-engagement":
-                    document.getElementById("member-engagement-content").appendChild(monthLabel);
-                    break;
-                default:
-                    console.warn("Invalid report type.");
-            }
-        }
-
-
-
-        function displayReportTitles(reportType) {
-            // Clear previous content from all report title display areas
-            document.querySelectorAll(".report-titles").forEach(div => div.innerHTML = "");
-
-            // Determine the target element to display report titles based on report type
-            let targetDiv;
-            switch (reportType) {
-                case "top-performers":
-                    targetDiv = document.getElementById("top-performers-titles");
-                    break;
-                case "upcoming-events":
-                    targetDiv = document.getElementById("upcoming-events-titles");
-                    break;
-                case "clubs":
-                    targetDiv = document.getElementById("clubs-titles");
-                    break;
-                case "member-engagement":
-                    targetDiv = document.getElementById("member-engagement-titles");
-                    break;
-                default:
-                    return;
-            }
-
-            // Retrieve the reports from local storage and filter by type
-            let reports = JSON.parse(localStorage.getItem("reports")) || [];
-            let filteredReports = reports.filter(report => report.type === reportType);
-
-            // Populate the target div with the titles of the filtered reports
-            if (filteredReports.length > 0) {
-                filteredReports.forEach(report => {
-                    let titleElement = document.createElement("div");
-                    titleElement.classList.add("report-title-item");
-                    titleElement.textContent = report.title;
-                    targetDiv.appendChild(titleElement);
-                });
-            } else {
-                // If no reports are found, display a message
-                let noReportsMessage = document.createElement("div");
-                noReportsMessage.classList.add("no-reports-message");
-                noReportsMessage.textContent = "No reports available for this category.";
-                targetDiv.appendChild(noReportsMessage);
-            }
-        }
-        function filterReportsByDate() {
-            // Get start and end dates from the inputs
-            const startDate = new Date(document.getElementById("start-date").value);
-            const endDate = new Date(document.getElementById("end-date").value);
-
-            // Validate the dates
-            if (isNaN(startDate) || isNaN(endDate) || startDate > endDate) {
-                alert("Please enter a valid date range.");
-                return;
-            }
-
-            // Retrieve reports from local storage
-            const reports = JSON.parse(localStorage.getItem("reports")) || [];
-
-            // Filter reports based on the date range
-            const filteredReports = reports.filter(report => {
-                const reportStartDate = new Date(report.startDate);
-                const reportEndDate = new Date(report.endDate);
-                return reportStartDate >= startDate && reportEndDate <= endDate;
-            });
-
-            // Clear the current reports display
-            document.getElementById("top-performers-content").innerHTML = "";
-            document.getElementById("upcoming-events-content").innerHTML = "";
-            document.getElementById("clubs-content").innerHTML = "";
-            document.getElementById("member-engagement-content").innerHTML = "";
-
-            // Display the filtered reports
-            filteredReports.forEach(report => {
-                addReportToUI(report);
-            });
-
-            // If no reports are found, display a message in each section
-            if (filteredReports.length === 0) {
-                document.getElementById("top-performers-content").innerHTML = "<p>No reports found for the selected date range.</p>";
-                document.getElementById("upcoming-events-content").innerHTML = "<p>No reports found for the selected date range.</p>";
-                document.getElementById("clubs-content").innerHTML = "<p>No reports found for the selected date range.</p>";
-                document.getElementById("member-engagement-content").innerHTML = "<p>No reports found for the selected date range.</p>";
-            }
-        }
-        function resetFilter() {
-            // Clear the date inputs
-            document.getElementById("start-date").value = "";
-            document.getElementById("end-date").value = "";
-
-            // Clear the current reports display
-            document.getElementById("top-performers-content").innerHTML = "";
-            document.getElementById("upcoming-events-content").innerHTML = "";
-            document.getElementById("clubs-content").innerHTML = "";
-            document.getElementById("member-engagement-content").innerHTML = "";
-
-            // Reload all reports from local storage
-            const reports = JSON.parse(localStorage.getItem("reports")) || [];
-            reports.forEach(report => {
-                addReportToUI(report);
-            });
-        }
-        function viewReportDetails(report) {
-            currentEditingReportId = report.id;
-            // Populate modal with report details
-            document.getElementById("report-view-title").textContent = report.title;
-            document.getElementById("report-view-description").textContent = report.description;
-            document.getElementById("report-view-dates").textContent = `From: ${report.startDate} To: ${report.endDate}`;
-
-            // Display the modal
-            document.getElementById("viewReportModal").style.display = "flex";
-            document.getElementById("edit-button").style.display = "inline-block";
-            document.getElementById("save-button").style.display = "none";
-
-        }
-
-        function closeViewModal() {
-            document.getElementById("viewReportModal").style.display = "none";
-
-            // Reset the modal content to remove input fields
-            // You may need to re-render the modal content when reopening
-
-            // Clear currentEditingReportId
-            currentEditingReportId = null;
-        }
-
-
-        window.onclick = function (event) {
-            const modal = document.getElementById("viewReportModal");
-            if (event.target == modal) {
-                modal.style.display = "none";
-            }
-        };
-
-        function updateReportCounts() {
-            // Retrieve reports from local storage
-            const reports = JSON.parse(localStorage.getItem("reports")) || [];
-
-            // Count reports for each category
-            const topPerformersCount = reports.filter(report => report.type === "top-performers").length;
-            const upcomingEventsCount = reports.filter(report => report.type === "upcoming-events").length;
-            const clubsCount = reports.filter(report => report.type === "clubs").length;
-            const memberEngagementCount = reports.filter(report => report.type === "member-engagement").length;
-
-            // Update the HTML with the counts
-            document.getElementById("top-performers-count").textContent = topPerformersCount;
-            document.getElementById("upcoming-events-count").textContent = upcomingEventsCount;
-            document.getElementById("clubs-count").textContent = clubsCount;
-            document.getElementById("member-engagement-count").textContent = memberEngagementCount;
-        }
-
-        // Call the function to update counts on page load
-        document.addEventListener("DOMContentLoaded", function () {
-            updateReportCounts();
-            loadReportsFromLocalStorage(); // Load and display reports
-        });
-
-        function enableEditMode() {
-            // Get current values from the modal
-            const title = document.getElementById("report-view-title").textContent;
-            const description = document.getElementById("report-view-description").innerText;
-            const dates = document.getElementById("report-view-dates").textContent;
-            const [startDate, endDate] = dates.replace("From: ", "").split(" To: ");
-
-            // Convert title and description to input fields
-            document.getElementById("report-view-title").innerHTML = `<input type="text" id="edit-title" value="${title}" style="width: 100%; padding: 5px;">`;
-            document.getElementById("report-view-description").innerHTML = `<textarea id="edit-description" style="width: 100%; padding: 5px; height: 100px;">${description}</textarea>`;
-
-            // Convert start and end dates to input fields with improved alignment
-            document.getElementById("report-view-dates").innerHTML = `
-        <div style="display: flex; gap: 10px; align-items: center;">
-            <label for="edit-start-date">Start Date:</label>
-            <input type="date" id="edit-start-date" value="${startDate.trim()}" style="flex: 1; padding: 5px;">
-            <label for="edit-end-date">End Date:</label>
-            <input type="date" id="edit-end-date" value="${endDate.trim()}" style="flex: 1; padding: 5px;">
-        </div>
-    `;
-
-            // Show the Save button and hide the Edit button
-            document.getElementById("edit-button").style.display = "none";
-            document.getElementById("save-button").style.display = "inline-block";
-        }
-
-        function saveReportEdits() {
-            const updatedTitle = document.getElementById("edit-title").value;
-            const updatedDescription = document.getElementById("edit-description").value; // No .replace here
-            const updatedStartDate = document.getElementById("edit-start-date").value;
-            const updatedEndDate = document.getElementById("edit-end-date").value;
-
-            let reports = JSON.parse(localStorage.getItem("reports")) || [];
-            const reportIndex = reports.findIndex(report => report.id === currentEditingReportId);
-
-            if (reportIndex !== -1) {
-                reports[reportIndex].title = updatedTitle;
-                reports[reportIndex].description = updatedDescription;
-                reports[reportIndex].startDate = updatedStartDate;
-                reports[reportIndex].endDate = updatedEndDate;
-
-                localStorage.setItem("reports", JSON.stringify(reports));
-
-                loadReportsFromLocalStorage();
-                closeViewModal();
-            } else {
-                alert("Error: Report not found.");
-            }
-        }
-
-
-        function closeViewModal() {
-            document.getElementById("viewReportModal").style.display = "none";
-            document.getElementById("edit-button").style.display = "inline-block";
-            document.getElementById("save-button").style.display = "none";
-            currentEditingReportId = null;
-        }
-
-
-        function getMonthLabel(startDate) {
-            const date = new Date(startDate);
-            const options = { month: 'long' };
-            return date.toLocaleDateString('en-US', options); // e.g., "August"
-        }
-
-        document.addEventListener("DOMContentLoaded", loadReportsFromLocalStorage);
-    </script>
+      } else {
+        // If no reports are found, display a message
+        let noReportsMessage = document.createElement("div");
+        noReportsMessage.classList.add("no-reports-message");
+        noReportsMessage.textContent = "No reports available for this category.";
+        targetDiv.appendChild(noReportsMessage);
+      }
+    }
+    function filterReportsByDate() {
+      // Get start and end dates from the inputs
+      const startDate = new Date(document.getElementById("start-date").value);
+      const endDate = new Date(document.getElementById("end-date").value);
+
+      // Validate the dates
+      if (isNaN(startDate) || isNaN(endDate) || startDate > endDate) {
+        alert("Please enter a valid date range.");
+        return;
+      }
+
+      // Retrieve reports from local storage
+      const reports = JSON.parse(localStorage.getItem("reports")) || [];
+
+      // Filter reports based on the date range
+      const filteredReports = reports.filter(report => {
+        const reportStartDate = new Date(report.startDate);
+        const reportEndDate = new Date(report.endDate);
+        return reportStartDate >= startDate && reportEndDate <= endDate;
+      });
+
+      // Clear the current reports display
+      document.getElementById("top-performers-content").innerHTML = "";
+      document.getElementById("upcoming-events-content").innerHTML = "";
+      document.getElementById("clubs-content").innerHTML = "";
+      document.getElementById("member-engagement-content").innerHTML = "";
+
+      // Display the filtered reports
+      filteredReports.forEach(report => {
+        addReportToUI(report);
+      });
+
+      // If no reports are found, display a message in each section
+      if (filteredReports.length === 0) {
+        document.getElementById("top-performers-content").innerHTML = "<p>No reports found for the selected date range.</p>";
+        document.getElementById("upcoming-events-content").innerHTML = "<p>No reports found for the selected date range.</p>";
+        document.getElementById("clubs-content").innerHTML = "<p>No reports found for the selected date range.</p>";
+        document.getElementById("member-engagement-content").innerHTML = "<p>No reports found for the selected date range.</p>";
+      }
+    }
+    function resetFilter() {
+      // Clear the date inputs
+      document.getElementById("start-date").value = "";
+      document.getElementById("end-date").value = "";
+
+      // Clear the current reports display
+      document.getElementById("top-performers-content").innerHTML = "";
+      document.getElementById("upcoming-events-content").innerHTML = "";
+      document.getElementById("clubs-content").innerHTML = "";
+      document.getElementById("member-engagement-content").innerHTML = "";
+
+      // Reload all reports from local storage
+      const reports = JSON.parse(localStorage.getItem("reports")) || [];
+      reports.forEach(report => {
+        addReportToUI(report);
+      });
+    }
+    function viewReportDetails(report) {
+      currentEditingReportId = report.id;
+      // Populate modal with report details
+      document.getElementById("report-view-title").textContent = report.title;
+      document.getElementById("report-view-description").textContent = report.description;
+      document.getElementById("report-view-dates").textContent = `From: ${report.startDate} To: ${report.endDate}`;
+
+      // Display the modal
+      document.getElementById("viewReportModal").style.display = "flex";
+      document.getElementById("edit-button").style.display = "inline-block";
+      document.getElementById("save-button").style.display = "none";
+
+    }
+
+    function closeViewModal() {
+      document.getElementById("viewReportModal").style.display = "none";
+
+      // Reset the modal content to remove input fields
+      // You may need to re-render the modal content when reopening
+
+      // Clear currentEditingReportId
+      currentEditingReportId = null;
+    }
+
+
+    window.onclick = function (event) {
+      const modal = document.getElementById("viewReportModal");
+      if (event.target == modal) {
+        modal.style.display = "none";
+      }
+    };
+
+    function updateReportCounts() {
+      // Retrieve reports from local storage
+      const reports = JSON.parse(localStorage.getItem("reports")) || [];
+
+      // Count reports for each category
+      const topPerformersCount = reports.filter(report => report.type === "top-performers").length;
+      const upcomingEventsCount = reports.filter(report => report.type === "upcoming-events").length;
+      const clubsCount = reports.filter(report => report.type === "clubs").length;
+      const memberEngagementCount = reports.filter(report => report.type === "member-engagement").length;
+
+      // Update the HTML with the counts
+      document.getElementById("top-performers-count").textContent = topPerformersCount;
+      document.getElementById("upcoming-events-count").textContent = upcomingEventsCount;
+      document.getElementById("clubs-count").textContent = clubsCount;
+      document.getElementById("member-engagement-count").textContent = memberEngagementCount;
+    }
+
+    // Call the function to update counts on page load
+    document.addEventListener("DOMContentLoaded", function () {
+      updateReportCounts();
+      loadReportsFromLocalStorage(); // Load and display reports
+    });
+
+    function enableEditMode() {
+      // Get current values from the modal
+      const title = document.getElementById("report-view-title").textContent;
+      const description = document.getElementById("report-view-description").innerText;
+      const dates = document.getElementById("report-view-dates").textContent;
+      const [startDate, endDate] = dates.replace("From: ", "").split(" To: ");
+
+      // Convert title and description to input fields
+      document.getElementById("report-view-title").innerHTML = `<input type="text" id="edit-title" value="${title}" style="width: 100%; padding: 5px;">`;
+      document.getElementById("report-view-description").innerHTML = `<textarea id="edit-description" style="width: 100%; padding: 5px; height: 100px;">${description}</textarea>`;
+
+      // Convert start and end dates to input fields with improved alignment
+      document.getElementById("report-view-dates").innerHTML = `
+    <div style="display: flex; gap: 10px; align-items: center;">
+      <label for="edit-start-date">Start Date:</label>
+      <input type="date" id="edit-start-date" value="${startDate.trim()}" style="flex: 1; padding: 5px;">
+      <label for="edit-end-date">End Date:</label>
+      <input type="date" id="edit-end-date" value="${endDate.trim()}" style="flex: 1; padding: 5px;">
+    </div>
+  `;
+
+      // Show the Save button and hide the Edit button
+      document.getElementById("edit-button").style.display = "none";
+      document.getElementById("save-button").style.display = "inline-block";
+    }
+
+    function saveReportEdits() {
+      const updatedTitle = document.getElementById("edit-title").value;
+      const updatedDescription = document.getElementById("edit-description").value; // No .replace here
+      const updatedStartDate = document.getElementById("edit-start-date").value;
+      const updatedEndDate = document.getElementById("edit-end-date").value;
+
+      let reports = JSON.parse(localStorage.getItem("reports")) || [];
+      const reportIndex = reports.findIndex(report => report.id === currentEditingReportId);
+
+      if (reportIndex !== -1) {
+        reports[reportIndex].title = updatedTitle;
+        reports[reportIndex].description = updatedDescription;
+        reports[reportIndex].startDate = updatedStartDate;
+        reports[reportIndex].endDate = updatedEndDate;
+
+        localStorage.setItem("reports", JSON.stringify(reports));
+
+        loadReportsFromLocalStorage();
+        closeViewModal();
+      } else {
+        alert("Error: Report not found.");
+      }
+    }
+
+
+    function closeViewModal() {
+      document.getElementById("viewReportModal").style.display = "none";
+      document.getElementById("edit-button").style.display = "inline-block";
+      document.getElementById("save-button").style.display = "none";
+      currentEditingReportId = null;
+    }
+
+
+    function getMonthLabel(startDate) {
+      const date = new Date(startDate);
+      const options = { month: 'long' };
+      return date.toLocaleDateString('en-US', options); // e.g., "August"
+    }
+
+    document.addEventListener("DOMContentLoaded", loadReportsFromLocalStorage);
+  </script>
 </body>
 
 </html>
