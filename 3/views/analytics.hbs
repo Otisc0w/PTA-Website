@@ -258,7 +258,12 @@
             const reportStartDate = document.getElementById("report-start-date").value;
             const reportEndDate = document.getElementById("report-end-date").value;
             const reportType = document.getElementById("report-type").value;
+            const reportFormat = document.getElementById("report-format").value;
 
+            if (!reportTitle || !reportDescription || !reportStartDate || !reportEndDate || !reportType || !reportFormat) {
+                alert("Please fill in all fields before submitting.");
+                return;
+            }
             const reportId = Date.now();
 
             const report = {
@@ -267,14 +272,20 @@
                 description: reportDescription,
                 startDate: reportStartDate,
                 endDate: reportEndDate,
-                type: reportType
+                type: reportType,
+                format: reportFormat
             };
+            let reports = JSON.parse(localStorage.getItem("reports")) || [];
+            reports.push(report);
+            localStorage.setItem("reports", JSON.stringify(reports));
 
-            saveReportToLocalStorage(report);
+            //saveReportToLocalStorage(report);
             addReportToUI(report); // Update the UI immediately
 
             updateReportCounts();
             closeModal();
+
+            document.getElementById("createReportForm").reset();
         }
 
 
@@ -306,44 +317,44 @@
 
 
         function addReportToUI(report) {
-    const monthLabel = getMonthLabel(report.startDate);
+            const monthLabel = getMonthLabel(report.startDate);
 
-    let monthContainer = document.querySelector(`#${report.type}-${monthLabel}`);
-    if (!monthContainer) {
-        monthContainer = document.createElement("div");
-        monthContainer.id = `${report.type}-${monthLabel}`;
-        monthContainer.classList.add("month-label-container");
+            let monthContainer = document.querySelector(`#${report.type}-${monthLabel}`);
+            if (!monthContainer) {
+                monthContainer = document.createElement("div");
+                monthContainer.id = `${report.type}-${monthLabel}`;
+                monthContainer.classList.add("month-label-container");
 
-        const monthLabelElement = document.createElement("div");
-        monthLabelElement.classList.add("month-label");
-        monthLabelElement.textContent = monthLabel;
+                const monthLabelElement = document.createElement("div");
+                monthLabelElement.classList.add("month-label");
+                monthLabelElement.textContent = monthLabel;
 
-        monthContainer.appendChild(monthLabelElement);
-        document.getElementById(`${report.type}-content`).appendChild(monthContainer);
-    }
+                monthContainer.appendChild(monthLabelElement);
+                document.getElementById(`${report.type}-content`).appendChild(monthContainer);
+            }
 
-    const listItem = document.createElement("li");
-    listItem.classList.add("report-item");
-    listItem.onclick = () => viewReportDetails(report);
+            const listItem = document.createElement("li");
+            listItem.classList.add("report-item");
+            listItem.onclick = () => viewReportDetails(report);
 
-    const titleElement = document.createElement("span");
-    titleElement.classList.add("report-title");
-    titleElement.textContent = report.title;
+            const titleElement = document.createElement("span");
+            titleElement.classList.add("report-title");
+            titleElement.textContent = report.title;
 
-    const descriptionElement = document.createElement("span");
-    descriptionElement.classList.add("report-description");
-    descriptionElement.innerHTML = report.description.replace(/\n/g, "<br>"); // Convert newlines to <br> tags
+            const descriptionElement = document.createElement("span");
+            descriptionElement.classList.add("report-description");
+            descriptionElement.innerHTML = report.description.replace(/\n/g, "<br>"); // Convert newlines to <br> tags
 
-    const dateElement = document.createElement("span");
-    dateElement.classList.add("report-date");
-    dateElement.textContent = `(From: ${report.startDate} To: ${report.endDate})`;
+            const dateElement = document.createElement("span");
+            dateElement.classList.add("report-date");
+            dateElement.textContent = `(From: ${report.startDate} To: ${report.endDate})`;
 
-    listItem.appendChild(titleElement);
-    listItem.appendChild(descriptionElement);
-    listItem.appendChild(dateElement);
+            listItem.appendChild(titleElement);
+            listItem.appendChild(descriptionElement);
+            listItem.appendChild(dateElement);
 
-    monthContainer.appendChild(listItem);
-}
+            monthContainer.appendChild(listItem);
+        }
 
 
 
@@ -366,6 +377,11 @@
             document.getElementById("clubs-content").innerHTML = "";
             document.getElementById("member-engagement-content").innerHTML = "";
 
+            const reports = JSON.parse(localStorage.getItem("reports")) || [];
+            reports.forEach(report => addReportToUI(report));  // Add each report to the UI
+            updateReportCounts();
+
+            /*
             let reports = JSON.parse(localStorage.getItem("reports")) || [];
 
             // Remove <br> tags in descriptions
@@ -397,6 +413,7 @@
             });
 
             updateReportCounts();
+        }*/
         }
 
 
@@ -651,7 +668,7 @@
             return date.toLocaleDateString('en-US', options); // e.g., "August"
         }
 
-
+        document.addEventListener("DOMContentLoaded", loadReportsFromLocalStorage);
     </script>
 </body>
 
