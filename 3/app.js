@@ -1771,7 +1771,7 @@ app.post("/invite-player", async (req, res) => {
 });
 
 app.post("/request-join-club", async (req, res) => {
-  const { clubid } = req.body;
+  const { clubid, message } = req.body;
 
   if (!req.session.user) {
     return res.status(401).send("Unauthorized: No user logged in");
@@ -1787,6 +1787,7 @@ app.post("/request-join-club", async (req, res) => {
       .insert([{
         clubid, 
         userid,
+        message,
         status: "pending",
        }]);
 
@@ -1863,7 +1864,7 @@ app.post("/accept-join-club-request", async (req, res) => {
     // Update the club column in the users table
     const { error: updateUserError } = await supabase
       .from("users")
-      .update({ club: clubname })
+      .update({ club: clubid })
       .eq("id", userid);
 
     if (updateUserError) {
@@ -1899,6 +1900,50 @@ app.post("/accept-join-club-request", async (req, res) => {
 
 });
 
+app.post("/reject-join-club-request", async (req, res) => {
+  const { id, userid, clubid } = req.body;
+
+  if (!req.session.user) {
+    return res.status(401).send("Unauthorized: No user logged in");
+  }
+
+  try {
+    // Update the join request status to 'rejected'
+    const { error: updateRequestError } = await supabase
+      .from("club_requests")
+      .update({ status: "rejected" })
+      .eq("id", id)
+      .eq("userid", userid);
+
+    if (updateRequestError) {
+      console.error("Error rejecting join request:", updateRequestError.message);
+      return res.status(500).send("Error rejecting join request");
+    }
+
+    // Add a notification for the user about their club join request rejection
+    const { error: notificationError } = await supabase
+      .from("notifications")
+      .insert([
+        {
+          userid,
+          type: "Club",
+          message: "Your request to join the club has been rejected.",
+          desc: "Unfortunately, your request to join the club has been rejected. Please contact the club for more information.",
+        },
+      ]);
+
+    if (notificationError) {
+      console.error("Error creating notification:", notificationError.message);
+      return res.status(500).send("Error creating notification");
+    }
+
+    res.redirect(`/clubs-details/${clubid}`);
+  } catch (error) {
+    console.error("Server error:", error.message);
+    res.status(500).json({ error: error.message });
+  }
+});
+
 app.post("/accept-invitation/:id", async (req, res) => {
   const { id } = req.params;
 
@@ -1925,7 +1970,7 @@ app.post("/accept-invitation/:id", async (req, res) => {
       return res.status(500).send("Error fetching invitation");
     }
 
-    const clubname = invitation.clubname;
+    const clubid = invitation.club_id;
 
     // Update the invitation status to 'accepted'
     const { error: updateInvitationError } = await supabase
@@ -1944,9 +1989,9 @@ app.post("/accept-invitation/:id", async (req, res) => {
 
     // Update the club column in the users table
     const { error: updateUserError } = await supabase
-      .from("athletes")
-      .update({ club: clubname })
-      .eq("userid", userid);
+      .from("users")
+      .update({ club: clubid })
+      .eq("id", userid);
 
     if (updateUserError) {
       console.error("Error updating user club:", updateUserError.message);
@@ -4861,7 +4906,25 @@ app.get('/athletes', (req, res) => {
   });
 });
 
-app.get('/analytics', (req, res) => {
+app.get('/analytics', async (req, res) => {
+
+  try {
+    const { data: athleteresults, error } = await supabase
+      .from('athletes')
+      .select('*')
+      .order('bday', { ascending: true })
+      .limit(5);
+
+    if (error) {
+      console.error('Error fetching athleteresults:', error.message);
+      return res.status(500).json({ error: error.message });
+    }
+
+    res.render('analytics', { user: req.session.user, athleteresults });
+  } catch (error) {
+    console.error('Server error:', error.message);
+    res.status(500).json({ error: error.message });
+  }
   res.render('analytics', { user: req.session.user });
 });
 
