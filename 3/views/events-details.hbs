@@ -201,9 +201,6 @@
       <div class="eventmiddleside"> 
         {{#if (eq event.status 'Cancelled')}}
           <h1 style="color: red">This event has been<br> CANCELLED</h1>
-          <!-- try -->
-           {{else if (eq event.status 'Completed')}}
-        <h1 style="color: green">This event has been<br> COMPLETED</h1>
         {{else}}
           {{#if (eq event.eventtype 'Poomsae')}}
             {{#if poomsaetop4}}
@@ -387,8 +384,12 @@
             {{#unless (or currentregistrant (me registrationcount event.registrationcap))}}
               {{#if (eq event.status 'Active')}}
                 <a href="/events-registration/{{event.id}}" class="register-button">Register</a>
-              {{else}}
+              {{else if (eq event.status 'Cancelled')}}
                 <h3>This event has been<br> CANCELLED</h3>
+              {{else if (eq event.status 'Concluded')}}
+                <h3>This event has been<br> COMPLETED</h3>
+              {{else}}
+                <h3>Registration Closed</h3>
               {{/if}}
             {{else if currentregistrant.registered}}
             <p>Your check-in code is:</p>
