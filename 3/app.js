@@ -3802,6 +3802,47 @@ app.get("/events-registration/:id", async function (req, res) {
     res.status(500).json({ error: error.message });
   }
 });
+const eventImageUpload = multer();
+app.post("/upload-event-images", eventImageUpload.fields([{ name: 'heightpicture' }, { name: 'weightpicture' }]), async (req, res) => {
+  const userId = req.session.user.id;
+  const { heightpicture, weightpicture } = req.files;
+
+  const uploadFile = async (file, folder) => {
+    if (!file) return null; // If no file is provided, return null
+    const filePath = `${folder}/${Date.now()}-${req.files.originalname}`;
+    const { error } = await supabase.storage.from("documents").upload(filePath, file.buffer, {
+      contentType: req.files.mimetype,
+    });
+
+    if (error) throw new Error(`Error uploading ${folder} image: ${error.message}`);
+    return `${supabaseUrl}/storage/v1/object/public/documents/${filePath}`;
+  };
+
+  try {
+    // Upload files if they exist
+    const heightPictureUrl = heightpicture ? await uploadFile(heightpicture[0], 'heightpictures') : null;
+    const weightPictureUrl = weightpicture ? await uploadFile(weightpicture[0], 'weightpictures') : null;
+
+    // Update the `events_registration` table with the URLs
+    const { error } = await supabase
+      .from("events_registration")
+      .update({
+        heightpicture: heightPictureUrl,
+        weightpicture: weightPictureUrl,
+      })
+      .eq("userid", userId);
+
+    if (error) throw new Error(`Error updating event images in database: ${error.message}`);
+
+    res.redirect("/event-registration");
+  } catch (error) {
+    console.error("Error handling event images upload:", error.message);
+    res.status(500).send("Error handling event images upload");
+  }
+});
+
+
+
 
 app.get("/events-review-registration/:id", async function (req, res) {
   if (!req.session.user) {
