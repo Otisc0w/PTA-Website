@@ -160,12 +160,24 @@ body {
 .report-description {
     font-size: 0.9em;
     margin-bottom: 4px;
+    white-space: pre-wrap; /* Preserves whitespace and line breaks */
+    color: #f1f1f1; /* Ensure it's readable */
+    margin-top: 5px;
 }
 
 .report-date {
     font-size: 0.85em;
     color: #bbb;
 }
+
+#report-view-description {
+    white-space: pre-wrap; /* Preserves whitespace and line breaks */
+    font-size: 1em; /* Adjust font size as needed */
+    color: #f1f1f1;
+    margin-top: 10px;
+    line-height: 1.5; /* Adjust line height for better readability */
+}
+
 
 /* Scrollbar customization (optional) */
 .analytics-container .card ul::-webkit-scrollbar {
