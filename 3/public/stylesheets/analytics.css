@@ -168,8 +168,9 @@ body {
 
 .report-description {
     font-size: 0.9em;
-    margin-bottom: 4px;
+    margin-bottom: 10px;
     white-space: pre-wrap; /* Preserves whitespace and line breaks */
+    line-height: 1.5;
     color: #f1f1f1; /* Ensure it's readable */
     margin-top: 5px;
 }
