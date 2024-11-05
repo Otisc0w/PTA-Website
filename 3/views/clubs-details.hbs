@@ -245,25 +245,37 @@
 
     <div class="clubrequests" style="display: none;">
       <h2>Club Requests:</h2>
-      {{#each clubRequestsWithUserDetails}}
-      <div class="request">
-        <p>
-        <h2>{{firstname}} {{lastname}}</h2> wants to join your club.</p>
-        <p>{{message}}</p>
-        <form action="/accept-join-club-request" method="POST">
-          <input type="hidden" name="id" value="{{id}}">
-          <input type="hidden" name="userid" value="{{userid}}">
-          <input type="hidden" name="clubid" value="{{clubid}}">
-          <button type="submit" class="accept-btn">Accept</button>
-        </form>
-        <form action="/reject-join-club-request" method="POST">
-          <input type="hidden" name="id" value="{{id}}">
-          <input type="hidden" name="userid" value="{{userid}}">
-          <input type="hidden" name="clubid" value="{{clubid}}">
-          <button type="submit" class="reject-btn">Reject</button>
-        </form>
-      </div>
-      {{/each}}
+      <table class="requests-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Message</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each clubRequestsWithUserDetails}}
+          <tr>
+            <td>{{firstname}} {{lastname}}</td>
+            <td>{{message}}</td>
+            <td>
+              <form action="/accept-join-club-request" method="POST" style="display:inline;">
+                <input type="hidden" name="id" value="{{id}}">
+                <input type="hidden" name="userid" value="{{userid}}">
+                <input type="hidden" name="clubid" value="{{clubid}}">
+                <button type="submit" class="accept-btn">Accept</button>
+              </form>
+              <form action="/reject-join-club-request" method="POST" style="display:inline;">
+                <input type="hidden" name="id" value="{{id}}">
+                <input type="hidden" name="userid" value="{{userid}}">
+                <input type="hidden" name="clubid" value="{{clubid}}">
+                <button type="submit" class="reject-btn">Reject</button>
+              </form>
+            </td>
+          </tr>
+          {{/each}}
+        </tbody>
+      </table>
     </div>
   </div>
 
