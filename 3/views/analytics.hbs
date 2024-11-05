@@ -76,22 +76,27 @@
             <div class="header">Summary</div>
             <ul class="summary-list">
                 <li>
-                    <span onclick="displayReportTitles('top-performers')">Top Performers of the Year</span>
+                    <span onclick="displayReportTitles('top-performers')">Top Performers of the Year (<span
+                            id="top-performers-count">0</span>)</span>
                     <div id="top-performers-titles" class="report-titles"></div>
                 </li>
                 <li>
-                    <span onclick="displayReportTitles('upcoming-events')">Total Events in the Year</span>
+                    <span onclick="displayReportTitles('upcoming-events')">Total Events in the Year (<span
+                            id="upcoming-events-count">0</span>)</span>
                     <div id="upcoming-events-titles" class="report-titles"></div>
                 </li>
                 <li>
-                    <span onclick="displayReportTitles('clubs')">Total Clubs in a year</span>
+                    <span onclick="displayReportTitles('clubs')">Total Clubs in a Year (<span
+                            id="clubs-count">0</span>)</span>
                     <div id="clubs-titles" class="report-titles"></div>
                 </li>
                 <li>
-                    <span onclick="displayReportTitles('member-engagement')">Total Participants in a year</span>
+                    <span onclick="displayReportTitles('member-engagement')">Total Participants in a Year (<span
+                            id="member-engagement-count">0</span>)</span>
                     <div id="member-engagement-titles" class="report-titles"></div>
                 </li>
             </ul>
+
             <button class="see-more-button">See more</button>
         </div>
 
@@ -265,6 +270,9 @@
 
             // Add the report to the UI
             addReportToUI(report);
+
+            // Update counts after adding the new report
+            updateReportCounts(); 
 
             // Clear form inputs after submission
             document.getElementById("report-title").value = "";
@@ -468,6 +476,30 @@
                 modal.style.display = "none";
             }
         };
+
+        function updateReportCounts() {
+    // Retrieve reports from local storage
+    const reports = JSON.parse(localStorage.getItem("reports")) || [];
+
+    // Count reports for each category
+    const topPerformersCount = reports.filter(report => report.type === "top-performers").length;
+    const upcomingEventsCount = reports.filter(report => report.type === "upcoming-events").length;
+    const clubsCount = reports.filter(report => report.type === "clubs").length;
+    const memberEngagementCount = reports.filter(report => report.type === "member-engagement").length;
+
+    // Update the HTML with the counts
+    document.getElementById("top-performers-count").textContent = topPerformersCount;
+    document.getElementById("upcoming-events-count").textContent = upcomingEventsCount;
+    document.getElementById("clubs-count").textContent = clubsCount;
+    document.getElementById("member-engagement-count").textContent = memberEngagementCount;
+}
+
+// Call the function to update counts on page load
+document.addEventListener("DOMContentLoaded", function() {
+    updateReportCounts();
+    loadReportsFromLocalStorage(); // Load and display reports
+});
+
 
     </script>
 </body>
