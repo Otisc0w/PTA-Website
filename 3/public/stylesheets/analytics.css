@@ -172,6 +172,7 @@ body {
     margin-top: 2px; /* Optional: Add a bit of space between title and description */
     display: block;
     line-height: 1.4; /* Improve readability with line spacing */
+    white-space: pre-line;
 }
 
 
