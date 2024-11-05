@@ -350,22 +350,74 @@
             loadReportsFromLocalStorage();
         });
 
-        function loadReportsFromLocalStorage() {
-            // Clear existing content to prevent duplication
-            document.getElementById("top-performers-content").innerHTML = "";
-            document.getElementById("upcoming-events-content").innerHTML = "";
-            document.getElementById("clubs-content").innerHTML = "";
-            document.getElementById("member-engagement-content").innerHTML = "";
+       function loadReportsFromLocalStorage() {
+    // Clear existing content to prevent duplication
+    document.getElementById("top-performers-content").innerHTML = "";
+    document.getElementById("upcoming-events-content").innerHTML = "";
+    document.getElementById("clubs-content").innerHTML = "";
+    document.getElementById("member-engagement-content").innerHTML = "";
 
-            // Load reports from local storage
-            const reports = JSON.parse(localStorage.getItem("reports")) || [];
-            reports.forEach(report => {
-                addReportToUI(report);
-            });
+    // Load reports from local storage
+    const reports = JSON.parse(localStorage.getItem("reports")) || [];
 
-            // Update the summary count after loading reports
-            updateReportCounts();
+    // Sort reports by start date
+    reports.sort((a, b) => new Date(a.startDate) - new Date(b.startDate));
+
+    // Variables to track the current month label for each type
+    const currentMonths = {
+        "top-performers": "",
+        "upcoming-events": "",
+        "clubs": "",
+        "member-engagement": ""
+    };
+
+    reports.forEach(report => {
+        const reportMonth = new Date(report.startDate).toLocaleString('default', { month: 'long' });
+
+        // Debugging: Check if start date is recognized correctly
+        console.log(`Report Type: ${report.type}, Start Date: ${report.startDate}, Month: ${reportMonth}`);
+
+        // Check if the report's month is different from the last processed month for this type
+        if (reportMonth !== currentMonths[report.type]) {
+            currentMonths[report.type] = reportMonth;
+            addMonthLabelToUI(reportMonth, report.type);
         }
+
+        // Add the report to the UI
+        addReportToUI(report);
+    });
+
+    // Update the summary count after loading reports
+    updateReportCounts();
+}
+
+
+// Function to add a month label to the appropriate section
+function addMonthLabelToUI(month, reportType) {
+    const monthLabel = document.createElement("div");
+    monthLabel.classList.add("month-label");
+    monthLabel.textContent = month;
+
+    // Add the label to the correct section based on report type
+    switch (reportType) {
+        case "top-performers":
+            document.getElementById("top-performers-content").appendChild(monthLabel);
+            break;
+        case "upcoming-events":
+            document.getElementById("upcoming-events-content").appendChild(monthLabel);
+            break;
+        case "clubs":
+            document.getElementById("clubs-content").appendChild(monthLabel);
+            break;
+        case "member-engagement":
+            document.getElementById("member-engagement-content").appendChild(monthLabel);
+            break;
+        default:
+            console.warn("Invalid report type.");
+    }
+}
+
+
         function displayReportTitles(reportType) {
             // Clear previous content from all report title display areas
             document.querySelectorAll(".report-titles").forEach(div => div.innerHTML = "");
