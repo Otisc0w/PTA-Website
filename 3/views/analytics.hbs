@@ -306,50 +306,45 @@
 
 
         function addReportToUI(report) {
-            const monthLabel = getMonthLabel(report.startDate);
+    const monthLabel = getMonthLabel(report.startDate);
 
-            // Find or create the month container for the report
-            let monthContainer = document.querySelector(`#${report.type}-${monthLabel}`);
-            if (!monthContainer) {
-                // Create a new month label and container if it doesn't exist
-                monthContainer = document.createElement("div");
-                monthContainer.id = `${report.type}-${monthLabel}`;
-                monthContainer.classList.add("month-label-container");
+    let monthContainer = document.querySelector(`#${report.type}-${monthLabel}`);
+    if (!monthContainer) {
+        monthContainer = document.createElement("div");
+        monthContainer.id = `${report.type}-${monthLabel}`;
+        monthContainer.classList.add("month-label-container");
 
-                // Create the month label
-                const monthLabelElement = document.createElement("div");
-                monthLabelElement.classList.add("month-label");
-                monthLabelElement.textContent = monthLabel;
+        const monthLabelElement = document.createElement("div");
+        monthLabelElement.classList.add("month-label");
+        monthLabelElement.textContent = monthLabel;
 
-                monthContainer.appendChild(monthLabelElement);
-                document.getElementById(`${report.type}-content`).appendChild(monthContainer);
-            }
+        monthContainer.appendChild(monthLabelElement);
+        document.getElementById(`${report.type}-content`).appendChild(monthContainer);
+    }
 
-            // Create the report item
-            const listItem = document.createElement("li");
-            listItem.classList.add("report-item");
-            listItem.onclick = () => viewReportDetails(report);
+    const listItem = document.createElement("li");
+    listItem.classList.add("report-item");
+    listItem.onclick = () => viewReportDetails(report);
 
-            // Populate the list item with the report details
-            const titleElement = document.createElement("span");
-            titleElement.classList.add("report-title");
-            titleElement.textContent = report.title;
+    const titleElement = document.createElement("span");
+    titleElement.classList.add("report-title");
+    titleElement.textContent = report.title;
 
-            const descriptionElement = document.createElement("span");
-            descriptionElement.classList.add("report-description");
-            descriptionElement.innerHTML = report.description;
+    const descriptionElement = document.createElement("span");
+    descriptionElement.classList.add("report-description");
+    descriptionElement.innerHTML = report.description.replace(/\n/g, "<br>"); // Convert newlines to <br> tags
 
-            const dateElement = document.createElement("span");
-            dateElement.classList.add("report-date");
-            dateElement.textContent = `(From: ${report.startDate} To: ${report.endDate})`;
+    const dateElement = document.createElement("span");
+    dateElement.classList.add("report-date");
+    dateElement.textContent = `(From: ${report.startDate} To: ${report.endDate})`;
 
-            listItem.appendChild(titleElement);
-            listItem.appendChild(descriptionElement);
-            listItem.appendChild(dateElement);
+    listItem.appendChild(titleElement);
+    listItem.appendChild(descriptionElement);
+    listItem.appendChild(dateElement);
 
-            // Append the report item to the month container
-            monthContainer.appendChild(listItem);
-        }
+    monthContainer.appendChild(listItem);
+}
+
 
 
         document.addEventListener("DOMContentLoaded", function () {
