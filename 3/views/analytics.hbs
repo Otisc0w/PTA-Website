@@ -303,10 +303,10 @@
             let titleElement = document.createElement("span");
             titleElement.classList.add("report-title");
             titleElement.textContent = report.title;
-
+            
             let descriptionElement = document.createElement("span");
             descriptionElement.classList.add("report-description");
-            descriptionElement.textContent = report.description;
+            descriptionElement.innerHTML = report.description.replace(/\n/g, "<br>");
 
             let dateElement = document.createElement("span");
             dateElement.classList.add("report-date");
