@@ -279,33 +279,30 @@
 
 
         function saveReportEdits() {
-            // Get the edited values
             const updatedTitle = document.getElementById("edit-title").value;
-            const updatedDescription = document.getElementById("edit-description").value; // Remove .replace(/\n/g, "<br>")
+            const updatedDescription = document.getElementById("edit-description").value;
             const updatedStartDate = document.getElementById("edit-start-date").value;
             const updatedEndDate = document.getElementById("edit-end-date").value;
 
-            // Retrieve reports from localStorage and find the report by ID
             let reports = JSON.parse(localStorage.getItem("reports")) || [];
             const reportIndex = reports.findIndex(report => report.id === currentEditingReportId);
 
             if (reportIndex !== -1) {
-                // Update the report data
                 reports[reportIndex].title = updatedTitle;
                 reports[reportIndex].description = updatedDescription;
                 reports[reportIndex].startDate = updatedStartDate;
                 reports[reportIndex].endDate = updatedEndDate;
 
-                // Save back to localStorage
                 localStorage.setItem("reports", JSON.stringify(reports));
+                console.log("Report saved:", reports[reportIndex]); // Debugging line
 
-                // Refresh the display, close the modal, and reset the edit state
                 loadReportsFromLocalStorage();
                 closeViewModal();
             } else {
                 alert("Error: Report not found.");
             }
         }
+
 
 
         function addReportToUI(report) {
@@ -368,74 +365,74 @@
             // Load reports from local storage and display them
             loadReportsFromLocalStorage();
         });
-       function loadReportsFromLocalStorage() {
-    document.getElementById("top-performers-content").innerHTML = "";
-    document.getElementById("upcoming-events-content").innerHTML = "";
-    document.getElementById("clubs-content").innerHTML = "";
-    document.getElementById("member-engagement-content").innerHTML = "";
+        function loadReportsFromLocalStorage() {
+            document.getElementById("top-performers-content").innerHTML = "";
+            document.getElementById("upcoming-events-content").innerHTML = "";
+            document.getElementById("clubs-content").innerHTML = "";
+            document.getElementById("member-engagement-content").innerHTML = "";
 
-    let reports = JSON.parse(localStorage.getItem("reports")) || [];
+            let reports = JSON.parse(localStorage.getItem("reports")) || [];
 
-    // Remove <br> tags in descriptions
-    reports = reports.map(report => {
-        report.description = report.description.replace(/<br>/g, "");
-        return report;
-    });
+            // Remove <br> tags in descriptions
+            reports = reports.map(report => {
+                report.description = report.description.replace(/<br>/g, "");
+                return report;
+            });
 
-    localStorage.setItem("reports", JSON.stringify(reports));
+            localStorage.setItem("reports", JSON.stringify(reports));
 
-    reports.sort((a, b) => new Date(a.startDate) - new Date(b.startDate));
+            reports.sort((a, b) => new Date(a.startDate) - new Date(b.startDate));
 
-    const currentMonths = {
-        "top-performers": "",
-        "upcoming-events": "",
-        "clubs": "",
-        "member-engagement": ""
-    };
+            const currentMonths = {
+                "top-performers": "",
+                "upcoming-events": "",
+                "clubs": "",
+                "member-engagement": ""
+            };
 
-    reports.forEach(report => {
-        const reportMonth = new Date(report.startDate).toLocaleString('default', { month: 'long' });
+            reports.forEach(report => {
+                const reportMonth = new Date(report.startDate).toLocaleString('default', { month: 'long' });
 
-        // Only add the month label if it's different from the previous one
-        if (reportMonth !== currentMonths[report.type]) {
-            currentMonths[report.type] = reportMonth;
-            addMonthLabelToUI(reportMonth, report.type);
+                // Only add the month label if it's different from the previous one
+                if (reportMonth !== currentMonths[report.type]) {
+                    currentMonths[report.type] = reportMonth;
+                    addMonthLabelToUI(reportMonth, report.type);
+                }
+                addReportToUI(report);
+            });
+
+            updateReportCounts();
         }
-        addReportToUI(report);
-    });
-
-    updateReportCounts();
-}
 
 
 
-       function addMonthLabelToUI(month, reportType) {
-    const monthId = `${reportType}-${month}`;
-    if (document.getElementById(monthId)) return; // Exit if label already exists
+        function addMonthLabelToUI(month, reportType) {
+            const monthId = `${reportType}-${month}`;
+            if (document.getElementById(monthId)) return; // Exit if label already exists
 
-    const monthLabel = document.createElement("div");
-    monthLabel.classList.add("month-label");
-    monthLabel.textContent = month;
-    monthLabel.id = monthId; // Unique ID to prevent duplication
+            const monthLabel = document.createElement("div");
+            monthLabel.classList.add("month-label");
+            monthLabel.textContent = month;
+            monthLabel.id = monthId; // Unique ID to prevent duplication
 
-    // Add the label to the correct section based on report type
-    switch (reportType) {
-        case "top-performers":
-            document.getElementById("top-performers-content").appendChild(monthLabel);
-            break;
-        case "upcoming-events":
-            document.getElementById("upcoming-events-content").appendChild(monthLabel);
-            break;
-        case "clubs":
-            document.getElementById("clubs-content").appendChild(monthLabel);
-            break;
-        case "member-engagement":
-            document.getElementById("member-engagement-content").appendChild(monthLabel);
-            break;
-        default:
-            console.warn("Invalid report type.");
-    }
-}
+            // Add the label to the correct section based on report type
+            switch (reportType) {
+                case "top-performers":
+                    document.getElementById("top-performers-content").appendChild(monthLabel);
+                    break;
+                case "upcoming-events":
+                    document.getElementById("upcoming-events-content").appendChild(monthLabel);
+                    break;
+                case "clubs":
+                    document.getElementById("clubs-content").appendChild(monthLabel);
+                    break;
+                case "member-engagement":
+                    document.getElementById("member-engagement-content").appendChild(monthLabel);
+                    break;
+                default:
+                    console.warn("Invalid report type.");
+            }
+        }
 
 
 
