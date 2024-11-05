@@ -2495,44 +2495,6 @@ app.post("/next-kyorugi-round/:eventid", async (req, res) => {
     const winners = matches
       .map((match) => match.winner)
       .filter((winner) => winner !== 0);
-    const losers = matches
-      .map((match) => match.loser)
-      .filter((loser) => loser !== 0);
-
-    if (winners.length === 1) {
-      const champion = winners[0];
-
-      try {
-        const { error: eventError } = await supabase
-          .from("events")
-          .update({ champion })
-          .eq("id", eventid);
-
-        if (eventError) {
-          console.error("Error declaring champion:", eventError.message);
-        } else {
-          console.log("Champion declared:", champion);
-        }
-
-        const finalMatch = matches.find((match) => match.round === currentRound);
-        const secondPlace =
-          finalMatch.player1 === champion
-            ? finalMatch.player2
-            : finalMatch.player1;
-
-        const thirdPlace = losers;
-
-        console.log(`Champion: ${champion}`);
-        console.log(`Second Place: ${secondPlace}`);
-        console.log(`Third Place: ${thirdPlace}`);
-
-        await awardRankingPoints(eventid, champion, secondPlace, thirdPlace);
-      } catch (error) {
-        console.error("Server error:", error.message);
-      }
-
-      return res.redirect(`/events-details/${eventid}`);
-    }
 
     function createPairs(players) {
       const pairs = [];
@@ -2550,8 +2512,6 @@ app.post("/next-kyorugi-round/:eventid", async (req, res) => {
     const nextRound = currentRound + 1;
 
     if (matches.length === 2) {
-      const [firstMatch, secondMatch] = matches;
-
       const { error: finalMatchError } = await supabase
         .from("kyorugi_matches")
         .insert([
@@ -2600,6 +2560,29 @@ app.post("/next-kyorugi-round/:eventid", async (req, res) => {
     if (updateRoundError) {
       console.error("Error updating current round:", updateRoundError.message);
       return res.status(500).send("Error updating current round");
+    }
+
+    res.redirect(`/events-details/${eventid}`);
+  } catch (error) {
+    console.error("Server error:", error.message);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.post("/decide-kyorugi-winners/:eventid", async (req, res) => {
+  const { eventid } = req.params;
+
+  try {
+
+    // Update the event status to "Concluded"
+    const { error: updateEventStatusError } = await supabase
+      .from("events")
+      .update({ status: "Concluded" })
+      .eq("id", eventid);
+
+    if (updateEventStatusError) {
+      console.error("Error updating event status:", updateEventStatusError.message);
+      return res.status(500).send("Error updating event status");
     }
 
     res.redirect(`/events-details/${eventid}`);
@@ -3244,6 +3227,17 @@ app.post("/update-matchtime", async (req, res) => {
   const { id, matchtime, eventid } = req.body;
 
   try {
+    // Fetch the current match details to compare the matchtime
+    const { data: currentMatch, error: currentMatchError } = await supabase
+      .from("kyorugi_matches")
+      .select("*")
+      .eq("id", id)
+      .single();
+
+    if (currentMatchError) {
+      return res.status(400).json({ error: currentMatchError.message });
+    }
+
     // Update the matchtime in the matches table
     const { error } = await supabase
       .from("kyorugi_matches")
@@ -3252,6 +3246,46 @@ app.post("/update-matchtime", async (req, res) => {
 
     if (error) {
       return res.status(400).json({ error: error.message });
+    }
+
+    // Only create notifications if the matchtime has changed
+    if (currentMatch.matchtime !== matchtime) {
+      // Create notifications for both players
+      // Fetch the event name
+      const { data: event, error: eventError } = await supabase
+        .from("events")
+        .select("name")
+        .eq("id", eventid)
+        .single();
+
+      if (eventError) {
+        console.error("Error fetching event name:", eventError.message);
+        return res.status(500).send("Error fetching event name");
+      }
+
+      const notifications = [
+        {
+          userid: currentMatch.player1,
+          type: "Event",
+          message: `Your match time for ${event.name} has been updated to ${matchtime}.`,
+          desc: `Please be ready for your match at the new scheduled time.`,
+        },
+        {
+          userid: currentMatch.player2,
+          type: "Event",
+          message: `Your match time for ${event.name} has been updated to ${matchtime}.`,
+          desc: `Please be ready for your match at the new scheduled time.`,
+        },
+      ];
+
+      const { error: notificationError } = await supabase
+        .from("notifications")
+        .insert(notifications);
+
+      if (notificationError) {
+        console.error("Error creating notifications:", notificationError.message);
+        return res.status(500).send("Error creating notifications");
+      }
     }
 
     res.redirect(`/events-details/${eventid}`);
@@ -3916,29 +3950,7 @@ app.get("/events-details/:id", async function (req, res) {
       ...kyorugiMatches.map((match) => match.player2),
       ]),
     ];
-
-    // const { data: athletes, error: athletesError } = await supabase
-    //   .from("athletes")
-    //   .select("*")
-    //   .in("userid", playerIds);
-
-    // if (athletesError) {
-    //   return res.status(400).json({ error: athletesError.message });
-    // }
-
-    // // Combine kyorugi matches with athlete data
-    // const combinedMatches = kyorugiMatches.map((match) => {
-    //   const player1 = athletes.find((athlete) => athlete.userid === match.player1);
-    //   const player2 = athletes.find((athlete) => athlete.userid === match.player2);
-    //   return {
-    //     ...match,
-    //     player1_name: player1 ? player1.name : "Unknown",
-    //     player2_name: player2 ? player2.name : "Unknown",
-    //   };
-    // });
-
-    // console.log("Combined kyorugi matches with athlete data:", combinedMatches); // Log the combined data to the console
-
+    
     const { data: eventannouncements } = await supabase
       .from("event_announcements")
       .select("*")
@@ -4001,69 +4013,155 @@ app.get("/events-details/:id", async function (req, res) {
     }
 
     // Determine the champion, 2nd place, and 3rd place
+    // let champion = null;
+    // let secondPlace = null;
+    // let thirdPlace = null;
+
+    // if (matches.length > 0) {
+    //   const finalMatch = matches.find((match) => match.matchtype === "final");
+    //   if (finalMatch && finalMatch.winner) {
+    //     const { data: finalWinner, error: finalWinnerError } = await supabase
+    //       .from("athletes")
+    //       .select("name, userid")
+    //       .eq("userid", finalMatch.winner)
+    //       .single();
+
+    //     if (finalWinnerError) {
+    //       return res
+    //         .status(400)
+    //         .json({ error: "Error fetching champion name." });
+    //     }
+
+    //     champion = finalWinner;
+
+    //     // Determine second place (loser of the final match)
+    //     const secondPlaceId =
+    //       finalMatch.winner === finalMatch.player1
+    //         ? finalMatch.player2
+    //         : finalMatch.player1;
+    //     const { data: secondPlaceAthlete, error: secondPlaceError } =
+    //       await supabase
+    //         .from("athletes")
+    //         .select("name, userid")
+    //         .eq("userid", secondPlaceId)
+    //         .single();
+
+    //     if (secondPlaceError) {
+    //       return res
+    //         .status(400)
+    //         .json({ error: "Error fetching second place name." });
+    //     }
+
+    //     secondPlace = secondPlaceAthlete;
+
+    //     // Determine third place (winner of the 3rd place match)
+    //     const thirdPlaceMatch = matches.find(
+    //       (match) => match.matchtype === "thirdPlace"
+    //     );
+    //     if (thirdPlaceMatch && thirdPlaceMatch.winner) {
+    //       const { data: thirdPlaceWinner, error: thirdPlaceWinnerError } =
+    //         await supabase
+    //           .from("athletes")
+    //           .select("name, userid")
+    //           .eq("userid", thirdPlaceMatch.winner)
+    //           .single();
+
+    //       if (thirdPlaceWinnerError) {
+    //         return res
+    //           .status(400)
+    //           .json({ error: "Error fetching third place name." });
+    //       }
+
+    //       thirdPlace = thirdPlaceWinner;
+    //     }
+    //   }
+    // }
+
+    // Determine the champion, second place, and third place
     let champion = null;
     let secondPlace = null;
-    let thirdPlace = null;
+    let thirdPlace1 = null;
+    let thirdPlace2 = null;
 
     if (matches.length > 0) {
       const finalMatch = matches.find((match) => match.matchtype === "final");
       if (finalMatch && finalMatch.winner) {
-        const { data: finalWinner, error: finalWinnerError } = await supabase
-          .from("athletes")
-          .select("name, userid")
-          .eq("userid", finalMatch.winner)
-          .single();
+      const { data: finalWinner, error: finalWinnerError } = await supabase
+        .from("athletes")
+        .select("name, userid")
+        .eq("userid", finalMatch.winner)
+        .single();
 
-        if (finalWinnerError) {
-          return res
-            .status(400)
-            .json({ error: "Error fetching champion name." });
+      if (finalWinnerError) {
+        return res.status(400).json({ error: "Error fetching champion name." });
+      }
+
+      champion = finalWinner;
+
+      // Determine second place (loser of the final match)
+      const secondPlaceId =
+        finalMatch.winner === finalMatch.player1
+        ? finalMatch.player2
+        : finalMatch.player1;
+      const { data: secondPlaceAthlete, error: secondPlaceError } = await supabase
+        .from("athletes")
+        .select("name, userid")
+        .eq("userid", secondPlaceId)
+        .single();
+
+      if (secondPlaceError) {
+        return res.status(400).json({ error: "Error fetching second place name." });
+      }
+
+      secondPlace = secondPlaceAthlete;
+
+      const { data: highestRound, error: highestRoundError } = await supabase
+        .from("kyorugi_matches")
+        .select("round")
+        .eq("eventid", id)
+        .order("round", { ascending: false })
+        .limit(1)
+        .single();
+
+      if (highestRoundError) {
+        return res.status(400).json({ error: highestRoundError.message });
+      }
+
+      const currentRound = highestRound ? highestRound.round : 0;
+
+      // Determine third place (losers of the semifinal matches)
+      const semifinalMatches = matches.filter((match) => match.round === currentRound - 1);
+      if (semifinalMatches.length >= 2) {
+        const loser1Id = semifinalMatches[0].winner === semifinalMatches[0].player1 ? semifinalMatches[0].player2 : semifinalMatches[0].player1;
+        const loser2Id = semifinalMatches[1].winner === semifinalMatches[1].player1 ? semifinalMatches[1].player2 : semifinalMatches[1].player1;
+
+        const { data: thirdPlaceAthlete1, error: thirdPlaceError1 } = await supabase
+        .from("athletes")
+        .select("name, userid")
+        .eq("userid", loser1Id)
+        .single();
+
+        if (thirdPlaceError1) {
+        return res.status(400).json({ error: "Error fetching third place name." });
         }
 
-        champion = finalWinner;
+        const { data: thirdPlaceAthlete2, error: thirdPlaceError2 } = await supabase
+        .from("athletes")
+        .select("name, userid")
+        .eq("userid", loser2Id)
+        .single();
 
-        // Determine second place (loser of the final match)
-        const secondPlaceId =
-          finalMatch.winner === finalMatch.player1
-            ? finalMatch.player2
-            : finalMatch.player1;
-        const { data: secondPlaceAthlete, error: secondPlaceError } =
-          await supabase
-            .from("athletes")
-            .select("name, userid")
-            .eq("userid", secondPlaceId)
-            .single();
-
-        if (secondPlaceError) {
-          return res
-            .status(400)
-            .json({ error: "Error fetching second place name." });
+        if (thirdPlaceError2) {
+        return res.status(400).json({ error: "Error fetching third place name." });
         }
 
-        secondPlace = secondPlaceAthlete;
-
-        // Determine third place (winner of the 3rd place match)
-        const thirdPlaceMatch = matches.find(
-          (match) => match.matchtype === "thirdPlace"
-        );
-        if (thirdPlaceMatch && thirdPlaceMatch.winner) {
-          const { data: thirdPlaceWinner, error: thirdPlaceWinnerError } =
-            await supabase
-              .from("athletes")
-              .select("name, userid")
-              .eq("userid", thirdPlaceMatch.winner)
-              .single();
-
-          if (thirdPlaceWinnerError) {
-            return res
-              .status(400)
-              .json({ error: "Error fetching third place name." });
-          }
-
-          thirdPlace = thirdPlaceWinner;
-        }
+        thirdPlace1 = thirdPlaceAthlete1;
+        thirdPlace2 = thirdPlaceAthlete2;
+      }
       }
     }
+
+    console.log("Third placefsadfsadfsadfsdf:", thirdPlace1); // Log the third place data to the console
 
     // Fetch the poomsae players for the specific event
     const { data: poomsaePlayers, error } = await supabase
@@ -4142,7 +4240,8 @@ app.get("/events-details/:id", async function (req, res) {
       user: req.session.user,
       champion,
       secondPlace,
-      thirdPlace,
+      thirdPlace1,
+      thirdPlace2,
       eventannouncements,
       sortedGroupedByRound,
       poomsaetop4,

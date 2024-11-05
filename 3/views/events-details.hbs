@@ -363,7 +363,7 @@
                       {{#if matchtime}}
                         <p class="match-time">{{matchtime}}</p>
                       {{else}}
-                        <form action="/update-matchtime" method="post">
+                        <form class="matchtime" action="/update-matchtime" method="post">
                           <input type="hidden" name="id" value="{{id}}">
                           <input type="hidden" name="eventid" value="{{eventid}}">
                           <input type="time" class="matchtime" name="matchtime">
@@ -371,10 +371,10 @@
                         </form>
                       {{/if}}
                     </td>
-                    <td>{{player1_name}}: {{player1score}}</td>
-                    <td>{{player2_name}}: {{player2score}}</td>
+                    <td>{{player1_name}}:<p class="playerscore">{{player1score}}</p></td>
+                    <td>{{player2_name}}:<p class="playerscore">{{player2score}}</p></td>
                     <td>
-                      <button href="#" onclick="openKyorugiScoresheet('{{id}}', '{{eventid}}', '{{player1}}', '{{player2}}', '{{player1score}}', '{{player2score}}', '{{matchtime}}', '{{winner}}', '{{loser}}', '{{matchttype}}', '{{round}}', '{{status}}')" class="open-kyorugi-scoresheet">Scoresheet -></button>
+                      <button href="#" onclick="openKyorugiScoresheet('{{id}}', '{{matchtime}}', '{{eventid}}', '{{player1}}', '{{player2}}', '{{player1_name}}', '{{player2_name}}', '{{player1score}}', '{{player2score}}', '{{matchtime}}', '{{winner}}', '{{loser}}', '{{matchttype}}', '{{round}}', '{{status}}')" class="open-kyorugi-scoresheet">Scoresheet -></button>
                     </td>
                   </tr>
                 {{/each}}
@@ -487,8 +487,8 @@
         <span class="close" onclick="closeKyorugiScoresheet()">&times;</span>
         <h1>Kyorugi Scoresheet</h1>
         <div class="match-info">
-          <p><strong>Match:</strong> {{player1}} vs {{player2}}</p>
-          <p><strong>Time:</strong> {{match.matchtime}}</p>
+          <p class="playermatchup"><strong>Match:</strong></p>
+          <p class="matchtime"><strong>Time:</strong></p>
         </div>
         <div class="scores">
           <h2>Scores</h2>
@@ -501,8 +501,8 @@
               <thead>
                 <tr>
                   <th>Round{{match.round}}</th>
-                  <th>{{player1}}</th>
-                  <th>{{player2}}</th>
+                  <th class="player1_name"></th>
+                  <th class="player2_name"></th>
                 </tr>
               </thead>
               <tbody>
@@ -700,7 +700,7 @@
       document.getElementById('total-score').innerText = totalscore;
     }
 
-    function openKyorugiScoresheet(id, eventid, player1, player2, player1score, player2score, matchtime, winner, loser, matchtype, round, status) {
+    function openKyorugiScoresheet(id, matchtime, eventid, player1, player2, player1_name, player2_name, player1score, player2score, matchtime, winner, loser, matchtype, round, status) {
       const kyorugiSheet = document.querySelector('.kyorugi-scoresheet');
       kyorugiSheet.style.display = 'block';
       kyorugiSheet.querySelector('input[name="matchid"]').value = id;
@@ -709,7 +709,11 @@
       kyorugiSheet.querySelector('input[name="player2_round1"]').value = player2score || '';
       kyorugiSheet.querySelector('input[name="player1"]').value = player1;
       kyorugiSheet.querySelector('input[name="player2"]').value = player2;
-      kyorugiSheet.querySelector('.match-info').innerHTML = `<p><strong>Match:</strong> ${player1} vs ${player2}</p><p><strong>Time:</strong> ${matchtime}</p>`;
+      kyorugiSheet.querySelector('.player1_name').textContent = player1_name;
+      kyorugiSheet.querySelector('.player2_name').textContent = player2_name;
+      kyorugiSheet.querySelector('.playermatchup').textContent = `${player1_name} vs ${player2_name}`;
+      kyorugiSheet.querySelector('.matchtime').textContent = `Match Time: ${matchtime}`;
+
     }
 
     function closeScoresheet(selector) {
