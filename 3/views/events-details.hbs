@@ -199,85 +199,80 @@
       {{!--------------------------------------------------------------------------------- MIDDLE SIDE OF THIS PAGE --------------------------------------------------------------------}}
 
       <div class="eventmiddleside"> 
-        {{#if (eq event.status 'Cancelled')}}
-          <h1 style="color: red">This event has been<br> CANCELLED</h1>
-        {{else}}
-          {{#if (eq event.eventtype 'Poomsae')}}
-            {{#if poomsaetop4}}
-              <h3>Poomsae Winners</h3>
-              <div class="leaderboard-list">
-              {{#each poomsaetop4}}
-                <div class="leaderboard-item {{#if (eq ranking 1)}}first-place{{/if}}">
-                <span class="ranking">{{ranking}}</span>
-                <span class="name">{{name}}</span>
-                <button class="winnersviewathlete" onclick="window.location.href='/athletes-profile/{{athleteid}}'">&#8614;</button>
-                </div>
-              {{/each}}
-              </div>
-            {{/if}}
-          
-          {{else if (eq event.eventtype 'Kyorugi')}}
-            {{#if kyorugitop4}}
-              <h3>Kyorugi Rankings</h3>
-              {{#each kyorugitop4}}
-                <p>{{ranking}} {{name}}</p>
-              {{/each}}
-            {{/if}}
-          <div class="ranking">
-            <h3>Rankings</h3>
-            <div class="rank-item">
-
-              {{#if (eq event.eventtype 'Kyorugi')}}
-              {{#if champion}}
-              <h4>Champion</h4>
-              <p>{{champion.name}}</p>
-              {{else}}
-              <p>To be decided</p>
-              {{/if}}
-            </div>
-
-            <div class="rank-item">
-              {{#if secondPlace}}
-              <h4>2nd Place</h4>
-              <p>{{secondPlace.name}}</p>
-              {{else}}
-              <p>To be decided</p>
-              {{/if}}
-            </div>
-
-            <div class="rank-item">
-              {{#if thirdPlace1}}
-              <h4>3rd Place</h4>
-              <p>{{thirdPlace1.name}}</p>
-              {{else}}
-              <p>To be decided</p>
-              {{/if}}
-            </div>
-
-            <div class="rank-item">
-              {{#if thirdPlace2}}
-              <h4>3rd Place</h4>
-              <p>{{thirdPlace2.name}}</p>
-              {{else}}
-              <p>To be decided</p>
-              {{/if}}
-              </div>
-
-            {{/if}}
-          </div>
+        <div>
+          {{#if (eq event.status 'Cancelled')}}
+            <h1 style="color: red">This event has been<br> CANCELLED</h1>
           {{/if}}
+            {{#if (eq event.eventtype 'Poomsae')}}
+              {{#if poomsaetop4}}
+                <h3>Poomsae Winners</h3>
+                <div class="leaderboard-list">
+                {{#each poomsaetop4}}
+                  <div class="leaderboard-item {{#if (eq ranking 1)}}first-place{{/if}}">
+                  <span class="ranking">{{ranking}}</span>
+                  <span class="name">{{name}}</span>
+                  <button class="winnersviewathlete" onclick="window.location.href='/athletes-profile/{{athleteid}}'">&#8614;</button>
+                  </div>
+                {{/each}}
+                </div>
+              {{/if}}
+            
+            {{else if (eq event.eventtype 'Kyorugi')}}
+              <div class="ranking">
+                <h3>Rankings</h3>
+
+                <div class="rank-item">
+                  {{#if (eq event.eventtype 'Kyorugi')}}
+                  {{#if champion}}
+                  <h4>Champion</h4>
+                  <p>{{champion.name}}</p>
+                  {{else}}
+                  <p>To be decided</p>
+                  {{/if}}
+                </div>
+
+                <div class="rank-item">
+                  {{#if secondPlace}}
+                  <h4>2nd Place</h4>
+                  <p>{{secondPlace.name}}</p>
+                  {{else}}
+                  <p>To be decided</p>
+                  {{/if}}
+                </div>
+
+                <div class="rank-item">
+                  {{#if thirdPlace1}}
+                  <h4>3rd Place</h4>
+                  <p>{{thirdPlace1.name}}</p>
+                  {{else}}
+                  <p>To be decided</p>
+                  {{/if}}
+                </div>
+
+                <div class="rank-item">
+                  {{#if thirdPlace2}}
+                  <h4>3rd Place</h4>
+                  <p>{{thirdPlace2.name}}</p>
+                  {{else}}
+                  <p>To be decided</p>
+                  {{/if}}
+                </div>
+              </div>
+            {{/if}}
+          {{/if}}
+        </div>
 
         <div class="schedule">
             {{#if (and user.ptaverified (me registrationcount event.registrationcap ))}}
               {{#if (eq event.status 'Active')}}
                 {{#if (eq event.eventtype 'Kyorugi')}}
-                <form action="/begin-kyorugi-competition/{{event.id}}" method="post">
-                  <button type="submit" class="begincompe">Begin Competition</button>
-                </form>
+                  <form action="/begin-kyorugi-competition/{{event.id}}" method="post">
+                    <button type="submit" class="begincompe">Begin Competition</button>
+                  </form>
                 {{else if (eq event.eventtype 'Poomsae')}}
-                <form action="/begin-poomsae-competition/{{event.id}}" method="post">
-                  <button type="submit" class="begincompe">Begin Competition</button>
-                </form>
+                  <form action="/begin-poomsae-competition/{{event.id}}" method="post">
+                    <button type="submit" class="begincompe">Begin Competition</button>
+                  </form>
                 {{/if}}
               {{else if (eq event.status 'Ongoing')}}
                 {{#if (le event.currentround 1)}}
@@ -410,7 +405,6 @@
           </div>
         </div>
       </div>
-      {{/if}}
 
 
       <div class="poomsae-score-sheet">
