@@ -326,6 +326,42 @@ body {
     margin-top: 0;
 }
 
+#edit-button, #save-button {
+    background-color: #007BFF;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 10px;
+}
+
+#edit-button:hover, #save-button:hover {
+    background-color: #0056b3;
+}
+#viewReportModal .modal-content input[type="text"],
+#viewReportModal .modal-content textarea {
+    width: 100%;
+    padding: 8px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    margin-top: 5px;
+}
+
+#viewReportModal .modal-content input[type="date"] {
+    padding: 8px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+}
+
+#viewReportModal .modal-content label {
+    font-weight: bold;
+    margin-right: 5px;
+}
+
+
+
 /* Close Button */
 .close-button {
     color: #aaa;
