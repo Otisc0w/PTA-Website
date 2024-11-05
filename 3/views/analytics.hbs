@@ -168,6 +168,16 @@
         </div>
     </div>
 
+    <div id="viewReportModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" onclick="closeViewModal()">&times;</span>
+            <h2 id="report-view-title"></h2>
+            <p id="report-view-description"></p>
+            <p id="report-view-dates"></p>
+        </div>
+    </div>
+
+
     <footer>
         <div class="footer-content">
             <div class="pta-logo">
@@ -278,6 +288,8 @@
 
         function addReportToUI(report) {
             let listItem = document.createElement("li");
+            listItem.classList.add("report-item");
+            listItem.onclick = () => viewReportDetails(report);
 
             // Create elements for each part of the report and add classes for styling
             let titleElement = document.createElement("span");
@@ -436,9 +448,26 @@
                 addReportToUI(report);
             });
         }
+        function viewReportDetails(report) {
+            // Populate modal with report details
+            document.getElementById("report-view-title").textContent = report.title;
+            document.getElementById("report-view-description").textContent = report.description;
+            document.getElementById("report-view-dates").textContent = `From: ${report.startDate} To: ${report.endDate}`;
 
+            // Display the modal
+            document.getElementById("viewReportModal").style.display = "flex";
+        }
 
+        function closeViewModal() {
+            document.getElementById("viewReportModal").style.display = "none";
+        }
 
+        window.onclick = function (event) {
+            const modal = document.getElementById("viewReportModal");
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        };
 
     </script>
 </body>
