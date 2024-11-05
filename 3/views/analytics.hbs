@@ -278,14 +278,35 @@
         }
 
 
-        function saveReportToLocalStorage(report) {
-            // Get existing reports from local storage or initialize an empty array
-            let reports = JSON.parse(localStorage.getItem("reports")) || [];
-            // Add the new report
-            reports.push(report);
-            // Save back to local storage
-            localStorage.setItem("reports", JSON.stringify(reports));
-        }
+       function saveReportEdits() {
+    // Get the edited values
+    const updatedTitle = document.getElementById("edit-title").value;
+    const updatedDescription = document.getElementById("edit-description").value; // Remove .replace(/\n/g, "<br>")
+    const updatedStartDate = document.getElementById("edit-start-date").value;
+    const updatedEndDate = document.getElementById("edit-end-date").value;
+
+    // Retrieve reports from localStorage and find the report by ID
+    let reports = JSON.parse(localStorage.getItem("reports")) || [];
+    const reportIndex = reports.findIndex(report => report.id === currentEditingReportId);
+
+    if (reportIndex !== -1) {
+        // Update the report data
+        reports[reportIndex].title = updatedTitle;
+        reports[reportIndex].description = updatedDescription;
+        reports[reportIndex].startDate = updatedStartDate;
+        reports[reportIndex].endDate = updatedEndDate;
+
+        // Save back to localStorage
+        localStorage.setItem("reports", JSON.stringify(reports));
+
+        // Refresh the display, close the modal, and reset the edit state
+        loadReportsFromLocalStorage();
+        closeViewModal();
+    } else {
+        alert("Error: Report not found.");
+    }
+}
+
 
         function addReportToUI(report) {
             const monthLabel = getMonthLabel(report.startDate);
@@ -347,47 +368,45 @@
             // Load reports from local storage and display them
             loadReportsFromLocalStorage();
         });
+function loadReportsFromLocalStorage() {
+    // Clear existing content to prevent duplication
+    document.getElementById("top-performers-content").innerHTML = "";
+    document.getElementById("upcoming-events-content").innerHTML = "";
+    document.getElementById("clubs-content").innerHTML = "";
+    document.getElementById("member-engagement-content").innerHTML = "";
 
-        function loadReportsFromLocalStorage() {
-            // Clear existing content to prevent duplication
-            document.getElementById("top-performers-content").innerHTML = "";
-            document.getElementById("upcoming-events-content").innerHTML = "";
-            document.getElementById("clubs-content").innerHTML = "";
-            document.getElementById("member-engagement-content").innerHTML = "";
+    // Load reports from local storage
+    let reports = JSON.parse(localStorage.getItem("reports")) || [];
 
-            // Load reports from local storage
-            const reports = JSON.parse(localStorage.getItem("reports")) || [];
+    // Remove any <br> tags in the description for each report
+    reports = reports.map(report => {
+        report.description = report.description.replace(/<br>/g, "");
+        return report;
+    });
 
-            // Sort reports by start date
-            reports.sort((a, b) => new Date(a.startDate) - new Date(b.startDate));
+    // Save cleaned reports back to localStorage
+    localStorage.setItem("reports", JSON.stringify(reports));
 
-            // Variables to track the current month label for each type
-            const currentMonths = {
-                "top-performers": "",
-                "upcoming-events": "",
-                "clubs": "",
-                "member-engagement": ""
-            };
+    // Proceed with loading cleaned reports
+    reports.sort((a, b) => new Date(a.startDate) - new Date(b.startDate));
+    const currentMonths = {
+        "top-performers": "",
+        "upcoming-events": "",
+        "clubs": "",
+        "member-engagement": ""
+    };
 
-            reports.forEach(report => {
-                const reportMonth = new Date(report.startDate).toLocaleString('default', { month: 'long' });
-
-                // Debugging: Check if start date is recognized correctly
-                console.log(`Report Type: ${report.type}, Start Date: ${report.startDate}, Month: ${reportMonth}`);
-
-                // Check if the report's month is different from the last processed month for this type
-                if (reportMonth !== currentMonths[report.type]) {
-                    currentMonths[report.type] = reportMonth;
-                    addMonthLabelToUI(reportMonth, report.type);
-                }
-
-                // Add the report to the UI
-                addReportToUI(report);
-            });
-
-            // Update the summary count after loading reports
-            updateReportCounts();
+    reports.forEach(report => {
+        const reportMonth = new Date(report.startDate).toLocaleString('default', { month: 'long' });
+        if (reportMonth !== currentMonths[report.type]) {
+            currentMonths[report.type] = reportMonth;
+            addMonthLabelToUI(reportMonth, report.type);
         }
+        addReportToUI(report);
+    });
+
+    updateReportCounts();
+}
 
 
         // Function to add a month label to the appropriate section
@@ -597,34 +616,30 @@
             document.getElementById("save-button").style.display = "inline-block";
         }
 
-        function saveReportEdits() {
-            // Get the edited values
-            const updatedTitle = document.getElementById("edit-title").value;
-            const updatedDescription = document.getElementById("edit-description").value.replace(/\n/g, "<br>");
-            const updatedStartDate = document.getElementById("edit-start-date").value;
-            const updatedEndDate = document.getElementById("edit-end-date").value;
+       function saveReportEdits() {
+    const updatedTitle = document.getElementById("edit-title").value;
+    const updatedDescription = document.getElementById("edit-description").value; // No .replace here
+    const updatedStartDate = document.getElementById("edit-start-date").value;
+    const updatedEndDate = document.getElementById("edit-end-date").value;
 
-            // Retrieve reports from localStorage and find the report by ID
-            let reports = JSON.parse(localStorage.getItem("reports")) || [];
-            const reportIndex = reports.findIndex(report => report.id === currentEditingReportId);
+    let reports = JSON.parse(localStorage.getItem("reports")) || [];
+    const reportIndex = reports.findIndex(report => report.id === currentEditingReportId);
 
-            if (reportIndex !== -1) {
-                // Update the report data
-                reports[reportIndex].title = updatedTitle;
-                reports[reportIndex].description = updatedDescription;
-                reports[reportIndex].startDate = updatedStartDate;
-                reports[reportIndex].endDate = updatedEndDate;
+    if (reportIndex !== -1) {
+        reports[reportIndex].title = updatedTitle;
+        reports[reportIndex].description = updatedDescription;
+        reports[reportIndex].startDate = updatedStartDate;
+        reports[reportIndex].endDate = updatedEndDate;
 
-                // Save back to localStorage
-                localStorage.setItem("reports", JSON.stringify(reports));
+        localStorage.setItem("reports", JSON.stringify(reports));
 
-                // Refresh the display, close the modal, and reset the edit state
-                loadReportsFromLocalStorage();
-                closeViewModal();
-            } else {
-                alert("Error: Report not found.");
-            }
-        }
+        loadReportsFromLocalStorage();
+        closeViewModal();
+    } else {
+        alert("Error: Report not found.");
+    }
+}
+
 
         function closeViewModal() {
             document.getElementById("viewReportModal").style.display = "none";
