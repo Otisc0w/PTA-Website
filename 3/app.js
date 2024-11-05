@@ -1864,7 +1864,7 @@ app.post("/accept-join-club-request", async (req, res) => {
     // Update the club column in the users table
     const { error: updateUserError } = await supabase
       .from("users")
-      .update({ club: clubname })
+      .update({ club: clubid })
       .eq("id", userid);
 
     if (updateUserError) {
@@ -1970,7 +1970,7 @@ app.post("/accept-invitation/:id", async (req, res) => {
       return res.status(500).send("Error fetching invitation");
     }
 
-    const clubname = invitation.clubname;
+    const clubid = invitation.club_id;
 
     // Update the invitation status to 'accepted'
     const { error: updateInvitationError } = await supabase
@@ -1989,9 +1989,9 @@ app.post("/accept-invitation/:id", async (req, res) => {
 
     // Update the club column in the users table
     const { error: updateUserError } = await supabase
-      .from("athletes")
-      .update({ club: clubname })
-      .eq("userid", userid);
+      .from("users")
+      .update({ club: clubid })
+      .eq("id", userid);
 
     if (updateUserError) {
       console.error("Error updating user club:", updateUserError.message);
