@@ -972,3 +972,139 @@ h1 {
   margin: 20px auto 0; /* Centering within the modal */
   width: fit-content;
 }
+
+.clubrequests {
+  background-color: #2e2e2e;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
+  width: 80%;
+  margin: 20px auto;
+  color: white;
+}
+
+.clubrequests h2 {
+  font-size: 24px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.clubrequests .request {
+  background-color: #444;
+  padding: 15px;
+  border-radius: 10px;
+  margin-bottom: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.clubrequests .request h2 {
+  font-size: 20px;
+  margin: 0;
+}
+
+.clubrequests .request p {
+  margin: 0;
+  font-size: 16px;
+}
+
+.clubrequests .request form {
+  display: flex;
+  align-items: center;
+}
+
+.clubrequests .request .accept-btn {
+  background-color: #4caf50;
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  margin-left: 10px;
+}
+
+.clubrequests .request .accept-btn:hover {
+  background-color: #45a049;
+}
+
+.clubrequests .request .reject-btn {
+  background-color: #f44336;
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  margin-left: 10px;
+}
+
+.clubrequests .request .reject-btn:hover {
+  background-color: #d32f2f;
+}
+
+.clubrequests .request .accept-btn,
+.clubrequests .request .reject-btn {
+  display: inline-block;
+}
+
+/* Join Club Modal Styles */
+#joinClubModal .modal-content {
+  background-color: #222;
+  margin: 15% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+  max-width: 500px;
+  border-radius: 10px;
+  color: white;
+}
+
+#joinClubModal .modal-content .close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+#joinClubModal .modal-content .close:hover,
+#joinClubModal .modal-content .close:focus {
+  color: white;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+#joinClubModal .modal-content form {
+  display: flex;
+  flex-direction: column;
+}
+
+#joinClubModal .modal-content form input[type="text"] {
+  width: 100%;
+  padding: 12px;
+  margin: 8px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  background-color: #333;
+  color: white;
+}
+
+#joinClubModal .modal-content form button[type="submit"] {
+  background-color: #007bff;
+  color: white;
+  padding: 14px 20px;
+  margin: 8px 0;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+}
+
+#joinClubModal .modal-content form button[type="submit"]:hover {
+  background-color: #0056b3;
+}

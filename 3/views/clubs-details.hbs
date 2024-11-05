@@ -52,11 +52,21 @@
     <div class="clubname">
       <span class="name">{{club.clubname}}</span>
       {{#if (ne club.clubname user.club)}}
-      <form action="/request-join-club" method="POST">
-        <input type="hidden" name="clubid" value="{{club.id}}">
-        <button type="submit" class="joinbtn">Join this club</button>
-      </form>
+        <button type="button" class="joinbtn" onclick="openJoinModal()">Join this club</button>
       {{/if}}
+
+      <!-- Join Club Modal -->
+      <div id="joinClubModal" class="modal" style="display:none;">
+        <div class="modal-content">
+          <span class="close" onclick="closeJoinModal()">&times;</span><br>
+          <h2>Join Request for <strong>{{club.clubname}}</strong></h2>
+          <form action="/request-join-club" method="POST">
+            <input type="hidden" name="clubid" value="{{club.id}}">
+            <input type="text" name="message" placeholder="Enter your request message" required>
+            <button type="submit" class="joinbtn">Join this club</button>
+          </form>
+        </div>
+      </div>
     </div>
 
     <div id="editclubmodal" class="modal">
@@ -239,11 +249,18 @@
       <div class="request">
         <p>
         <h2>{{firstname}} {{lastname}}</h2> wants to join your club.</p>
+        <p>{{message}}</p>
         <form action="/accept-join-club-request" method="POST">
           <input type="hidden" name="id" value="{{id}}">
           <input type="hidden" name="userid" value="{{userid}}">
           <input type="hidden" name="clubid" value="{{clubid}}">
           <button type="submit" class="accept-btn">Accept</button>
+        </form>
+        <form action="/reject-join-club-request" method="POST">
+          <input type="hidden" name="id" value="{{id}}">
+          <input type="hidden" name="userid" value="{{userid}}">
+          <input type="hidden" name="clubid" value="{{clubid}}">
+          <button type="submit" class="reject-btn">Reject</button>
         </form>
       </div>
       {{/each}}
@@ -404,6 +421,14 @@
 
     function closeannounceModal() {
       document.getElementById('announceModal').style.display = 'none';
+    }
+
+    function openJoinModal() {
+      document.getElementById('joinClubModal').style.display = 'block';
+    }
+
+    function closeJoinModal() {
+      document.getElementById('joinClubModal').style.display = 'none';
     }
 
     window.onclick = function (event) {
