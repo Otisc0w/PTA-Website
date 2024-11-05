@@ -148,10 +148,9 @@ body {
 
 .month-label {
     font-weight: bold;
-    font-size: 1.1em;
-    margin-top: 15px;
-    margin-bottom: 10px;
+    font-size: 1.2em; 
     color: #f1f1f1;
+    margin-bottom: 15px; 
 }
 
 .report-title-item,
@@ -167,13 +166,14 @@ body {
 }
 
 .report-description {
-    font-size: 0.9em;
-    margin-bottom: 10px;
-    white-space: pre-wrap; /* Preserves whitespace and line breaks */
-    line-height: 1.5;
-    color: #f1f1f1; /* Ensure it's readable */
-    margin-top: 5px;
+    font-size: 0.85em; /* Slightly smaller than the report title */
+    font-weight: normal; /* Ensure it's not bold */
+    color: #bbbbbb; /* Softer color for readability */
+    margin-top: 2px; /* Optional: Add a bit of space between title and description */
+    display: block;
+    line-height: 1.4; /* Improve readability with line spacing */
 }
+
 
 .report-date {
     font-size: 0.85em;
@@ -487,6 +487,14 @@ textarea {
 /* ------------------ Additional Styles ------------------ */
 
 /* Style for report titles displayed under each summary item */
+.report-title {
+    font-weight: normal; /* Remove bold */
+    font-size: 0.9em; /* Make the title smaller than the month label */
+    color: #cccccc; /* Adjust color if needed */
+    display: block;
+    margin-top: 5px; /* Optional: Add space between titles if there are multiple reports */
+}
+
 .report-titles {
     margin-top: 8px;
     padding-left: 10px;
