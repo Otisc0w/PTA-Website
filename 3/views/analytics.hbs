@@ -179,6 +179,9 @@
             <h2 id="report-view-title"></h2>
             <p id="report-view-description"></p>
             <p id="report-view-dates"></p>
+
+             <button id="edit-button" onclick="enableEditMode()">Edit</button>
+        <button id="save-button" style="display: none;" onclick="saveReportEdits()">Save</button>
         </div>
     </div>
 
@@ -519,6 +522,7 @@ function addMonthLabelToUI(month, reportType) {
             });
         }
         function viewReportDetails(report) {
+             currentEditingReportId = report.id;
             // Populate modal with report details
             document.getElementById("report-view-title").textContent = report.title;
             document.getElementById("report-view-description").textContent = report.description;
@@ -526,11 +530,21 @@ function addMonthLabelToUI(month, reportType) {
 
             // Display the modal
             document.getElementById("viewReportModal").style.display = "flex";
+             document.getElementById("edit-button").style.display = "inline-block";
+    document.getElementById("save-button").style.display = "none";
+
         }
 
-        function closeViewModal() {
-            document.getElementById("viewReportModal").style.display = "none";
-        }
+       function closeViewModal() {
+    document.getElementById("viewReportModal").style.display = "none";
+
+    // Reset the modal content to remove input fields
+    // You may need to re-render the modal content when reopening
+
+    // Clear currentEditingReportId
+    currentEditingReportId = null;
+}
+
 
         window.onclick = function (event) {
             const modal = document.getElementById("viewReportModal");
@@ -561,6 +575,70 @@ function addMonthLabelToUI(month, reportType) {
             updateReportCounts();
             loadReportsFromLocalStorage(); // Load and display reports
         });
+
+function enableEditMode() {
+    // Get current values from the modal
+    const title = document.getElementById("report-view-title").textContent;
+    const description = document.getElementById("report-view-description").innerText;
+    const dates = document.getElementById("report-view-dates").textContent;
+    const [startDate, endDate] = dates.replace("From: ", "").split(" To: ");
+
+    // Convert title and description to input fields
+    document.getElementById("report-view-title").innerHTML = `<input type="text" id="edit-title" value="${title}" style="width: 100%; padding: 5px;">`;
+    document.getElementById("report-view-description").innerHTML = `<textarea id="edit-description" style="width: 100%; padding: 5px; height: 100px;">${description}</textarea>`;
+
+    // Convert start and end dates to input fields with improved alignment
+    document.getElementById("report-view-dates").innerHTML = `
+        <div style="display: flex; gap: 10px; align-items: center;">
+            <label for="edit-start-date">Start Date:</label>
+            <input type="date" id="edit-start-date" value="${startDate.trim()}" style="flex: 1; padding: 5px;">
+            <label for="edit-end-date">End Date:</label>
+            <input type="date" id="edit-end-date" value="${endDate.trim()}" style="flex: 1; padding: 5px;">
+        </div>
+    `;
+
+    // Show the Save button and hide the Edit button
+    document.getElementById("edit-button").style.display = "none";
+    document.getElementById("save-button").style.display = "inline-block";
+}
+
+function saveReportEdits() {
+    // Get the edited values
+    const updatedTitle = document.getElementById("edit-title").value;
+    const updatedDescription = document.getElementById("edit-description").value.replace(/\n/g, "<br>");
+    const updatedStartDate = document.getElementById("edit-start-date").value;
+    const updatedEndDate = document.getElementById("edit-end-date").value;
+
+    // Retrieve reports from localStorage and find the report by ID
+    let reports = JSON.parse(localStorage.getItem("reports")) || [];
+    const reportIndex = reports.findIndex(report => report.id === currentEditingReportId);
+
+    if (reportIndex !== -1) {
+        // Update the report data
+        reports[reportIndex].title = updatedTitle;
+        reports[reportIndex].description = updatedDescription;
+        reports[reportIndex].startDate = updatedStartDate;
+        reports[reportIndex].endDate = updatedEndDate;
+
+        // Save back to localStorage
+        localStorage.setItem("reports", JSON.stringify(reports));
+
+        // Refresh the display, close the modal, and reset the edit state
+        loadReportsFromLocalStorage();
+        closeViewModal();
+    } else {
+        alert("Error: Report not found.");
+    }
+}
+
+function closeViewModal() {
+    document.getElementById("viewReportModal").style.display = "none";
+    document.getElementById("edit-button").style.display = "inline-block";
+    document.getElementById("save-button").style.display = "none";
+    currentEditingReportId = null;
+}
+
+
 
 
     </script>
