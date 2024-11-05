@@ -234,11 +234,6 @@
               {{#if champion}}
               <h4>Champion</h4>
               <p>{{champion.name}}</p>
-              <form action="/update-points" method="post">
-                <input type="hidden" name="userid" value="{{champion.userid}}">
-                <input type="number" name="points" placeholder="Enter points" required>
-                <button type="submit">Update Points</button>
-              </form>
               {{else}}
               <p>To be decided</p>
               {{/if}}
@@ -248,30 +243,30 @@
               {{#if secondPlace}}
               <h4>2nd Place</h4>
               <p>{{secondPlace.name}}</p>
-              <form action="/update-points" method="post">
-                <input type="hidden" name="userid" value="{{secondPlace.userid}}">
-                <input type="number" name="points" placeholder="Enter points" required>
-                <button type="submit">Update Points</button>
-              </form>
               {{else}}
               <p>To be decided</p>
               {{/if}}
             </div>
 
             <div class="rank-item">
-              {{#if thirdPlace}}
+              {{#if thirdPlace1}}
               <h4>3rd Place</h4>
-              <p>{{thirdPlace.name}}</p>
-              <form action="/update-points" method="post">
-                <input type="hidden" name="userid" value="{{thirdPlace.userid}}">
-                <input type="number" name="points" placeholder="Enter points" required>
-                <button type="submit">Update Points</button>
-              </form>
+              <p>{{thirdPlace1.name}}</p>
               {{else}}
               <p>To be decided</p>
               {{/if}}
-              {{/if}}
             </div>
+
+            <div class="rank-item">
+              {{#if thirdPlace2}}
+              <h4>3rd Place</h4>
+              <p>{{thirdPlace2.name}}</p>
+              {{else}}
+              <p>To be decided</p>
+              {{/if}}
+              </div>
+
+            {{/if}}
           </div>
           {{/if}}
 
