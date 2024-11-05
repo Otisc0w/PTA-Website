@@ -65,7 +65,8 @@
                 <input type="text" id="end-date" class="datepicker">
             </div>
 
-            <button class="apply-btn">Apply</button>
+            <button class="apply-btn" onclick="filterReportsByDate()">Apply</button>
+            <button class="reset-btn" onclick="resetFilter()">Reset</button>
         </div>
         <button type="button" class="create-report-button" onclick="openModal()">+ Create Report</button>
     </div>
@@ -335,49 +336,108 @@
                 addReportToUI(report);
             });
         }
-function displayReportTitles(reportType) {
-    // Clear previous content from all report title display areas
-    document.querySelectorAll(".report-titles").forEach(div => div.innerHTML = "");
+        function displayReportTitles(reportType) {
+            // Clear previous content from all report title display areas
+            document.querySelectorAll(".report-titles").forEach(div => div.innerHTML = "");
 
-    // Determine the target element to display report titles based on report type
-    let targetDiv;
-    switch (reportType) {
-        case "top-performers":
-            targetDiv = document.getElementById("top-performers-titles");
-            break;
-        case "upcoming-events":
-            targetDiv = document.getElementById("upcoming-events-titles");
-            break;
-        case "clubs":
-            targetDiv = document.getElementById("clubs-titles");
-            break;
-        case "member-engagement":
-            targetDiv = document.getElementById("member-engagement-titles");
-            break;
-        default:
-            return;
-    }
+            // Determine the target element to display report titles based on report type
+            let targetDiv;
+            switch (reportType) {
+                case "top-performers":
+                    targetDiv = document.getElementById("top-performers-titles");
+                    break;
+                case "upcoming-events":
+                    targetDiv = document.getElementById("upcoming-events-titles");
+                    break;
+                case "clubs":
+                    targetDiv = document.getElementById("clubs-titles");
+                    break;
+                case "member-engagement":
+                    targetDiv = document.getElementById("member-engagement-titles");
+                    break;
+                default:
+                    return;
+            }
 
-    // Retrieve the reports from local storage and filter by type
-    let reports = JSON.parse(localStorage.getItem("reports")) || [];
-    let filteredReports = reports.filter(report => report.type === reportType);
+            // Retrieve the reports from local storage and filter by type
+            let reports = JSON.parse(localStorage.getItem("reports")) || [];
+            let filteredReports = reports.filter(report => report.type === reportType);
 
-    // Populate the target div with the titles of the filtered reports
-    if (filteredReports.length > 0) {
-        filteredReports.forEach(report => {
-            let titleElement = document.createElement("div");
-            titleElement.classList.add("report-title-item");
-            titleElement.textContent = report.title;
-            targetDiv.appendChild(titleElement);
-        });
-    } else {
-        // If no reports are found, display a message
-        let noReportsMessage = document.createElement("div");
-        noReportsMessage.classList.add("no-reports-message");
-        noReportsMessage.textContent = "No reports available for this category.";
-        targetDiv.appendChild(noReportsMessage);
-    }
-}
+            // Populate the target div with the titles of the filtered reports
+            if (filteredReports.length > 0) {
+                filteredReports.forEach(report => {
+                    let titleElement = document.createElement("div");
+                    titleElement.classList.add("report-title-item");
+                    titleElement.textContent = report.title;
+                    targetDiv.appendChild(titleElement);
+                });
+            } else {
+                // If no reports are found, display a message
+                let noReportsMessage = document.createElement("div");
+                noReportsMessage.classList.add("no-reports-message");
+                noReportsMessage.textContent = "No reports available for this category.";
+                targetDiv.appendChild(noReportsMessage);
+            }
+        }
+        function filterReportsByDate() {
+            // Get start and end dates from the inputs
+            const startDate = new Date(document.getElementById("start-date").value);
+            const endDate = new Date(document.getElementById("end-date").value);
+
+            // Validate the dates
+            if (isNaN(startDate) || isNaN(endDate) || startDate > endDate) {
+                alert("Please enter a valid date range.");
+                return;
+            }
+
+            // Retrieve reports from local storage
+            const reports = JSON.parse(localStorage.getItem("reports")) || [];
+
+            // Filter reports based on the date range
+            const filteredReports = reports.filter(report => {
+                const reportStartDate = new Date(report.startDate);
+                const reportEndDate = new Date(report.endDate);
+                return reportStartDate >= startDate && reportEndDate <= endDate;
+            });
+
+            // Clear the current reports display
+            document.getElementById("top-performers-content").innerHTML = "";
+            document.getElementById("upcoming-events-content").innerHTML = "";
+            document.getElementById("clubs-content").innerHTML = "";
+            document.getElementById("member-engagement-content").innerHTML = "";
+
+            // Display the filtered reports
+            filteredReports.forEach(report => {
+                addReportToUI(report);
+            });
+
+            // If no reports are found, display a message in each section
+            if (filteredReports.length === 0) {
+                document.getElementById("top-performers-content").innerHTML = "<p>No reports found for the selected date range.</p>";
+                document.getElementById("upcoming-events-content").innerHTML = "<p>No reports found for the selected date range.</p>";
+                document.getElementById("clubs-content").innerHTML = "<p>No reports found for the selected date range.</p>";
+                document.getElementById("member-engagement-content").innerHTML = "<p>No reports found for the selected date range.</p>";
+            }
+        }
+        function resetFilter() {
+            // Clear the date inputs
+            document.getElementById("start-date").value = "";
+            document.getElementById("end-date").value = "";
+
+            // Clear the current reports display
+            document.getElementById("top-performers-content").innerHTML = "";
+            document.getElementById("upcoming-events-content").innerHTML = "";
+            document.getElementById("clubs-content").innerHTML = "";
+            document.getElementById("member-engagement-content").innerHTML = "";
+
+            // Reload all reports from local storage
+            const reports = JSON.parse(localStorage.getItem("reports")) || [];
+            reports.forEach(report => {
+                addReportToUI(report);
+            });
+        }
+
+
 
 
     </script>
