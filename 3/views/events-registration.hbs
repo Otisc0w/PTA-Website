@@ -49,7 +49,7 @@
 
   <div class="form-container margin">
     <h2>Event Registration for {{event.name}}</h2>
-    <form id="registrationForm" action="/submit-player" method="post">
+    <form id="registrationForm" action="/submit-player" method="post" enctype="multipart/form-data">
 
       <div class="form-group">
         <input type="hidden" id="eventid" name="eventid" value="{{event.id}}">
@@ -73,7 +73,7 @@
             <input type="date" id="bday" name="bday" value="{{athlete.bday}}">
           </div><br>
 
-          <form action="/upload-event-images" method="POST" enctype="multipart/form-data">
+          
           <div class="form-group">
             <label for="height">Height (cm):</label><br>
             <input type="number" id="height" name="height" value="{{athlete.height}}">
@@ -90,8 +90,8 @@
             <input type="file" name="weightpicture" id="weightpicture"  required>
             </div>
           </div>
-          <button type="submit">Upload</button>
-          </form>
+          
+          
           
         </div><br>
 

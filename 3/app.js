@@ -2329,7 +2329,9 @@ app.post("/delete-club/:id", async (req, res) => {
   }
 });
 
-app.post("/submit-player", async (req, res) => {
+const eventImageUpload = multer();
+
+app.post("/submit-player", upload.fields([{ name: 'heightpicture' }, { name: 'weightpicture' }]), async (req, res) => {
   const {
     athleteid,
     eventid,
@@ -2342,20 +2344,35 @@ app.post("/submit-player", async (req, res) => {
     belt,
     height,
     weight,
-    instructor,
-  } = req.body; // Capture user input from the form
+    instructor
+  } = req.body;
 
+  const userId = req.session.user.id;
   const registered = "false";
-  const userid = req.session.user.id;
+  
+  // Upload file helper function
+  const uploadFile = async (file, folder) => {
+    if (!file) return null;
+    const filePath = `${folder}/${Date.now()}-${file.originalname}`;
+    const { error } = await supabase.storage.from("documents").upload(filePath, file.buffer, {
+      contentType: file.mimetype,
+    });
+    if (error) throw new Error(`Error uploading ${folder} image: ${error.message}`);
+    return `${supabaseUrl}/storage/v1/object/public/documents/${filePath}`;
+  };
 
   try {
-    // Insert the new registration into the database
+    // Upload images if they exist
+    const heightPictureUrl = req.files['heightpicture'] ? await uploadFile(req.files['heightpicture'][0], 'heightpictures') : null;
+    const weightPictureUrl = req.files['weightpicture'] ? await uploadFile(req.files['weightpicture'][0], 'weightpictures') : null;
+
+    // Insert registration data along with URLs for height and weight pictures
     const { data: registrationData, error: registrationError } = await supabase
       .from("events_registrations")
       .insert([
         {
           athleteid,
-          userid,
+          userid: userId,
           eventid,
           registered,
           email,
@@ -2368,6 +2385,8 @@ app.post("/submit-player", async (req, res) => {
           height,
           weight,
           instructor,
+          heightpicture: heightPictureUrl,
+          weightpicture: weightPictureUrl
         },
       ]);
 
@@ -2376,7 +2395,7 @@ app.post("/submit-player", async (req, res) => {
       return res.status(500).send("Error creating registration.");
     }
 
-        // Fetch the event details from the events table
+    // Fetch the event details and create a notification
     const { data: thisevent, error: thiseventError } = await supabase
       .from("events")
       .select("*")
@@ -2388,18 +2407,15 @@ app.post("/submit-player", async (req, res) => {
       return res.status(500).send("Error fetching event details.");
     }
 
-    console.log("Fetched event details:", thisevent); // Log the event details to the console
-
-    // Insert a notification for the player about their registration
     const { error: notificationError } = await supabase
       .from("notifications")
       .insert([
-      {
-      userid: userid,
-      type: "Event",
-      message: `You have successfully registered for ${thisevent.name}`,
-      desc: `Your registration for the event ${thisevent.name} has been successfully submitted. Please wait for approval from the event organizer.`,
-      },
+        {
+          userid: userId,
+          type: "Event",
+          message: `You have successfully registered for ${thisevent.name}`,
+          desc: `Your registration for the event ${thisevent.name} has been successfully submitted.`,
+        },
       ]);
 
     if (notificationError) {
@@ -2410,9 +2426,11 @@ app.post("/submit-player", async (req, res) => {
     res.redirect(`/events-details/${eventid}`);
   } catch (error) {
     console.error("Server error:", error.message);
-    res.status(500).json({ error: error.message });
+    res.status(500).send("Error handling registration.");
   }
 });
+
+
 
 app.post("/begin-kyorugi-competition/:id", async (req, res) => {
   const { id: eventid } = req.params; // Get the event ID from the URL
@@ -3859,44 +3877,6 @@ app.get("/events-registration/:id", async function (req, res) {
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
-  }
-});
-const eventImageUpload = multer();
-app.post("/upload-event-images", eventImageUpload.fields([{ name: 'heightpicture' }, { name: 'weightpicture' }]), async (req, res) => {
-  const userId = req.session.user.id;
-  const { heightpicture, weightpicture } = req.files;
-
-  const uploadFile = async (file, folder) => {
-    if (!file) return null; // If no file is provided, return null
-    const filePath = `${folder}/${Date.now()}-${req.files.originalname}`;
-    const { error } = await supabase.storage.from("documents").upload(filePath, file.buffer, {
-      contentType: req.files.mimetype,
-    });
-
-    if (error) throw new Error(`Error uploading ${folder} image: ${error.message}`);
-    return `${supabaseUrl}/storage/v1/object/public/documents/${filePath}`;
-  };
-
-  try {
-    // Upload files if they exist
-    const heightPictureUrl = heightpicture ? await uploadFile(heightpicture[0], 'heightpictures') : null;
-    const weightPictureUrl = weightpicture ? await uploadFile(weightpicture[0], 'weightpictures') : null;
-
-    // Update the `events_registration` table with the URLs
-    const { error } = await supabase
-      .from("events_registration")
-      .update({
-        heightpicture: heightPictureUrl,
-        weightpicture: weightPictureUrl,
-      })
-      .eq("userid", userId);
-
-    if (error) throw new Error(`Error updating event images in database: ${error.message}`);
-
-    res.redirect("/event-registration");
-  } catch (error) {
-    console.error("Error handling event images upload:", error.message);
-    res.status(500).send("Error handling event images upload");
   }
 });
 
