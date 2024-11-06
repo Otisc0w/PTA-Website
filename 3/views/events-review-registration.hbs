@@ -55,6 +55,15 @@
           <p><strong>Last Name:</strong> {{eventregistration.club}}</p>
           <p><strong>Gender:</strong> {{eventregistration.age}}</p>
           <p><strong>Birthday:</strong> {{formatDate eventregistration.bday "MMMM DD, YYYY"}}</p>
+          <p><strong>height:</strong> {{eventregistration.height}}</p>
+          <a href="#" onclick="openLightbox('heightPictureFull')">
+          <img src="{{eventregistration.heightpicture}}" alt="Height Picture" style="max-width: 200px; height: auto; cursor: pointer;">
+          </a>
+          <p><strong>Weight:</strong> {{eventregistration.weight}}</p>
+          <a href="#" onclick="openLightbox('weightPictureFull')">
+          <img src="{{eventregistration.weightpicture}}" alt="Weight Picture" style="max-width: 200px; height: auto; cursor: pointer;">
+          </a>
+        </div>
         </div>
 
       </section>
@@ -94,6 +103,16 @@
         <a href="{{registration.birthcert}}" target="_blank" download>Birth Certificate</a>
         <p>submitted by: {{registration.submittedby}}</p>
       </div>
+
+      <div id="heightPictureFull" class="lightbox" onclick="closeLightbox()">
+      <span class="close" onclick="closeLightbox()">&times;</span>
+      <img src="{{eventregistration.heightpicture}}" alt="Full Size Height Picture">
+      </div>
+
+      <div id="weightPictureFull" class="lightbox" onclick="closeLightbox()">
+      <span class="close" onclick="closeLightbox()">&times;</span>
+      <img src="{{eventregistration.weightpicture}}" alt="Full Size Weight Picture">
+      </div>
     </form>
   </main>
 
@@ -129,6 +148,16 @@
     function toggleDropdown() {
       document.getElementById("dropdown").classList.toggle("show");
     }
+
+     function openLightbox(imageId) {
+    document.getElementById(imageId).style.display = "block";
+  }
+
+  function closeLightbox() {
+    document.querySelectorAll(".lightbox").forEach(lightbox => {
+      lightbox.style.display = "none";
+    });
+  }
   </script>
 </body>
 

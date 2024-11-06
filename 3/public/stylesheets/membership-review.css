@@ -370,3 +370,36 @@ strong {
         height: auto; /* Maintain aspect ratio */
     }
 }
+
+  /* Lightbox background styling */
+  .lightbox {
+    display: none; /* Hidden by default */
+    position: fixed;
+    z-index: 999;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+  }
+
+  /* Lightbox image styling */
+  .lightbox img {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    max-width: 90%;
+    max-height: 90%;
+    
+  }
+
+  /* Close button styling */
+  .lightbox .close {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    color: #fff;
+    font-size: 30px;
+    cursor: pointer;
+  }
