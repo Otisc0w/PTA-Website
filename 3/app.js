@@ -304,7 +304,6 @@ app.post("/submit-ncc", upload.fields([
   ]),
   async (req, res) => {
     const {
-      apptype,
       firstname,
       middlename,
       lastname,
@@ -404,7 +403,6 @@ app.post("/submit-ncc", upload.fields([
         const { data, error } = await supabase
           .from("ncc_registrations")
           .update({
-            apptype,
             firstname,
             middlename,
             lastname,
@@ -437,9 +435,9 @@ app.post("/submit-ncc", upload.fields([
         }
       } else {
         // Insert a new registration
-        const { data, error } = await supabase.from("ncc_registrations").insert([
+        const { data, error } = await supabase.from("ncc_registrations")
+        .insert([
           {
-            apptype,
             firstname,
             middlename,
             lastname,
@@ -508,7 +506,7 @@ app.post("/submit-instructor", upload.fields([
   ]),
   async (req, res) => {
     const {
-      apptype,
+     
       firstname,
       middlename,
       lastname,
@@ -691,7 +689,7 @@ app.post("/submit-instructor", upload.fields([
         const { data, error } = await supabase
           .from("instructor_registrations")
           .update({
-            apptype,
+           
             firstname,
             middlename,
             lastname,
@@ -723,7 +721,7 @@ app.post("/submit-instructor", upload.fields([
           .from("instructor_registrations")
           .insert([
             {
-              apptype,
+             
               firstname,
               middlename,
               lastname,
@@ -3889,8 +3887,6 @@ app.get("/events-registration/:id", async function (req, res) {
     res.status(500).json({ error: error.message });
   }
 });
-
-
 
 
 app.get("/events-review-registration/:id", async function (req, res) {

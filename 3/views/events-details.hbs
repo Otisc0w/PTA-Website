@@ -28,7 +28,7 @@
             {{/if}}
           </a>
         </li>
-        <li class="analytics"><a href="analytics">Analytics</a></li>
+        <li class="analytics"><a href="/analytics">Analytics</a></li>
         <li class="profile-pic">
           {{#if user.profilepic}}
           <a href="#" onclick="toggleDropdown()"><img src="{{user.profilepic}}" alt="Profile Picture"
@@ -58,12 +58,12 @@
       <ul>
         <li><a href="#" id="details-tab">Details</a></li>
         <li><a href="#" id="participants-tab">Participants</a></li>
-        {{#if user.ptaverified}}
-        <li><a href="#" id="registrations-tab">Registrations</a></li>
-        {{/if}}
-        {{#if (or currentregistrant user.ptaverified)}}
-        <li><a href="#" id="announcements-tab">Announcements</a></li>
-        {{/if}}
+        
+        <li{{#unless user.ptaverified}} style="display:none;"{{/unless}}><a href="#" id="registrations-tab">Registrations</a></li>
+        
+        
+        <li{{#if (or currentregistrant user.ptaverified)}} style="display:block;" {{else}} style="display:none;"{{/if}}><a href="#" id="announcements-tab">Announcements</a></li>
+        
         
         <li {{#unless (eq event.status 'Concluded')}}style="display: none"{{/unless}}><a href="#" id="results-tab">Results</a></li>
         

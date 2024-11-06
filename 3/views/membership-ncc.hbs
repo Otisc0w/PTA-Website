@@ -25,7 +25,7 @@
 					{{/if}}
 				</a>
 			</li>
-			<li class="analytics"><a href="analytics">Analytics</a></li>
+			<li class="analytics"><a href="/analytics">Analytics</a></li>
 			<li class="profile-pic">
 				{{#if user.profilepic}}
 				<a href="#" onclick="toggleDropdown()"><img src="{{user.profilepic}}" alt="Profile Picture"
@@ -59,29 +59,29 @@
 						<div class="form-row">
 							<div class="form-group">
 								<label for="firstname">First Name</label>
-								<input type="text" id="firstname" name="firstname" value="{{user.firstname}}">
+								<input type="text" id="firstname" name="firstname" value="{{user.firstname}}" required>
 							</div>
 							<div class="form-group">
 								<label for="middlename">M.I.</label>
-								<input type="text" id="middlename" name="middlename" value="{{user.middlename}}">
+								<input type="text" id="middlename" name="middlename" value="{{user.middlename}}" required>
 							</div>
 							<div class="form-group">
 								<label for="lastname">Last Name</label>
-								<input type="text" id="lastname" name="lastname" value="{{user.lastname}}">
+								<input type="text" id="lastname" name="lastname" value="{{user.lastname}}" required>
 							</div>
 						</div>
 
 						<div class="form-row">
 							<div class="form-group">
 								<label for="gender">Gender</label>
-								<select id="gender" name="gender">
+								<select id="gender" name="gender" required>
 									<option value="female">Female</option>
 									<option value="male">Male</option>
 								</select>
 							</div>
 							<div class="form-group">
 								<label for="bday">Birthday</label>
-								<input type="date" id="bday" name="bday">
+								<input type="date" id="bday" name="bday" required>
 							</div>
 							<div class="form-group">
 								<label for="age">Age:</label>
@@ -92,50 +92,43 @@
 						<div class="form-row">
 							<div class="form-group">
 								<label for="phonenum">Mobile Number</label>
-								<input type="tel" id="phonenum" name="phonenum" pattern="\d{4}\d{3}\d{4}"
-									placeholder="0912-345-6789">
+								<input type="tel" id="phonenum" name="phonenum" pattern="\d{4}\d{3}\d{4}" placeholder="0912-345-6789" required>
 							</div>
 							<div class="form-group">
 								<label for="email">E-mail</label>
-								<input type="email" id="email" name="email" value="{{user.email}}">
+								<input type="email" id="email" name="email" value="{{user.email}}" required>
 							</div>
 							<div class="form-group">
 								<label for="confemail">Confirm E-mail</label>
-								<input type="email" id="confemail" name="confemail">
+								<input type="email" id="confemail" name="confemail" required>
 							</div>
 						</div>
 
 						<div class="form-row">
 							<div class="form-group">
 								<label for="lastpromo">Date of Last Promotion Test</label>
-								<input type="date" id="lastpromo" name="lastpromo">
+								<input type="date" id="lastpromo" name="lastpromo" required>
 							</div>
 							<div class="form-group">
 								<label for="promolocation">Location of Last Promotion</label>
-								<select name="promolocation" id="promolocation">
+								<select name="promolocation" id="promolocation" required>
 									<option value="Region I – Ilocos Region">Region I – Ilocos Region</option>
 									<option value="Region II – Cagayan Valley">Region II – Cagayan Valley</option>
 									<option value="Region III – Central Luzon">Region III – Central Luzon</option>
 									<option value="Region IV‑A – CALABARZON">Region IV‑A – CALABARZON</option>
-									<option value="middlenameMAROPA Region">MIMAROPA Region</option>
+									<option value="MIMAROPA Region">MIMAROPA Region</option>
 									<option value="Region V – Bicol Region">Region V – Bicol Region</option>
 									<option value="Region VI – Western Visayas">Region VI – Western Visayas</option>
 									<option value="Region VII – Central Visayas">Region VII – Central Visayas</option>
 									<option value="Region VIII – Eastern Visayas">Region VIII – Eastern Visayas</option>
-									<option value="Region IX – Zamboanga Peninsula">Region IX – Zamboanga Peninsula
-									</option>
+									<option value="Region IX – Zamboanga Peninsula">Region IX – Zamboanga Peninsula</option>
 									<option value="Region X – Northern Mindanao">Region X – Northern Mindanao</option>
 									<option value="Region XI – Davao Region">Region XI – Davao Region</option>
 									<option value="Region XII – SOCCSKSARGEN">Region XII – SOCCSKSARGEN</option>
 									<option value="Region XIII – Caraga">Region XIII – Caraga</option>
 									<option value="NCR – National Capital Region">NCR – National Capital Region</option>
-									<option value="CAR – Cordillera Administrative Region">CAR – Cordillera
-										Administrative Region
-									</option>
-									<option value="BARMM – Bangsamoro Autonomous Region in Muslim Mindanao">BARMM –
-										Bangsamoro
-										Autonomous
-										Region in Muslim Mindanao</option>
+									<option value="CAR – Cordillera Administrative Region">CAR – Cordillera Administrative Region</option>
+									<option value="BARMM – Bangsamoro Autonomous Region in Muslim Mindanao">BARMM – Bangsamoro Autonomous Region in Muslim Mindanao</option>
 								</select>
 							</div>
 						</div>
@@ -143,7 +136,7 @@
 						<div class="form-row">
 							<div class="form-group">
 								<label for="clubregion">Province of Club</label>
-								<select name="clubregion" id="clubregion">
+								<select name="clubregion" id="clubregion" required>
 									<option value="Aurora">Aurora</option>
 									<option value="Bataan">Bataan</option>
 									<option value="Bulacan">Bulacan</option>
@@ -158,7 +151,7 @@
 						<div class="form-row">
 							<div class="form-group">
 								<label for="beltlevel">Current Belt Level</label>
-								<select name="beltlevel" id="beltlevel">
+								<select name="beltlevel" id="beltlevel" required>
 									<option value="White Belt">White Belt</option>
 									<option value="Low Yellow Belt">Low Yellow Belt</option>
 									<option value="High Yellow Belt">High Yellow Belt</option>
@@ -175,8 +168,7 @@
 						</div>
 
 						<div class="form-row button-group">
-							<button class="cancel-button" type="button"
-								onclick="window.location.href='membership';">Cancel</button>
+							<button class="cancel-button" type="button" onclick="window.location.href='membership';">Cancel</button>
 							<button class="next-button" type="button" onclick="showNextPage()">Next</button>
 						</div>
 					</div>
@@ -186,31 +178,30 @@
 						<div class="form-row">
 							<div class="form-group">
 								<label for="instructorfirstname">Instructor First Name</label>
-								<input type="text" id="instructorfirstname" name="instructorfirstname">
+								<input type="text" id="instructorfirstname" name="instructorfirstname" required>
 							</div>
 							<div class="form-group">
 								<label for="instructormi">Instructor M.I.</label>
-								<input type="text" id="instructormi" name="instructormi">
+								<input type="text" id="instructormi" name="instructormi" required>
 							</div>
 							<div class="form-group">
 								<label for="instructorlastname">Instructor Last Name</label>
-								<input type="text" id="instructorlastname" name="instructorlastname">
+								<input type="text" id="instructorlastname" name="instructorlastname" required>
 							</div>
 						</div>
 
 						<div class="form-row">
 							<div class="form-group">
 								<label for="instructormobile">Instructor Mobile Number</label>
-								<input type="tel" id="instructormobile" name="instructormobile"
-									pattern="\d{4}\d{3}\d{4}" placeholder="0912-345-6789">
+								<input type="tel" id="instructormobile" name="instructormobile" pattern="\d{4}\d{3}\d{4}" placeholder="0912-345-6789" required>
 							</div>
 							<div class="form-group">
 								<label for="instructoremail">Instructor E-mail</label>
-								<input type="email" id="instructoremail" name="instructoremail">
+								<input type="email" id="instructoremail" name="instructoremail" required>
 							</div>
 							<div class="form-group">
 								<label for="confemail">Verify E-mail</label>
-								<input type="email" id="confemail" name="confemail">
+								<input type="email" id="confemail" name="confemail" required>
 							</div>
 						</div>
 
@@ -225,45 +216,33 @@
 						<div class="form-row">
 							<div class="form-group">
 								<label for="birthcert">Birth Certificate NSO/PSA</label>
-								<input type="file" id="birthcert" name="birthcert">
+								<input type="file" id="birthcert" name="birthcert" required>
 							</div>
 							<div class="form-group">
 								<label for="portrait">1:1 Player Picture</label>
-								<input type="file" id="portrait" name="portrait">
+								<input type="file" id="portrait" name="portrait" required>
 							</div>
 							<div class="form-group">
 								<label for="signature">Sign Here</label>
-								<input type="text" id="signature" name="signature">
+								<input type="text" id="signature" name="signature" required>
 							</div>
 						</div>
 
 						<div class="form-row">
 							<div class="form-group">
-								<input type="checkbox" id="terms" name="terms">
+								<input type="checkbox" id="terms" name="terms" required>
 								<label for="terms">I AGREE TO THE TERMS OF SERVICE</label>
 								<p>Certification, Waiver and Release Form<br>
 									1. I hereby certify that the above information is true and correct.<br>
-									2. I acknowledge, fully understand and will abide by the rules and regulations of
-									PTA.<br>
-									3. I do hereby waive, release and discharge any and all liabilities from death,
-									injuries or
-									damages
-									arising from my own negligence, furthermore I or my family, will waive and release
-									any or all
-									rights,
-									claims for damages from the entire PTA body including the PTA Officers, PTA
-									competition officials,
-									PTA
-									instructors, or any department/facility of PTA like PTA Admin, PTA Competitions
-									Management Team or
-									Digital Team from any Taekwondo related issues.
+									2. I acknowledge, fully understand and will abide by the rules and regulations of PTA.<br>
+									3. I do hereby waive, release and discharge any and all liabilities from death, injuries or damages arising from my own negligence, furthermore I or my family, will waive and release any or all rights, claims for damages from the entire PTA body including the PTA Officers, PTA competition officials, PTA instructors, or any department/facility of PTA like PTA Admin, PTA Competitions Management Team or Digital Team from any Taekwondo related issues.
 								</p>
 							</div>
 						</div>
 
 						<div class="form-row">
 							<div class="form-group">
-								<input type="checkbox" id="waiver" name="waiver">
+								<input type="checkbox" id="waiver" name="waiver" required>
 								<label for="waiver">I AGREE TO THIS WAIVER AND RELEASE FORM</label>
 							</div>
 						</div>
@@ -289,23 +268,6 @@
 		}
 	</style>
 	<script>
-
-		/*function updateFormAction() {
-			const form = document.getElementById('nccform');
-			const apptype = document.getElementById('apptype').value;
-
-			switch (apptype) {
-				case 'new application':
-					form.action = '/submit-ncc';
-					break;
-				case 'renewal':
-					form.action = '/update-ncc';
-					break;
-				// Add more cases as needed
-				default:
-					form.action = '/submit-ncc';
-			}
-		}*/
 
 		function toggleDropdown() {
 			document.getElementById("dropdown").classList.toggle("show");
