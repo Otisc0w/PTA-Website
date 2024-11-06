@@ -146,21 +146,58 @@
     </div>
 
     <div class="clubtabs">
-      <ul>
-        <li><a href="#">Home</a></li>
-        <li><a href="#">Members</a></li>
-        {{#if (eq club.registeredby user.id)}}
-        <li><a href="#">Announcements</a></li>
-        <li><a href="#">Requests</a></li>
-        {{/if}}
-        <li><a href="#" id="activity-tab">Activity</a></li>
-      </ul>
-    </div>
+  <ul>
+    <li><a href="#">Home</a></li>
+    <li><a href="#">Members</a></li>
+    {{#if (eq club.registeredby user.id)}}
+    <li><a href="#">Announcements</a></li>
+    <li><a href="#">Requests</a></li>
+    {{/if}}
+    <li><a href="#" id="activity-tab">Activity</a></li>
+  </ul>
+</div>
 
-    <div class="events-list" id="activity-events-section" style="display: none;">
-      <h2>Club Events</h2>
-      <div id="events-content"></div>
+<!-- Activities Section (Updated IDs) -->
+<div class="activities-list" id="activity-activities-section" style="display: none;">
+  <h2>Club Activities</h2>
+  <div id="activities-content"></div>
+
+
+  <!-- Button to Open the Modal for Creating Activity -->
+  {{#if (eq club.registeredby user.id)}} 
+  <button type="button" onclick="openActivityModal()">+ Create New Activity</button>
+{{/if}}
+
+
+  <!-- Modal for Creating New Activity -->
+  <div id="activityModal" class="modal" style="display: none;">
+    <div class="modal-content">
+      <span class="close" onclick="closeActivityModal()">&times;</span>
+      <h3>Create New Activity</h3>
+      <form action="/create-activity" method="POST">
+        <input type="hidden" name="club_id" value="{{club.id}}">
+        <div>
+          <label for="name">Activity Name:</label>
+          <input type="text" name="name" required>
+        </div>
+        <div>
+          <label for="description">Description:</label>
+          <textarea name="description"></textarea>
+        </div>
+        <div>
+          <label for="date">Date:</label>
+          <input type="date" name="date" required>
+        </div>
+        <div>
+          <label for="time">Time:</label>
+          <input type="time" name="time" required>
+        </div>
+        <button type="submit">Create Activity</button>
+      </form>
     </div>
+  </div>
+</div>
+
 
     <br>
     <!-- Modal for Creating Announcements -->
@@ -448,72 +485,49 @@
         closeannounceModal();
       }
     }
-    document.addEventListener('DOMContentLoaded', function () {
-      const activityTab = document.getElementById('activity-tab');
-      const eventsSection = document.getElementById('activity-events-section');
-      const eventsContent = document.getElementById('events-content');
+  document.addEventListener('DOMContentLoaded', function () {
+  const activityTab = document.getElementById('activity-tab');
+  const activitiesSection = document.getElementById('activity-activities-section'); // Updated
+  const activitiesContent = document.getElementById('activities-content'); // Updated
 
-      // Get other tabs
-      const homeTab = document.querySelector('.clubtabs ul li:nth-child(1) a');
-      const membersTab = document.querySelector('.clubtabs ul li:nth-child(2) a');
-      const announcementsTab = document.querySelector('.clubtabs ul li:nth-child(3) a');
-      const requestsTab = document.querySelector('.clubtabs ul li:nth-child(4) a');
+  // Function to show the Activity section
+  async function showActivityEvents() {
+    try {
+      // Hide other sections (ensure these IDs/classes are correct)
+      document.querySelector('.leftside').style.display = 'none';
+      document.querySelector('.rightside').style.display = 'none';
+      document.querySelector('.participants-container').style.display = 'none';
+      document.getElementById('announcements-section').style.display = 'none';
+      document.querySelector('.clubrequests').style.display = 'none';
 
-      // Other sections
-      const leftside = document.querySelector('.leftside');
-      const rightside = document.querySelector('.rightside');
-      const participantsContainer = document.querySelector('.participants-container');
-      const announcementsSection = document.getElementById('announcements-section');
-      const clubRequests = document.querySelector('.clubrequests');
+      // Show the activities section
+      activitiesSection.style.display = 'block';
 
-      // Function to show the Activity Events section
-      async function showActivityEvents() {
-        // Hide other sections
-        leftside.style.display = 'none';
-        rightside.style.display = 'none';
-        participantsContainer.style.display = 'none';
-        announcementsSection.style.display = 'none';
-        clubRequests.style.display = 'none';
+      // Fetch activities data from backend
+      const response = await fetch(`/activities-data?club_id={{club.id}}`);
+      const activities = await response.json();
 
-        // Show the events section
-        eventsSection.style.display = 'block';
+      activitiesContent.innerHTML = ''; // Clear previous entries
 
-        // Fetch events from the backend
-        const response = await fetch('/events-data');
-        const events = await response.json();
-
-        eventsContent.innerHTML = ''; // Clear any previous events
-
-        // Loop through events and add each to the HTML
-        events.forEach(event => {
-          const eventDiv = document.createElement('div');
-          eventDiv.className = 'event-item';
-          eventDiv.innerHTML = `
-        <h3>${event.name}</h3>
-        <p>Date: ${event.date}</p>
-        <p>Location: ${event.location}</p>
-        <p>Description: ${event.description}</p>
-      `;
-          eventsContent.appendChild(eventDiv);
-        });
-      }
-
-      // Function to hide the Activity Events section
-      function hideActivityEvents() {
-        eventsSection.style.display = 'none';
-      }
-
-      // Event listener for the "Activity" tab
-      activityTab.addEventListener('click', function () {
-        showActivityEvents();
+      // Add each activity to the content div
+      activities.forEach(activity => {
+        const activityDiv = document.createElement('div');
+        activityDiv.className = 'activity-item';
+        activityDiv.innerHTML = `
+          <h3>${activity.name}</h3>
+          <p>Date: ${activity.date}</p>
+          <p>Description: ${activity.description}</p>
+        `;
+        activitiesContent.appendChild(activityDiv);
       });
+    } catch (error) {
+      console.error('Error displaying activities:', error);
+    }
+  }
 
-      // Event listeners for other tabs to hide the Activity section
-      homeTab.addEventListener('click', hideActivityEvents);
-      membersTab.addEventListener('click', hideActivityEvents);
-      announcementsTab.addEventListener('click', hideActivityEvents);
-      requestsTab.addEventListener('click', hideActivityEvents);
-    });
+  // Event listener for "Activity" tab
+  activityTab.addEventListener('click', showActivityEvents);
+});
 
     // Function to open and close the Invite Members modal
     function openInviteModal() {
@@ -550,6 +564,22 @@
         })
         .catch(error => console.error('Error:', error));
     }
+
+    function openActivityModal() {
+    document.getElementById("activityModal").style.display = "block";
+  }
+
+  function closeActivityModal() {
+    document.getElementById("activityModal").style.display = "none";
+  }
+
+  // Close the modal if the user clicks outside of it
+  window.onclick = function(event) {
+    const modal = document.getElementById("activityModal");
+    if (event.target == modal) {
+      modal.style.display = "none";
+    }
+  };
 
   </script>
 </body>
