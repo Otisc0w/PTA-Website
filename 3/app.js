@@ -1860,7 +1860,10 @@ app.post("/accept-join-club-request", async (req, res) => {
     // Update the club column in the users table
     const { error: updateUserError } = await supabase
       .from("users")
-      .update({ club: clubid })
+      .update({ 
+        club: clubname,
+        clubid: clubid 
+      })
       .eq("id", userid);
 
     if (updateUserError) {
@@ -1888,7 +1891,7 @@ app.post("/accept-join-club-request", async (req, res) => {
     // Update the session with the new club
     req.session.user.club = clubname;
 
-    res.redirect("/notifications");
+    res.redirect(`/clubs-details/${clubid}`);
   } catch (error) {
     console.error("Server error:", error.message);
     res.status(500).json({ error: error.message });
@@ -1986,7 +1989,10 @@ app.post("/accept-invitation/:id", async (req, res) => {
     // Update the club column in the users table
     const { error: updateUserError } = await supabase
       .from("users")
-      .update({ club: clubid })
+      .update({ 
+        club: clubname,
+        clubid: clubid,
+      })
       .eq("id", userid);
 
     if (updateUserError) {
@@ -3671,7 +3677,7 @@ app.get("/clubs-details/:id", async function (req, res) {
 
     const { data: users, error: usersError } = await supabase
       .from("users")
-      .select("id, firstname, lastname");
+      .select("*");
 
     if (usersError) {
       return res.status(400).json({ usersError: usersError.message });
@@ -3686,17 +3692,29 @@ app.get("/clubs-details/:id", async function (req, res) {
         lastname: user ? user.lastname : null,
       };
     });
-    
 
-    const clubMembers = athletes.filter(
-      (athlete) => athlete.club === club.clubname
-    );
+    const { data: clubMembers, error: clubMembersError } = await supabase
+      .from("users")
+      .select("*")
+      .eq("clubid", club.id);
+
+    if (clubMembersError) {
+      return res.status(400).json({ error: clubMembersError.message });
+    }
+
+    const clubMembersWithAthleteData = clubMembers.map((member) => {
+      const athlete = athletes.find((athlete) => athlete.userid === member.id);
+      return {
+      ...member,
+      athleteData: athlete || null,
+      };
+    });
 
     // Render the clubs-details.hbs template with the fetched data
-    res.render("clubs-details", {
+  res.render("clubs-details", {
       club,
       allUsers,
-      clubMembers,
+      clubMembersWithAthleteData,
       announcements,
       club_requests,
       clubRequestsWithUserDetails,

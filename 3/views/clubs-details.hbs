@@ -294,10 +294,10 @@
         </tr>
       </thead>
       <tbody>
-        {{#each clubMembers}}
+        {{#each clubMembersWithAthleteData}}
         <tr>
-          <th><img src="{{this.portrait}}"></th>
-          <td>{{this.name}}</td>
+          <td><img src="{{this.portrait}}" alt="Member Picture"></td>
+          <td>{{this.firstname}} {{this.lastname}}</td>
           <td>{{this.height}}</td>
           <td>{{this.weight}}</td>
         </tr>
