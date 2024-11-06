@@ -3728,6 +3728,15 @@ app.get("/clubs-details/:id", async function (req, res) {
       };
     });
 
+    const { data: clubactivities, error: clubactivitiesError } = await supabase
+      .from("club_activities")
+      .select("*")
+      .eq("clubid", id);
+
+    if (clubactivitiesError) {
+      return res.status(400).json({ clubactivitiesError: clubactivitiesError.message });
+    }
+
     // Render the clubs-details.hbs template with the fetched data
   res.render("clubs-details", {
       club,
@@ -3736,6 +3745,7 @@ app.get("/clubs-details/:id", async function (req, res) {
       announcements,
       club_requests,
       clubRequestsWithUserDetails,
+      clubactivities,
       user: req.session.user,
     });
   } catch (error) {
@@ -5012,8 +5022,8 @@ app.get("/clubs-details/:club_id", async (req, res) => {
 });
 
 /// Route to create a new activity
-app.post("/create-activity", async (req, res) => {
-  const { name, description, date, time, club_id } = req.body;
+app.post("/create-club-activity", async (req, res) => {
+  const { name, description, date, time, clubid } = req.body;
 
   // Check if the user is authenticated
   if (!req.session || !req.session.user) {
@@ -5021,10 +5031,10 @@ app.post("/create-activity", async (req, res) => {
     return res.status(403).send("User not authenticated");
   }
 
-  const created_by = req.session.user.id; // Get the user ID from the session
+  const createdby = req.session.user.id; // Get the user ID from the session
 
   // Check if club_id is provided
-  if (!club_id) {
+  if (!clubid) {
     console.error("Club ID is missing in the request");
     return res.status(400).send("Club ID is missing");
   }
@@ -5036,21 +5046,21 @@ app.post("/create-activity", async (req, res) => {
       description,
       date,
       time,
-      created_by,
-      club_id: parseInt(club_id)
+      createdby,
+      clubid
     });
 
     // Insert the new activity into the 'activities' table
     const { data, error } = await supabase
-      .from("activities")
+      .from("club_activities")
       .insert([
         {
           name,
           description,
           date,
           time,
-          created_by,
-          club_id: parseInt(club_id) // Ensure club_id is an integer
+          createdby,
+          clubid
         },
       ]);
 
@@ -5060,17 +5070,13 @@ app.post("/create-activity", async (req, res) => {
     }
 
     // Redirect back to the club details page after successful insertion
-    res.redirect(`/clubs-details/${club_id}`);
+    res.redirect(`/clubs-details/${clubid}`);
   } catch (error) {
     console.error("Server error while creating activity:", error.message);
     res.status(500).send("Server error while creating activity");
   }
 });
 
-
-
-
-// Route for RSVP to an activity
 app.post("/attend-activity", async (req, res) => {
   const { activityId } = req.body;
   const userId = req.session.user.id;
@@ -5085,34 +5091,6 @@ app.post("/attend-activity", async (req, res) => {
   } catch (error) {
       console.error("Error attending activity:", error.message);
       res.status(500).send("Error attending activity");
-  }
-});
-
-// Route to get activities for a specific club
-app.get("/activities-data", async (req, res) => {
-  let { club_id } = req.query;
-
-  // Check if club_id is defined and valid
-  if (!club_id) {
-    console.error("Error: club_id is missing in the query");
-    return res.status(400).send("Club ID is required");
-  }
-
-  // Convert club_id to integer if it's not already
-  club_id = parseInt(club_id, 10);
-
-  try {
-    const { data: activities, error } = await supabase
-      .from("activities")
-      .select("*")
-      .eq("club_id", club_id);
-
-    if (error) throw error;
-
-    res.json(activities);
-  } catch (error) {
-    console.error("Error fetching activities:", error.message);
-    res.status(500).send("Error fetching activities");
   }
 });
 
