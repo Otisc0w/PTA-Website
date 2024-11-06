@@ -1125,3 +1125,49 @@ h1 {
 #joinClubModal .modal-content form button[type="submit"]:hover {
   background-color: #0056b3;
 }
+
+.activity-card {
+  background-color: #2e2e2e;
+  border-radius: 10px;
+  padding: 20px;
+  margin: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  color: #fff;
+  width: 600px;
+}
+
+.activity-card h3 {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+.activity-card p {
+  font-size: 16px;
+  margin-bottom: 10px;
+}
+
+.activity-card .activity-date {
+  font-size: 14px;
+  color: #ccc;
+  margin-bottom: 10px;
+}
+
+.activity-card .activity-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.activity-card .activity-actions button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  margin-left: 10px;
+}
+
+.activity-card .activity-actions button:hover {
+  background-color: #0056b3;
+}
