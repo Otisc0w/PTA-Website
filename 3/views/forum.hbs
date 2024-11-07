@@ -46,6 +46,15 @@
       </ul>
     </div>
   </div>
+
+  <div class="forum-container1">
+    <div class="forum-title">
+        <h1>Taekwondo Community Forum</h1>
+        <p>Connect, Share, and Grow with Fellow Enthusiasts and Experts!</p>
+    </div>
+  </div>
+
+
   <div class="forum-container">
     <div class="topics-container">
       <h2 class="topicsh2">Topics</h2>
@@ -56,11 +65,12 @@
             {{#if this.followed}}
             <div class="followedtopic">
               {{#if ../user.isAdmin}}
-                <form action="/delete-topic/{{this.id}}" method="post" class="delete-form" style="display:inline;">
-                  <button class="deletetopic" type="submit" onclick="return confirm('Are you sure you want to delete this topic?');">
-                    <img src="/images/cross.png" alt="Delete" style="width: 20px; height: 20px;">
-                  </button>
-                </form>
+              <form action="/delete-topic/{{this.id}}" method="post" class="delete-form" style="display:inline;">
+                <button class="deletetopic" type="submit"
+                  onclick="return confirm('Are you sure you want to delete this topic?');">
+                  <img src="/images/cross.png" alt="Delete" style="width: 20px; height: 20px;">
+                </button>
+              </form>
               {{/if}}
               <form action="/unfollow-topic/{{this.id}}" method="post" class="unfollow-form">
                 <span class="topicname">#{{this.topic}}</span>
@@ -70,20 +80,21 @@
             {{else}}
             <div class="notfollowedtopic">
               {{#if ../user.isAdmin}}
-                <form action="/delete-topic/{{this.id}}" method="post" class="delete-form" style="display:inline;">
-                  <button class="deletetopic" type="submit" onclick="return confirm('Are you sure you want to delete this topic?');">
-                    <img src="/images/cross.png" alt="Delete" style="width: 20px; height: 20px;">
-                  </button>
-                </form>
+              <form action="/delete-topic/{{this.id}}" method="post" class="delete-form" style="display:inline;">
+                <button class="deletetopic" type="submit"
+                  onclick="return confirm('Are you sure you want to delete this topic?');">
+                  <img src="/images/cross.png" alt="Delete" style="width: 20px; height: 20px;">
+                </button>
+              </form>
               {{/if}}
               <form action="/follow-topic/{{this.id}}" method="post" class="follow-form">
                 <span class="topicname">#{{this.topic}}</span>
                 <button class="followbtn" type="submit">+</button>
               </form>
-              
+
             </div>
             {{/if}}
-             
+
           </li>
           {{/each}}
         </ul>
@@ -124,8 +135,8 @@
                 <button onclick="toggleDropdown(this)" class="dropbtn">...</button>
                 <div class="dropdown-content">
                   <a href="#">Pin</a>
-                    {{#if (eq originalposter ../user.username)}}
-                    <a href="#2" data-thread-id="{{id}}" onclick="openEditModal(event, '{{id}}')">Edit </a>
+                  {{#if (eq originalposter ../user.username)}}
+                  <a href="#2" data-thread-id="{{id}}" onclick="openEditModal(event, '{{id}}')">Edit </a>
                   {{/if}}
                 </div>
               </div>
@@ -191,7 +202,7 @@
       <form action="/forum/update-post" method="POST">
         <div class="form-group">
           <label for="edit-title">Title:</label>
-          <input type="hidden" name="threadId" >
+          <input type="hidden" name="threadId">
           <input type="text" id="title" name="title" value="" required>
         </div>
         <div class="form-group">
