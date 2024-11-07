@@ -78,7 +78,11 @@ a:hover {
 
 .forumdesc {
   font-size: 2em;
-  color: var(--text-color);
+  margin-top: 10px;
+  background-color:  #0066ff; 
+  color: white; 
+  padding: 10px;
+  border-radius: 5px;  
 }
 
 .membership-rightside {
