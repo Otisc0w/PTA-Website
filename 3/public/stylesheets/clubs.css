@@ -340,3 +340,23 @@ body {
     opacity: 1;
 }
 
+/* Custom scrollbar styles */
+.event ::-webkit-scrollbar {
+    width: 8px; /* Smaller width */
+    height: 8px; /* Smaller height for horizontal scrollbar */
+}
+
+.event ::-webkit-scrollbar-track {
+    background: #2E2E2E; /* Darker background for track */
+}
+
+.event ::-webkit-scrollbar-thumb {
+    background-color: #555; /* Darker thumb color */
+    border-radius: 10px; /* Rounded corners */
+    border: 2px solid #2E2E2E; /* Padding around thumb */
+}
+
+.event ::-webkit-scrollbar-thumb:hover {
+    background-color: #444; /* Darker on hover */
+}
+

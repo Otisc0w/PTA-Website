@@ -2835,27 +2835,27 @@ app.post("/decide-poomsae-winners/:eventid", async (req, res) => {
     }
 
     // Fetch the highest round number for the event
-    const { data: highestRound, error: highestRoundError } = await supabase
-      .from("poomsae_players")
-      .select("round")
-      .eq("eventid", eventid)
-      .order("round", { ascending: false })
-      .limit(1)
-      .single();
+    // const { data: highestRound, error: highestRoundError } = await supabase
+    //   .from("poomsae_players")
+    //   .select("round")
+    //   .eq("eventid", eventid)
+    //   .order("round", { ascending: false })
+    //   .limit(1)
+    //   .single();
 
-    if (highestRoundError) {
-      console.error("Error fetching highest round:", highestRoundError.message);
-      return res.status(500).send("Error fetching highest round");
-    }
+    // if (highestRoundError) {
+    //   console.error("Error fetching highest round:", highestRoundError.message);
+    //   return res.status(500).send("Error fetching highest round");
+    // }
 
-    const currentRound = highestRound ? highestRound.round : 0;
+    // const currentRound = highestRound ? highestRound.round : 0;
 
     // Fetch players who participated in the highest round
     const { data: players, error: playersError } = await supabase
       .from("poomsae_players")
       .select("*")
       .eq("eventid", eventid)
-      .eq("round", currentRound)
+      .eq("round", 2)
       .order("totalscore", { ascending: false });
 
     if (playersError) {
@@ -2866,6 +2866,7 @@ app.post("/decide-poomsae-winners/:eventid", async (req, res) => {
     // Update the ranking for all players in the last round
     for (let i = 0; i < players.length; i++) {
       const ranking = i < 4 ? i + 1 : 0; // Assign ranking 1-4, and 0 for others
+      players[i].ranking = ranking; // Ensure ranking is set on the player object
       const { error: updateError } = await supabase
       .from("poomsae_players")
       .update({ ranking })
@@ -2886,6 +2887,7 @@ app.post("/decide-poomsae-winners/:eventid", async (req, res) => {
             eventid,
             athleteid: player.athleteid,
             ranking: player.ranking,
+            poomsaefinalscore: player.totalscore,
             eventname: events.name,
             eventlocation: events.location,
           },
@@ -4098,71 +4100,6 @@ app.get("/events-details/:id", async function (req, res) {
       }
     }
 
-    // Determine the champion, 2nd place, and 3rd place
-    // let champion = null;
-    // let secondPlace = null;
-    // let thirdPlace = null;
-
-    // if (matches.length > 0) {
-    //   const finalMatch = matches.find((match) => match.matchtype === "final");
-    //   if (finalMatch && finalMatch.winner) {
-    //     const { data: finalWinner, error: finalWinnerError } = await supabase
-    //       .from("athletes")
-    //       .select("name, userid")
-    //       .eq("userid", finalMatch.winner)
-    //       .single();
-
-    //     if (finalWinnerError) {
-    //       return res
-    //         .status(400)
-    //         .json({ error: "Error fetching champion name." });
-    //     }
-
-    //     champion = finalWinner;
-
-    //     // Determine second place (loser of the final match)
-    //     const secondPlaceId =
-    //       finalMatch.winner === finalMatch.player1
-    //         ? finalMatch.player2
-    //         : finalMatch.player1;
-    //     const { data: secondPlaceAthlete, error: secondPlaceError } =
-    //       await supabase
-    //         .from("athletes")
-    //         .select("name, userid")
-    //         .eq("userid", secondPlaceId)
-    //         .single();
-
-    //     if (secondPlaceError) {
-    //       return res
-    //         .status(400)
-    //         .json({ error: "Error fetching second place name." });
-    //     }
-
-    //     secondPlace = secondPlaceAthlete;
-
-    //     // Determine third place (winner of the 3rd place match)
-    //     const thirdPlaceMatch = matches.find(
-    //       (match) => match.matchtype === "thirdPlace"
-    //     );
-    //     if (thirdPlaceMatch && thirdPlaceMatch.winner) {
-    //       const { data: thirdPlaceWinner, error: thirdPlaceWinnerError } =
-    //         await supabase
-    //           .from("athletes")
-    //           .select("name, userid")
-    //           .eq("userid", thirdPlaceMatch.winner)
-    //           .single();
-
-    //       if (thirdPlaceWinnerError) {
-    //         return res
-    //           .status(400)
-    //           .json({ error: "Error fetching third place name." });
-    //       }
-
-    //       thirdPlace = thirdPlaceWinner;
-    //     }
-    //   }
-    // }
-
     // Determine the champion, second place, and third place
     let champion = null;
     let secondPlace = null;
@@ -4324,13 +4261,13 @@ app.get("/events-details/:id", async function (req, res) {
       registrationcount,
       registrationcap: event.registrationcap, // Assuming the registration cap is stored in the event table
       user: req.session.user,
+      eventannouncements,
+      sortedGroupedByRound,
+      poomsaetop4,
       champion,
       secondPlace,
       thirdPlace1,
       thirdPlace2,
-      eventannouncements,
-      sortedGroupedByRound,
-      poomsaetop4,
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
