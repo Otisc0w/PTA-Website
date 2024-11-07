@@ -375,33 +375,37 @@
         <div class="eventregistercodediv">
           <div class="buttondiv">
             {{#unless champion}}
-            {{#if user.athleteverified}}
-            {{#unless (or currentregistrant (me registrationcount event.registrationcap))}}
-              {{#if (eq event.status 'Active')}}
-                <a href="/events-registration/{{event.id}}" class="register-button">Register</a>
-              {{else if (eq event.status 'Cancelled')}}
-                <h3>This event has been<br> CANCELLED</h3>
-              {{else if (eq event.status 'Concluded')}}
-                <h3>This event has been<br> COMPLETED</h3>
+              {{#if user.athleteverified}}
+                {{#unless (or currentregistrant (me registrationcount event.registrationcap))}}
+                  {{#if (eq event.status 'Active')}}
+                    <a href="/events-registration/{{event.id}}" class="register-button">Register</a>
+                  {{else if (eq event.status 'Cancelled')}}
+                    <h3>This event has been<br> CANCELLED</h3>
+                  {{else if (eq event.status 'Concluded')}}
+                    <h3>This event has been<br> COMPLETED</h3>
+                  {{else}}
+                    <h3>Registration Closed</h3>
+                  {{/if}}
+                {{else if currentregistrant.registered}}
+                <p>Your check-in code is:</p>
+                <h1 class="code">{{currentregistrant.id}}</h1>
+                {{else if currentregistrant}}
+                <p>Your check-in code is:</p>
+                <h1 class="pending">pending</h1>
+                {{else}}
+                <h1 class="pending">Registration Limit Reached</h1>
+                {{/unless}}
               {{else}}
-                <h3>Registration Closed</h3>
+              <a class="grayed-register-button">Not Registered</a>
               {{/if}}
-            {{else if currentregistrant.registered}}
-            <p>Your check-in code is:</p>
-            <h1 class="code">{{currentregistrant.id}}</h1>
-            {{else if currentregistrant}}
-            <p>Your check-in code is:</p>
-            <h1 class="pending">pending</h1>
-            {{else}}
-            <h1 class="pending">Registration Limit Reached</h1>
             {{/unless}}
-            {{else}}
-            <a class="grayed-register-button">Not Registered</a>
+            {{#if (eq event.status 'Concluded')}}
+              <h1 class="pending">This Competition has</h1>
+              <h1 class="pending"> Concluded</h1>
+            {{else if (eq event.status 'Ongoing')}}
+              <h1 class="pending">This Competition is</h1>
+              <h1 class="pending"> Ongoing</h1>
             {{/if}}
-            {{else}}
-            <h1 class="pending">This Competition has</h1>
-            <h1 class="pending"> Concluded</h1>
-            {{/unless}}
           </div>
         </div>
       </div>
@@ -530,9 +534,11 @@
 
       <div class="announcements" style="display:none;">
         <h2>Announcements</h2>
-        <div class="makeannouncement">
-          <button class="newannounce" onclick="openannounceModal()">+ Announce</button>
-        </div>
+        {{#if user.ptaverified}}
+          <div class="makeannouncement">
+            <button class="newannounce" onclick="openannounceModal()">+ Announce</button>
+          </div>
+        {{/if}}
         {{#reverseEach eventannouncements}}
         <div class="oneannouncement">
           <h2>{{title}}</h2>
