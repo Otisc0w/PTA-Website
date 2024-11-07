@@ -555,3 +555,35 @@
     background-color: #db2e5a;
 }
 
+.forum-container1 {
+    margin-top: 100px;
+    text-align: center;
+    height: auto;
+}
+
+.forum-title {
+    text-align: center;
+    padding: 15px;
+    background: #FFD700; /* Bright color to make it stand out */
+    color: #333333; /* Dark text for contrast */
+    border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1), 0 0 10px rgba(90, 103, 216, 0.5);
+    margin: 20px auto;
+    width: 95%;
+    max-width: 1200px;
+}
+
+.forum-title h1 {
+    font-size: 2.2em;
+    font-weight: bold;
+    margin: 0;
+    color: #333333; /* Consistent color with the forum title background */
+}
+
+.forum-title p {
+    font-size: 1em;
+    font-weight: normal;
+    margin-top: 5px;
+    color: #444444; /* Slightly lighter color for the tagline */
+    opacity: 1;
+}
