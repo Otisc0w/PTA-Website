@@ -21,12 +21,12 @@
         <li class="membership"><a href="/membership">Membership</a></li>
         <li class="forum"><a href="/forum">Forum</a></li>
         <li class="notifications">
-        <a href="/notifications">Notifications
-          {{#if notifications}}
-          <span class="badge">{{notifications.length}}</span>
-          {{/if}}
-        </a>
-      </li>
+          <a href="/notifications">Notifications
+            {{#if notifications}}
+            <span class="badge">{{notifications.length}}</span>
+            {{/if}}
+          </a>
+        </li>
         <li class="analytics"><a href="analytics">Analytics</a></li>
         <li class="profile-pic">
           {{#if user.profilepic}}
@@ -47,11 +47,19 @@
     </div>
   </div>
 
+  <div class="athlete-rankings-container">
+    <div class="athlete-rankings-title">
+        <h1>Athlete Rankings</h1>
+        <p>Unleash the Spirit of Competition and Track the Journey of Our Top Athletes!</p>
+    </div>
+</div>
+
+
   <div class="athletes-container">
     <div class="filter-panel">
       <div class="filter-group">
         <label for="belt-color">Belt Color</label>
-        
+
         <select id="belt-color">
           <option>All</option>
           <option value="White Belt">White Belt</option>
@@ -113,7 +121,7 @@
             {{#if ../user.isAdmin}}
             <td>
               <div class="dropdown-container">
-                
+
                 <div id="status-athlete" class="status-content">
                   <a href="#" onclick="updateStatus('{{id}}', 'Active')" class="status-click">Activate</a>
                   <a href="#" onclick="updateStatus('{{id}}', 'Banned')" class="status-click">Ban</a>
@@ -230,26 +238,26 @@
       }
     }
 
-function toggleStatusDropdown(dropdownId) {
-  // Close all other status dropdowns first
-  document.querySelectorAll(".status-dropdown-content").forEach(dropdown => {
-    if (dropdown.id !== dropdownId) {
-      dropdown.classList.remove("show");
-    }
-  });
+    function toggleStatusDropdown(dropdownId) {
+      // Close all other status dropdowns first
+      document.querySelectorAll(".status-dropdown-content").forEach(dropdown => {
+        if (dropdown.id !== dropdownId) {
+          dropdown.classList.remove("show");
+        }
+      });
 
-  // Toggle the specific status dropdown
-  const dropdown = document.getElementById(dropdownId);
-  dropdown.classList.toggle("show");
+      // Toggle the specific status dropdown
+      const dropdown = document.getElementById(dropdownId);
+      dropdown.classList.toggle("show");
 
-  // Close the dropdown when clicking outside
-  document.addEventListener("click", function closeStatusDropdown(event) {
-    if (!dropdown.contains(event.target)) {
-      dropdown.classList.remove("show");
-      document.removeEventListener("click", closeStatusDropdown);
+      // Close the dropdown when clicking outside
+      document.addEventListener("click", function closeStatusDropdown(event) {
+        if (!dropdown.contains(event.target)) {
+          dropdown.classList.remove("show");
+          document.removeEventListener("click", closeStatusDropdown);
+        }
+      });
     }
-  });
-}
 
 
     function showAthleteDetails(id, name, athleteClass, height, weight, birthplace, club, portrait, userid) {
@@ -283,36 +291,36 @@ function toggleStatusDropdown(dropdownId) {
     }
 
     // try
-function updateStatus(athleteId, newStatus) {
-  var statusCell = document.querySelector(`tr[data-athlete-id='${athleteId}'] .status`);
+    function updateStatus(athleteId, newStatus) {
+      var statusCell = document.querySelector(`tr[data-athlete-id='${athleteId}'] .status`);
 
-  // Update the status in the UI
-  statusCell.textContent = newStatus;
+      // Update the status in the UI
+      statusCell.textContent = newStatus;
 
-  // Send the new status to the server
-  fetch('/update-athlete-status', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      id: athleteId,
-      status: newStatus
-    })
-  })
-  .then(response => response.json())
-  .then(data => {
-    if (data.success) {
-      alert('Status updated successfully!');
-    } else {
-      alert('Failed to update status.');
+      // Send the new status to the server
+      fetch('/update-athlete-status', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          id: athleteId,
+          status: newStatus
+        })
+      })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            alert('Status updated successfully!');
+          } else {
+            alert('Failed to update status.');
+          }
+        })
+        .catch(error => {
+          console.error('Error updating status:', error);
+          alert('An error occurred while updating the status.');
+        });
     }
-  })
-  .catch(error => {
-    console.error('Error updating status:', error);
-    alert('An error occurred while updating the status.');
-  });
-}
 
 
 
