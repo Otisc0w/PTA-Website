@@ -185,7 +185,7 @@ body {
     align-items: center;
     padding: 20px;
     height: 100px;
-    margin-top: auto; 
+    margin-top: 0; 
 }
 
 .footer-content .pta-logo img {
@@ -386,6 +386,7 @@ body {
 
 .athlete-rankings-container {
     margin-top: 100px; 
+    height: auto; /* Adjusts height based on content */
 }
 
 .athlete-rankings-title {
