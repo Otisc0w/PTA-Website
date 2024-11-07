@@ -4,435 +4,139 @@
 
 /* ------------------ Base Styles ------------------ */
 
-html, body {
-    height: 100%;
+html,
+body {
     margin: 0;
     padding: 0;
 }
 
 body {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-    background-color: #2e2e2e;
-    color: #ffffff;
     font-family: 'SF Pro Display', Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #2C2C2C;
+    color: #FFFFFF;
 }
 
 /* ------------------ Analytics Container Layout ------------------ */
-
 .analytics-container {
     display: grid;
-    grid-template-columns: 2fr 1fr 1fr; /* Make the first column wider */
-    grid-template-rows: 320px 320px; /* Set each row height */
-    grid-template-areas: 
-        "summary top-performers upcoming-events"
-        "summary clubs member-engagement";
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 20px;
-    padding: 10px;
+    padding: 20px;
     margin-top: 20px;
-    max-width: 1200px;
-    width: 100%;
-    margin: 0 auto;
-    flex-grow: 1; /* Allows this container to expand and push footer down */
 }
 
-.summary-card {
-    grid-area: summary;
-    height: 95%;
-}
-
-.top-performers-card {
-    grid-area: top-performers;
-}
-
-.upcoming-events-card {
-    grid-area: upcoming-events;
-}
-
-.clubs-card {
-    grid-area: clubs;
-}
-
-.member-engagement-card {
-    grid-area: member-engagement;
-}
-
-/* ------------------ Card Styling ------------------ */
-
+/* ------------------ Card Styles ------------------ */
 .card {
-    background: #3c3c3c;
+    background-color: #333;
     border-radius: 8px;
     padding: 20px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
-    transition: transform 0.2s;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease;
 }
 
 .card:hover {
-    transform: scale(1.05);
-}
-.card ul {
-    max-height: 250px; /* Set maximum height for scrollable content */
-    overflow-y: auto; /* Enable vertical scrolling */
-    padding: 0;
-    margin: 0;
-    list-style: none;
+    transform: translateY(-5px);
 }
 
-/* Style for report list items */
-.card ul li {
+.card h2 {
+    font-size: 1.4em;
+    margin-bottom: 15px;
+    color: #f0f0f0;
+    border-bottom: 2px solid #f0f0f0;
+    padding-bottom: 5px;
+}
+
+.card ul,
+.card .performers,
+.card .awards-list {
+    list-style: none;
+    padding: 0;
+}
+
+.card li {
+    margin: 10px 0;
+}
+
+/* ------------------ Performer Card ------------------ */
+.performer-card {
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
-    padding: 8px;
-    margin-bottom: 5px;
-    background-color: #333;
-    border-radius: 3px;
-    color: #f1f1f1;
-    box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.2);
-}
-
-/* Remove padding-top for the first list item to eliminate additional spacing */
-.card ul li:first-child {
-    padding-top: 0;
-}
-
-/* Scrollbar customization */
-.card ul::-webkit-scrollbar {
-    width: 6px;
-}
-
-.card ul::-webkit-scrollbar-thumb {
-    background-color: #555;
-    border-radius: 5px;
-}
-
-/* Header Styling */
-.analytics-container .card .header {
-    font-size: 1.2em;
-    font-weight: bold;
+    align-items: center;
     text-align: center;
-    background-color: #333;
-    padding-bottom: 15px; /* Adds space within the header */
-    margin-bottom: 15px; /* Adds space between the header and the content */
+    padding: 15px;
+    background-color: #444;
+    border-radius: 8px;
+    margin-bottom: 15px;
 }
 
-/* ------------------ Report List Styling ------------------ */
-
-.analytics-container .card ul {
-    padding: 0;
-    margin: 0;
-    list-style: none;
-}
-
-.analytics-container .card ul li {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    padding: 8px;
-    margin-bottom: 10px; /* Add space between report items */
-    background-color: #333;
-    border-radius: 3px;
-    color: #f1f1f1;
-    box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.2);
-}
-
-/* Remove margin from the last item to avoid extra space at the bottom of the list */
-.analytics-container .card ul li:last-child {
-    margin-bottom: 0;
-    padding-top: 0;
-}
-
-.month-label {
-    font-weight: bold;
-    font-size: 1.2em; 
-    color: #f1f1f1;
-    margin-bottom: 15px; 
-}
-
-.report-title-item,
-.report-description,
-.report-date {
-    margin: 0;
-}
-
-.report-title-item {
-    font-weight: bold;
-    font-size: 1.1em;
-    margin-bottom: 4px;
-}
-
-.report-description {
-    font-size: 0.85em; /* Slightly smaller than the report title */
-    font-weight: normal; /* Ensure it's not bold */
-    color: #bbbbbb; /* Softer color for readability */
-    margin-top: 2px; /* Optional: Add a bit of space between title and description */
-    display: block;
-    line-height: 1.4; /* Improve readability with line spacing */
-    white-space: pre-line;
-}
-
-
-.report-date {
-    font-size: 0.85em;
-    color: #bbb;
-}
-
-#report-view-description {
-    white-space: pre-wrap; /* Preserves whitespace and line breaks */
-    font-size: 1em; /* Adjust font size as needed */
-    color: #f1f1f1;
-    margin-top: 10px;
-    line-height: 1.5; /* Adjust line height for better readability */
-}
-
-
-/* Scrollbar customization (optional) */
-.analytics-container .card ul::-webkit-scrollbar {
-    width: 6px;
-}
-
-.analytics-container .card ul::-webkit-scrollbar-thumb {
-    background-color: #555;
-    border-radius: 5px;
-}
-
-/* ------------------ Summary Card Specific Styling ------------------ */
-
-.summary-list {
+.performer-card img {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
     margin-bottom: 10px;
-    font-size: 16px;
 }
 
-.see-more-button {
-    background-color: #007BFF;
-    color: white;
-    padding: 10px;
+.performer-card h3 {
+    font-size: 1em;
+    color: #fff;
+}
+
+.performer-card p {
+    color: #aaa;
+    font-size: 0.9em;
+}
+
+.performer-card button {
+    margin-top: 10px;
+    padding: 8px 12px;
+    background-color: #5c6bc0;
     border: none;
     border-radius: 4px;
+    color: #fff;
     cursor: pointer;
-    margin-top: 15px;
-    align-self: center;
+    font-size: 0.9em;
+    transition: background-color 0.3s ease;
 }
 
-.see-more-button:hover {
-    background-color: #0056b3;
+.performer-card button:hover {
+    background-color: #3f51b5;
 }
 
-/* ------------------ Action Bar and Filter Panel ------------------ */
+/* ------------------ Administrative and Coaching Insights ------------------ */
+.admin-list,
+.coaching-list {
+    list-style: none;
+    padding: 0;
+}
 
-.action-bar {
+.admin-list li,
+.coaching-list li {
+    font-size: 0.9em;
+    color: #ccc;
+    margin-bottom: 10px;
+    padding: 8px;
+    background-color: #444;
+    border-radius: 4px;
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    padding: 20px 40px;
-    background-color: #3c3c3c;
-    border-radius: 8px;
-    margin-bottom: 20px;
 }
 
-.filter-panel {
-    display: flex;
-    gap: 20px; /* Add space between filter fields */
-    align-items: center;
-}
-
-.filter-group label {
-    font-weight: bold;
-    margin-bottom: 5px;
-}
-
-.filter-group select,
-.filter-group input {
-    padding: 8px;
-    border: 1px solid #333;
-    border-radius: 4px;
-    background-color: #2e2e2e;
-    color: #fff;
-    min-width: 150px;
-}
-
-.apply-btn {
-    background-color: #007BFF;
-    color: #fff;
-    padding: 8px 20px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-.apply-btn:hover {
-    background-color: #0056b3;
-}
-
-.create-report-button {
-    background-color: #007BFF;
-    color: white;
-    padding: 10px 20px;
-    font-size: 16px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    text-decoration: none;
-}
-
-.create-report-button:hover {
-    background-color: #0056b3;
-}
-
-.reset-btn {
-    background-color: #007BFF;
-    color: #fff;
-    padding: 8px 20px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    margin-left: 10px;
-}
-
-.reset-btn:hover {
-    background-color: #0056b3;
-}
-
-/* ------------------ Modal Styling ------------------ */
-
-/* Modal Background */
-.modal {
-    display: none; /* Hidden by default */
-    position: fixed;
-    z-index: 1000; /* Stay on top */
-    left: 0;
-    top: 0;
+.coaching-list button {
     width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
-    justify-content: center;
-    align-items: center;
-}
-
-/* Modal Content */
-.modal-content {
-    background-color: #3c3c3c;
-    color: #ffffff;
-    padding: 20px;
-    border-radius: 8px;
-    width: 80%;
-    max-width: 600px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
-}
-
-.modal-content h2 {
-    margin-top: 0;
-}
-
-#edit-button, #save-button {
-    background-color: #007BFF;
-    color: white;
     padding: 10px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 16px;
     margin-top: 10px;
-}
-
-#edit-button:hover, #save-button:hover {
-    background-color: #0056b3;
-}
-#viewReportModal .modal-content input[type="text"],
-#viewReportModal .modal-content textarea {
-    width: 100%;
-    padding: 8px;
-    border-radius: 4px;
-    border: 1px solid #ccc;
-    margin-top: 5px;
-}
-
-#viewReportModal .modal-content input[type="date"] {
-    padding: 8px;
-    border-radius: 4px;
-    border: 1px solid #ccc;
-}
-
-#viewReportModal .modal-content label {
-    font-weight: bold;
-    margin-right: 5px;
-}
-
-
-
-/* Close Button */
-.close-button {
-    color: #aaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-.close-button:hover,
-.close-button:focus {
-    color: #fff;
-    text-decoration: none;
-}
-
-/* Modal form styling */
-.report-form {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
-
-.form-group {
-    display: flex;
-    flex-direction: column;
-}
-
-.form-group label {
-    font-weight: bold;
-    margin-bottom: 5px;
-    color: #ccc; /* Optional: A slight color adjustment for better contrast */
-}
-
-.form-group input,
-.form-group textarea,
-.form-group select {
-    padding: 10px;
-    border: 1px solid #444;
-    border-radius: 4px;
-    background-color: #2e2e2e;
-    color: #ffffff;
-    font-size: 14px;
-}
-
-textarea {
-    resize: none;
-    height: 80px;
-}
-
-.submit-report-button {
-    background-color: #007BFF;
-    color: white;
-    padding: 10px;
+    background-color: #5c6bc0;
     border: none;
     border-radius: 4px;
+    color: #fff;
     cursor: pointer;
-    margin-top: 15px;
-    font-size: 16px;
-    text-align: center;
+    transition: background-color 0.3s ease;
 }
 
-.submit-report-button:hover {
-    background-color: #0056b3;
-}
-
-/* Date Range Styling */
-.date-range-container {
-    display: flex;
-    gap: 10px;
+.coaching-list button:hover {
+    background-color: #3f51b5;
 }
 
 /* ------------------ Footer Styling ------------------ */
@@ -445,11 +149,11 @@ textarea {
     align-items: center;
     padding: 20px;
     height: 100px;
-    margin-top: auto; 
+    margin-top: auto;
 }
 
 .footer-content .pta-logo img {
-    height: 100%; 
+    height: 100%;
 }
 
 .footer-content .contact-info {
@@ -483,35 +187,4 @@ textarea {
 
 .footer-content .social-media img {
     height: 30px;
-}
-
-/* ------------------ Additional Styles ------------------ */
-
-/* Style for report titles displayed under each summary item */
-.report-title {
-    font-weight: normal; /* Remove bold */
-    font-size: 0.9em; /* Make the title smaller than the month label */
-    color: #cccccc; /* Adjust color if needed */
-    display: block;
-    margin-top: 5px; /* Optional: Add space between titles if there are multiple reports */
-}
-
-.report-titles {
-    margin-top: 8px;
-    padding-left: 10px;
-    font-size: 0.9em;
-    color: #f1f1f1;
-}
-
-/* Style each report title item */
-.report-title-item {
-    margin-bottom: 4px;
-    font-weight: bold;
-}
-
-/* Style for the message when no reports are available */
-.no-reports-message {
-    color: #bbb;
-    font-style: italic;
-    margin-top: 4px;
 }

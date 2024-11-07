@@ -31,9 +31,9 @@ input, .button-padding {
 }
 
 .events-container {
-    margin-top: 60px;
+    /* margin-top: 5px;*/
     height: auto;
-    padding: 20px; /* Added padding */
+    padding: 10px; /* Added padding */
     flex: 1;
 }
 
@@ -326,41 +326,34 @@ input, .button-padding {
 }
 
 .events-container1 {
-    margin-top: 100px;
-    text-align: center;
+    margin-top: 100px; 
     height: auto;
 }
 
 .events-title1 {
     text-align: center;
     padding: 15px;
-    background: #FFD700;
-    color: #3a3a3a;
+    background: #3a3a3a;
+    color: #FFFFFF;
     border-radius: 10px;
     background-size: 200% 200%;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1), 0 0 10px rgba(90, 103, 216, 0.5);
     min-height: 60px;
     position: relative;
     z-index: 10;
-    margin: 0 auto;
+    margin: 0 auto; 
     width: 95%;
     max-width: 1200px;
 }
 
 .events-title1 h1 {
-    font-size: 2.2em;
+    font-size: 3em;
     font-weight: bold;
     margin: 0;
 }
 
 .events-title1 p {
-    font-size: 1em;
+    font-size: 1.2em;
     font-weight: normal;
     margin-top: 5px;
     opacity: 1;
-}
-
-.events-title1:hover {
-    transform: scale(1.01);
-    transition: transform 0.3s ease;
 }

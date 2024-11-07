@@ -4844,7 +4844,9 @@ app.get('/athletes', (req, res) => {
 });
 
 app.get('/analytics', async (req, res) => {
-
+  res.render('analytics', { user: req.session.user });
+});
+/*
   try {
     const { data: athleteresults, error } = await supabase
       .from('athletes')
@@ -4863,7 +4865,8 @@ app.get('/analytics', async (req, res) => {
     res.status(500).json({ error: error.message });
   }
   res.render('analytics', { user: req.session.user });
-});
+  */
+
 
 
 app.listen(port, () => {
