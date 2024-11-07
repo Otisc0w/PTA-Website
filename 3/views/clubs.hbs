@@ -30,9 +30,11 @@
         <li class="analytics"><a href="analytics">Analytics</a></li>
         <li class="profile-pic">
           {{#if user.profilepic}}
-          <a href="#" onclick="toggleDropdown()"><img src="{{user.profilepic}}" alt="Profile Picture" class="profile-picture"></a>
+          <a href="#" onclick="toggleDropdown()"><img src="{{user.profilepic}}" alt="Profile Picture"
+              class="profile-picture"></a>
           {{else}}
-          <a href="#" onclick="toggleDropdown()" class="profile-picture"><img src="/images/none.jpg" alt="Profile Picture" class="profile-picture"></a>
+          <a href="#" onclick="toggleDropdown()" class="profile-picture"><img src="/images/none.jpg"
+              alt="Profile Picture" class="profile-picture"></a>
           {{/if}}
           <div id="dropdown" class="dropdown-content">
             <a href="profile">Profile</a>
@@ -45,35 +47,43 @@
     </div>
   </div>
 
+  <div class="clubs-container">
+    <div class="clubs-title">
+      <h1>Clubs</h1>
+      <p>Explore a World of Discipline and Camaraderie. Discover the Right Taekwondo Club for You!</p>
+    </div>
+  </div>
+
+
   <div class="home-container">
-  <div class="club-name">
-    <div class="upcoming-events">
-      <h2 class="clubs-title">Clubs</h2>
-      <div id="events" class="horizontal-container">
-        {{#each clubs}}
-        <div class="event">
-          <img src="{{clubpic}}" alt="{{clubname}}" class="club-image"> <!-- Display club picture -->
-          <h3>{{clubname}} - {{province}}</h3>
-          <div class="description">
-            <p><i class="fas fa-info-circle"></i> {{description}}</p>
+    <div class="club-name">
+      <div class="upcoming-events">
+
+        <div id="events" class="horizontal-container">
+          {{#each clubs}}
+          <div class="event">
+            <img src="{{clubpic}}" alt="{{clubname}}" class="club-image"> <!-- Display club picture -->
+            <h3>{{clubname}} - {{province}}</h3>
+            <div class="description">
+              <p><i class="fas fa-info-circle"></i> {{description}}</p>
+            </div>
+            <div class="contact-info">
+              <p><i class="fas fa-user"></i> {{registeree}}</p> <!-- Coach/Registeree -->
+              <p><i class="fas fa-users"></i>{{capacity}}</p> <!-- Club capacity -->
+              <p><i class="fas fa-map-marker-alt"></i> {{clubaddress}}</p> <!-- Club address -->
+              <p><i class="fas fa-envelope"></i> {{email}}</p> <!-- Contact email -->
+              <p><i class="fas fa-phone"></i> {{phonenum}}</p> <!-- Contact phone number -->
+            </div>
+            <div class="region">
+              <p><i class="fas fa-globe"></i>{{region}}</p>
+            </div>
+            <a href="/clubs-details/{{id}}">Read more</a>
           </div>
-          <div class="contact-info">
-            <p><i class="fas fa-user"></i> {{registeree}}</p> <!-- Coach/Registeree -->
-            <p><i class="fas fa-users"></i>{{capacity}}</p> <!-- Club capacity -->
-            <p><i class="fas fa-map-marker-alt"></i> {{clubaddress}}</p> <!-- Club address -->
-            <p><i class="fas fa-envelope"></i> {{email}}</p> <!-- Contact email -->
-            <p><i class="fas fa-phone"></i> {{phonenum}}</p> <!-- Contact phone number -->
-          </div>
-          <div class="region">
-            <p><i class="fas fa-globe"></i>{{region}}</p>
-          </div>
-          <a href="/clubs-details/{{id}}">Read more</a>
+          {{/each}}
         </div>
-        {{/each}}
       </div>
     </div>
   </div>
-</div>
 
   <footer>
     <div class="footer-content">
@@ -102,7 +112,7 @@
       document.getElementById("dropdown").classList.toggle("show");
     }
 
-    window.onclick = function(event) {
+    window.onclick = function (event) {
       if (!event.target.matches('.profile-pic img')) {
         var dropdowns = document.getElementsByClassName("dropdown-content");
         for (var i = 0; i < dropdowns.length; i++) {
