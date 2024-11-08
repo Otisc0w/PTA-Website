@@ -56,14 +56,6 @@
           <div class="ins-page ins-page1">
 
             <div class="form-row">
-              <input type="radio" id="apptype1" name="apptype" value="new application">
-              <label for="apptype1"><h3>New Application</h3></label>
-              
-              <input type="radio" id="apptype2" name="apptype" value="renewal">
-              <label for="apptype2"><h3>Renewal</h3></label>
-            </div><br>
-
-            <div class="form-row">
               <div class="form-group">
                 <label for="firstname">First Name</label>
                 <input type="text" id="firstname" name="firstname" value="{{user.firstname}}">
@@ -107,7 +99,7 @@
               </div>
             </div>
 
-            <div class="form-row">
+            {{!-- <div class="form-row">
               <div class="form-group">
                 <label for="clubregion">Region of Club</label>
                 <select name="clubregion" id="clubregion">
@@ -130,7 +122,7 @@
                   <option value="BARMM – Bangsamoro Autonomous Region in Muslim Mindanao">BARMM – Bangsamoro Autonomous Region in Muslim Mindanao</option>
                 </select>
               </div>
-            </div>
+            </div> --}}
 
             <div class="form-row button-group">
               <button class="cancel-button" type="button" onclick="window.location.href='membership';">Cancel</button>

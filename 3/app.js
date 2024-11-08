@@ -497,16 +497,197 @@ app.post("/submit-ncc", upload.fields([
 );
 
 app.post("/submit-instructor", upload.fields([
-    { name: "birthcert", maxCount: 1 },
-    { name: "portrait", maxCount: 1 },
-    { name: "educproof", maxCount: 1 },
-    { name: "poomsaecert", maxCount: 1 },
-    { name: "kukkiwoncert", maxCount: 1 },
-    { name: "ptablackbeltcert", maxCount: 1 },
+  { name: "birthcert", maxCount: 1 },
+  { name: "portrait", maxCount: 1 },
+  { name: "educproof", maxCount: 1 },
+  { name: "poomsaecert", maxCount: 1 },
+  { name: "kukkiwoncert", maxCount: 1 },
+  { name: "ptablackbeltcert", maxCount: 1 },
   ]),
   async (req, res) => {
-    const {
-     
+  const {
+    firstname,
+    middlename,
+    lastname,
+    gender,
+    bday,
+    phonenum,
+    email,
+    clubregion,
+  } = req.body; // Capture user input from the form
+
+  if (!req.session.user) {
+    return res.status(401).send("Unauthorized: No user logged in");
+  }
+
+  const submittedby = req.session.user.id; // Get the current user's username from the session
+  const status = 1;
+
+  let birthcertUrl = null;
+  let portraitUrl = null;
+  let educproofUrl = null;
+  let poomsaecertUrl = null;
+  let kukkiwoncertUrl = null;
+  let ptablackbeltcertUrl = null;
+
+  if (req.files) {
+    try {
+    if (req.files.birthcert) {
+      const birthcertPath = `documents/${Date.now()}-${
+      req.files.birthcert[0].originalname
+      }`;
+      const { error: birthcertUploadError } = await supabase.storage
+      .from("documents")
+      .upload(birthcertPath, req.files.birthcert[0].buffer, {
+        contentType: req.files.birthcert[0].mimetype,
+      });
+
+      if (birthcertUploadError) {
+      console.error(
+        "Error uploading birth certificate:",
+        birthcertUploadError.message
+      );
+      return res.status(500).send("Error uploading birth certificate");
+      }
+
+      birthcertUrl = `${supabaseUrl}/storage/v1/object/public/documents/${birthcertPath}`;
+    }
+
+    if (req.files.portrait) {
+      const portraitPath = `documents/${Date.now()}-${
+      req.files.portrait[0].originalname
+      }`;
+      const { error: portraitUploadError } = await supabase.storage
+      .from("documents")
+      .upload(portraitPath, req.files.portrait[0].buffer, {
+        contentType: req.files.portrait[0].mimetype,
+      });
+
+      if (portraitUploadError) {
+      console.error(
+        "Error uploading portrait:",
+        portraitUploadError.message
+      );
+      return res.status(500).send("Error uploading portrait");
+      }
+
+      portraitUrl = `${supabaseUrl}/storage/v1/object/public/documents/${portraitPath}`;
+    }
+
+    if (req.files.educproof) {
+      const educproofPath = `documents/${Date.now()}-${
+      req.files.educproof[0].originalname
+      }`;
+      const { error: educproofUploadError } = await supabase.storage
+      .from("documents")
+      .upload(educproofPath, req.files.educproof[0].buffer, {
+        contentType: req.files.educproof[0].mimetype,
+      });
+
+      if (educproofUploadError) {
+      console.error(
+        "Error uploading educproof:",
+        educproofUploadError.message
+      );
+      return res.status(500).send("Error uploading educproof");
+      }
+
+      educproofUrl = `${supabaseUrl}/storage/v1/object/public/documents/${educproofPath}`;
+    }
+
+    if (req.files.poomsaecert) {
+      const poomsaecertPath = `documents/${Date.now()}-${
+      req.files.poomsaecert[0].originalname
+      }`;
+      const { error: poomsaecertUploadError } = await supabase.storage
+      .from("documents")
+      .upload(poomsaecertPath, req.files.poomsaecert[0].buffer, {
+        contentType: req.files.poomsaecert[0].mimetype,
+      });
+
+      if (poomsaecertUploadError) {
+      console.error(
+        "Error uploading poomsaecert:",
+        poomsaecertUploadError.message
+      );
+      return res.status(500).send("Error uploading poomsaecert");
+      }
+
+      poomsaecertUrl = `${supabaseUrl}/storage/v1/object/public/documents/${poomsaecertPath}`;
+    }
+
+    if (req.files.kukkiwoncert) {
+      const kukkiwoncertPath = `documents/${Date.now()}-${
+      req.files.kukkiwoncert[0].originalname
+      }`;
+      const { error: kukkiwoncertUploadError } = await supabase.storage
+      .from("documents")
+      .upload(kukkiwoncertPath, req.files.kukkiwoncert[0].buffer, {
+        contentType: req.files.kukkiwoncert[0].mimetype,
+      });
+
+      if (kukkiwoncertUploadError) {
+      console.error(
+        "Error uploading kukkiwoncert:",
+        kukkiwoncertUploadError.message
+      );
+      return res.status(500).send("Error uploading kukkiwoncert");
+      }
+
+      kukkiwoncertUrl = `${supabaseUrl}/storage/v1/object/public/documents/${kukkiwoncertPath}`;
+    }
+
+    if (req.files.ptablackbeltcert) {
+      const ptablackbeltcertPath = `documents/${Date.now()}-${
+      req.files.ptablackbeltcert[0].originalname
+      }`;
+      const { error: ptablackbeltcertUploadError } = await supabase.storage
+      .from("documents")
+      .upload(
+        ptablackbeltcertPath,
+        req.files.ptablackbeltcert[0].buffer,
+        {
+        contentType: req.files.ptablackbeltcert[0].mimetype,
+        }
+      );
+
+      if (ptablackbeltcertUploadError) {
+      console.error(
+        "Error uploading ptablackbeltcert:",
+        ptablackbeltcertUploadError.message
+      );
+      return res.status(500).send("Error uploading ptablackbeltcert");
+      }
+
+      ptablackbeltcertUrl = `${supabaseUrl}/storage/v1/object/public/documents/${ptablackbeltcertPath}`;
+    }
+    } catch (error) {
+    console.error("Server error during file upload:", error.message);
+    return res.status(500).json({ error: error.message });
+    }
+  }
+
+  try {
+    // Check if a row with the same submittedby already exists
+    const { data: existingRegistration, error: existingRegistrationError } = await supabase
+    .from("instructor_registrations")
+    .select("*")
+    .eq("submittedby", submittedby)
+    .single();
+
+    if (existingRegistrationError && existingRegistrationError.code !== 'PGRST116') {
+    console.error("Error checking existing registration:", existingRegistrationError.message);
+    return res.status(500).render("membership", {
+      error: "Error checking existing registration.",
+      users: [], // Optionally pass users array if you need it in the view
+    });
+    }
+
+    if (existingRegistration) {
+    // Update the existing registration
+    const { data, error } = await supabase
+      .from("instructor_registrations")
+      .update({
       firstname,
       middlename,
       lastname,
@@ -515,246 +696,62 @@ app.post("/submit-instructor", upload.fields([
       phonenum,
       email,
       clubregion,
-    } = req.body; // Capture user input from the form
+      status,
+      birthcert: birthcertUrl, // Include the birth certificate URL
+      portrait: portraitUrl, // Include the portrait URL
+      educproof: educproofUrl,
+      poomsaecert: poomsaecertUrl,
+      kukkiwoncert: kukkiwoncertUrl,
+      ptablackbeltcert: ptablackbeltcertUrl,
+      })
+      .eq("submittedby", submittedby);
 
-    if (!req.session.user) {
-      return res.status(401).send("Unauthorized: No user logged in");
+    if (error) {
+      console.error("Error updating registration:", error.message);
+      return res.status(500).render("membership", {
+      error: "Error updating registration.",
+      users: [], // Optionally pass users array if you need it in the view
+      });
+    }
+    } else {
+    // Insert a new registration
+    const { data, error } = await supabase
+      .from("instructor_registrations")
+      .insert([
+      {
+        firstname,
+        middlename,
+        lastname,
+        gender,
+        bday,
+        phonenum,
+        email,
+        clubregion,
+        status,
+        submittedby,
+        birthcert: birthcertUrl, // Include the birth certificate URL
+        portrait: portraitUrl, // Include the portrait URL
+        educproof: educproofUrl,
+        poomsaecert: poomsaecertUrl,
+        kukkiwoncert: kukkiwoncertUrl,
+        ptablackbeltcert: ptablackbeltcertUrl,
+      },
+      ]);
+
+    if (error) {
+      console.error("Error creating registration:", error.message);
+      return res.status(500).render("membership", {
+      error: "Error creating registration.",
+      users: [], // Optionally pass users array if you need it in the view
+      });
+    }
     }
 
-    const submittedby = req.session.user.id; // Get the current user's username from the session
-    const status = 1;
-
-    let birthcertUrl = null;
-    let portraitUrl = null;
-    let educproofUrl = null;
-    let poomsaecertUrl = null;
-    let kukkiwoncertUrl = null;
-    let ptablackbeltcertUrl = null;
-
-    if (req.files) {
-      try {
-        if (req.files.birthcert) {
-          const birthcertPath = `documents/${Date.now()}-${
-            req.files.birthcert[0].originalname
-          }`;
-          const { error: birthcertUploadError } = await supabase.storage
-            .from("documents")
-            .upload(birthcertPath, req.files.birthcert[0].buffer, {
-              contentType: req.files.birthcert[0].mimetype,
-            });
-
-          if (birthcertUploadError) {
-            console.error(
-              "Error uploading birth certificate:",
-              birthcertUploadError.message
-            );
-            return res.status(500).send("Error uploading birth certificate");
-          }
-
-          birthcertUrl = `${supabaseUrl}/storage/v1/object/public/documents/${birthcertPath}`;
-        }
-
-        if (req.files.portrait) {
-          const portraitPath = `documents/${Date.now()}-${
-            req.files.portrait[0].originalname
-          }`;
-          const { error: portraitUploadError } = await supabase.storage
-            .from("documents")
-            .upload(portraitPath, req.files.portrait[0].buffer, {
-              contentType: req.files.portrait[0].mimetype,
-            });
-
-          if (portraitUploadError) {
-            console.error(
-              "Error uploading portrait:",
-              portraitUploadError.message
-            );
-            return res.status(500).send("Error uploading portrait");
-          }
-
-          portraitUrl = `${supabaseUrl}/storage/v1/object/public/documents/${portraitPath}`;
-        }
-
-        if (req.files.educproof) {
-          const educproofPath = `documents/${Date.now()}-${
-            req.files.educproof[0].originalname
-          }`;
-          const { error: educproofUploadError } = await supabase.storage
-            .from("documents")
-            .upload(educproofPath, req.files.educproof[0].buffer, {
-              contentType: req.files.educproof[0].mimetype,
-            });
-
-          if (educproofUploadError) {
-            console.error(
-              "Error uploading educproof:",
-              educproofUploadError.message
-            );
-            return res.status(500).send("Error uploading educproof");
-          }
-
-          educproofUrl = `${supabaseUrl}/storage/v1/object/public/documents/${educproofPath}`;
-        }
-
-        if (req.files.poomsaecert) {
-          const poomsaecertPath = `documents/${Date.now()}-${
-            req.files.poomsaecert[0].originalname
-          }`;
-          const { error: poomsaecertUploadError } = await supabase.storage
-            .from("documents")
-            .upload(poomsaecertPath, req.files.poomsaecert[0].buffer, {
-              contentType: req.files.poomsaecert[0].mimetype,
-            });
-
-          if (poomsaecertUploadError) {
-            console.error(
-              "Error uploading poomsaecert:",
-              poomsaecertUploadError.message
-            );
-            return res.status(500).send("Error uploading poomsaecert");
-          }
-
-          poomsaecertUrl = `${supabaseUrl}/storage/v1/object/public/documents/${poomsaecertPath}`;
-        }
-
-        if (req.files.kukkiwoncert) {
-          const kukkiwoncertPath = `documents/${Date.now()}-${
-            req.files.kukkiwoncert[0].originalname
-          }`;
-          const { error: kukkiwoncertUploadError } = await supabase.storage
-            .from("documents")
-            .upload(kukkiwoncertPath, req.files.kukkiwoncert[0].buffer, {
-              contentType: req.files.kukkiwoncert[0].mimetype,
-            });
-
-          if (kukkiwoncertUploadError) {
-            console.error(
-              "Error uploading kukkiwoncert:",
-              kukkiwoncertUploadError.message
-            );
-            return res.status(500).send("Error uploading kukkiwoncert");
-          }
-
-          kukkiwoncertUrl = `${supabaseUrl}/storage/v1/object/public/documents/${kukkiwoncertPath}`;
-        }
-
-        if (req.files.ptablackbeltcert) {
-          const ptablackbeltcertPath = `documents/${Date.now()}-${
-            req.files.ptablackbeltcert[0].originalname
-          }`;
-          const { error: ptablackbeltcertUploadError } = await supabase.storage
-            .from("documents")
-            .upload(
-              ptablackbeltcertPath,
-              req.files.ptablackbeltcert[0].buffer,
-              {
-                contentType: req.files.ptablackbeltcert[0].mimetype,
-              }
-            );
-
-          if (ptablackbeltcertUploadError) {
-            console.error(
-              "Error uploading ptablackbeltcert:",
-              ptablackbeltcertUploadError.message
-            );
-            return res.status(500).send("Error uploading ptablackbeltcert");
-          }
-
-          ptablackbeltcertUrl = `${supabaseUrl}/storage/v1/object/public/documents/${ptablackbeltcertPath}`;
-        }
-      } catch (error) {
-        console.error("Server error during file upload:", error.message);
-        return res.status(500).json({ error: error.message });
-      }
-    }
-
-    try {
-      // Check if a row with the same submittedby already exists
-      const { data: existingRegistration, error: existingRegistrationError } = await supabase
-        .from("instructor_registrations")
-        .select("*")
-        .eq("submittedby", submittedby)
-        .single();
-
-      if (existingRegistrationError && existingRegistrationError.code !== 'PGRST116') {
-        console.error("Error checking existing registration:", existingRegistrationError.message);
-        return res.status(500).render("membership", {
-          error: "Error checking existing registration.",
-          users: [], // Optionally pass users array if you need it in the view
-        });
-      }
-
-      if (existingRegistration) {
-        // Update the existing registration
-        const { data, error } = await supabase
-          .from("instructor_registrations")
-          .update({
-           
-            firstname,
-            middlename,
-            lastname,
-            gender,
-            bday,
-            phonenum,
-            email,
-            clubregion,
-            status,
-            birthcert: birthcertUrl, // Include the birth certificate URL
-            portrait: portraitUrl, // Include the portrait URL
-            educproof: educproofUrl,
-            poomsaecert: poomsaecertUrl,
-            kukkiwoncert: kukkiwoncertUrl,
-            ptablackbeltcert: ptablackbeltcertUrl,
-          })
-          .eq("submittedby", submittedby);
-
-        if (error) {
-          console.error("Error updating registration:", error.message);
-          return res.status(500).render("membership", {
-            error: "Error updating registration.",
-            users: [], // Optionally pass users array if you need it in the view
-          });
-        }
-      } else {
-        // Insert a new registration
-        const { data, error } = await supabase
-          .from("instructor_registrations")
-          .insert([
-            {
-             
-              firstname,
-              middlename,
-              lastname,
-              gender,
-              bday,
-              phonenum,
-              email,
-              clubregion,
-              status,
-              submittedby,
-              birthcert: birthcertUrl, // Include the birth certificate URL
-              portrait: portraitUrl, // Include the portrait URL
-              educproof: educproofUrl,
-              poomsaecert: poomsaecertUrl,
-              kukkiwoncert: kukkiwoncertUrl,
-              ptablackbeltcert: ptablackbeltcertUrl,
-            },
-          ]);
-
-        if (error) {
-          console.error("Error creating registration:", error.message);
-          return res.status(500).render("membership", {
-            error: "Error creating registration.",
-            users: [], // Optionally pass users array if you need it in the view
-          });
-        }
-      }
-
-      res.redirect("/membership");
-    } catch (error) {
-      console.error("Server error:", error.message);
-      res.status(500).json({ error: error.message });
-    }
+    res.redirect("/membership");
+  } catch (error) {
+    console.error("Server error:", error.message);
+    res.status(500).json({ error: error.message });
+  }
   }
 );
 
@@ -4352,12 +4349,31 @@ app.get("/athletes", async function (req, res) {
     .eq("id", userId)
     .single();
 
-  if (userError) {
-    return res.status(400).json({ error: userError.message });
-  }
+    if (userError) {
+      return res.status(400).json({ error: userError.message });
+    }
 
-  // Determine if the user is an admin based on ptaverified
-  const isAdmin = userData.ptaverified === true;
+    
+    // Fetch match history count for each athlete
+    // const athleteIds = athletes.map((athlete) => athlete.id);
+    // const { data: matchHistoryCounts, error: matchHistoryCountsError } = await supabase
+    //   .from("match_history")
+    //   .select("athleteid, count(*)")
+    //   .in("athleteid", athleteIds)
+    //   .group("athleteid");
+
+    // if (matchHistoryCountsError) {
+    //   return res.status(400).json({ error: matchHistoryCountsError.message });
+    // }
+
+    // // Map match history count to each athlete
+    // athletes.forEach((athlete) => {
+    //   const matchHistoryCount = matchHistoryCounts.find((count) => count.athleteid === athlete.id);
+    //   athlete.matchHistoryCount = matchHistoryCount ? matchHistoryCount.count : 0;
+    // });
+
+    // Determine if the user is an admin based on ptaverified
+    const isAdmin = userData.ptaverified === true;
 
     // Merge the club information with the athletes data
     athletes.forEach((athlete) => {
@@ -4369,7 +4385,11 @@ app.get("/athletes", async function (req, res) {
     console.log("Fetched clubs data:", clubs); // Log the clubs data to the console
 
     // Render the athletes.hbs template with the fetched data
-    res.render("athletes", { athletes, clubs, user: { ...req.session.user, isAdmin }, });
+    res.render("athletes", { 
+      athletes, 
+      clubs, 
+      user: { ...req.session.user, isAdmin },
+     });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
