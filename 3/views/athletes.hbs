@@ -107,52 +107,46 @@
     </div>
 
 
-    <!----
-    <div class="rank-panel">
-      <h3>Athlete Rankings</h3>
-      <p>{{user.username}}</p>
-      -->
-      <table class="rankings">
-        <thead>
-          <tr>
-            <th>Rank</th>
-            <th>Name</th>
-            <th>Club</th>
-            <th>Belt Level</th>
-            <th>Games Played</th>
-            <th>Status</th>
-            {{#if user.isAdmin}}
-            <th>Actions</th>
-            {{/if}}
-          </tr>
-        </thead>
-        <tbody id="athletes-tbody">
-          {{#each athletes}}
-          <tr data-athlete-id="{{id}}"
-            onclick="showAthleteDetails('{{id}}', '{{name}}', '{{athleteClass}}', '{{height}}', '{{weight}}', '{{birthplace}}', '{{club}}', '{{portrait}}', '{{userid}}')">
-            <td>{{@index}}</td>
-            <td>{{name}}</td>
-            <td>{{club}}</td>
-            <td>{{beltlevel}}</td>
-            <td>{{rankingpoints}}</td>
-            <td>{{matchHistory.length}}</td>
-            <td class="status">{{status}}</td>
-            {{#if ../user.isAdmin}}
-            <td>
-              <div class="dropdown-container">
+    <table class="rankings">
+      <thead>
+        <tr>
+          <th>Rank</th>
+          <th>Name</th>
+          <th>Club</th>
+          <th>Belt Level</th>
+          <th>Games Played</th>
+          <th>Status</th>
+          {{#if user.isAdmin}}
+          <th>Actions</th>
+          {{/if}}
+        </tr>
+      </thead>
+      <tbody id="athletes-tbody">
+        {{#each athletes}}
+        <tr data-athlete-id="{{id}}"
+          onclick="showAthleteDetails('{{id}}', '{{name}}', '{{athleteClass}}', '{{height}}', '{{weight}}', '{{birthplace}}', '{{club}}', '{{portrait}}', '{{userid}}')">
+          <td>{{@index}}</td>
+          <td>{{name}}</td>
+          <td>{{club}}</td>
+          <td>{{beltlevel}}</td>
+          <td>{{rankingpoints}}</td>
+          <td class="status">{{status}}</td>
+          {{#if ../user.isAdmin}}
+          <td>
+            <div class="dropdown-container">
 
-                <div id="status-athlete" class="status-content">
-                  <a href="#" onclick="updateStatus('{{id}}', 'Active')" class="status-click">Activate</a>
-                  <a href="#" onclick="updateStatus('{{id}}', 'Banned')" class="status-click">Ban</a>
-                  <a href="#" onclick="updateStatus('{{id}}', 'Suspended')" class="status-click">Suspend</a>
-                </div>
+              <div id="status-athlete" class="status-content">
+                <a href="#" onclick="updateStatus('{{id}}', 'Active')" class="status-click">Activate</a>
+                <a href="#" onclick="updateStatus('{{id}}', 'Banned')" class="status-click">Ban</a>
+                <a href="#" onclick="updateStatus('{{id}}', 'Suspended')" class="status-click">Suspend</a>
               </div>
-            </td>
-            {{/if}}
-          </tr>
-          {{/each}}
-        </tbody>
-      </table>
+            </div>
+          </td>
+          {{/if}}
+        </tr>
+        {{/each}}
+      </tbody>
+    </table>
 
     <div id="athlete-details" class="athlete-details">
       <div class="athlete-header">
@@ -215,7 +209,7 @@
   </footer>
 
   <script>
-    document.addEventListener("DOMContentLoaded", function () {
+     document.addEventListener("DOMContentLoaded", function () {
       if (document.querySelectorAll('.notification').length > 0) {
         let nonotifs = document.querySelectorAll('.no-notifs');
         nonotifs.forEach(function (element) {
