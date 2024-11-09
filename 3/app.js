@@ -2645,6 +2645,105 @@ app.post("/decide-kyorugi-winners/:eventid", async (req, res) => {
       return res.status(500).send("Error updating event status");
     }
 
+    // Fetch the final match to determine the winners
+    const { data: finalMatch, error: finalMatchError } = await supabase
+      .from("kyorugi_matches")
+      .select("*")
+      .eq("eventid", eventid)
+      .eq("matchtype", "final")
+      .single();
+
+    if (finalMatchError) {
+      console.error("Error fetching final match:", finalMatchError.message);
+      return res.status(500).send("Error fetching final match");
+    }
+
+    const championId = finalMatch.winner;
+    const secondPlaceId = finalMatch.loser;
+
+    // Fetch the highest round number for the event
+    const { data: highestRound, error: highestRoundError } = await supabase
+      .from("kyorugi_matches")
+      .select("round")
+      .eq("eventid", eventid)
+      .order("round", { ascending: false })
+      .limit(1)
+      .single();
+
+    if (highestRoundError) {
+      console.error("Error fetching highest round:", highestRoundError.message);
+      return res.status(500).send("Error fetching highest round");
+    }
+
+    const currentRound = highestRound ? highestRound.round : 0;
+
+    // Fetch the semifinal matches to determine the third place winners
+    const { data: semifinalMatches, error: semifinalMatchesError } = await supabase
+      .from("kyorugi_matches")
+      .select("*")
+      .eq("eventid", eventid)
+      .eq("round", currentRound - 1);
+
+    if (semifinalMatchesError) {
+      console.error("Error fetching semifinal matches:", semifinalMatchesError.message);
+      return res.status(500).send("Error fetching semifinal matches");
+    }
+
+    const thirdPlaceIds = semifinalMatches.map(match => match.loser);
+
+    // Fetch all participants
+    const { data: participants, error: participantsError } = await supabase
+      .from("events_registrations")
+      .select("*")
+      .eq("eventid", eventid)
+      .eq("registered", "true");
+
+    if (participantsError) {
+      console.error("Error fetching participants:", participantsError.message);
+      return res.status(500).send("Error fetching participants");
+    }
+
+    // Fetch the event details
+    const { data: event, error: eventError } = await supabase
+      .from("events")
+      .select("*")
+      .eq("id", eventid)
+      .single();
+
+    if (eventError) {
+      console.error("Error fetching event details:", eventError.message);
+      return res.status(500).send("Error fetching event details");
+    }
+
+    // Insert match history for all participants
+    for (const participant of participants) {
+      let ranking = 0;
+      if (participant.userid === championId) {
+      ranking = 1;
+      } else if (participant.userid === secondPlaceId) {
+      ranking = 2;
+      } else if (thirdPlaceIds.includes(participant.userid)) {
+      ranking = 3;
+      }
+
+      const { error: matchHistoryError } = await supabase
+      .from("match_history")
+      .insert([
+        {
+        eventid,
+        athleteid: participant.athleteid,
+        ranking,
+        eventname: event.name,
+        eventlocation: event.location,
+        },
+      ]);
+
+      if (matchHistoryError) {
+      console.error("Error inserting match history:", matchHistoryError.message);
+      return res.status(500).send("Error inserting match history");
+      }
+    }
+
     res.redirect(`/events-details/${eventid}`);
   } catch (error) {
     console.error("Server error:", error.message);
@@ -4108,7 +4207,7 @@ app.get("/events-details/:id", async function (req, res) {
       if (finalMatch && finalMatch.winner) {
       const { data: finalWinner, error: finalWinnerError } = await supabase
         .from("athletes")
-        .select("name, userid")
+        .select("id, name, userid")
         .eq("userid", finalMatch.winner)
         .single();
 
@@ -4125,7 +4224,7 @@ app.get("/events-details/:id", async function (req, res) {
         : finalMatch.player1;
       const { data: secondPlaceAthlete, error: secondPlaceError } = await supabase
         .from("athletes")
-        .select("name, userid")
+        .select("id, name, userid")
         .eq("userid", secondPlaceId)
         .single();
 
@@ -4157,7 +4256,7 @@ app.get("/events-details/:id", async function (req, res) {
 
         const { data: thirdPlaceAthlete1, error: thirdPlaceError1 } = await supabase
         .from("athletes")
-        .select("name, userid")
+        .select("id, name, userid")
         .eq("userid", loser1Id)
         .single();
 
@@ -4167,7 +4266,7 @@ app.get("/events-details/:id", async function (req, res) {
 
         const { data: thirdPlaceAthlete2, error: thirdPlaceError2 } = await supabase
         .from("athletes")
-        .select("name, userid")
+        .select("id, name, userid")
         .eq("userid", loser2Id)
         .single();
 
