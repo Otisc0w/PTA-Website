@@ -374,24 +374,55 @@
     });
 
     // filter
+    /* document.querySelector('.apply-btn').addEventListener('click', function () {
+       // Get selected belt colors
+       const selectedBeltColors = Array.from(document.querySelectorAll('.dropdown-content input[type="checkbox"]:checked'))
+         .map(checkbox => checkbox.value.toLowerCase());
+ 
+       // Get all athlete rows in the table
+       const athleteRows = document.querySelectorAll('#athletes-tbody tr');
+ 
+       athleteRows.forEach(row => {
+         const athleteBeltLevel = row.querySelector('td:nth-child(4)').textContent.toLowerCase(); // Get athlete's belt level
+ 
+         // Check if the athlete's belt level is in the selected belt colors
+         if (selectedBeltColors.includes(athleteBeltLevel) || selectedBeltColors.length === 0) {
+           row.style.display = ''; // Show row if it matches or if no filter is selected
+         } else {
+           row.style.display = 'none'; // Hide row if it doesn't match
+         }
+       });
+     }); */
+
+    //FILTER
     document.querySelector('.apply-btn').addEventListener('click', function () {
-      // Get selected belt colors
+      const searchInput = document.getElementById('athlete-search').value.toLowerCase().trim();
       const selectedBeltColors = Array.from(document.querySelectorAll('.dropdown-content input[type="checkbox"]:checked'))
         .map(checkbox => checkbox.value.toLowerCase());
 
-      // Get all athlete rows in the table
       const athleteRows = document.querySelectorAll('#athletes-tbody tr');
 
       athleteRows.forEach(row => {
-        const athleteBeltLevel = row.querySelector('td:nth-child(4)').textContent.toLowerCase(); // Get athlete's belt level
+        const athleteName = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
+        const athleteBeltLevel = row.querySelector('td:nth-child(4)').textContent.toLowerCase();
 
-        // Check if the athlete's belt level is in the selected belt colors
-        if (selectedBeltColors.includes(athleteBeltLevel) || selectedBeltColors.length === 0) {
-          row.style.display = ''; // Show row if it matches or if no filter is selected
+        const matchesSearch = searchInput === '' || athleteName.includes(searchInput);
+        const matchesBeltColor = selectedBeltColors.length === 0 || selectedBeltColors.includes(athleteBeltLevel);
+
+        if (matchesSearch && matchesBeltColor) {
+          row.style.display = '';
         } else {
-          row.style.display = 'none'; // Hide row if it doesn't match
+          row.style.display = 'none';
         }
       });
+    });
+
+    // Automatically show all rows when search input is cleared
+    document.getElementById('athlete-search').addEventListener('input', function () {
+      if (this.value.trim() === '') {
+        const athleteRows = document.querySelectorAll('#athletes-tbody tr');
+        athleteRows.forEach(row => row.style.display = ''); // Show all rows
+      }
     });
 
   </script>
