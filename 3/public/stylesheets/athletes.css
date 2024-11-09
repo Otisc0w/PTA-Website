@@ -38,7 +38,7 @@ body {
     padding: 10px;
     background-color: #333;
     border-radius: 10px;
-    gap: 100px;
+    gap: 0;
     margin-bottom: 50px;
 }
 /* General Label Style */
@@ -52,7 +52,7 @@ body {
 
 /* Filter Header */
 .filter-header {
-   
+   margin-right: 200px;
     text-align: left;
 }
 
@@ -72,10 +72,11 @@ body {
 /* Filters Row */
 .filters-row {
     display: flex;
-    gap: 15px;
-    align-items: center; /* Center vertically */
-    justify-content: center; /* Center horizontally */
-    flex-wrap: wrap;
+    align-items: center; 
+    justify-content: left;
+    gap: 280px; 
+    width: 100%;
+    position: relative;
 }
 
 /* Filter Group */
@@ -530,6 +531,9 @@ body {
     cursor: pointer;
     border-radius: 5px;
     transition: background-color 0.3s, box-shadow 0.3s;
+    margin-left: auto;
+    position: absolute;
+    right: 0;
 }
 .apply-btn:hover {
     background-color: #218838;
