@@ -57,44 +57,54 @@
 
   <div class="athletes-container">
     <div class="filter-panel">
-  <div class="filter-group">
-    <label for="belt-color">Belt Color</label>
-    <div class="dropdown">
-      <button class="dropbtn">Belt Color</button>
-      <div class="dropdown-content">
-        <label><input type="checkbox" value="White Belt"> White Belt</label>
-        <label><input type="checkbox" value="Low Yellow Belt"> Low Yellow Belt</label>
-        <label><input type="checkbox" value="High Yellow Belt"> High Yellow Belt</label>
-        <label><input type="checkbox" value="Low Blue Belt"> Low Blue Belt</label>
-        <label><input type="checkbox" value="High Blue Belt"> High Blue Belt</label>
-        <label><input type="checkbox" value="Low Red Belt"> Low Red Belt</label>
-        <label><input type="checkbox" value="High Red Belt"> High Red Belt</label>
-        <label><input type="checkbox" value="Low Brown Belt"> Low Brown Belt</label>
-        <label><input type="checkbox" value="High Brown Belt"> High Brown Belt</label>
-        <label><input type="checkbox" value="Junior/Poom Black Belt"> Junior/Poom Black Belt</label>
-        <label><input type="checkbox" value="Black/Dan Belt"> Black/Dan Belt</label>
-        <button class="done-btn">Done</button>
+
+      <div class="filter-header">
+        <h2>Filter Options</h2>
+        <p>Customize your view by selecting relevant filters.</p>
+      </div>
+
+      <div class="filters-row">
+        <div class="filter-group">
+         <label for="belt-color" class="search-label">Belt Color</label>
+          <div class="dropdown">
+            <button class="dropbtn">Choose belt color</button>
+            <div class="dropdown-content">
+              <label><input type="checkbox" value="White Belt"> White Belt</label>
+              <label><input type="checkbox" value="Low Yellow Belt"> Low Yellow Belt</label>
+              <label><input type="checkbox" value="High Yellow Belt"> High Yellow Belt</label>
+              <label><input type="checkbox" value="Low Blue Belt"> Low Blue Belt</label>
+              <label><input type="checkbox" value="High Blue Belt"> High Blue Belt</label>
+              <label><input type="checkbox" value="Low Red Belt"> Low Red Belt</label>
+              <label><input type="checkbox" value="High Red Belt"> High Red Belt</label>
+              <label><input type="checkbox" value="Low Brown Belt"> Low Brown Belt</label>
+              <label><input type="checkbox" value="High Brown Belt"> High Brown Belt</label>
+              <label><input type="checkbox" value="Junior/Poom Black Belt"> Junior/Poom Black Belt</label>
+              <label><input type="checkbox" value="Black/Dan Belt"> Black/Dan Belt</label>
+              <button class="done-btn">Done</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="filter-group">
+          <label for="club" class="search-label">Club</label>
+          <div class="dropdown">
+            <button class="dropbtn">Choose club here</button>
+            <div class="dropdown-content">
+              {{#each clubs}}
+              <label><input type="checkbox" value="{{id}}"> {{this.clubname}}</label>
+              {{/each}}
+              <button class="done-btn">Done</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="filter-group search-group">
+          <label for="athlete-search" class="search-label">Search Athlete</label>
+          <input type="text" id="athlete-search" placeholder="Search...">
+        </div>
+        <button class="apply-btn">Apply</button>
       </div>
     </div>
-  </div>
-  <div class="filter-group">
-    <label for="club">Club</label>
-    <div class="dropdown">
-      <button class="dropbtn">Club</button>
-      <div class="dropdown-content">
-        {{#each clubs}}
-        <label><input type="checkbox" value="{{id}}"> {{this.clubname}}</label>
-        {{/each}}
-        <button class="done-btn">Done</button>
-      </div>
-    </div>
-  </div>
-  <div class="filter-group">
-    <label for="athlete-search">Search Athlete</label>
-    <input type="text" id="athlete-search" placeholder="Search...">
-  </div>
-  <button class="apply-btn">Apply</button>
-</div>
 
 
     <div class="rank-panel">
@@ -349,19 +359,19 @@
       });
     });
 
-document.querySelectorAll('.done-btn').forEach(button => {
-  button.addEventListener('click', function (event) {
-    const dropdownContent = event.target.parentNode;
-    dropdownContent.style.display = 'none';
-  });
-});
+    document.querySelectorAll('.done-btn').forEach(button => {
+      button.addEventListener('click', function (event) {
+        const dropdownContent = event.target.parentNode;
+        dropdownContent.style.display = 'none';
+      });
+    });
 
-document.querySelectorAll('.dropbtn').forEach(button => {
-  button.addEventListener('click', function () {
-    const dropdownContent = this.nextElementSibling;
-    dropdownContent.style.display = dropdownContent.style.display === 'block' ? 'none' : 'block';
-  });
-});
+    document.querySelectorAll('.dropbtn').forEach(button => {
+      button.addEventListener('click', function () {
+        const dropdownContent = this.nextElementSibling;
+        dropdownContent.style.display = dropdownContent.style.display === 'block' ? 'none' : 'block';
+      });
+    });
 
   </script>
 </body>
