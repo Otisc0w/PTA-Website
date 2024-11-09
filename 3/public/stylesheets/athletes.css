@@ -145,11 +145,11 @@ body {
     align-items: center;
     padding: 20px;
     height: 100px;
-    margin-top: 0; 
+    margin-top: 0;
 }
 
 .footer-content .pta-logo img {
-    height: 100%; 
+    height: 100%;
 }
 
 .footer-content .contact-info {
@@ -287,22 +287,23 @@ body {
     display: block;
 }
 
-.status-content{
+.status-content {
     color: white;
 }
 
-.status-click{
+.status-click {
     color: white;
 }
 
-.status-click:hover{
+.status-click:hover {
     background-color: #b22222;
     border-radius: 5px;
 }
 
 .athlete-rankings-container {
-    margin-top: 100px; 
-    height: auto; /* Adjusts height based on content */
+    margin-top: 100px;
+    height: auto;
+    /* Adjusts height based on content */
 }
 
 .athlete-rankings-title {
@@ -315,7 +316,7 @@ body {
     min-height: 60px;
     position: relative;
     z-index: 10;
-    margin: 0 auto; 
+    margin: 0 auto;
     width: 95%;
     max-width: 1200px;
 }
@@ -332,10 +333,11 @@ body {
     margin-top: 5px;
     opacity: 1;
 }
+
 /* Dropdown Button */
 .dropbtn {
     background-color: #007BFF;
-    font-weight:normal;
+    font-weight: normal;
     color: white;
     padding: 10px 10px;
     font-size: 16px;
@@ -351,24 +353,25 @@ body {
     background-color: #555;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
 }
+
 /* Dropdown container */
 .dropdown {
     position: relative;
     display: inline-block;
-    width: 100%; 
+    width: 100%;
 }
 
 /* Dropdown Content */
 .dropdown-content {
     display: none;
-    position: relative; 
+    position: relative;
     background-color: #333;
-    width: 100%; 
+    width: 100%;
     box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
     padding: 15px;
     border-radius: 8px;
-    z-index: 10; 
-    margin-top: 5px; 
+    z-index: 10;
+    margin-top: 5px;
 }
 
 /* Dropdown Content */
@@ -376,8 +379,10 @@ body {
     display: flex;
     align-items: center;
     padding: 8px;
-    color: #cccccc; /* Lighter font color */
-    font-weight: 300; /* Light font weight */
+    color: #cccccc;
+    /* Lighter font color */
+    font-weight: 300;
+    /* Light font weight */
     cursor: pointer;
     transition: background-color 0.3s;
 }
@@ -413,8 +418,10 @@ body {
 /* Search Group */
 .search-group {
     display: flex;
-    align-items: center; /* Align label and input horizontally */
-    gap: 8px; /* Space between label and input */
+    align-items: center;
+    /* Align label and input horizontally */
+    gap: 8px;
+    /* Space between label and input */
 }
 
 
@@ -428,7 +435,7 @@ body {
 }
 
 
-.apply-btn{
+.apply-btn {
     background-color: #28a745;
     color: white;
     padding: 10px 20px;
@@ -442,6 +449,7 @@ body {
     position: absolute;
     right: 0;
 }
+
 .apply-btn:hover {
     background-color: #218838;
     transform: scale(1.05);
@@ -451,25 +459,28 @@ body {
 .filter-panel {
     display: flex;
     align-items: center;
-    grid-template-columns: 1fr 1fr 1fr 1fr; 
+    grid-template-columns: 1fr 1fr 1fr 1fr;
     padding: 10px;
     background-color: #333;
     border-radius: 10px;
     gap: 0;
     margin-bottom: 50px;
 }
+
 /* General Label Style */
 .filter-panel label {
     font-weight: bold;
     color: #FFFFFF;
-    font-size: 1em; /* Adjust font size to match the rest */
-    margin-bottom: 5px; /* Adds some space below each label */
+    font-size: 1em;
+    /* Adjust font size to match the rest */
+    margin-bottom: 5px;
+    /* Adds some space below each label */
 }
 
 
 /* Filter Header */
 .filter-header {
-   margin-right: 200px;
+    margin-right: 200px;
     text-align: left;
 }
 
@@ -483,15 +494,15 @@ body {
     color: #b0b0b0;
     font-size: 1em;
     margin: 5px 0 20px 0;
-  
+
 }
 
 /* Filters Row */
 .filters-row {
     display: flex;
-    align-items: center; 
+    align-items: center;
     justify-content: left;
-    gap: 280px; 
+    gap: 280px;
     width: 100%;
     position: relative;
 }
