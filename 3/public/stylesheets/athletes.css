@@ -467,14 +467,17 @@ body {
     margin-top: 5px; 
 }
 
+/* Dropdown Content */
 .dropdown-content label {
     display: flex;
     align-items: center;
     padding: 8px;
-    color: #FFFFFF;
+    color: #cccccc; /* Lighter font color */
+    font-weight: 300; /* Light font weight */
     cursor: pointer;
     transition: background-color 0.3s;
 }
+
 
 .dropdown-content label:hover {
     background-color: #555;
