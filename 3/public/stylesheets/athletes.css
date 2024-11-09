@@ -30,61 +30,6 @@ body {
     height: 1500px;
     padding: 20px;
 }
-/* Filter Panel */
-.filter-panel {
-    display: flex;
-    align-items: center;
-    grid-template-columns: 1fr 1fr 1fr 1fr; 
-    padding: 10px;
-    background-color: #333;
-    border-radius: 10px;
-    gap: 0;
-    margin-bottom: 50px;
-}
-/* General Label Style */
-.filter-panel label {
-    font-weight: bold;
-    color: #FFFFFF;
-    font-size: 1em; /* Adjust font size to match the rest */
-    margin-bottom: 5px; /* Adds some space below each label */
-}
-
-
-/* Filter Header */
-.filter-header {
-   margin-right: 200px;
-    text-align: left;
-}
-
-.filter-header h2 {
-    color: #ffffff;
-    font-size: 1.5em;
-    margin: 5px 0 5px 0;
-}
-
-.filter-header p {
-    color: #b0b0b0;
-    font-size: 1em;
-    margin: 5px 0 20px 0;
-  
-}
-
-/* Filters Row */
-.filters-row {
-    display: flex;
-    align-items: center; 
-    justify-content: left;
-    gap: 280px; 
-    width: 100%;
-    position: relative;
-}
-
-/* Filter Group */
-.filter-group {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
 
 
 /* Rankings */
@@ -338,47 +283,6 @@ body {
     background-color: #005fa3;
 }
 
-/*
-.dropdown-container {
-    position: relative;
-    display: inline-block;
-}
-
-.dropdown-content {
-    display: none;
-    position: absolute;
-    background-color: #3a3a3a;
-    min-width: 160px;
-    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
-    z-index: 1;
-    right: 0;
-    padding: 0;
-    margin-top: -4px;
-}*/
-/*
-.dropdown-content a {
-    color: black;
-    padding: 8px 12px;
-    text-decoration: none;
-    display: block;
-    background-color: #2c2c2c;
-}
-
-.dropdown-content a:hover {
-    background-color: #5a5a5a;
-}
-*/
-/*
-.dropbtn {
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-size: 18px;
-    color: #FFFFFF;
-    padding: 0;
-    margin: 0;
-}*/
-
 .show {
     display: block;
 }
@@ -543,3 +447,58 @@ body {
     transform: scale(1.05);
 }
 
+/* Filter Panel */
+.filter-panel {
+    display: flex;
+    align-items: center;
+    grid-template-columns: 1fr 1fr 1fr 1fr; 
+    padding: 10px;
+    background-color: #333;
+    border-radius: 10px;
+    gap: 0;
+    margin-bottom: 50px;
+}
+/* General Label Style */
+.filter-panel label {
+    font-weight: bold;
+    color: #FFFFFF;
+    font-size: 1em; /* Adjust font size to match the rest */
+    margin-bottom: 5px; /* Adds some space below each label */
+}
+
+
+/* Filter Header */
+.filter-header {
+   margin-right: 200px;
+    text-align: left;
+}
+
+.filter-header h2 {
+    color: #ffffff;
+    font-size: 1.5em;
+    margin: 5px 0 5px 0;
+}
+
+.filter-header p {
+    color: #b0b0b0;
+    font-size: 1em;
+    margin: 5px 0 20px 0;
+  
+}
+
+/* Filters Row */
+.filters-row {
+    display: flex;
+    align-items: center; 
+    justify-content: left;
+    gap: 280px; 
+    width: 100%;
+    position: relative;
+}
+
+/* Filter Group */
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
