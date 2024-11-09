@@ -65,7 +65,7 @@
 
       <div class="filters-row">
         <div class="filter-group">
-         <label for="belt-color" class="search-label">Belt Color</label>
+          <label for="belt-color" class="search-label">Belt Color</label>
           <div class="dropdown">
             <button class="dropbtn">Choose belt color</button>
             <div class="dropdown-content">
@@ -370,6 +370,27 @@
       button.addEventListener('click', function () {
         const dropdownContent = this.nextElementSibling;
         dropdownContent.style.display = dropdownContent.style.display === 'block' ? 'none' : 'block';
+      });
+    });
+
+    // filter
+    document.querySelector('.apply-btn').addEventListener('click', function () {
+      // Get selected belt colors
+      const selectedBeltColors = Array.from(document.querySelectorAll('.dropdown-content input[type="checkbox"]:checked'))
+        .map(checkbox => checkbox.value.toLowerCase());
+
+      // Get all athlete rows in the table
+      const athleteRows = document.querySelectorAll('#athletes-tbody tr');
+
+      athleteRows.forEach(row => {
+        const athleteBeltLevel = row.querySelector('td:nth-child(4)').textContent.toLowerCase(); // Get athlete's belt level
+
+        // Check if the athlete's belt level is in the selected belt colors
+        if (selectedBeltColors.includes(athleteBeltLevel) || selectedBeltColors.length === 0) {
+          row.style.display = ''; // Show row if it matches or if no filter is selected
+        } else {
+          row.style.display = 'none'; // Hide row if it doesn't match
+        }
       });
     });
 
