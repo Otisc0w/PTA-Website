@@ -56,12 +56,29 @@
 
 
   <div class="home-container">
+    <div class="filter-panel">
+
+      <div class="filter-header">
+        <h2>Filter Options</h2>
+        <p>Customize your view by selecting relevant filters.</p>
+      </div>
+
+      <div class="filters-row">
+       
+        <div class="filter-group search-group">
+          <label for="location-search" class="search-label">Search Location</label>
+          <input type="text" id="location-search" placeholder="Search...">
+        </div>
+        <button class="apply-btn">Apply</button>
+      </div>
+    </div>
+
     <div class="club-name">
       <div class="upcoming-events">
 
         <div id="events" class="horizontal-container">
           {{#each clubs}}
-          <div class="event">
+          <div class="event" data-location="{{clubaddress}}">
             <img src="{{clubpic}}" alt="{{clubname}}" class="club-image"> <!-- Display club picture -->
             <h3>{{clubname}} - {{province}}</h3>
             <div class="description">
@@ -123,6 +140,34 @@
         }
       }
     }
+
+    //FILTER
+   document.querySelector('.apply-btn').addEventListener('click', filterClubs);
+document.getElementById('location-search').addEventListener('input', function () {
+    if (this.value.trim() === '') {
+        // Show all clubs if the search field is empty
+        document.querySelectorAll('.event').forEach(event => {
+            event.style.display = '';
+        });
+    } else {
+        // Call filterClubs function if there is text in the search field
+        filterClubs();
+    }
+});
+
+function filterClubs() {
+    const searchInput = document.getElementById('location-search').value.toLowerCase().trim();
+    document.querySelectorAll('.event').forEach(event => {
+        const location = event.getAttribute('data-location').toLowerCase();
+        if (location.includes(searchInput)) {
+            event.style.display = ''; // Show if it matches
+        } else {
+            event.style.display = 'none'; // Hide if it doesn't match
+        }
+    });
+}
+
+
   </script>
 </body>
 
