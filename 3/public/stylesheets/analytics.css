@@ -132,6 +132,7 @@ body {
     align-items: center;
     color: #fff;
     background-color: #444;
+    margin-bottom: 15px;
 }
 
 .club-item .tooltip {

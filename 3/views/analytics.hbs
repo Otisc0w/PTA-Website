@@ -74,13 +74,34 @@
       <div class="card participation-card">
       <h2>Clubs Overview</h2>
       <div id="participationChart" class="chart">
-        {{#each clubs}}
-        <div class="club-item" style="background-color: {{this.colorCode}}">
-          <span class="club-name">{{this.clubname}}</span>
-          <!-- <span class="participation-level">{{this.engagementLevel}}</span>
-          <span class="tooltip">Last participated: {{this.lastEvent}}</span> -->
-        </div>
-        {{/each}}
+         {{#each clubsByMonth}}
+    <h3>Joined in: {{@key}}</h3>
+    <div class="club-list">
+      {{#each this}}
+      <div class="club-item">
+        <span class="club-name">{{this.clubname}}</span>
+        <!--<span class="members-count">Members: {{this.members}}</span>-->
+      </div>
+      {{/each}}
+    </div>
+    {{/each}}
+      </div>
+    </div>
+
+      <div class="card participation-card">
+      <h2>Events Overview</h2>
+      <div id="participationChart" class="chart">
+        {{#each eventsByMonth}}
+    <h3>Created in: {{@key}}</h3>
+    <div class="club-list">
+      {{#each this}}
+      <div class="club-item">
+        <span class="club-name">{{this.name}}</span>
+        <span class="club-type">Type: {{this.eventtype}}</span>
+      </div>
+      {{/each}}
+    </div>
+    {{/each}}
       </div>
     </div>
 
@@ -88,7 +109,7 @@
     <div class="card admin-insights-card">
       <h2>Administrative Insights</h2>
       <ul class="admin-list">
-        <li>Total Active Clubs: <span>{{activeClubs}}</span></li>
+        <li>Total Clubs: <span>{{totalClubs}}</span></li>
         <li>Total Events: <span>{{totalEvents}}</span></li>
         <li>Total Number of Athletes: <span>{{totalAthletes}}</span></li>
       </ul>
@@ -104,17 +125,8 @@
       <!-- <button onclick="viewParticipantList()">View Full List</button> -->
     </div>
 
-    <!-- Training and Event Suggestions 
-    <div class="card training-suggestions-card">
-      <h2>Training and Event Suggestions</h2>
-      <ul class="suggestions-list">
-        <li>Suggested Training Areas: <span>{{suggestedTrainingAreas}}</span></li>
-        <li>Upcoming Events: <span>{{upcomingEvents}}</span></li>
-      </ul>
-      <button onclick="scheduleTraining()">Schedule Training</button>
-      <button onclick="viewUpcomingEvents()">View Events</button>
-    </div>
-      -->
+    
+      
   </div>
 
   <footer>

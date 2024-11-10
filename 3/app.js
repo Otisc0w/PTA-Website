@@ -4987,18 +4987,41 @@ app.get("/analytics", async (req, res) => {
       };
     });
 
-    // Fetch club names and member counts from the clubs table
+    // Fetch clubs with their creation date
     const { data: clubs, error: clubsError } = await supabase
       .from("clubs")
-      .select("clubname, members"); // Assuming 'members' holds the count of club members
+      .select("clubname, members, created_at");
 
     if (clubsError) throw clubsError;
 
+    // Group clubs by month created
+    const clubsByMonth = clubs.reduce((acc, club) => {
+      const monthCreated = new Date(club.created_at).toLocaleString("default", { month: "long" });
+      if (!acc[monthCreated]) acc[monthCreated] = [];
+      acc[monthCreated].push(club);
+      return acc;
+    }, {});
+
+    // Fetch events with name, month created, and event type
+    const { data: events, error: eventsError } = await supabase
+      .from("events")
+      .select("name, created_at, eventtype");
+
+    if (eventsError) throw eventsError;
+
+    // Group events by month created
+    const eventsByMonth = events.reduce((acc, event) => {
+      const monthCreated = new Date(event.created_at).toLocaleString("default", { month: "long" });
+      if (!acc[monthCreated]) acc[monthCreated] = [];
+      acc[monthCreated].push(event);
+      return acc;
+    }, {});
+
     // Fetch total events
-    const { count: eventsCount, error: eventsError } = await supabase
+    const { count: eventsCount, error: eventsCountError } = await supabase
       .from("events")
       .select("id", { count: "exact" });
-    if (eventsError) throw eventsError;
+    if (eventsCountError) throw eventsCountError;
 
     // Fetch total number of athletes
     const { count: athletesCount, error: athletesError } = await supabase
@@ -5014,7 +5037,6 @@ app.get("/analytics", async (req, res) => {
 
     const participantCounts = participantsData.reduce(
       (counts, participant) => {
-        const status = participant.status.toLowerCase();
         if (participant.status === "Active") counts.active += 1;
         else if (participant.status === "Suspended") counts.suspended += 1;
         else if (participant.status === "Banned") counts.banned += 1;
@@ -5022,20 +5044,33 @@ app.get("/analytics", async (req, res) => {
       },
       { active: 0, suspended: 0, banned: 0 }
     );
-    console.log("Participants Data:", participantsData);
+
+    // Fetch total number of clubs
+    const { data: totalClubsData, error: totalClubsError } = await supabase
+      .from("clubs")
+      .select("id", { count: "exact" });
+
+    if (totalClubsError) throw totalClubsError;
+    const totalClubs = totalClubsData.length;
+
     // Render the analytics page with all fetched data
     res.render("analytics", {
       topPerformers: topPerformersWithClubs,
       totalEvents: eventsCount || 0,
       totalAthletes: athletesCount || 0,
       participantCounts,
-      clubs, // Pass clubs with clubname and members directly
+      totalClubs,
+      clubsByMonth,  // Pass grouped clubs
+      eventsByMonth, // Pass grouped events
     });
   } catch (error) {
     console.error("Error fetching analytics data:", error.message);
     res.status(500).send("Error fetching analytics data");
   }
 });
+
+
+
 
 
 /*
