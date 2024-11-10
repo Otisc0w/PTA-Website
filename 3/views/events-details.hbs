@@ -204,7 +204,7 @@
             <h1 style="color: red">This event has been<br> CANCELLED</h1>
           {{/if}}
           {{#if (eq event.eventtype 'Poomsae')}}
-            {{!-- {{#if poomsaetop4}} --}}
+            {{#if poomsaetop4}}
               <h3>Poomsae Winners</h3>
               <div class="leaderboard-list">
               {{#each poomsaetop4}}
@@ -215,7 +215,7 @@
                 </div>
               {{/each}}
               </div>
-            {{!-- {{/if}} --}}
+            {{/if}}
           
           {{else if (eq event.eventtype 'Kyorugi')}}
             {{#if thirdPlace2}}
