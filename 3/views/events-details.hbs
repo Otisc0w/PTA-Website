@@ -204,7 +204,7 @@
             <h1 style="color: red">This event has been<br> CANCELLED</h1>
           {{/if}}
           {{#if (eq event.eventtype 'Poomsae')}}
-            {{!-- {{#if poomsaetop4}} --}}
+            {{#if poomsaetop4}}
               <h3>Poomsae Winners</h3>
               <div class="leaderboard-list">
               {{#each poomsaetop4}}
@@ -215,7 +215,7 @@
                 </div>
               {{/each}}
               </div>
-            {{!-- {{/if}} --}}
+            {{/if}}
           
           {{else if (eq event.eventtype 'Kyorugi')}}
             {{#if thirdPlace2}}
@@ -246,8 +246,9 @@
                     <button class="winnersviewathlete" onclick="window.location.href='/athletes-profile/{{champion.id}}'">&#8614;</button>
                   </div>
                 </div>
+              </div>
             {{/if}}  
-            </div>
+            
           {{/if}}
         </div>
 
@@ -648,7 +649,7 @@
 
   <div class="results-container" style="display: none;">
     <h2 class="resultstitle">Results</h2><br>
-    {{#if poomsaeresults}}
+    {{#if poomsaenontop4}}
       <table class="results-table">
         <thead>
           <tr>
@@ -660,7 +661,16 @@
           </tr>
         </thead>
         <tbody>
-          {{#each poomsaeresults}}
+          {{#each poomsaetop4}}
+            <tr>
+              <td>{{ranking}}</td>
+              <td>{{name}}</td>
+              <td>{{technicalscore}}</td>
+              <td>{{performancescore}}</td>
+              <td>{{totalscore}}</td>
+            </tr>
+          {{/each}}
+          {{#each poomsaenontop4}}
             <tr>
               <td>{{ranking}}</td>
               <td>{{name}}</td>
