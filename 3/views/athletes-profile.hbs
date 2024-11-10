@@ -84,7 +84,7 @@
               <td>{{eventName}}</td>
               <td>{{eventLocation}}</td>
               <td>{{ageDivision}}</td>
-              <td>{{ordinal ranking}}</td>
+                <td>{{#unless (eq ranking '0')}}{{ordinal ranking}}{{else}}P{{/unless}}</td>
               <td>{{poomsaefinalscore}}</td>
             </tr>
             {{/reverseEach}}

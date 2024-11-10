@@ -2705,7 +2705,7 @@ app.post("/decide-kyorugi-winners/:eventid", async (req, res) => {
       return res.status(500).send("Error fetching semifinal matches");
     }
 
-    const thirdPlaceIds = semifinalMatches.map(match => match.loser);
+    const thirdPlaceIds = semifinalMatches ? semifinalMatches.map(match => match.loser) : [];
 
     // Fetch all participants
     const { data: participants, error: participantsError } = await supabase
@@ -2735,28 +2735,30 @@ app.post("/decide-kyorugi-winners/:eventid", async (req, res) => {
     for (const participant of participants) {
       let ranking = 0;
       if (participant.userid === championId) {
-      ranking = 1;
+        ranking = 1;
       } else if (participant.userid === secondPlaceId) {
-      ranking = 2;
+        ranking = 2;
       } else if (thirdPlaceIds.includes(participant.userid)) {
-      ranking = 3;
+        ranking = 3;
+      } else {
+        ranking = 0; // Ensure ranking is reset for each participant
       }
 
       const { error: matchHistoryError } = await supabase
-      .from("match_history")
-      .insert([
-        {
-        eventid,
-        athleteid: participant.athleteid,
-        ranking,
-        eventname: event.name,
-        eventlocation: event.location,
-        },
-      ]);
+        .from("match_history")
+        .insert([
+          {
+            eventid,
+            athleteid: participant.athleteid,
+            ranking,
+            eventname: event.name,
+            eventlocation: event.location,
+          },
+        ]);
 
       if (matchHistoryError) {
-      console.error("Error inserting match history:", matchHistoryError.message);
-      return res.status(500).send("Error inserting match history");
+        console.error("Error inserting match history:", matchHistoryError.message);
+        return res.status(500).send("Error inserting match history");
       }
     }
 
