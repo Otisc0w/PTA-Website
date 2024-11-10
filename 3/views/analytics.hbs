@@ -63,25 +63,22 @@
       <div class="performers">
         {{#each topPerformers}}
         <div class="performer-card">
-          <img src="{{this.image}}" alt="Performer Photo" class="performer-photo">
+          <!--<img src="{{this.image}}" alt="Performer Photo" class="performer-photo"> -->
           <h3>{{this.name}}</h3>
           <p>Club: {{this.club}}</p>
-          <p>Award: <span class="badge">{{this.award}}</span></p>
-          <button onclick="viewProfile('{{this.id}}')">View Full Profile</button>
-          <button onclick="sendCongrats('{{this.id}}')">Send Congratulations</button>
         </div>
         {{/each}}
       </div>
     </div>
 
       <div class="card participation-card">
-      <h2>Club Participation Overview</h2>
+      <h2>Clubs Overview</h2>
       <div id="participationChart" class="chart">
         {{#each clubs}}
         <div class="club-item" style="background-color: {{this.colorCode}}">
-          <span class="club-name">{{this.name}}</span>
-          <span class="participation-level">{{this.engagementLevel}}</span>
-          <span class="tooltip">Last participated: {{this.lastEvent}}</span>
+          <span class="club-name">{{this.clubname}}</span>
+          <!-- <span class="participation-level">{{this.engagementLevel}}</span>
+          <span class="tooltip">Last participated: {{this.lastEvent}}</span> -->
         </div>
         {{/each}}
       </div>
@@ -91,25 +88,23 @@
     <div class="card admin-insights-card">
       <h2>Administrative Insights</h2>
       <ul class="admin-list">
-        <li>Total Active Clubs: <span>{{totalClubs}}</span></li>
+        <li>Total Active Clubs: <span>{{activeClubs}}</span></li>
         <li>Total Events: <span>{{totalEvents}}</span></li>
-        <li>Total Number of Athletes: <span>{{droppedMembers}}</span></li>
-        <li>fnjrvr <span>{{eventAttendance}}</span></li>
+        <li>Total Number of Athletes: <span>{{totalAthletes}}</span></li>
       </ul>
     </div>
 
    <div class="card participants-card">
       <h2>List of Participants</h2>
       <ul class="participants-list">
-        <li>Active Members: <span>{{activeMembers}}</span></li>
-        <li>Inactive Members: <span>{{inactiveMembers}}</span></li>
-        <li>Suspended Athletes: <span>{{suspendedAthletes}}</span></li>
-        <li>Banned Athletes: <span>{{bannedAthletes}}</span></li>
+        <li>Active Members: <span>{{participantCounts.active}}</span></li>
+        <li>Suspended Members: <span>{{participantCounts.suspended}}</span></li>
+        <li>Banned Athletes: <span>{{participantCounts.banned}}</span></li>
       </ul>
-      <button onclick="viewParticipantList()">View Full List</button>
+      <!-- <button onclick="viewParticipantList()">View Full List</button> -->
     </div>
 
-    <!-- Training and Event Suggestions -->
+    <!-- Training and Event Suggestions 
     <div class="card training-suggestions-card">
       <h2>Training and Event Suggestions</h2>
       <ul class="suggestions-list">
@@ -119,7 +114,7 @@
       <button onclick="scheduleTraining()">Schedule Training</button>
       <button onclick="viewUpcomingEvents()">View Events</button>
     </div>
-
+      -->
   </div>
 
   <footer>

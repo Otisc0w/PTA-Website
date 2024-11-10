@@ -4953,18 +4953,91 @@ app.get("/membership-club", async (req, res) => {
 });
 
 
-app.get('/athletes', (req, res) => {
-  Athlete.find({}, (err, athletes) => {
-    if (err) {
-      return res.status(500).send('Error retrieving athletes');
-    }
-    res.render('athletes', { athletes: athletes });
-  });
+app.get("/analytics", async (req, res) => {
+  if (!req.session.user) {
+    return res.redirect("/");
+  }
+
+  try {
+    // Fetch top 10 athletes based on ranking points
+    const { data: topPerformers, error: topPerformersError } = await supabase
+      .from("athletes")
+      .select("name, rankingpoints, userid")
+      .order("rankingpoints", { ascending: false })
+      .limit(10);
+
+    if (topPerformersError) throw topPerformersError;
+
+    // Fetch associated clubs for top performers
+    const userIds = topPerformers.map((performer) => performer.userid);
+    const { data: users, error: usersError } = await supabase
+      .from("users")
+      .select("id, club")
+      .in("id", userIds);
+
+    if (usersError) throw usersError;
+
+    // Map club names to top performers
+    const topPerformersWithClubs = topPerformers.map((performer, index) => {
+      const user = users.find((user) => user.id === performer.userid);
+      return {
+        index: index + 1,
+        name: performer.name,
+        club: user ? user.club : "N/A",
+      };
+    });
+
+    // Fetch club names and member counts from the clubs table
+    const { data: clubs, error: clubsError } = await supabase
+      .from("clubs")
+      .select("clubname, members"); // Assuming 'members' holds the count of club members
+
+    if (clubsError) throw clubsError;
+
+    // Fetch total events
+    const { count: eventsCount, error: eventsError } = await supabase
+      .from("events")
+      .select("id", { count: "exact" });
+    if (eventsError) throw eventsError;
+
+    // Fetch total number of athletes
+    const { count: athletesCount, error: athletesError } = await supabase
+      .from("athletes")
+      .select("id", { count: "exact" });
+    if (athletesError) throw athletesError;
+
+    // Fetch counts of participants based on status
+    const { data: participantsData, error: participantsError } = await supabase
+      .from("athletes")
+      .select("status");
+    if (participantsError) throw participantsError;
+
+    const participantCounts = participantsData.reduce(
+      (counts, participant) => {
+        const status = participant.status.toLowerCase();
+        if (participant.status === "Active") counts.active += 1;
+        else if (participant.status === "Suspended") counts.suspended += 1;
+        else if (participant.status === "Banned") counts.banned += 1;
+        return counts;
+      },
+      { active: 0, suspended: 0, banned: 0 }
+    );
+    console.log("Participants Data:", participantsData);
+    // Render the analytics page with all fetched data
+    res.render("analytics", {
+      topPerformers: topPerformersWithClubs,
+      totalEvents: eventsCount || 0,
+      totalAthletes: athletesCount || 0,
+      participantCounts,
+      clubs, // Pass clubs with clubname and members directly
+    });
+  } catch (error) {
+    console.error("Error fetching analytics data:", error.message);
+    res.status(500).send("Error fetching analytics data");
+  }
 });
 
-app.get('/analytics', async (req, res) => {
-  res.render('analytics', { user: req.session.user });
-});
+
 /*
   try {
     const { data: athleteresults, error } = await supabase
