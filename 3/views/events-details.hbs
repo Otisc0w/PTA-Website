@@ -649,7 +649,7 @@
 
   <div class="results-container" style="display: none;">
     <h2 class="resultstitle">Results</h2><br>
-    {{#if poomsaeresults}}
+    {{#if poomsaenontop4}}
       <table class="results-table">
         <thead>
           <tr>
@@ -661,7 +661,16 @@
           </tr>
         </thead>
         <tbody>
-          {{#each poomsaeresults}}
+          {{#each poomsaetop4}}
+            <tr>
+              <td>{{ranking}}</td>
+              <td>{{name}}</td>
+              <td>{{technicalscore}}</td>
+              <td>{{performancescore}}</td>
+              <td>{{totalscore}}</td>
+            </tr>
+          {{/each}}
+          {{#each poomsaenontop4}}
             <tr>
               <td>{{ranking}}</td>
               <td>{{name}}</td>

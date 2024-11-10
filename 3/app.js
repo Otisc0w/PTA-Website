@@ -2432,18 +2432,34 @@ app.post("/begin-kyorugi-competition/:id", async (req, res) => {
 
   try {
     // Fetch the event registrations for the specific event
-    const { data: eventregistrations, error: eventregistrationsError } =
-      await supabase
-        .from("events_registrations")
-        .select("*")
-        .eq("eventid", eventid);
+    // const { data: eventregistrations, error: eventregistrationsError } =
+    //   await supabase
+    //     .from("events_registrations")
+    //     .select("*")
+    //     .eq("eventid", eventid);
 
-    if (eventregistrationsError) {
+    // if (eventregistrationsError) {
+    //   console.error(
+    //     "Error fetching event registrations:",
+    //     eventregistrationsError.message
+    //   );
+    //   return res.status(500).send("Error fetching event registrations.");
+    // }
+
+    // Fetch the event registrations for the specific event where registered is true
+    const { data: registeredEventRegistrations, error: registeredEventRegistrationsError } =
+      await supabase
+      .from("events_registrations")
+      .select("*")
+      .eq("eventid", eventid)
+      .eq("registered", "true");
+
+    if (registeredEventRegistrationsError) {
       console.error(
-        "Error fetching event registrations:",
-        eventregistrationsError.message
+      "Error fetching registered event registrations:",
+      registeredEventRegistrationsError.message
       );
-      return res.status(500).send("Error fetching event registrations.");
+      return res.status(500).send("Error fetching registered event registrations.");
     }
 
     // Fetch the event details to get the registration cap
@@ -2470,7 +2486,7 @@ app.post("/begin-kyorugi-competition/:id", async (req, res) => {
     }
 
     // Check if the registration cap has been reached
-    if (eventregistrations.length >= event.registrationcap) {
+    if (registeredEventRegistrations.length >= event.registrationcap) {
       // Create pairs for the knockout matches
       function createKnockoutPairs(registrations) {
         const pairs = [];
@@ -2484,7 +2500,7 @@ app.post("/begin-kyorugi-competition/:id", async (req, res) => {
         return pairs;
       }
 
-      const pairs = createKnockoutPairs(eventregistrations);
+      const pairs = createKnockoutPairs(registeredEventRegistrations);
       const round = 1;
       for (const pair of pairs) {
         const { error } = await supabase
@@ -2905,7 +2921,6 @@ app.post("/decide-poomsae-winners/:eventid", async (req, res) => {
   const { eventid } = req.params;
 
   try {
-
     // Fetch all events using eventid
     const { data: events, error: eventsError } = await supabase
       .from("events")
@@ -2930,28 +2945,12 @@ app.post("/decide-poomsae-winners/:eventid", async (req, res) => {
       return res.status(500).send("Error updating current round");
     }
 
-    // Fetch the highest round number for the event
-    // const { data: highestRound, error: highestRoundError } = await supabase
-    //   .from("poomsae_players")
-    //   .select("round")
-    //   .eq("eventid", eventid)
-    //   .order("round", { ascending: false })
-    //   .limit(1)
-    //   .single();
-
-    // if (highestRoundError) {
-    //   console.error("Error fetching highest round:", highestRoundError.message);
-    //   return res.status(500).send("Error fetching highest round");
-    // }
-
-    // const currentRound = highestRound ? highestRound.round : 0;
-
     // Fetch players who participated in the highest round
     const { data: players, error: playersError } = await supabase
       .from("poomsae_players")
       .select("*")
       .eq("eventid", eventid)
-      .eq("round", 2)
+      .order("round", { ascending: false }) // Prioritize higher round
       .order("totalscore", { ascending: false });
 
     if (playersError) {
@@ -2959,7 +2958,35 @@ app.post("/decide-poomsae-winners/:eventid", async (req, res) => {
       return res.status(500).send("Error fetching players");
     }
 
-    // Update the ranking for all players in the last round
+    // Create a map to track the highest round and total score for each unique userid
+    const playerMap = new Map();
+
+    players.forEach(player => {
+      const existingPlayer = playerMap.get(player.userid);
+      if (!existingPlayer || player.round > existingPlayer.round || (player.round === existingPlayer.round && player.totalscore > existingPlayer.totalscore)) {
+      playerMap.set(player.userid, player);
+      }
+    });
+
+    // Convert the map values to an array and sort by total score
+    const sortedPlayers = Array.from(playerMap.values()).sort((a, b) => b.totalscore - a.totalscore);
+
+    // Update the ranking for each player
+    for (let i = 0; i < sortedPlayers.length; i++) {
+      const ranking = i < 4 ? i + 1 : 0; // Assign ranking 1-4, and 0 for others
+      sortedPlayers[i].ranking = ranking; // Ensure ranking is set on the player object
+      const { error: updateError } = await supabase
+      .from("poomsae_players")
+      .update({ ranking })
+      .eq("id", sortedPlayers[i].id);
+
+      if (updateError) {
+      console.error("Error updating ranking:", updateError.message);
+      return res.status(500).send("Error updating ranking");
+      }
+    }
+
+    // Update the ranking for all players 
     for (let i = 0; i < players.length; i++) {
       const ranking = i < 4 ? i + 1 : 0; // Assign ranking 1-4, and 0 for others
       players[i].ranking = ranking; // Ensure ranking is set on the player object
@@ -4325,14 +4352,25 @@ app.get("/events-details/:id", async function (req, res) {
       return res.status(400).json({ error: poomsaetop4Error.message });
     }
 
-    const { data: poomsaeresults, error: poomsaeresultsError } = await supabase
+    // const { data: poomsaenontop4, error: poomsaenontop4Error } = await supabase
+    //   .from("poomsae_players")
+    //   .select("*")
+    //   .eq("eventid", id)
+    //   .order("round", { ascending: false })
+    //   .limit(1);
+
+    // if (poomsaenontop4Error) {
+    //   return res.status(400).json({ error: poomsaenontop4Error.message });
+    // }
+    const { data: poomsaenontop4, error: poomsaenontop4Error } = await supabase
       .from("poomsae_players")
       .select("*")
       .eq("eventid", id)
+      .eq("ranking", 0)
       .order("totalscore", { ascending: false });
 
-    if (poomsaeresultsError) {
-      return res.status(400).json({ error: poomsaeresultsError.message });
+    if (poomsaenontop4Error) {
+      return res.status(400).json({ error: poomsaenontop4Error.message });
     }
 
     console.log("Fetched top players data:", poomsaetop4); // Log the top players data to the console
@@ -4353,7 +4391,7 @@ app.get("/events-details/:id", async function (req, res) {
       currentregistrant,
       matches,
       poomsaePlayers,
-      poomsaeresults,
+      poomsaenontop4,
       registrationcount,
       registrationcap: event.registrationcap, // Assuming the registration cap is stored in the event table
       user: req.session.user,
