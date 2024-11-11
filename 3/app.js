@@ -4493,7 +4493,7 @@ app.get("/athletes", async function (req, res) {
     const { data: clubs, error: clubsError } = await supabase
       .from("clubs")
       .select("*")
-      .eq("registeree", userId);
+      .eq("registeredby", userId);
       
 
     if (clubsError) {
@@ -4517,25 +4517,6 @@ app.get("/athletes", async function (req, res) {
     if (userError) {
       return res.status(400).json({ error: userError.message });
     }
-
-    
-    // Fetch match history count for each athlete
-    // const athleteIds = athletes.map((athlete) => athlete.id);
-    // const { data: matchHistoryCounts, error: matchHistoryCountsError } = await supabase
-    //   .from("match_history")
-    //   .select("athleteid, count(*)")
-    //   .in("athleteid", athleteIds)
-    //   .group("athleteid");
-
-    // if (matchHistoryCountsError) {
-    //   return res.status(400).json({ error: matchHistoryCountsError.message });
-    // }
-
-    // // Map match history count to each athlete
-    // athletes.forEach((athlete) => {
-    //   const matchHistoryCount = matchHistoryCounts.find((count) => count.athleteid === athlete.id);
-    //   athlete.matchHistoryCount = matchHistoryCount ? matchHistoryCount.count : 0;
-    // });
 
     // Determine if the user is an admin based on ptaverified
     const isAdmin = userData.ptaverified === true;
