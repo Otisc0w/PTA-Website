@@ -55,11 +55,11 @@
       <div class="athlete-stats">
         <div class="stat">
           <span class="label">Kyorugi Golds</span>
-          <span class="golds"></span>
+          <span class="kyorugigolds"></span>
         </div>
         <div class="stat">
           <span class="label">Poomsae Golds</span>
-          <span class="value">{{athlete.poomsaerankingpoints}}</span>
+          <span class="poomgolds"></span>
         </div>
       </div>
     </div>
@@ -131,8 +131,22 @@
         count++;
       }
       });
-      document.querySelector('.golds').textContent = count;
+      document.querySelector('.kyorugigolds').textContent = count;
       console.log(`Number of rows where ranking is '1' and type is 'Kyorugi': ${count}`);
+    });
+
+    document.addEventListener("DOMContentLoaded", function () {
+      const rows = document.querySelectorAll('.career-stats tbody tr');
+      let count = 0;
+      rows.forEach(row => {
+      const rankingCell = row.querySelector('td:nth-child(6)');
+      const typeCell = row.querySelector('td:nth-child(3)');
+      if (rankingCell && rankingCell.textContent.trim() === '1' && typeCell && typeCell.textContent.trim() === 'Poomsae') {
+        count++;
+      }
+      });
+      document.querySelector('.poomgolds').textContent = count;
+      console.log(`Number of rows where ranking is '1' and type is 'Poomsae': ${count}`);
     });
   </script>
 </body>
