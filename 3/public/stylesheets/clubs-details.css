@@ -1171,3 +1171,8 @@ h1 {
 .activity-card .activity-actions button:hover {
   background-color: #0056b3;
 }
+
+.user-list{
+  text-decoration: none;
+  list-style-type: none;
+}

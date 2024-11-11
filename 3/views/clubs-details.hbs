@@ -129,19 +129,23 @@
       <div class="modal-content">
         <span class="close" onclick="closeInviteModal()">&times;</span>
         <h2>Invite Members</h2>
-        {{#if athletes}}
-        <ul class="athlete-list">
-          {{#each athletes}}
-          <li>
-            <input type="checkbox" id="athlete-{{this.id}}" name="selectedAthletes" value="{{this.id}}">
-            <label for="athlete-{{this.id}}">{{this.name}}</label>
-          </li>
-          {{/each}}
-        </ul>
-        {{else}}
-        <p>No athletes available to invite.</p>
-        {{/if}}
-        <button type="button" class="invite-button modal-invite-button" onclick="inviteSelectedMembers()">Send Invites</button>
+        <form action="/invite-user" method="POST">
+          <input type="hidden" name="club_id" value="{{club.id}}">
+          <input type="hidden" name="clubname" value="{{club.clubname}}">
+          {{#if allUsers}}
+          <ul class="user-list">
+            {{#each allUsers}}
+            <li>
+              <input type="checkbox" id="user-{{this.id}}" name="invited_user" value="{{this.id}}">
+              <label for="user-{{this.id}}">{{this.firstname}} {{this.lastname}}</label>
+            </li>
+            {{/each}}
+          </ul>
+          {{else}}
+          <p>No users available to invite.</p>
+          {{/if}}
+          <button type="submit" class="invite-button modal-invite-button">Send Invites</button>
+        </form>
       </div>
     </div>
 
@@ -329,7 +333,7 @@
 
   <div class="participants-container">
     <div class="participants-title">
-      Head Instructor: <h2>{{user.firstname}} {{user.lastname}}</h2>
+      Head Instructor: <h2>{{clubOwner.firstname}} {{clubOwner.lastname}}</h2>
     </div>
     <div class="participants-title">Members of this club:</div>
     <table class="participants-table">
@@ -534,31 +538,13 @@
       document.getElementById('editclubmodal').style.display = 'none';
     }
 
-    // Update the invite members function to send selected members to the backend
-    function inviteSelectedMembers() {
-      const selectedAthletes = Array.from(document.querySelectorAll('input[name="selectedAthletes"]:checked'))
-        .map(checkbox => checkbox.value);
-
-      fetch('/invite-members', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ athleteIds: selectedAthletes })
-      })
-        .then(response => response.json())
-        .then(data => {
-          alert(data.message); // Display success or error message
-          closeInviteModal(); // Close the modal after sending invites
-        })
-        .catch(error => console.error('Error:', error));
-    }
-
     function openActivityModal() {
     document.getElementById("activityModal").style.display = "block";
-  }
+    }
 
-  function closeActivityModal() {
-    document.getElementById("activityModal").style.display = "none";
-  }
+    function closeActivityModal() {
+      document.getElementById("activityModal").style.display = "none";
+    }
 
   // Close the modal if the user clicks outside of it
   window.onclick = function(event) {

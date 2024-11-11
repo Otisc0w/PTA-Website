@@ -1965,6 +1965,22 @@ app.post("/accept-invitation/:id", async (req, res) => {
     }
 
     const clubid = invitation.club_id;
+    const { data: club, error: clubError } = await supabase
+      .from("clubs")
+      .select("clubname")
+      .eq("id", clubid)
+      .single();
+
+    if (clubError || !club) {
+      console.error(
+        "Error fetching club name:",
+        clubError ? clubError.message : "Club not found"
+      );
+      return res.status(500).send("Error fetching club name");
+    }
+
+    const clubname = club.clubname;
+    
 
     // Update the invitation status to 'accepted'
     const { error: updateInvitationError } = await supabase
@@ -3781,6 +3797,16 @@ app.get("/clubs-details/:id", async function (req, res) {
       return res.status(400).json({ clubsError: clubsError.message });
     }
 
+    const { data: clubOwner, error: clubOwnerError } = await supabase
+      .from("users")
+      .select("*")
+      .eq("id", club.registeredby)
+      .single();
+
+    if (clubOwnerError) {
+      return res.status(400).json({ clubOwnerError: clubOwnerError.message });
+    }
+
     const { data: allUsers, error: allUsersError } = await supabase
       .from("users")
       .select("*");
@@ -3864,6 +3890,7 @@ app.get("/clubs-details/:id", async function (req, res) {
     // Render the clubs-details.hbs template with the fetched data
   res.render("clubs-details", {
       club,
+      clubOwner,
       allUsers,
       clubMembersWithAthleteData,
       announcements,
@@ -5192,35 +5219,6 @@ app.post("/create-announcement", async (req, res) => {
   } catch (error) {
     console.error("Server error:", error.message);
     res.status(500).send("Server error while creating announcement");
-  }
-});
-
-// Route to display activities on the club-details page
-app.get("/clubs-details/:club_id", async (req, res) => {
-  const { club_id } = req.params;
-
-  try {
-      // Fetch the club details
-      const { data: club, error: clubError } = await supabase
-          .from("clubs")
-          .select("*")
-          .eq("id", club_id)
-          .single();
-
-      if (clubError) throw clubError;
-
-      // Fetch the activities for this club
-      const { data: activities, error: activitiesError } = await supabase
-          .from("activities")
-          .select("*")
-          .eq("created_by", req.session.user.id); // Filter by creator (can adjust if needed)
-
-      if (activitiesError) throw activitiesError;
-
-      res.render("club-details", { club, activities });
-  } catch (error) {
-      console.error("Error fetching club details or activities:", error.message);
-      res.status(500).send("Error fetching club details or activities");
   }
 });
 
