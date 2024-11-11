@@ -166,7 +166,7 @@
       
       <h2>Club Activities</h2>
       {{#if (eq club.registeredby user.id)}}
-      <button type="button" onclick="openActivityModal()">+ Create New Activity</button>
+      <button type="button" class="create" onclick="openActivityModal()">+ Create New Activity</button>
       {{/if}}
         {{#each clubactivities}}
           <div class="activity-card">
@@ -175,13 +175,13 @@
             <p><strong>Date:</strong> {{this.date}}</p>
             <p><strong>Time:</strong> {{this.time}}</p>
             {{#if (eq ../club.registeredby ../user.id)}}
-            <button type="button" onclick="editActivity('{{this.id}}')">Edit</button>
-            <button type="button" onclick="deleteActivity('{{this.id}}')">Delete</button>
+            <button type="button" class="edit" onclick="editActivity('{{this.id}}')">Edit</button>
+            <button type="button" class="delete" onclick="deleteActivity('{{this.id}}')">Delete</button>
             {{/if}}
 
             <div class="rsvp-buttons">
-              <button type="button" onclick="rsvpActivity('{{this.id}}', true)">I'm Going</button>
-              <button type="button" onclick="rsvpActivity('{{this.id}}', false)">I'm Not Going</button>
+              <button type="button" class="rsvp-going" onclick="rsvpActivity('{{this.id}}', true)">I'm Going</button>
+              <button type="button" class="rsvp-notgoing" onclick="rsvpActivity('{{this.id}}', false)">I'm Not Going</button>
             </div>
           </div>
         {{/each}}
