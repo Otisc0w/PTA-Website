@@ -55,7 +55,7 @@
       <div class="athlete-stats">
         <div class="stat">
           <span class="label">Kyorugi Golds</span>
-          <span class="value">{{athlete.rankingpoints}}</span>
+          <span class="golds"></span>
         </div>
         <div class="stat">
           <span class="label">Poomsae Golds</span>
@@ -71,9 +71,10 @@
             <tr>
               <th>Date</th>
               <th>Event</th>
+              <th>Type</th>
               <th>Location</th>
               <th>Division</th>
-              <th>Place</th>
+              <th>Ranking</th>
               <th>Final Score</th>
             </tr>
           </thead>
@@ -82,9 +83,10 @@
             <tr>
               <td>{{formatCreatedAt created_at}}</td>
               <td>{{eventName}}</td>
+              <td>{{eventType}}</td>
               <td>{{eventLocation}}</td>
               <td>{{ageDivision}}</td>
-                <td>{{#unless (eq ranking '0')}}{{ordinal ranking}}{{else}}P{{/unless}}</td>
+              <td>{{#unless (eq ranking '0')}}{{ordinal ranking}}{{else}}P{{/unless}}</td>
               <td>{{poomsaefinalscore}}</td>
             </tr>
             {{/reverseEach}}
@@ -118,6 +120,20 @@
         }
       }
     }
+
+    document.addEventListener("DOMContentLoaded", function () {
+      const rows = document.querySelectorAll('.career-stats tbody tr');
+      let count = 0;
+      rows.forEach(row => {
+      const rankingCell = row.querySelector('td:nth-child(6)');
+      const typeCell = row.querySelector('td:nth-child(3)');
+      if (rankingCell && rankingCell.textContent.trim() === '1' && typeCell && typeCell.textContent.trim() === 'Kyorugi') {
+        count++;
+      }
+      });
+      document.querySelector('.golds').textContent = count;
+      console.log(`Number of rows where ranking is '1' and type is 'Kyorugi': ${count}`);
+    });
   </script>
 </body>
 </html>

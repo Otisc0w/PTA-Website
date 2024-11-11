@@ -2649,7 +2649,6 @@ app.post("/decide-kyorugi-winners/:eventid", async (req, res) => {
   const { eventid } = req.params;
 
   try {
-
     // Update the event status to "Concluded"
     const { error: updateEventStatusError } = await supabase
       .from("events")
@@ -4569,7 +4568,7 @@ app.get("/athletes-profile/:athleteid", async function (req, res) {
       .select("*")
       .eq("athleteid", athleteid)
       .order("created_at", { ascending: false })
-      .limit(1);
+      // .limit(1);
 
     if (recentmatchError) {
       return res.status(400).json({ error: recentmatchError.message });
@@ -4578,24 +4577,25 @@ app.get("/athletes-profile/:athleteid", async function (req, res) {
     // Fetch event details for each match
     const matchDataWithEventDetails = await Promise.all(
       matchdata.map(async (match) => {
-        const { data: event, error: eventError } = await supabase
-          .from("events")
-          .select("*")
-          .eq("id", match.eventid)
-          .single();
+      const { data: event, error: eventError } = await supabase
+        .from("events")
+        .select("*")
+        .eq("id", match.eventid)
+        .single();
 
-        if (eventError) {
-          console.error("Error fetching event details:", eventError.message);
-          return { ...match, eventName: null, eventDate: null, eventLocation: null, ageDivision: null };
-        }
+      if (eventError) {
+        console.error("Error fetching event details:", eventError.message);
+        return { ...match, eventName: null, eventDate: null, eventLocation: null, ageDivision: null, eventType: null };
+      }
 
-        return {
-          ...match,
-          eventName: event.name,
-          eventDate: event.date,
-          eventLocation: event.location,
-          ageDivision: event.agedivision,
-        };
+      return {
+        ...match,
+        eventName: event.name,
+        eventDate: event.date,
+        eventLocation: event.location,
+        ageDivision: event.agedivision,
+        eventType: event.eventtype,
+      };
       })
     );
 
