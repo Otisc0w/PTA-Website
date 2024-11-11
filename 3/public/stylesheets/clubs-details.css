@@ -1176,3 +1176,51 @@ h1 {
   text-decoration: none;
   list-style-type: none;
 }
+
+/*activity buttons*/
+/* Style for all buttons */
+button {
+  padding: 8px 12px;
+  font-size: 12px;
+  font-weight: normal;
+  border-radius: 5px;
+  cursor: pointer;
+  border: none;
+ 
+  transition: background-color 0.3s ease;
+}
+
+/* Different button styles */
+button.create {
+  background-color: #007bff; /* blue */
+  color: #fff;
+}
+
+button.edit {
+  background-color: #007bff; /* blue */
+  color: #fff;
+  margin-bottom: 5px;
+}
+
+button.delete {
+  background-color: #007bff; /* blue */
+  color: #fff;
+  margin-bottom: 5px;
+}
+
+button.rsvp-going {
+  background-color: #28a745; /* green */
+  color: #fff;
+  margin-top: 5px;
+}
+
+button.rsvp-notgoing {
+  background-color: #dc3545; /* red */
+  color: #fff;
+  margin-top: 5px;
+}
+
+/* Hover effect for all buttons */
+button:hover {
+  opacity: 0.9;
+}
