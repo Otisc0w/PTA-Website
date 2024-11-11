@@ -183,7 +183,6 @@
               <button type="button" onclick="rsvpActivity('{{this.id}}', true)">I'm Going</button>
               <button type="button" onclick="rsvpActivity('{{this.id}}', false)">I'm Not Going</button>
             </div>
-          </div>
         {{/each}}
           
     
@@ -382,6 +381,8 @@
     </div>
   </footer>
 
+
+  
   <script>
 
     function confirmDelete() {
@@ -554,6 +555,28 @@
     }
   };
 
+  async function rsvpActivity(activityId, going) {
+    try {
+      const response = await fetch("/rsvp-activity", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ activityId, going }),
+      });
+
+      const result = await response.json();
+      if (response.ok) {
+        alert(result.message);
+        // Optionally, reload the page or update the UI to reflect the change
+        location.reload();
+      } else {
+        alert(result.error);
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  }
   </script>
 </body>
 

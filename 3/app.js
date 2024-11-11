@@ -5295,3 +5295,79 @@ app.post("/attend-activity", async (req, res) => {
   }
 });
 
+app.post("/rsvp-activity", async (req, res) => {
+  const { activityId, going } = req.body;
+  const userId = req.session.user.id; // Assuming the user is logged in
+
+  try {
+    // Fetch the current attendees for the activity
+    const { data: activity, error } = await supabase
+      .from("club_activities")
+      .select("attendees")
+      .eq("id", activityId)
+      .single();
+
+    if (error) {
+      return res.status(400).json({ error: error.message });
+    }
+
+    let attendees = activity.attendees || [];
+
+    if (going) {
+      // Add the user if they're not already in the attendees list
+      if (!attendees.includes(userId)) {
+        attendees.push(userId);
+      }
+    } else {
+      // Remove the user if they clicked "I'm Not Going"
+      attendees = attendees.filter(id => id !== userId);
+    }
+
+    // Update the attendees field
+    const { error: updateError } = await supabase
+      .from("club_activities")
+      .update({ attendees })
+      .eq("id", activityId);
+
+    if (updateError) {
+      return res.status(400).json({ error: updateError.message });
+    }
+
+    res.status(200).json({ message: "RSVP updated successfully." });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.get("/activity-attendees/:activityId", async (req, res) => {
+  const { activityId } = req.params;
+
+  try {
+    // Fetch the activity to get the list of attendee IDs
+    const { data: activity, error: activityError } = await supabase
+      .from("club_activities")
+      .select("attendees")
+      .eq("id", activityId)
+      .single();
+
+    if (activityError) {
+      return res.status(400).json({ error: activityError.message });
+    }
+
+    const attendeeIds = activity.attendees || [];
+
+    // Fetch the names of attendees
+    const { data: attendees, error: attendeesError } = await supabase
+      .from("users") // Replace with your user table name
+      .select("id, firstname, lastname")
+      .in("id", attendeeIds);
+
+    if (attendeesError) {
+      return res.status(400).json({ error: attendeesError.message });
+    }
+
+    res.status(200).json(attendees);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
