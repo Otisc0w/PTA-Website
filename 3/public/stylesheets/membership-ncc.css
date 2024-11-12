@@ -160,3 +160,19 @@
   margin: 0;
   color: var(--text-color);
 }
+
+.error-message1{
+  color: red; 
+  text-align: center; 
+  margin-top: 20px;
+  font-weight: bold;
+  align-items: center;
+}
+
+.confirmation-message{
+  color: green; 
+  text-align: center;
+  margin-top: 20px;
+  font-weight: bold;
+  align-items: center;
+}
