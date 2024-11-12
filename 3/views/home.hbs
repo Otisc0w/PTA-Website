@@ -50,61 +50,92 @@
     <div class="left-panel"></div>
 
     <div class="main-panel">
-      <!-- Poster image section -->
-      <div class="poster">
-        <img src="/images/homepage/ptabg.png" alt="Poster" class="poster-image">
-      </div>
 
-      <div id="onboarding-container">
-        <!-- First Screen: Welcome Message -->
-        <div class="onboarding-screen" id="welcome-screen">
-          <h1>Welcome to Taekwondo World!</h1>
-          <p class="user-text">You’re now part of our incredible and dynamic community. Let's get started!</p>
-          <button class="next-btn" onclick="nextScreen('user-type-screen')">Next</button>
+      <!-- Recognition Section -->
+      <div class="recognition-section">
+        <div class="recognition-banner">
+          <h1>Recognition: Top Performers of the Year</h1>
+          <p>Our athletes are recognized for their dedication, skill, and achievements.</p>
         </div>
 
-        <!-- Second Screen: User Type Selection -->
-        <div class="onboarding-screen" id="user-type-screen" style="display: none;">
-          <h1>Choose Your Role</h1>
-          <p class="user-text">Select your user type: </p>
-          <button class="type-btn" onclick="selectUserType('athlete')">Athlete</button>
-          <button class="type-btn" onclick="selectUserType('instructor')">Instructor</button>
-          <button class="type-btn" onclick="selectUserType('admin')">Admin</button>
+        <div class="flying-banner">
+          <span>🎉 Congratulations to the Top Performers of the Year! 🎉 Keep pushing, stay dedicated, and strive for
+            excellence! Every effort brings you closer to greatness! 💪🥇</span>
         </div>
-
-        <!-- Third Screen: Options Based on User Type -->
-        <div class="onboarding-screen" id="athlete-options" style="display: none;">
-          <h1>Welcome, Athlete!</h1>
-          <p class="user-text">Here are some options to get started:</p>
-          <ul>
-            <li><a href="/clubs">Join a Club</a></li>
-            <li><a href="/membership-ncc">Register for NCC</a></li>
-            <li><a href="/events">View Events</a></li>
-          </ul>
-          <button class="finish-btn" onclick="resetOnboarding()">Finish</button>
-
-        </div>
-
-        <div class="onboarding-screen" id="instructor-options" style="display: none;">
-          <h1>Welcome, Instructor!</h1>
-          <p>Here are some options to get started:</p>
-          <ul>
-            <li><a href="/membership-instructor">Apply for Instructor License</a></li>
-            <li><a href="/membership-club">Register a Club</a></li>
-          </ul>
-          <button class="finish-btn" onclick="resetOnboarding()">Finish</button>
-
-
-        </div>
-
-        <div class="onboarding-screen" id="admin-options" style="display: none;">
-          <h1>Welcome, Admin!</h1>
-          <p class="user-text">Access the home page to manage everything.</p>
-          <button class="finish-btn" onclick="resetOnboarding()">Finish</button>
-
-
+        <div class="recognition-cards">
+          <div class="card">
+            <img src="/images/athlete1.jpg" alt="Athlete 1 Portrait" class="performer-portrait">
+            <h3>Athlete 1</h3>
+            <p>Belt Level: Black Belt</p>
+            <p>Ranking Points: 2000</p>
+          </div>
+          <div class="card">
+            <img src="/images/athlete2.jpg" alt="Athlete 2 Portrait" class="performer-portrait">
+            <h3>Athlete 2</h3>
+            <p>Belt Level: Red Belt</p>
+            <p>Ranking Points: 1800</p>
+          </div>
+          <div class="card">
+            <img src="/images/athlete3.webp" alt="Athlete 3 Portrait" class="performer-portrait">
+            <h3>Athlete 3</h3>
+            <p>Belt Level: Blue Belt</p>
+            <p>Ranking Points: 1600</p>
+          </div>
         </div>
       </div>
+      <!-- Poster and Onboarding Container Wrapper -->
+      <div class="poster-onboarding-wrapper">
+        <div class="poster">
+          <img src="/images/homepage/ptabg.png" alt="Poster" class="poster-image">
+        </div>
+
+        <div id="onboarding-container">
+          <!-- First Screen: Welcome Message -->
+          <div class="onboarding-screen" id="welcome-screen">
+            <h1>Welcome to Taekwondo World!</h1>
+            <p class="user-text">You’re now part of our incredible and dynamic community. Let's get started!</p>
+            <button class="next-btn" onclick="nextScreen('user-type-screen')">Next</button>
+          </div>
+
+          <!-- Second Screen: User Type Selection -->
+          <div class="onboarding-screen" id="user-type-screen" style="display: none;">
+            <h1>Choose Your Role</h1>
+            <p class="user-text">Select your user type: </p>
+            <button class="type-btn" onclick="selectUserType('athlete')">Athlete</button>
+            <button class="type-btn" onclick="selectUserType('instructor')">Instructor</button>
+            <button class="type-btn" onclick="selectUserType('admin')">Admin</button>
+          </div>
+
+          <!-- Third Screen: Options Based on User Type -->
+          <div class="onboarding-screen" id="athlete-options" style="display: none;">
+            <h1>Welcome, Athlete!</h1>
+            <p class="user-text">Here are some options to get started:</p>
+            <ul>
+              <li><a href="/clubs">Join a Club</a></li>
+              <li><a href="/membership-ncc">Register for NCC</a></li>
+              <li><a href="/events">View Events</a></li>
+            </ul>
+            <button class="finish-btn" onclick="resetOnboarding()">Finish</button>
+          </div>
+
+          <div class="onboarding-screen" id="instructor-options" style="display: none;">
+            <h1>Welcome, Instructor!</h1>
+            <p>Here are some options to get started:</p>
+            <ul>
+              <li><a href="/membership-instructor">Apply for Instructor License</a></li>
+              <li><a href="/membership-club">Register a Club</a></li>
+            </ul>
+            <button class="finish-btn" onclick="resetOnboarding()">Finish</button>
+          </div>
+
+          <div class="onboarding-screen" id="admin-options" style="display: none;">
+            <h1>Welcome, Admin!</h1>
+            <p class="user-text">Access the home page to manage everything.</p>
+            <button class="finish-btn" onclick="resetOnboarding()">Finish</button>
+          </div>
+        </div>
+      </div>
+
       <!-- Upcoming events section -->
 
       <div class="upcoming-events">
