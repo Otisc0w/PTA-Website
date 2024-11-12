@@ -63,7 +63,8 @@
 							</div>
 							<div class="form-group">
 								<label for="middlename">M.I.</label>
-								<input type="text" id="middlename" name="middlename" value="{{user.middlename}}" required>
+								<input type="text" id="middlename" name="middlename" value="{{user.middlename}}"
+									required>
 							</div>
 							<div class="form-group">
 								<label for="lastname">Last Name</label>
@@ -92,7 +93,8 @@
 						<div class="form-row">
 							<div class="form-group">
 								<label for="phonenum">Mobile Number</label>
-								<input type="tel" id="phonenum" name="phonenum" pattern="\d{4}\d{3}\d{4}" placeholder="0912-345-6789" required>
+								<input type="tel" id="phonenum" name="phonenum" pattern="\d{4}\d{3}\d{4}"
+									placeholder="0912-345-6789" required>
 							</div>
 							<div class="form-group">
 								<label for="email">E-mail</label>
@@ -121,14 +123,17 @@
 									<option value="Region VI – Western Visayas">Region VI – Western Visayas</option>
 									<option value="Region VII – Central Visayas">Region VII – Central Visayas</option>
 									<option value="Region VIII – Eastern Visayas">Region VIII – Eastern Visayas</option>
-									<option value="Region IX – Zamboanga Peninsula">Region IX – Zamboanga Peninsula</option>
+									<option value="Region IX – Zamboanga Peninsula">Region IX – Zamboanga Peninsula
+									</option>
 									<option value="Region X – Northern Mindanao">Region X – Northern Mindanao</option>
 									<option value="Region XI – Davao Region">Region XI – Davao Region</option>
 									<option value="Region XII – SOCCSKSARGEN">Region XII – SOCCSKSARGEN</option>
 									<option value="Region XIII – Caraga">Region XIII – Caraga</option>
 									<option value="NCR – National Capital Region">NCR – National Capital Region</option>
-									<option value="CAR – Cordillera Administrative Region">CAR – Cordillera Administrative Region</option>
-									<option value="BARMM – Bangsamoro Autonomous Region in Muslim Mindanao">BARMM – Bangsamoro Autonomous Region in Muslim Mindanao</option>
+									<option value="CAR – Cordillera Administrative Region">CAR – Cordillera
+										Administrative Region</option>
+									<option value="BARMM – Bangsamoro Autonomous Region in Muslim Mindanao">BARMM –
+										Bangsamoro Autonomous Region in Muslim Mindanao</option>
 								</select>
 							</div>
 						</div>
@@ -168,7 +173,8 @@
 						</div>
 
 						<div class="form-row button-group">
-							<button class="cancel-button" type="button" onclick="window.location.href='membership';">Cancel</button>
+							<button class="cancel-button" type="button"
+								onclick="window.location.href='membership';">Cancel</button>
 							<button class="next-button" type="button" onclick="showNextPage()">Next</button>
 						</div>
 					</div>
@@ -193,7 +199,8 @@
 						<div class="form-row">
 							<div class="form-group">
 								<label for="instructormobile">Instructor Mobile Number</label>
-								<input type="tel" id="instructormobile" name="instructormobile" pattern="\d{4}\d{3}\d{4}" placeholder="0912-345-6789" required>
+								<input type="tel" id="instructormobile" name="instructormobile"
+									pattern="\d{4}\d{3}\d{4}" placeholder="0912-345-6789" required>
 							</div>
 							<div class="form-group">
 								<label for="instructoremail">Instructor E-mail</label>
@@ -234,8 +241,14 @@
 								<label for="terms">I AGREE TO THE TERMS OF SERVICE</label>
 								<p>Certification, Waiver and Release Form<br>
 									1. I hereby certify that the above information is true and correct.<br>
-									2. I acknowledge, fully understand and will abide by the rules and regulations of PTA.<br>
-									3. I do hereby waive, release and discharge any and all liabilities from death, injuries or damages arising from my own negligence, furthermore I or my family, will waive and release any or all rights, claims for damages from the entire PTA body including the PTA Officers, PTA competition officials, PTA instructors, or any department/facility of PTA like PTA Admin, PTA Competitions Management Team or Digital Team from any Taekwondo related issues.
+									2. I acknowledge, fully understand and will abide by the rules and regulations of
+									PTA.<br>
+									3. I do hereby waive, release and discharge any and all liabilities from death,
+									injuries or damages arising from my own negligence, furthermore I or my family, will
+									waive and release any or all rights, claims for damages from the entire PTA body
+									including the PTA Officers, PTA competition officials, PTA instructors, or any
+									department/facility of PTA like PTA Admin, PTA Competitions Management Team or
+									Digital Team from any Taekwondo related issues.
 								</p>
 							</div>
 						</div>
@@ -249,12 +262,19 @@
 
 						<div class="form-row button-group">
 							<button class="cancel-button" type="button" onclick="showPreviousPage()">Previous</button>
-							<button class="next-button" type="submit">Submit</button>
+							<button class="next-button" type="submit"
+								onclick="showConfirmationMessage(event)">Submit</button>
 						</div>
 
 						<p id="error-message" style="color:red;"></p>
 					</div>
 				</form>
+
+				<div id="confirmation-message" class="hidden"
+					style="color: green; text-align: center; margin-top: 20px;">
+					Transaction was successful. Thank you!
+				</div>
+
 			</div>
 		</div>
 	</div>
@@ -338,6 +358,43 @@
 				}
 			});
 		});
+
+		function showConfirmationMessage(event) {
+	event.preventDefault(); // Prevent form submission to validate fields
+	
+	const form = document.getElementById("nccform");
+	const confirmationMessage = document.getElementById("confirmation-message");
+	const errorMessage = document.getElementById("error-message");
+	
+	// Hide both messages initially
+	confirmationMessage.classList.add("hidden");
+	errorMessage.classList.add("hidden");
+
+	// Check if all required fields are filled out
+	let allFieldsFilled = true;
+	const requiredFields = form.querySelectorAll("[required]");
+	requiredFields.forEach((field) => {
+		if (!field.value) {
+			allFieldsFilled = false;
+			field.classList.add("error"); // Optionally add styling to highlight empty fields
+		} else {
+			field.classList.remove("error");
+		}
+	});
+
+	// If all fields are filled, show confirmation and submit form after delay
+	if (allFieldsFilled) {
+		confirmationMessage.classList.remove("hidden");
+		setTimeout(() => {
+			form.submit();
+		}, 2000); // Adjust the delay as needed
+	} else {
+		// Show error message if some fields are missing
+		errorMessage.classList.remove("hidden");
+	}
+}
+
+
 	</script>
 
 </body>
