@@ -58,15 +58,15 @@
             <div class="form-row">
               <div class="form-group">
                 <label for="firstname">First Name</label>
-                <input type="text" id="firstname" name="firstname" value="{{user.firstname}}">
+                <input type="text" id="firstname" name="firstname" value="{{user.firstname}}"required>
               </div>
               <div class="form-group">
                 <label for="middlename">M.I.</label>
-                <input type="text" id="middlename" name="middlename" value="{{user.middlename}}">
+                <input type="text" id="middlename" name="middlename" value="{{user.middlename}}"required>
               </div>
               <div class="form-group">
                 <label for="lastname">Last Name</label>
-                <input type="text" id="lastname" name="lastname" value="{{user.lastname}}">
+                <input type="text" id="lastname" name="lastname" value="{{user.lastname}}"required>
               </div>
             </div>
 
@@ -80,22 +80,22 @@
               </div>
               <div class="form-group">
                 <label for="bday">Birthday</label>
-                <input type="date" id="bday" name="bday">
+                <input type="date" id="bday" name="bday" required>
               </div>
             </div>
 
             <div class="form-row">
               <div class="form-group">
                 <label for="phonenum">Mobile Number</label>
-                <input type="tel" id="phonenum" name="phonenum" pattern="\d{4}\d{3}\d{4}" placeholder="0912-345-6789">
+                <input type="tel" id="phonenum" name="phonenum" pattern="\d{4}\d{3}\d{4}" placeholder="0912-345-6789" required>
               </div>
               <div class="form-group">
                 <label for="email">E-mail</label>
-                <input type="email" id="email" name="email" value="{{user.email}}">
+                <input type="email" id="email" name="email" value="{{user.email}}"required>
               </div>
               <div class="form-group">
                 <label for="confemail">Confirm E-mail</label>
-                <input type="email" id="confemail" name="confemail">
+                <input type="email" id="confemail" name="confemail"required>
               </div>
             </div>
 
@@ -135,37 +135,37 @@
             <div class="form-row">
               <div class="form-group">
                 <label for="birthcert">Birth Certificate NSO/PSA</label>
-                <input type="file" id="birthcert" name="birthcert">
+                <input type="file" id="birthcert" name="birthcert" required>
               </div>
               <div class="form-group">
                 <label for="educproof">Proof of College/Highschool Education (2 years)</label>
-                <input type="file" id="educproof" name="educproof">
+                <input type="file" id="educproof" name="educproof" required>
               </div>
               <div class="form-group">
                 <label for="poomsaecert">Poomsae Course Certificate</label>
-                <input type="file" id="poomsaecert" name="poomsaecert">
+                <input type="file" id="poomsaecert" name="poomsaecert" required>
               </div>
               <div class="form-group">
                 <label for="kukkiwoncert">1st Dan Kukkiwon Certificate</label>
-                <input type="file" id="kukkiwoncert" name="kukkiwoncert">
+                <input type="file" id="kukkiwoncert" name="kukkiwoncert" required>
               </div>
               <div class="form-group">
                 <label for="ptablackbeltcert">2nd Dan PTA Blackbelt Certificate</label>
-                <input type="file" id="ptablackbeltcert" name="ptablackbeltcert">
+                <input type="file" id="ptablackbeltcert" name="ptablackbeltcert" required>
               </div>
               <div class="form-group">
                 <label for="portrait">1:1 Instructor Picture</label>
-                <input type="file" id="portrait" name="portrait">
+                <input type="file" id="portrait" name="portrait" required>
               </div>
               <div class="form-group">
                 <label for="signature">Sign Here</label>
-                <input type="text" id="signature" name="signature">
+                <input type="text" id="signature" name="signature" required>
               </div>
             </div>
 
             <div class="form-row">
               <div class="form-group">
-                <input type="checkbox" id="terms" name="terms">
+                <input type="checkbox" id="terms" name="terms"required>
 								<label for="terms">I AGREE TO THE TERMS OF SERVICE</label>
 								<p>Certification, Waiver and Release Form<br>
 									1. I hereby certify that the above information is true and correct.<br>
@@ -177,19 +177,24 @@
 
 						<div class="form-row">
 							<div class="form-group">
-								<input type="checkbox" id="waiver" name="waiver">
+								<input type="checkbox" id="waiver" name="waiver" required>
 								<label for="waiver">I AGREE TO THIS WAIVER AND RELEASE FORM</label>
 							</div>
 						</div>
 
 						<div class="form-row button-group">
 							<button class="cancel-button" type="button" onclick="showPreviousPage()">Previous</button>
-							<button class="next-button" type="submit">Submit</button>
+							<button class="next-button" type="submit" onclick="showConfirmationMessage(event)">Submit</button>
+
 						</div>
 
 						<p id="error-message" style="color:red;"></p>
 					</div>
 				</form>		
+
+        <div id="error-message1" class="hidden">Transaction was unsuccessful. Please answer all the fields.</div>
+				<div id="confirmation-message" class="hidden">Please allow up to 2 weeks to receive an update on your membership status.</div>
+
       </div>
     </div>
   </div>
@@ -259,6 +264,43 @@
 
   // Initial display setup
   showPage(currentPage);
+function showConfirmationMessage(event) {
+	event.preventDefault(); // Prevent form submission to validate fields
+	
+	const form = document.getElementById("nccform");
+	const confirmationMessage = document.getElementById("confirmation-message");
+	const errorMessage = document.getElementById("error-message");
+
+	// Hide both confirmation and error messages initially
+	confirmationMessage.classList.add("hidden");
+	errorMessage.classList.add("hidden");
+
+	// Check if all required fields are filled out
+	let allFieldsFilled = true;
+	const requiredFields = form.querySelectorAll("[required]");
+	requiredFields.forEach((field) => {
+		if (!field.value) {
+			allFieldsFilled = false;
+			field.classList.add("error"); // Optionally highlight empty fields
+			field.reportValidity(); // Display validation message
+		} else {
+			field.classList.remove("error");
+		}
+	});
+
+	// If all fields are filled, show confirmation and submit form after delay
+	if (allFieldsFilled) {
+		confirmationMessage.classList.remove("hidden");
+		setTimeout(() => {
+			form.submit();
+		}, 2000); // Adjust the delay as needed
+	} else {
+		// Show general error message if some fields are missing
+		errorMessage.textContent = "Transaction was unsuccessful. Please answer all the fields.";
+		errorMessage.classList.remove("hidden");
+	}
+}
+
 </script>
 
   
