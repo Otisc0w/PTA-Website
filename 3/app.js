@@ -2644,14 +2644,18 @@ app.post("/next-kyorugi-round/:eventid", async (req, res) => {
     }
 
     // Update the current round in the events table
-    const { error: updateRoundError } = await supabase
+
+    console.log("MATCHES LENGTHELTHELHTLETLJFKLD:", matches.length);
+    if (matches.length <= 2) {
+      const { error: updateRoundError } = await supabase
       .from("events")
-      .update({ currentround: nextRound })
+      .update({ currentround: 2 })
       .eq("id", eventid);
 
-    if (updateRoundError) {
+      if (updateRoundError) {
       console.error("Error updating current round:", updateRoundError.message);
       return res.status(500).send("Error updating current round");
+      }
     }
 
     res.redirect(`/events-details/${eventid}`);
