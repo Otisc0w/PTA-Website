@@ -3,31 +3,13 @@
 
 .upcoming-events {
     overflow-x: auto;
-    /* Enable horizontal scrolling */
     overflow-y: hidden;
-    /* Hide vertical overflow */
     white-space: nowrap;
-    /* Prevent line breaks */
     width: auto;
 }
 
 .upcoming-events .event {
     display: inline-block;
-    /* Display events in a single line */
-}
-
-.poster {
-    text-align: center;
-    margin-bottom: 20px;
-}
-
-.poster-image {
-    width: 100%;
-    height: auto;
-    max-width: 1200px;
-    /* Adjust max-width as needed */
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .home-container {
@@ -206,58 +188,72 @@
     /* Add top margin to prevent it from sticking to the navbar */
 }
 
-/* Full-screen overlay for onboarding container */
+/*Onboarding*/
+.poster-onboarding-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    overflow: hidden;
+}
+
+.poster {
+    position: relative;
+    width: 100%;
+}
+
+.poster img {
+    width: 100%;
+    height: auto;
+    max-width: 1200px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
 #onboarding-container {
-    margin-top: 20px;
-    /* Adds space between the image and onboarding */
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
-    text-align: center;
-    background-color: #444;
-    /* Optional: set a background color */
-    padding: 20px;
-    border-radius: 12px;
-    /* Optional: rounded corners */
-    width: 80%;
-    /* Adjust width as needed */
-    max-width: 800px;
-    margin-left: auto;
-    margin-right: auto;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-    /* Add shadow for depth */
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.6);
     color: #fff;
-    /* Make text color white for readability */
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
-/* Font sizes for onboarding text */
 #onboarding-container h1 {
     font-size: 2.5em;
-    /* Larger font for the title */
     margin-bottom: 20px;
     font-weight: bold;
+    align-items: center;
 }
 
 #onboarding-container p {
     font-size: 1.2em;
-    /* Larger font for the paragraph */
+    align-items: center;
     margin-bottom: 30px;
 }
 
-
-/* Style for the onboarding image */
 .onboarding-image {
     max-width: 80%;
     height: auto;
     margin-bottom: 20px;
-    /* Space between image and content */
+    align-items: center;
 }
 
-/* Center the container content */
 .onboarding-screen {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    max-width: 600px;
+    width: 100%;
+    background-color: rgba(42, 37, 37, 0.6);
 }
 
 .next-btn,
@@ -280,41 +276,31 @@
     background-color: #0052cc;
 }
 
-/* Style for links in the onboarding screen */
+
 #onboarding-container a {
     color: #ffffff;
-    /* Set to white for better visibility */
     text-decoration: none;
 }
 
 #onboarding-container a:hover {
     color: #ffcc00;
-    /* Change to yellow on hover for contrast */
     text-decoration: underline;
-    /* Add underline on hover */
     padding: 10px;
 }
 
 #onboarding-container ul {
     list-style-type: none;
-    /* Remove bullet points */
     padding: 0;
 }
 
 #onboarding-container ul li {
     font-size: 1.2em;
-    /* Increase font size */
     margin-bottom: 10px;
-    /* Add space between items */
     color: #ffffff;
-    /* Ensure text is visible */
 }
 
-
-/* Button style for Finish button */
 .finish-btn {
     background-color: #007bff;
-    /* Set to a visible blue color */
     color: #ffffff;
     padding: 10px 20px;
     border: none;
@@ -324,11 +310,111 @@
 
 .finish-btn:hover {
     background-color: #0056b3;
-    /* Darken on hover */
 }
 
 .user-text {
     font-size: 2em;
     font-weight: bold;
     color: #ffffff;
+}
+
+/*Recognition*/
+.recognition-section {
+    margin-top: 40px;
+    height: auto;
+}
+
+.recognition-banner {
+    text-align: center;
+    padding: 15px;
+    background: #444;
+    color: #FFFFFF;
+    border-radius: 10px;
+    background-size: 200% 200%;
+    min-height: 60px;
+    position: relative;
+    z-index: 10;
+    margin: 0 auto;
+    width: 95%;
+    max-width: 1200px;
+}
+
+.recognition-banner h1 {
+    font-size: 3em;
+    font-weight: bold;
+    margin: 0;
+}
+
+.recognition-banner p {
+    font-size: 1.2em;
+    font-weight: normal;
+    margin-top: 5px;
+    opacity: 1;
+}
+
+.recognition-cards {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+    padding: 20px;
+}
+
+.card {
+    background-color: #555;
+    color: #fff;
+    padding: 20px;
+    width: 250px;
+    text-align: center;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.card img {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    margin-bottom: 15px;
+}
+
+.card h3 {
+    font-size: 1.4em;
+    margin: 10px 0;
+}
+
+.card p {
+    margin: 5px 0;
+}
+
+/* Flying Banner */
+.flying-banner {
+    position: relative;
+    overflow: hidden;
+    background-color: #444;
+    color: #FFFFFF;
+    text-align: center;
+    padding: 10px;
+    font-size: 1.5em;
+    font-weight: bold;
+    white-space: nowrap;
+    width: 100%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    margin-top: 20px;
+}
+
+.flying-banner span {
+    display: inline-block;
+    padding-right: 50%;
+    animation: flyBanner 30s linear infinite;
+}
+
+@keyframes flyBanner {
+    0% {
+        transform: translateX(100%);
+    }
+
+    100% {
+        transform: translateX(-100%);
+    }
 }
