@@ -85,6 +85,7 @@
               {{else}}
               <button class="edit-button" onclick="openModal()"></button>
               {{/if}}
+              <!--
               <button class="deleteevent-button" onclick="confirmDelete()"></button>
               <div class="confirmdeletescreen" style="display: none;">
                 Are you sure you <br>want to delete this event?<br>
@@ -92,12 +93,13 @@
                   <button class="yesdelete" type="submit">Yes</button>
                 </form>
                 <button class="nodelete" onclick="cancelDelete()">No</button>
-              </div>
-              {{/if}}
+              </div> -->
+              {{/if}} 
             </div>
           </div>
 
           <p>{{event.description}}</p>
+          <p><strong>Event Date:</strong> {{formatDate event.date "MMMM D, YYYY"}}</p>
           <p><strong>Time:</strong> {{formatTime event.starttime "h:mm A"}} - {{formatTime event.endtime "h:mm A"}}</p>
           <p><strong>Location:</strong> {{event.location}}</p>
           <p><strong>Gender:</strong> {{event.gender}}</p>
@@ -915,16 +917,16 @@
     function closeannounceModal() {
       document.getElementById('announceModal').style.display = 'none';
     }
-
-    function confirmDelete() {
-      document.querySelector('.confirmdeletescreen').style.display = 'block';
-      document.querySelector('.deleteevent-button').style.display = 'none';
-    }
-
-    function cancelDelete() {
-      document.querySelector('.confirmdeletescreen').style.display = 'none';
-      document.querySelector('.deleteevent-button').style.display = 'block';
-    }
+    /*
+        function confirmDelete() {
+          document.querySelector('.confirmdeletescreen').style.display = 'block';
+          document.querySelector('.deleteevent-button').style.display = 'none';
+        }
+    
+        function cancelDelete() {
+          document.querySelector('.confirmdeletescreen').style.display = 'none';
+          document.querySelector('.deleteevent-button').style.display = 'block';
+        }*/
 
     window.onclick = function (event) {
       if (event.target == document.getElementById('announceModal')) {
