@@ -176,9 +176,20 @@
             <p><strong>Time:</strong> {{this.time}}</p>
             {{#if (eq ../club.registeredby ../user.id)}}
             <button type="button" class="edit" onclick="editActivity('{{this.id}}')">Edit</button>
-            <button type="button" class="delete" onclick="deleteActivity('{{this.id}}')">Delete</button>
+            <form action="/delete-activity/{{this.id}}" method="POST" onsubmit="return confirm('Are you sure you want to delete this activity?');">
+  <button type="submit" class="delete">Delete</button>
+</form>
+
             {{/if}}
 
+           <div class="attendees-list">
+              <h4>Attendees:</h4>
+                 <ul>
+                  {{#each this.attendees}}
+                  <li>{{this.firstname}} {{this.lastname}}</li>
+                  {{/each}}
+                </ul>
+         </div>
             <div class="rsvp-buttons">
               <button type="button" class="rsvp-going" onclick="rsvpActivity('{{this.id}}', true)">I'm Going</button>
               <button type="button" class="rsvp-notgoing" onclick="rsvpActivity('{{this.id}}', false)">I'm Not Going</button>
@@ -212,8 +223,36 @@
           </form>
         </div>
       </div>
-
     </div>
+
+    <!-- Edit Activity Modal -->
+  <div id="editActivityModal" class="modal" style="display: none;">
+    <div class="modal-content">
+      <span class="close" onclick="closeEditActivityModal()">&times;</span>
+      <h3>Edit Activity</h3>
+      <form id="editActivityForm" action="" method="POST">
+        <input type="hidden" name="activityid" id="editActivityId">
+        <div>
+          <label for="name">Activity Name:</label>
+          <input type="text" name="name" id="editActivityName" required>
+        </div>
+        <div>
+          <label for="description">Description:</label>
+          <textarea name="description" id="editActivityDescription"></textarea>
+        </div>
+        <div>
+          <label for="date">Date:</label>
+          <input type="date" name="date" id="editActivityDate" required>
+        </div>
+        <div>
+          <label for="time">Time:</label>
+          <input type="time" name="time" id="editActivityTime" required>
+        </div>
+        <button type="submit">Update Activity</button>
+      </form>
+    </div>
+  </div>
+</div>
 
     <div id="announceModal" class="modal">
       <div class="modal-content">
@@ -356,7 +395,7 @@
       </tbody>
     </table>
   </div>
-
+</div>
 
 
   <footer>
@@ -576,6 +615,30 @@
     } catch (error) {
       console.error("Error:", error);
     }
+  }
+
+   // Function to open and populate the Edit Activity Modal
+  function openEditActivityModal(id, name, description, date, time) {
+    document.getElementById('editActivityId').value = id;
+    document.getElementById('editActivityName').value = name;
+    document.getElementById('editActivityDescription').value = description;
+    document.getElementById('editActivityDate').value = date;
+    document.getElementById('editActivityTime').value = time;
+    document.getElementById('editActivityForm').action = `/update-activity/${id}`;
+    document.getElementById('editActivityModal').style.display = 'block';
+  }
+
+  function closeEditActivityModal() {
+    document.getElementById('editActivityModal').style.display = 'none';
+  }
+
+  // Function to open the Create Activity Modal
+  function openActivityModal() {
+    document.getElementById("activityModal").style.display = "block";
+  }
+
+  function closeActivityModal() {
+    document.getElementById("activityModal").style.display = "none";
   }
   </script>
 </body>

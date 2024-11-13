@@ -5427,3 +5427,40 @@ app.get("/activity-attendees/:activityId", async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
+
+app.post('/delete-activity/:id', async (req, res) => {
+  const { id } = req.params;
+
+  const { data, error } = await supabase
+      .from('club_activities')
+      .delete()
+      .eq('id', id);
+
+  if (error) {
+      console.error("Error deleting activity:", error);
+      res.status(500).send("Error deleting activity");
+  } else {
+      console.log("Activity deleted:", data);
+      res.redirect('/clubs');
+  }
+});
+
+
+
+// Route to display the edit form
+app.get('/edit-activity/:id', async (req, res) => {
+  const { id } = req.params;
+
+  const { data: activity, error } = await supabase
+      .from('club_activities')
+      .select('*')
+      .eq('id', id)
+      .single();
+
+  if (error) {
+      console.error("Error fetching activity:", error);
+      res.status(500).send("Error fetching activity");
+  } else {
+      res.render('edit-activity', { activity });
+  }
+});

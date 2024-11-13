@@ -3,6 +3,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  max-width: 100%;
 }
 
 .events-container img {
@@ -1144,6 +1145,9 @@ h1 {
 .activity-card p {
   font-size: 16px;
   margin-bottom: 10px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis
 }
 
 .activity-card .activity-date {
@@ -1222,4 +1226,25 @@ button.rsvp-notgoing {
 /* Hover effect for all buttons */
 button:hover {
   opacity: 0.9;
+}
+
+.attendees-list {
+  margin-top: 10px;
+}
+
+.attendees-list h4 {
+  font-size: 16px;
+  font-weight: bold;
+  color: #fff;
+}
+
+.attendees-list ul {
+  list-style: none;
+  padding: 0;
+  margin: 5px 0;
+}
+
+.attendees-list li {
+  color: #ccc;
+  font-size: 14px;
 }
