@@ -124,33 +124,37 @@ body {
     background-color: #333;
     color: #fff;
     display: flex;
-    justify-content: space-between;
     align-items: center;
     padding: 20px;
     height: 100px;
-    margin-top: auto; 
+    margin-top: 0;
 }
 
-.footer-content .pta-logo img {
-    height: 100%; 
+.footer-content .pta-logo {
+    margin-right: auto; /* Aligns logo to the left */
 }
+
 
 .footer-content .contact-info {
     flex: 1;
     text-align: center;
     padding: 0 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .footer-content .contact-info p {
     margin: 5px 0;
+    font-weight: bold;
 }
 
 .footer-content .social-media {
     display: flex;
     flex-direction: column;
     align-items: flex-end;
+    margin-left: auto; /* Aligns social media icons to the right */
 }
-
 .footer-content .social-media p {
     margin-bottom: 5px;
 }
@@ -158,6 +162,7 @@ body {
 .footer-content .social-media .icons {
     display: flex;
     align-items: center;
+    margin-top: 5px;
 }
 
 .footer-content .social-media a {
@@ -166,6 +171,7 @@ body {
 
 .footer-content .social-media img {
     height: 30px;
+    margin-left: 10px; /* Space between social media icons */
 }
 
 .notifications {
