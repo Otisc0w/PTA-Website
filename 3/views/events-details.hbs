@@ -208,7 +208,7 @@
               <label for="cancelmsg">Cancellation Notice:</label>
               <textarea id="cancelmsg" name="cancelmsg" rows="4" required></textarea>
             </div>
-            <button type="submit" class="submit-cancel-button">Submit Cancellation</button>
+            <button type="submit" >Submit Cancellation</button>
           </form>
         </div>
       </div>
@@ -220,8 +220,7 @@
         <div>
           {{#if (eq event.status 'Cancelled')}}
           <h1 style="color: red">This event has been CANCELLED</h1>
-          <p><strong>Reason for Cancellation:</strong> {{event.cancellationNotice}}</p>
-          <p><strong>Cancellation Details:</strong> {{event.reasonForCancellation}}</p>
+          <p><strong>Reason for Cancellation:</strong> {{event.cancelmsg}}</p>
           {{#if event.rescheduleDate}}
           <p><strong>Rescheduled Date:</strong> {{event.rescheduleDate}}</p>
           {{/if}}
@@ -927,74 +926,6 @@
       }
     }
 
-    function toggleCancellationFields() {
-      const eventStatus = document.getElementById("eventstatus").value;
-      const defaultFields = document.getElementById("defaultFields");
-      const cancellationFields = document.getElementById("cancellationFields");
-      const defaultSubmitButton = document.querySelector(".default-submit-button");
-      const cancelSubmitButton = document.querySelector(".cancel-submit-button");
-
-      if (eventStatus === "Cancelled") {
-        // Show cancellation fields, hide default fields and submit button
-        defaultFields.style.display = "none";
-        cancellationFields.style.display = "block";
-        defaultSubmitButton.style.display = "none";
-        cancelSubmitButton.style.display = "inline-block";
-      } else {
-        // Show default fields, hide cancellation fields and use default submit button
-        defaultFields.style.display = "block";
-        cancellationFields.style.display = "none";
-        defaultSubmitButton.style.display = "inline-block";
-        cancelSubmitButton.style.display = "none";
-      }
-    }
-
-    // Call the function on page load to set the correct state if the status is pre-selected
-    document.addEventListener("DOMContentLoaded", toggleCancellationFields);
-
-    document.getElementById('cancellationForm').addEventListener('submit', async function (event) {
-      event.preventDefault(); // Prevent default form submission
-
-      // Get form data
-      const cancellationNotice = document.getElementById('cancellationNotice').value;
-      const reasonForCancellation = document.getElementById('reasonForCancellation').value;
-      const rescheduleDate = document.getElementById('rescheduleDate').value;
-      const eventId = "{{event.id}}"; // Replace with actual event ID if needed
-
-      try {
-        // Send POST request to submit the cancellation data
-        const response = await fetch(`/update-event/${eventId}`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            status: 'Cancelled',
-            cancellationNotice,
-            reasonForCancellation,
-            rescheduleDate
-          })
-        });
-
-        if (response.ok) {
-          // Update the eventmiddleside section with cancellation details
-          const eventMiddleSide = document.getElementById('eventMiddleSide');
-          eventMiddleSide.innerHTML = `
-        <h1 style="color: red">This event has been CANCELLED</h1>
-        <p><strong>Reason for Cancellation:</strong> ${cancellationNotice}</p>
-        <p><strong>Cancellation Details:</strong> ${reasonForCancellation}</p>
-        ${rescheduleDate ? `<p><strong>Rescheduled Date:</strong> ${rescheduleDate}</p>` : ''}
-      `;
-
-          // Optionally close the modal if open
-          closeModal();
-        } else {
-          console.error('Failed to submit cancellation:', response.statusText);
-          alert('There was an issue submitting the cancellation. Please try again.');
-        }
-      } catch (error) {
-        console.error('Error:', error);
-        alert('An error occurred while submitting the cancellation.');
-      }
-    });
 
   </script>
 </body>
