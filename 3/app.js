@@ -2288,26 +2288,26 @@ app.post("/update-event", upload.single("eventpicture"), async (req, res) => {
   }
 });
 
-app.post("/delete-event/:id", async (req, res) => {
-  const { id } = req.params;
+app.post("/cancel-event/:id", async (req, res) => {
+  const { id, cancelmsg } = req.params;
 
   if (!req.session.user) {
     return res.status(401).send("Unauthorized: No user logged in");
   }
 
   try {
-    // Delete the event from the database
+    // Update the event status to "Cancelled"
     const { error } = await supabase
       .from("events")
-      .delete()
+      .update({ status: "Cancelled", cancelmsg })
       .eq("id", id);
 
     if (error) {
-      console.error("Error deleting event:", error.message);
-      return res.status(500).send("Error deleting event");
+      console.error("Error cancelling event:", error.message);
+      return res.status(500).send("Error cancelling event");
     }
 
-    res.redirect("/events");
+    res.redirect(`/events-details/${id}`);
   } catch (error) {
     console.error("Server error:", error.message);
     res.status(500).json({ error: error.message });
@@ -2904,9 +2904,15 @@ app.post("/next-poomsae-round/:eventid", async (req, res) => {
     }
 
     // Determine the players who advance to the next round based on their scores
-    const advancingPlayers = players
-      .sort((a, b) => b.totalscore - a.totalscore)
-      .slice(0, players.length >= 35 ? 12 : 8); // 12 advance if 35 or more participants, else 8 advance
+      const advancingPlayers = players
+        .sort((a, b) => b.totalscore - a.totalscore)
+        .map((player, index) => {
+        if (players.length >= 35) {
+          return index < 12 ? player : { ...player, ranking: 0 };
+        } else {
+          return index < 8 ? player : { ...player, ranking: 0 };
+        }
+        });
 
     const nextRound = currentRound + 1;
 
@@ -2922,6 +2928,7 @@ app.post("/next-poomsae-round/:eventid", async (req, res) => {
             round: nextRound,
             name: player.name,
             totalscore: player.totalscore, // Carry over the total score
+            ranking: player.ranking,
           },
         ]);
 
@@ -3008,13 +3015,13 @@ app.post("/decide-poomsae-winners/:eventid", async (req, res) => {
     }
 
     // Update the ranking for all players 
-    for (let i = 0; i < players.length; i++) {
+    for (let i = 0; i < sortedPlayers.length; i++) {
       const ranking = i < 4 ? i + 1 : 0; // Assign ranking 1-4, and 0 for others
-      players[i].ranking = ranking; // Ensure ranking is set on the player object
+      sortedPlayers[i].ranking = ranking; // Ensure ranking is set on the player object
       const { error: updateError } = await supabase
       .from("poomsae_players")
       .update({ ranking })
-      .eq("id", players[i].id);
+      .eq("id", sortedPlayers[i].id);
 
       if (updateError) {
       console.error("Error updating ranking:", updateError.message);
@@ -3023,23 +3030,23 @@ app.post("/decide-poomsae-winners/:eventid", async (req, res) => {
     }
 
     // Insert each player's match history into the match_history table
-    for (const player of players) {
+    for (const player of sortedPlayers) {
       const { error: matchHistoryError } = await supabase
-        .from("match_history")
-        .insert([
-          {
-            eventid,
-            athleteid: player.athleteid,
-            ranking: player.ranking,
-            poomsaefinalscore: player.totalscore,
-            eventname: events.name,
-            eventlocation: events.location,
-          },
-        ]);
+      .from("match_history")
+      .insert([
+        {
+        eventid,
+        athleteid: player.athleteid,
+        ranking: player.ranking,
+        eventname: events.name,
+        eventlocation: events.location,
+        poomsaefinalscore: player.totalscore,
+        },
+      ]);
 
       if (matchHistoryError) {
-        console.error("Error inserting match history:", matchHistoryError.message);
-        return res.status(500).send("Error inserting match history");
+      console.error("Error inserting match history:", matchHistoryError.message);
+      return res.status(500).send("Error inserting match history");
       }
     }
 
@@ -3500,6 +3507,70 @@ app.post("/update-matchtime", async (req, res) => {
     res.redirect(`/events-details/${eventid}`);
   } catch (error) {
     console.error("Error updating matchtime:", error.message);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.post("/update-performance-sched", async (req, res) => {
+  const { id, performancesched, eventid } = req.body;
+
+  try {
+    // Fetch the current performance details to compare the performancesched
+    const { data: currentPerformance, error: currentPerformanceError } = await supabase
+      .from("poomsae_players")
+      .select("*")
+      .eq("id", id)
+      .single();
+
+    if (currentPerformanceError) {
+      return res.status(400).json({ error: currentPerformanceError.message });
+    }
+
+    // Update the performancesched in the poomsae_players table
+    const { error } = await supabase
+      .from("poomsae_players")
+      .update({ schedule })
+      .eq("id", id);
+
+    if (error) {
+      return res.status(400).json({ error: error.message });
+    }
+
+    // Only create notifications if the performancesched has changed
+    if (currentPerformance.performancesched !== performancesched) {
+      // Create notifications for the player
+      // Fetch the event name
+      const { data: event, error: eventError } = await supabase
+        .from("events")
+        .select("name")
+        .eq("id", eventid)
+        .single();
+
+      if (eventError) {
+        console.error("Error fetching event name:", eventError.message);
+        return res.status(500).send("Error fetching event name");
+      }
+
+      const notification = {
+        userid: currentPerformance.userid,
+        type: "Event",
+        message: `Your performance time for ${event.name} has been updated to ${performancesched}.`,
+        desc: `Please be ready for your performance at the new scheduled time.`,
+      };
+
+      const { error: notificationError } = await supabase
+        .from("notifications")
+        .insert([notification]);
+
+      if (notificationError) {
+        console.error("Error creating notification:", notificationError.message);
+        return res.status(500).send("Error creating notification");
+      }
+    }
+
+    res.redirect(`/events-details/${eventid}`);
+  } catch (error) {
+    console.error("Error updating performance time:", error.message);
     res.status(500).json({ error: error.message });
   }
 });

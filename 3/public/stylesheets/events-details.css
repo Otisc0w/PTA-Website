@@ -1023,51 +1023,6 @@ input[type="number"]:focus {
   margin-top: 10px;
 }
 
-.deleteevent-button{
-  background: url('/images/delete.png') no-repeat center center;
-  height: 20px;
-  width: 20px;
-  background-size: contain;
-  border: none;
-  cursor: pointer;
-  vertical-align: middle;
-  float: right;
-  padding: 5px 10px;
-}
-
-.confirmdeletescreen{
-  float:right;
-  font-size: 15px;
-  color: #ffcc00;
-  font-weight: bold;
-}
-
-.confirmdeletescreen .yesdelete,
-.confirmdeletescreen .nodelete {
-  background-color: #d32f2f;
-  color: white;
-  padding: 5px 10px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s;
-  margin-left: 10px;
-  margin-top: 5px;
-  float: right;
-}
-
-.confirmdeletescreen .yesdelete:hover {
-  background-color: #f44336;
-}
-
-.confirmdeletescreen .nodelete {
-  background-color: #f44336;
-}
-
-.confirmdeletescreen .nodelete:hover {
-  background-color: #d32f2f;
-}
-
 .titleandbuttons{
   width: 400px;
 }
@@ -1143,7 +1098,7 @@ input[type="number"]:focus {
   float: right;
   margin-right: 10px;
   border-radius: 5px;
-  }
+}
 
 .winnersviewathlete:hover {
   background-color: #007bff;
@@ -1206,4 +1161,129 @@ input[type="number"]:focus {
   font-size: 24px;
   font-weight: bold;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* Add shadow for pop effect */
+}
+
+.eliminated {
+  color: gray;
+  text-decoration: line-through;
+}
+
+.eliminatedtag{
+  background-color: #ff0000; /* red background for eliminated tag */
+  color: white;
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-weight: bold;
+  display: inline-block;
+  margin-top: 10px;
+}
+
+
+.resultsviewathlete {
+  background: none;
+  border: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  padding: 3px 5px;
+  margin-right: 10px;
+  border-radius: 5px;
+}
+
+.resultsviewathlete:hover {
+  background-color: #888;
+}
+
+.canceleventbtn{
+  background-color: #f44336;
+  color: white;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  text-align: center;
+  font-size: 14px;
+  font-weight: bold;
+  float: right;
+}
+
+.canceleventmodal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgba(0, 0, 0, 0.8); /* Black w/ opacity */
+  backdrop-filter: blur(10px); /* Blur the background */
+}
+
+.canceleventmodal .modal-content {
+  background-color: #222;
+  margin: 15% auto; /* 15% from the top and centered */
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%; /* Could be more or less, depending on screen size */
+  max-width: 500px; /* Maximum width */
+  border-radius: 8px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+  color: white;
+}
+
+.canceleventmodal .close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.canceleventmodal .close:hover,
+.canceleventmodal .close:focus {
+  color: white;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.canceleventmodal .form-group {
+  margin-bottom: 15px;
+}
+
+.canceleventmodal label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.canceleventmodal input[type="text"],
+.canceleventmodal textarea {
+  width: 100%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  background-color: #333;
+  color: white;
+}
+
+.canceleventmodal button[type="submit"] {
+  width: 100%;
+  background-color: #f44336;
+  color: white;
+  padding: 14px 20px;
+  margin: 8px 0;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.canceleventmodal button[type="submit"]:hover {
+  background-color: #d32f2f;
 }

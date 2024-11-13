@@ -85,15 +85,7 @@
               {{else}}
               <button class="edit-button" onclick="openModal()"></button>
               {{/if}}
-              <!--
-              <button class="deleteevent-button" onclick="confirmDelete()"></button>
-              <div class="confirmdeletescreen" style="display: none;">
-                Are you sure you <br>want to delete this event?<br>
-                <form action="/delete-event/{{event.id}}" method="post">
-                  <button class="yesdelete" type="submit">Yes</button>
-                </form>
-                <button class="nodelete" onclick="cancelDelete()">No</button>
-              </div> -->
+                 <button class="canceleventbtn" onclick="opencanceleventmodal()">Cancel</button>
               {{/if}} 
             </div>
           </div>
@@ -115,7 +107,6 @@
       <div id="editmodal" class="modal">
         <div class="modal-content">
           <span class="close" onclick="closeModal()">&times;</span>
-
           <form id="eventform" class="event-form" action="/update-event" method="post" enctype="multipart/form-data">
 
             <!-- Event Status Dropdown -->
@@ -204,24 +195,20 @@
               <button onclick="closeModal()" class="cancel">Cancel</button>
               <button type="submit" class="default-submit-button">Update Event</button>
             </div>
+          </form>
+        </div>
+      </div>
 
-            <!-- Cancellation Notice Fields (Hidden by Default) -->
-            <div id="cancellationFields" style="display: none;">
-              <div class="form-group">
-                <label for="cancellationNotice">Cancellation Notice:</label>
-                <textarea id="cancellationNotice" name="cancellationNotice" rows="4"></textarea>
-              </div>
-              <div class="form-group">
-                <label for="reasonForCancellation">Reason for Cancellation:</label>
-                <textarea id="reasonForCancellation" name="reasonForCancellation" rows="4"></textarea>
-              </div>
-              <div class="form-group">
-                <label for="rescheduleDate">Reschedule Date:</label>
-                <input type="date" id="rescheduleDate" name="rescheduleDate">
-              </div>
-              <button onclick="closeModal()" class="cancel">Cancel</button>
-              <button type="submit" class="cancel-submit-button">Submit Cancellation</button>
+      <div id="canceleventmodal" class="canceleventmodal">
+        <div class="modal-content">
+          <span class="close" onclick="closecanceleventmodal()">&times;</span>
+          <h2>Cancel Event</h2>
+          <form id="cancellationForm" action="/cancel-event/{{event.id}}" method="post">
+            <div class="form-group">
+              <label for="cancelmsg">Cancellation Notice:</label>
+              <textarea id="cancelmsg" name="cancelmsg" rows="4" required></textarea>
             </div>
+            <button type="submit" class="submit-cancel-button">Submit Cancellation</button>
           </form>
         </div>
       </div>
@@ -289,7 +276,6 @@
             </div>
           </div>
           {{/if}}
-
           {{/if}}
         </div>
 
@@ -297,32 +283,33 @@
           {{#if (and user.ptaverified (me registrationcount event.registrationcap ))}}
           {{#if (eq event.status 'Active')}}
           {{#if (eq event.eventtype 'Kyorugi')}}
-          <form action="/begin-kyorugi-competition/{{event.id}}" method="post">
+          <form action="/begin-kyorugi-competition/{{event.id}}" method="post" onsubmit="return confirm('Are you sure you want to begin this competition? This will form initial Kyorugi matches');">
             <button type="submit" class="begincompe">Begin Competition</button>
           </form>
           {{else if (eq event.eventtype 'Poomsae')}}
-          <form action="/begin-poomsae-competition/{{event.id}}" method="post">
+          <form action="/begin-poomsae-competition/{{event.id}}" method="post" onsubmit="return confirm('Are you sure you want to begin this competition? This will form lineups for the competition');">
             <button type="submit" class="begincompe">Begin Competition</button>
           </form>
           {{/if}}
           {{else if (eq event.status 'Ongoing')}}
           {{#if (le event.currentround 1)}}
           {{#if (eq event.eventtype 'Poomsae')}}
-          <form action="/next-poomsae-round/{{event.id}}" method="post">
+          <form action="/next-poomsae-round/{{event.id}}" method="post" onsubmit="return confirm('Are you sure you want to proceed to the next round? Check if all players have been scored.');">
             <button type="submit" class="begincompe">Proceed to next round</button>
           </form>
+
           {{else if (eq event.eventtype 'Kyorugi')}}
-          <form action="/next-kyorugi-round/{{event.id}}" method="post">
+          <form action="/next-kyorugi-round/{{event.id}}" method="post" onsubmit="return confirm('Are you sure you want to proceed to the next round? Check if all matches have been scored and have a winner.');">
             <button type="submit" class="begincompe">Proceed to next round</button>
           </form>
           {{/if}}
           {{else}}
           {{#if (eq event.eventtype 'Poomsae')}}
-          <form action="/decide-poomsae-winners/{{event.id}}" method="post">
+          <form action="/decide-poomsae-winners/{{event.id}}" method="post" onsubmit="return confirm('WARNING: This action will finalize winners and record the competition in each players match history');">
             <button type="submit" class="begincompe">Decide Winners</button>
           </form>
           {{else if (eq event.eventtype 'Kyorugi')}}
-          <form action="/decide-kyorugi-winners/{{event.id}}" method="post">
+          <form action="/decide-kyorugi-winners/{{event.id}}" method="post" onsubmit="return confirm('WARNING: This action will finalize winners and record the competition in each players match history');">
             <button type="submit" class="begincompe">Decide Winners</button>
           </form>
           {{/if}}
@@ -345,14 +332,20 @@
             </thead>
             <tbody>
               {{#each this}}
-              <tr>
+              
+              <tr{{#if (eq ranking 0)}} class="eliminated" {{/if}}>
                 <td>{{name}}</td>
                 <td>{{schedule}}</td>
                 <td class="totalscore">{{totalscore}}</td>
                 <td>
+                  {{#unless (eq ranking 0)}}
                   <button
                     onclick="openPoomsaeScoresheet('{{id}}', '{{name}}', '{{totalscore}}', '{{technicalscore}}', '{{performancescore}}')"
-                    class="open-poomsae-scoresheet">Open Scoresheet -></button>
+                    class="open-poomsae-scoresheet">Open Scoresheet ->
+                  </button>
+                  {{else}}
+                  <h3 class="eliminatedtag">Eliminated</h3>
+                  {{/unless}}
                 </td>
               </tr>
               {{/each}}
@@ -717,19 +710,21 @@
         {{#each poomsaetop4}}
         <tr>
           <td>{{ranking}}</td>
-          <td>{{name}}</td>
+          <td><button class="resultsviewathlete" onclick="window.location.href='/athletes-profile/{{athleteid}}'">{{name}}</button></td>
           <td>{{technicalscore}}</td>
           <td>{{performancescore}}</td>
           <td>{{totalscore}}</td>
+          
         </tr>
         {{/each}}
         {{#each poomsaenontop4}}
         <tr>
-          <td>{{ranking}}</td>
-          <td>{{name}}</td>
+          <td>P</td>
+          <td><button class="resultsviewathlete" onclick="window.location.href='/athletes-profile/{{athleteid}}'">{{name}}</button></td>
           <td>{{technicalscore}}</td>
           <td>{{performancescore}}</td>
           <td>{{totalscore}}</td>
+        
         </tr>
         {{/each}}
       </tbody>
@@ -917,16 +912,14 @@
     function closeannounceModal() {
       document.getElementById('announceModal').style.display = 'none';
     }
-    /*
-        function confirmDelete() {
-          document.querySelector('.confirmdeletescreen').style.display = 'block';
-          document.querySelector('.deleteevent-button').style.display = 'none';
-        }
     
-        function cancelDelete() {
-          document.querySelector('.confirmdeletescreen').style.display = 'none';
-          document.querySelector('.deleteevent-button').style.display = 'block';
-        }*/
+    function opencanceleventmodal() {
+      document.getElementById('canceleventmodal').style.display = 'block';
+    }
+
+    function closecanceleventmodal() {
+      document.getElementById('canceleventmodal').style.display = 'none';
+    }
 
     window.onclick = function (event) {
       if (event.target == document.getElementById('announceModal')) {
