@@ -776,8 +776,8 @@
           {{#each otherPlayersWithDetails}}
             <tr>
             <td>P</td>
-            <td><button class="resultsviewathlete" onclick="window.location.href='/athletes-profile/{{id}}'">{{loserDetails.firstname}} {{loserDetails.middlename}} {{loserDetails.lastname}}</button></td>
-            <td>{{totalscore}}</td>
+            <td><button class="resultsviewathlete" onclick="window.location.href='/athletes-profile/{{loserDetails.id}}'">{{loserDetails.name}}</button></td>
+            <td>{{player1score}}</td>
           </tr>
           {{/each}}
         </tbody>
