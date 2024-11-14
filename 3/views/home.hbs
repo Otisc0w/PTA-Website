@@ -63,24 +63,14 @@
             excellence! Every effort brings you closer to greatness! 💪🥇</span>
         </div>
         <div class="recognition-cards">
-          <div class="card">
-            <img src="/images/athlete1.jpg" alt="Athlete 1 Portrait" class="performer-portrait">
-            <h3>Athlete 1</h3>
-            <p>Belt Level: Black Belt</p>
-            <p>Ranking Points: 2000</p>
-          </div>
-          <div class="card">
-            <img src="/images/athlete2.jpg" alt="Athlete 2 Portrait" class="performer-portrait">
-            <h3>Athlete 2</h3>
-            <p>Belt Level: Red Belt</p>
-            <p>Ranking Points: 1800</p>
-          </div>
-          <div class="card">
-            <img src="/images/athlete3.webp" alt="Athlete 3 Portrait" class="performer-portrait">
-            <h3>Athlete 3</h3>
-            <p>Belt Level: Blue Belt</p>
-            <p>Ranking Points: 1600</p>
-          </div>
+          {{#each athletes}}
+        <div class="card">
+            <img src="{{portrait}}" alt="{{name}} Portrait" class="performer-portrait">
+            <h3>{{name}}</h3>
+            <p>Belt Level: {{this.beltlevel}}</p>
+            <p>Ranking Points: {{this.rankingpoints}}</p>
+        </div>
+        {{/each}}
         </div>
       </div>
       <!-- Poster and Onboarding Container Wrapper -->

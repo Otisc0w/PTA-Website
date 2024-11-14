@@ -3644,24 +3644,38 @@ app.get("/home", async function (req, res) {
   }
 
   try {
-    const { data, error } = await supabase
+    // Fetch the latest 4 events
+    const { data: events, error: eventsError } = await supabase
       .from("events")
       .select("*")
       .order("created_at", { ascending: false })
       .limit(4);
 
-    if (error) {
-      return res.status(400).json({ error: error.message });
+    if (eventsError) {
+      return res.status(400).json({ error: eventsError.message });
     }
 
-    console.log("Fetched data:", data); // Log the data to the console
+    // Fetch the top 3 athletes based on ranking points
+    const { data: athletes, error: athletesError } = await supabase
+      .from("athletes")
+      .select("name, beltlevel, rankingpoints, portrait")
+      .order("rankingpoints", { ascending: false })
+      .limit(3);
 
-    // Render the home.hbs template with both the fetched data and the session user data
-    res.render("home", { events: data, user: req.session.user });
+    if (athletesError) {
+      return res.status(400).json({ error: athletesError.message });
+    }
+
+    console.log("Fetched events:", events);
+    console.log("Fetched top athletes:", athletes);
+
+    // Render the home.hbs template with events, top athletes, and the session user data
+    res.render("home", { athletes, events, user: req.session.user });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
+
 
 app.get("/forum", async function (req, res) {
   if (!req.session.user) {
