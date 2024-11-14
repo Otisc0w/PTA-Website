@@ -113,6 +113,12 @@
           </div>
       </div>
       </form>
+
+      <div id="error-message1" class="hidden">Please fill up all fields before submitting.
+				</div>
+				<div id="confirmation-message" class="hidden">Application successful! Please allow up to 2 weeks to receive an update on your
+					membership status.</div>
+
     </div>
   </div>
   </div>
@@ -167,6 +173,44 @@
 
     // Initial display setup
     showPage(currentPage);
+
+    function showConfirmationMessage(event) {
+			event.preventDefault(); // Prevent form submission to validate fields
+
+			const form = document.getElementById("nccform");
+			const confirmationMessage = document.getElementById("confirmation-message");
+			const errorMessage = document.getElementById("error-message");
+
+			// Hide both confirmation and error messages initially
+			confirmationMessage.classList.add("hidden");
+			errorMessage.classList.add("hidden");
+
+			// Check if all required fields are filled out
+			let allFieldsFilled = true;
+			const requiredFields = form.querySelectorAll("[required]");
+			requiredFields.forEach((field) => {
+				if (!field.value) {
+					allFieldsFilled = false;
+					field.classList.add("error"); // Optionally highlight empty fields
+				} else {
+					field.classList.remove("error");
+				}
+			});
+
+			// If all fields are filled, show confirmation and submit form after delay
+			if (allFieldsFilled) {
+				confirmationMessage.classList.remove("hidden");
+				setTimeout(() => {
+					form.submit();
+				}, 2000); // Adjust the delay as needed
+			} else {
+				// Show general error message if some fields are missing
+				errorMessage.textContent = "Please fill up all fields before submitting.";
+				errorMessage.classList.remove("hidden");
+			}
+		}
+
+
   </script>
 
 </body>
