@@ -878,10 +878,7 @@ h1 {
   background-size: contain;
   border: none;
   cursor: pointer;
-  vertical-align: middle;
-  float: right;
   padding: 5px 10px;
-
 }
 
 .confirmdeletescreen{
@@ -1247,4 +1244,67 @@ button:hover {
 .attendees-list li {
   color: #ccc;
   font-size: 14px;
+}
+
+.attendees-modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 2; /* Sit on top */
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 300px; /* Small window */
+  background-color: #222;
+  padding: 20px;
+  border: 1px solid #888;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+  color: white;
+}
+
+.attendees-modal .close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.attendees-modal .close:hover,
+.attendees-modal .close:focus {
+  color: white;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.attendees-modal .attendees-list {
+  margin-top: 10px;
+}
+
+.attendees-modal .attendees-list h4 {
+  font-size: 16px;
+  font-weight: bold;
+  color: #fff;
+}
+
+.attendees-modal .attendees-list ul {
+  list-style: none;
+  padding: 0;
+  margin: 5px 0;
+}
+
+.attendees-modal .attendees-list li {
+  color: #ccc;
+  font-size: 14px;
+}
+
+.closeattendees{
+  background: none;
+  color: inherit;
+  border: none;
+  size: 16px;
+  padding: 5px 10px;
+  font: inherit;
+  cursor: pointer;
+  outline: inherit;
+  float: right;
 }

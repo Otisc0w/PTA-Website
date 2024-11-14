@@ -3971,11 +3971,34 @@ app.get("/clubs-details/:id", async function (req, res) {
     const { data: clubactivities, error: clubactivitiesError } = await supabase
       .from("club_activities")
       .select("*")
-      .eq("clubid", id);
+      .eq("clubid", id)
+      .order("created_at", { ascending: false });
 
     if (clubactivitiesError) {
       return res.status(400).json({ clubactivitiesError: clubactivitiesError.message });
     }
+
+    const { data: attendees, error: attendeesError } = await supabase
+      .from("users")
+      .select("id, firstname, lastname");
+
+    if (attendeesError) {
+      return res.status(400).json({ attendeesError: attendeesError.message });
+    }
+
+    const clubActivitiesWithUserDetails = clubactivities.map((activity) => {
+      const attendeesWithDetails = (activity.attendees || []).map((attendeeId) => {
+      const user = attendees.find((user) => user.id === attendeeId);
+      return user ? { id: user.id, firstname: user.firstname, lastname: user.lastname } : null;
+      }).filter((attendee) => attendee !== null);
+
+      return {
+      ...activity,
+      attendees: attendeesWithDetails,
+      };
+    });
+
+    console.log("clubactivitieswithuserdetails", clubActivitiesWithUserDetails);
 
     // Render the clubs-details.hbs template with the fetched data
   res.render("clubs-details", {
@@ -3987,6 +4010,7 @@ app.get("/clubs-details/:id", async function (req, res) {
       club_requests,
       clubRequestsWithUserDetails,
       clubactivities,
+      clubActivitiesWithUserDetails,
       user: req.session.user,
     });
   } catch (error) {
@@ -5239,33 +5263,6 @@ app.get("/analytics", async (req, res) => {
   }
 });
 
-
-
-
-
-/*
-  try {
-    const { data: athleteresults, error } = await supabase
-      .from('athletes')
-      .select('*')
-      .order('bday', { ascending: true })
-      .limit(5);
-
-    if (error) {
-      console.error('Error fetching athleteresults:', error.message);
-      return res.status(500).json({ error: error.message });
-    }
-
-    res.render('analytics', { user: req.session.user, athleteresults });
-  } catch (error) {
-    console.error('Server error:', error.message);
-    res.status(500).json({ error: error.message });
-  }
-  res.render('analytics', { user: req.session.user });
-  */
-
-
-
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
 });
@@ -5491,8 +5488,6 @@ app.post('/delete-activity/:id', async (req, res) => {
       res.redirect('/clubs');
   }
 });
-
-
 
 // Route to display the edit form
 app.get('/edit-activity/:id', async (req, res) => {
