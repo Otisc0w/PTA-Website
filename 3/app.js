@@ -4431,16 +4431,16 @@ app.get("/events-details/:id", async function (req, res) {
       .eq("eventid", id);
 
     if (champion) {
-      query = query.neq("loser", champion.id);
+      query = query.neq("loser", champion.userid)
     }
     if (secondPlace) {
-      query = query.neq("loser", secondPlace.id);
+      query = query.neq("loser", secondPlace.userid);
     }
     if (thirdPlace1) {
-      query = query.neq("loser", thirdPlace1.id);
+      query = query.neq("loser", thirdPlace1.userid);
     }
     if (thirdPlace2) {
-      query = query.neq("loser", thirdPlace2.id);
+      query = query.neq("loser", thirdPlace2.userid);
     }
 
     const { data: otherPlayers, error: otherPlayersError } = await query;
@@ -4450,20 +4450,22 @@ app.get("/events-details/:id", async function (req, res) {
     }
 
     const { data: losers, error: losersError } = await supabase
-      .from("users")
+      .from("athletes")
       .select("*")
-      .in("id", otherPlayers.map(player => player.loser));
+      .in("userid", otherPlayers.map(player => player.loser));
     if (losersError) {
       return res.status(400).json({ error: losersError.message });
     }
 
     const otherPlayersWithDetails = otherPlayers.map(player => {
-      const loserDetails = losers.find(user => user.id === player.loser);
+      const loserDetails = losers.find(user => user.userid === player.loser);
       return {
-        ...player,
-        loserDetails: loserDetails || null,
+      ...player,
+      loserDetails: loserDetails || null,
       };
     });
+
+    console.log("Ffefefefetch data:", otherPlayersWithDetails); 
 
     // Fetch the poomsae players for the specific event
     const { data: poomsaePlayers, error } = await supabase
