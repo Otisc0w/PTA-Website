@@ -3513,10 +3513,10 @@ app.post("/update-matchtime", async (req, res) => {
 });
 
 app.post("/update-performance-sched", async (req, res) => {
-  const { id, performancesched, eventid } = req.body;
+  const { id, schedule, eventid } = req.body;
 
   try {
-    // Fetch the current performance details to compare the performancesched
+    // Fetch the current performance details to compare the schedule
     const { data: currentPerformance, error: currentPerformanceError } = await supabase
       .from("poomsae_players")
       .select("*")
@@ -3527,7 +3527,7 @@ app.post("/update-performance-sched", async (req, res) => {
       return res.status(400).json({ error: currentPerformanceError.message });
     }
 
-    // Update the performancesched in the poomsae_players table
+    // Update the schedule in the poomsae_players table
     const { error } = await supabase
       .from("poomsae_players")
       .update({ schedule })
@@ -3537,8 +3537,8 @@ app.post("/update-performance-sched", async (req, res) => {
       return res.status(400).json({ error: error.message });
     }
 
-    // Only create notifications if the performancesched has changed
-    if (currentPerformance.performancesched !== performancesched) {
+    // Only create notifications if the schedule has changed
+    if (currentPerformance.schedule !== schedule) {
       // Create notifications for the player
       // Fetch the event name
       const { data: event, error: eventError } = await supabase
@@ -3555,7 +3555,7 @@ app.post("/update-performance-sched", async (req, res) => {
       const notification = {
         userid: currentPerformance.userid,
         type: "Event",
-        message: `Your performance time for ${event.name} has been updated to ${performancesched}.`,
+        message: `Your performance time for ${event.name} has been updated to ${schedule}.`,
         desc: `Please be ready for your performance at the new scheduled time.`,
       };
 
@@ -4410,18 +4410,26 @@ app.get("/events-details/:id", async function (req, res) {
       }
       }
     }
-
-    console.log("Third placefsadfsadfsadfsdf:", thirdPlace1); // Log the third place data to the console
-
     
-    const { data: otherPlayers, error: otherPlayersError } = await supabase
+    let query = supabase
       .from("kyorugi_matches")
       .select("*")
-      .eq("eventid", id)
-      .neq("loser", champion.id)
-      .neq("loser", secondPlace.id)
-      .neq("loser", thirdPlace1?.id)
-      .neq("loser", thirdPlace2?.id);
+      .eq("eventid", id);
+
+    if (champion) {
+      query = query.neq("loser", champion.id);
+    }
+    if (secondPlace) {
+      query = query.neq("loser", secondPlace.id);
+    }
+    if (thirdPlace1) {
+      query = query.neq("loser", thirdPlace1.id);
+    }
+    if (thirdPlace2) {
+      query = query.neq("loser", thirdPlace2.id);
+    }
+
+    const { data: otherPlayers, error: otherPlayersError } = await query;
 
     if (otherPlayersError) {
       return res.status(400).json({ error: otherPlayersError.message });
@@ -4431,7 +4439,6 @@ app.get("/events-details/:id", async function (req, res) {
       .from("users")
       .select("*")
       .in("id", otherPlayers.map(player => player.loser));
-
     if (losersError) {
       return res.status(400).json({ error: losersError.message });
     }
@@ -4443,10 +4450,6 @@ app.get("/events-details/:id", async function (req, res) {
         loserDetails: loserDetails || null,
       };
     });
-
-    console.log("Fetched other players with details:", otherPlayersWithDetails); // Log the other players with details to the console
-
-    console.log("Fetched other players data:", otherPlayers); // Log the other players data to the console
 
     // Fetch the poomsae players for the specific event
     const { data: poomsaePlayers, error } = await supabase
@@ -4531,7 +4534,6 @@ app.get("/events-details/:id", async function (req, res) {
       secondPlace,
       thirdPlace1,
       thirdPlace2,
-      otherPlayers,
       otherPlayersWithDetails
     });
   } catch (error) {

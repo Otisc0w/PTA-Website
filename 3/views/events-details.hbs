@@ -334,7 +334,18 @@
               
               <tr{{#if (eq ranking 0)}} class="eliminated" {{/if}}>
                 <td>{{name}}</td>
-                <td>{{schedule}}</td>
+                <td>
+                  {{#if this.schedule}}
+                    {{this.schedule}}
+                  {{else}}
+                    <form class="matchtime" action="/update-performance-sched" method="post">
+                      <input type="hidden" name="id" value="{{id}}">
+                      <input type="hidden" name="eventid" value="{{eventid}}">
+                      <input type="time" class="matchtime" name="schedule">
+                      <button type="submit">OK</button>
+                    </form>
+                  {{/if}}
+                </td>
                 <td class="totalscore">{{totalscore}}</td>
                 <td>
                   {{#unless (eq ranking 0)}}
@@ -733,44 +744,44 @@
         <p class="noresultsavailable">No results available.</p>
       {{/if}}
     {{else if (eq event.eventtype 'Kyorugi')}}
-      <table class="results-table">
-          <thead>
+     <table class="results-table">
+         <thead>
+          <tr>
+            <th>Rank</th>
+            <th>Player</th>
+            <th>Final Score</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1</td>
+            <td><button class="resultsviewathlete" onclick="window.location.href='/athletes-profile/{{champion.id}}'">{{champion.name}}</button></td>
+            <td>{{totalscore}}</td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td><button class="resultsviewathlete" onclick="window.location.href='/athletes-profile/{{secondPlace.id}}'">{{secondPlace.name}}</button></td>
+            <td>{{totalscore}}</td>
+          </tr>
+          <tr>
+            <td>3</td>
+            <td><button class="resultsviewathlete" onclick="window.location.href='/athletes-profile/{{thirdPlace1.id}}'">{{thirdPlace1.name}}</button></td>
+            <td>{{totalscore}}</td>
+          </tr>
+          <tr>
+            <td>3</td>
+            <td><button class="resultsviewathlete" onclick="window.location.href='/athletes-profile/{{thirdPlace2.id}}'">{{thirdPlace2.name}}</button></td>
+            <td>{{totalscore}}</td>
+          </tr>
+          {{#each otherPlayersWithDetails}}
             <tr>
-              <th>Rank</th>
-              <th>Player</th>
-              <th>Final Score</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>1</td>
-              <td><button class="resultsviewathlete" onclick="window.location.href='/athletes-profile/{{champion.id}}'">{{champion.name}}</button></td>
-              <td>{{totalscore}}</td>
-            </tr>
-            <tr>
-              <td>2</td>
-              <td><button class="resultsviewathlete" onclick="window.location.href='/athletes-profile/{{secondPlace.id}}'">{{secondPlace.name}}</button></td>
-              <td>{{totalscore}}</td>
-            </tr>
-            <tr>
-              <td>3</td>
-              <td><button class="resultsviewathlete" onclick="window.location.href='/athletes-profile/{{thirdPlace1.id}}'">{{thirdPlace1.name}}</button></td>
-              <td>{{totalscore}}</td>
-            </tr>
-            <tr>
-              <td>3</td>
-              <td><button class="resultsviewathlete" onclick="window.location.href='/athletes-profile/{{thirdPlace2.id}}'">{{thirdPlace2.name}}</button></td>
-              <td>{{totalscore}}</td>
-            </tr>
-            {{#each otherPlayersWithDetails}}
-              <tr>
-              <td>P</td>
-              <td><button class="resultsviewathlete" onclick="window.location.href='/athletes-profile/{{id}}'">{{loserDetails.firstname}} {{loserDetails.middlename}} {{loserDetails.lastname}}</button></td>
-              <td>{{totalscore}}</td>
-            </tr>
-            {{/each}}
-          </tbody>
-        </table>
+            <td>P</td>
+            <td><button class="resultsviewathlete" onclick="window.location.href='/athletes-profile/{{id}}'">{{loserDetails.firstname}} {{loserDetails.middlename}} {{loserDetails.lastname}}</button></td>
+            <td>{{totalscore}}</td>
+          </tr>
+          {{/each}}
+        </tbody>
+      </table>
     {{/if}}
   </div>
 
