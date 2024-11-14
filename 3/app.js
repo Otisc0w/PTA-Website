@@ -4667,9 +4667,10 @@ app.get("/athletes", async function (req, res) {
     const isAdmin = userData.ptaverified === true;
 
     // Merge the club information with the athletes data
-    athletes.forEach((athlete) => {
+    athletes.forEach((athlete, index) => {
       const user = users.find((user) => user.id === athlete.userid);
       athlete.club = user ? user.club : "N/A";
+      athlete.index = index + 1; // Add the index property, starting from 1
     });
 
     console.log("Fetched athletes data:", athletes); // Log the athletes data to the console
