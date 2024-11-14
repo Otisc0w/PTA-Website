@@ -79,7 +79,7 @@
             </tr>
           </thead>
           <tbody>
-            {{#reverseEach matchDataWithEventDetails}}
+            {{#each matchDataWithEventDetails}}
             <tr>
               <td>{{formatCreatedAt created_at}}</td>
               <td>{{eventName}}</td>
@@ -89,7 +89,7 @@
               <td>{{#unless (eq ranking 0)}}{{ordinal ranking}}{{else}}P{{/unless}}</td>
               <td>{{poomsaefinalscore}}</td>
             </tr>
-            {{/reverseEach}}
+            {{/each}}
           </tbody>
         </table>
       </div>
@@ -127,7 +127,7 @@
       rows.forEach(row => {
       const rankingCell = row.querySelector('td:nth-child(6)');
       const typeCell = row.querySelector('td:nth-child(3)');
-      if (rankingCell && rankingCell.textContent.trim() === '1' && typeCell && typeCell.textContent.trim() === 'Kyorugi') {
+      if (rankingCell && rankingCell.textContent.trim() === '1st' && typeCell && typeCell.textContent.trim() === 'Kyorugi') {
         count++;
       }
       });

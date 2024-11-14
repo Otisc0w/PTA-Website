@@ -2289,7 +2289,8 @@ app.post("/update-event", upload.single("eventpicture"), async (req, res) => {
 });
 
 app.post("/cancel-event/:id", async (req, res) => {
-  const { id, cancelmsg } = req.params;
+  const { id } = req.params;
+  const { cancelmsg } = req.body;
 
   if (!req.session.user) {
     return res.status(401).send("Unauthorized: No user logged in");
@@ -4412,6 +4413,41 @@ app.get("/events-details/:id", async function (req, res) {
 
     console.log("Third placefsadfsadfsadfsdf:", thirdPlace1); // Log the third place data to the console
 
+    
+    const { data: otherPlayers, error: otherPlayersError } = await supabase
+      .from("kyorugi_matches")
+      .select("*")
+      .eq("eventid", id)
+      .neq("loser", champion.id)
+      .neq("loser", secondPlace.id)
+      .neq("loser", thirdPlace1?.id)
+      .neq("loser", thirdPlace2?.id);
+
+    if (otherPlayersError) {
+      return res.status(400).json({ error: otherPlayersError.message });
+    }
+
+    const { data: losers, error: losersError } = await supabase
+      .from("users")
+      .select("*")
+      .in("id", otherPlayers.map(player => player.loser));
+
+    if (losersError) {
+      return res.status(400).json({ error: losersError.message });
+    }
+
+    const otherPlayersWithDetails = otherPlayers.map(player => {
+      const loserDetails = losers.find(user => user.id === player.loser);
+      return {
+        ...player,
+        loserDetails: loserDetails || null,
+      };
+    });
+
+    console.log("Fetched other players with details:", otherPlayersWithDetails); // Log the other players with details to the console
+
+    console.log("Fetched other players data:", otherPlayers); // Log the other players data to the console
+
     // Fetch the poomsae players for the specific event
     const { data: poomsaePlayers, error } = await supabase
       .from('poomsae_players')
@@ -4455,16 +4491,6 @@ app.get("/events-details/:id", async function (req, res) {
       return res.status(400).json({ error: poomsaetop4Error.message });
     }
 
-    // const { data: poomsaenontop4, error: poomsaenontop4Error } = await supabase
-    //   .from("poomsae_players")
-    //   .select("*")
-    //   .eq("eventid", id)
-    //   .order("round", { ascending: false })
-    //   .limit(1);
-
-    // if (poomsaenontop4Error) {
-    //   return res.status(400).json({ error: poomsaenontop4Error.message });
-    // }
     const { data: poomsaenontop4, error: poomsaenontop4Error } = await supabase
       .from("poomsae_players")
       .select("*")
@@ -4505,6 +4531,8 @@ app.get("/events-details/:id", async function (req, res) {
       secondPlace,
       thirdPlace1,
       thirdPlace2,
+      otherPlayers,
+      otherPlayersWithDetails
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -4639,7 +4667,8 @@ app.get("/athletes-profile/:athleteid", async function (req, res) {
     const { data: matchdata, error: matchError } = await supabase
       .from("match_history")
       .select("*")
-      .eq("athleteid", athleteid);
+      .eq("athleteid", athleteid)
+      .order("created_at", { ascending: false });
 
     if (matchError) {
       return res.status(400).json({ error: matchError.message });
