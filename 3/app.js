@@ -5525,7 +5525,6 @@ app.post('/update-activity/:id', async (req, res) => {
       console.error("Error updating activity:", error);
       res.status(500).send("Error updating activity");
   } else {
-      // Assuming `club_id` is available in the activity details to specify the club to which the activity belongs
       const { data: updatedActivity, fetchError } = await supabase
           .from('club_activities')
           .select('clubid')
@@ -5536,11 +5535,9 @@ app.post('/update-activity/:id', async (req, res) => {
           console.error("Error fetching updated activity:", fetchError);
           res.status(500).send("Error fetching updated activity");
       } else {
-          const clubId = updatedActivity.clubid; // assuming `club_id` is the field containing the club ID
-          // Redirect to the clubs-details page with a fragment for the Activity tab
+          const clubId = updatedActivity.clubid; 
           res.redirect(`/clubs-details/${clubId}#activity`);
       }
   }
 });
-
 
