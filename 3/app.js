@@ -4507,7 +4507,7 @@ app.get("/events-details/:id", async function (req, res) {
     const { data: losers, error: losersError } = await supabase
       .from("athletes")
       .select("*")
-      .in("userid", otherPlayers.map(player => player.loser));
+      .in("userid", otherPlayers.map(player => player.loser).filter(loser => loser !== null));
     if (losersError) {
       return res.status(400).json({ error: losersError.message });
     }
@@ -4594,13 +4594,13 @@ app.get("/events-details/:id", async function (req, res) {
       currentregistrant,
       matches,
       poomsaePlayers,
+      poomsaetop4,
       poomsaenontop4,
       registrationcount,
       registrationcap: event.registrationcap, // Assuming the registration cap is stored in the event table
       user: req.session.user,
       eventannouncements,
       sortedGroupedByRound,
-      poomsaetop4,
       champion,
       secondPlace,
       thirdPlace1,
