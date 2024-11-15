@@ -1308,6 +1308,8 @@ button:hover {
   outline: inherit;
   float: right;
 }
+
+/*FEEDBACK*/
 .view-feedback-button {
   display: inline-block;
   padding: 8px 12px;
@@ -1322,47 +1324,44 @@ button:hover {
   background-color: #0056b3;
 }
 
-/* Close Button */
 .close-button {
   position: absolute;
   top: 10px;
   right: 20px;
   font-size: 24px;
   font-weight: bold;
-  color: #666; /* Subtle color */
+  color: #666; 
   cursor: pointer;
 }
 
 .close-button:hover {
-  color: #000; /* Darker on hover */
+  color: #000; 
 }
 
-/* Feedback Entries */
+
 .feedback-entry {
   padding: 10px;
   margin: 8px 0;
-  background-color: #f8f9fa; /* Light gray background for feedback entries */
+  background-color: #f8f9fa; 
   border-radius: 4px;
   border: 1px solid #ddd;
   font-size: 0.9em;
   color: #333;
 }
 
-/* Feedback Log Container with Scroll */
 #feedback-section {
-  max-height: 300px; /* Fixed height to fit within modal */
-  overflow-y: auto; /* Enables scrolling if content exceeds height */
+  max-height: 300px; 
+  overflow-y: auto; 
   margin-bottom: 10px;
-  padding-right: 10px; /* Space for scrollbar */
+  padding-right: 10px; 
 }
-/* Timestamp Styling */
+
 .feedback-entry strong {
   display: block;
   font-size: 0.8em;
-  color: #555; /* Slightly lighter for timestamp */
+  color: #555; 
 }
 
-/* New Feedback Text Area */
 #new-feedback {
   width: 95%;
   margin-top: 20px;
@@ -1390,7 +1389,7 @@ button:hover {
 .feedback-actions {
   margin-top: 5px;
   display: flex;
-  gap: 10px;
+  gap: 5px;
 }
 
 .edit-feedback, .delete-feedback {
@@ -1398,7 +1397,7 @@ button:hover {
   border: none;
   color: #007bff;
   cursor: pointer;
-  font-size: 0.9em;
+  font-size: 1em;
 }
 
 .edit-feedback:hover, .delete-feedback:hover {
