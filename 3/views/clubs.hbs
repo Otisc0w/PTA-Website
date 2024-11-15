@@ -75,6 +75,31 @@
 
     <div class="club-name">
       <div class="upcoming-events">
+        {{#if ownedclub}}
+          <div class="ownedclubcards">
+            <h3>Your Registered Clubs</h3><br>
+            {{#each ownedclub}}
+            <div class="ownedclubcard">
+              <img src="{{clubpic}}" alt="{{clubname}}" class="club-card-image">
+              <div class="club-card-content">
+                <h3>{{clubname}}</h3>
+                <a href="/clubs-details/{{id}}" class="club-card-link">Go to club</a>
+              </div>
+            </div>
+          {{/each}}
+        </div>
+        {{/if}}
+        {{#if userClub}}
+          <div class="ownedclubcards">
+            <h3>Your Club</h3><br>
+            <div class="ownedclubcard">
+              <img src="{{userClub.clubpic}}" alt="{{userClub.clubname}}" class="club-card-image">
+              <div class="club-card-content">
+                <h3>{{userClub.clubname}}</h3>
+                <a href="/clubs-details/{{userClub.id}}" class="club-card-link">Go to club</a>
+              </div>
+            </div>
+        {{/if}}
 
         <div id="events" class="horizontal-container">
           {{#each clubs}}

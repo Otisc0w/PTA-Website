@@ -460,3 +460,70 @@ body {
     flex-direction: column;
     align-items: center;
 }
+
+.ownedclubcards {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: left;
+    margin: 20px 0;
+}
+
+.ownedclubcard {
+    background-color: #1E1E1E;
+    color: white;
+    padding: 20px;
+    margin: 10px;
+    font-size: 16px;
+    width: 300px;
+    height: 200px;
+    text-align: left;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+.ownedclubcard img {
+    width: 100%;
+    height: 100px;
+    object-fit: cover;
+    object-position: center;
+    border-radius: 4px 4px 0 0;
+}
+
+.ownedclubcard h3 {
+    margin-top: 10px;
+    font-size: 20px;
+    font-weight: bold;
+    color: #f7f7f7;
+    text-align: center;
+}
+
+.ownedclubcard .club-card-content {
+    padding: 10px;
+}
+
+.ownedclubcard .club-card-content p {
+    font-size: 14px;
+    color: #d1d1d1;
+    margin: 10px 0;
+    text-align: center;
+}
+
+.ownedclubcard .club-card-link {
+    display: inline-block;
+    padding: 10px 15px;
+    color: #007BFF;
+    text-decoration: none;
+    border-radius: 5px;
+    background-color: #2E2E2E;
+    transition: background-color 0.3s;
+    margin-top: auto;
+    align-self: center;
+}
+
+.ownedclubcard .club-card-link:hover {
+    background-color: #1A1A1A;
+}

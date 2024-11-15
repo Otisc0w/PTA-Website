@@ -175,28 +175,28 @@
           {{#if (eq ../club.registeredby ../user.id)}}
           <button type="button" class="edit" onclick="openEditActivityModal('{{this.id}}', '{{this.name}}', '{{this.description}}', '{{this.date}}', '{{this.time}}')">Edit</button>
           <form action="/delete-activity/{{this.id}}" method="POST" onsubmit="return confirm('Are you sure you want to delete this activity?');">
+            <input type="hidden" name="clubid" value="{{../club.id}}">
             <button type="submit" class="delete">Delete</button>
           </form>
           {{/if}}
 
           {{!-- {{#if (eq ../club.registeredby ../user.id)}} --}}
-            <button class="viewattendeesbtn" onclick="openattendeesmodal()">View Attendees</button>
+            <button class="viewattendeesbtn" onclick="openAttendeesModal({{json this.attendees}})">View Attendees</button>
           {{!-- {{/if}} --}}
           <div class="rsvp-buttons">
             <button type="button" class="rsvp-going" onclick="rsvpActivity('{{this.id}}', true)">I'm Going</button>
             <button type="button" class="rsvp-notgoing" onclick="rsvpActivity('{{this.id}}', false)">I'm Not Going</button>
           </div>
         </div>
-        <div class="attendees-modal" >
-        <span>Attendees:</span>
-          <button onclick="closeattendeesmodal()" class="closeattendees">&times;</button>
-          <ul>
-            {{#each this.attendees}}
-            <li>{{this.firstname}} {{this.lastname}}</li>
-            {{/each}}
-          </ul>
-        </div>
       {{/each}}
+
+      <div id="attendeesModal" class="attendees-modal" style="display:none;">
+        <span class="close" onclick="closeAttendeesModal()">&times;</span>
+        <h4>Attendees:</h4>
+        <ul class="attendees-list">
+          <!-- Attendees will be dynamically populated here -->
+        </ul>
+      </div>
 
       <div id="activityModal" class="modal" style="display: none;">
         <div class="modal-content">
@@ -313,7 +313,6 @@
         <button class="invite-button" onclick="openInviteModal()">+ Invite Members</button>
         {{/if}}
       </div>
-
     </div>
 
     <!-- Announcements Section -->
@@ -554,12 +553,29 @@
       document.getElementById('joinClubModal').style.display = 'none';
     }
 
-    function openattendeesmodal(){
-      document.querySelector('.attendees-modal').style.display = 'block';
+    function openAttendeesModal(attendees) {
+      const modal = document.getElementById('attendeesModal');
+      const attendeesList = modal.querySelector('.attendees-list');
+      attendeesList.innerHTML = ''; // Clear previous attendees
+
+      if (attendees.length > 0) {
+        attendees.forEach(attendee => {
+          const listItem = document.createElement('li');
+          listItem.textContent = `${attendee.firstname} ${attendee.lastname}`;
+          attendeesList.appendChild(listItem);
+        });
+      } else {
+        const listItem = document.createElement('li');
+        listItem.textContent = 'No attendees yet.';
+        attendeesList.appendChild(listItem);
+      }
+
+      modal.style.display = 'block'; // Show the modal
     }
 
-    function closeattendeesmodal(){
-      document.querySelector('.attendees-modal').style.display = 'none';
+    function closeAttendeesModal() {
+      const modal = document.getElementById('attendeesModal');
+      modal.style.display = 'none'; // Hide the modal
     }
 
     window.onclick = function (event) {
@@ -595,59 +611,67 @@
     }
 
   // Close the modal if the user clicks outside of it
-  window.onclick = function(event) {
-    const modal = document.getElementById("activityModal");
-    if (event.target == modal) {
-      modal.style.display = "none";
-    }
-  };
-
-  async function rsvpActivity(activityId, going) {
-    try {
-      const response = await fetch("/rsvp-activity", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ activityId, going }),
-      });
-
-      const result = await response.json();
-      if (response.ok) {
-        alert(result.message);
-        // Optionally, reload the page or update the UI to reflect the change
-        location.reload();
-      } else {
-        alert(result.error);
+    window.onclick = function(event) {
+      const modal = document.getElementById("activityModal");
+      if (event.target == modal) {
+        modal.style.display = "none";
       }
-    } catch (error) {
-      console.error("Error:", error);
+    };
+
+    async function rsvpActivity(activityId, going) {
+      try {
+        const response = await fetch("/rsvp-activity", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ activityId, going }),
+        });
+
+        const result = await response.json();
+        if (response.ok) {
+          alert(result.message);
+          // Optionally, reload the page or update the UI to reflect the change
+          location.reload();
+        } else {
+          alert(result.error);
+        }
+      } catch (error) {
+        console.error("Error:", error);
+      }
     }
-  }
 
-   // Function to open and populate the Edit Activity Modal
-  function openEditActivityModal(id, name, description, date, time) {
-    document.getElementById('editActivityId').value = id;
-    document.getElementById('editActivityName').value = name;
-    document.getElementById('editActivityDescription').value = description;
-    document.getElementById('editActivityDate').value = date;
-    document.getElementById('editActivityTime').value = time;
-    document.getElementById('editActivityForm').action = `/update-activity/${id}`;
-    document.getElementById('editActivityModal').style.display = 'block';
-  }
+    // Function to open and populate the Edit Activity Modal
+    function openEditActivityModal(id, name, description, date, time) {
+      document.getElementById('editActivityId').value = id;
+      document.getElementById('editActivityName').value = name;
+      document.getElementById('editActivityDescription').value = description;
+      document.getElementById('editActivityDate').value = date;
+      document.getElementById('editActivityTime').value = time;
+      document.getElementById('editActivityForm').action = `/update-activity/${id}`;
+      document.getElementById('editActivityModal').style.display = 'block';
+    }
 
-  function closeEditActivityModal() {
-    document.getElementById('editActivityModal').style.display = 'none';
-  }
+    function closeEditActivityModal() {
+      document.getElementById('editActivityModal').style.display = 'none';
+    }
 
-  // Function to open the Create Activity Modal
-  function openActivityModal() {
-    document.getElementById("activityModal").style.display = "block";
-  }
+    function openActivityModal() {
+      document.getElementById("activityModal").style.display = "block";
+    }
 
-  function closeActivityModal() {
-    document.getElementById("activityModal").style.display = "none";
-  }
+    function closeActivityModal() {
+      document.getElementById("activityModal").style.display = "none";
+    }
+    
+    document.querySelectorAll('.viewattendeesbtn').forEach((button, index) => {
+      button.addEventListener('click', function () {
+        const attendeesModal = document.querySelectorAll('.attendees-modal')[index];
+        const attendeesCount = attendeesModal.querySelectorAll('ul li').length;
+        attendeesModal.querySelector('.attendeescount').textContent = `Attendees: ${attendeesCount}`;
+        attendeesModal.style.display = 'block';
+      });
+    });
   </script>
 </body>
 

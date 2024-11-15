@@ -3857,8 +3857,39 @@ app.get("/clubs", async (req, res) => {
       return res.status(500).json({ error: error.message });
     }
 
+    const userId = req.session.user.id; // Assuming user ID is stored in the session
+
+    const { data: ownedclub, error: ownedclubError } = await supabase
+      .from("clubs")
+      .select("*")
+      .eq("registeredby", userId);
+
+    if (ownedclubError) {
+      return res.status(400).json({ error: ownedclubError.message });
+    }
+
+    if (ownedclub.length === 0) {
+      return res.status(404).json({ error: "No clubs found for the user" });
+    }
+
+    const userClubId = req.session.user.clubid; // Assuming clubid is stored in the session
+
+    const { data: userClub, error: userClubError } = await supabase
+      .from("clubs")
+      .select("*")
+      .eq("id", userClubId)
+      .single();
+
+    if (userClubError) {
+      return res.status(400).json({ error: userClubError.message });
+    }
+
+    console.log("Fetched user's club:", userClub); // Log the user's club data to the console
+
     res.render("clubs", { 
       clubs,
+      ownedclub,
+      userClub,
       user: req.session.user,
      });
   } catch (error) {
@@ -5371,6 +5402,38 @@ app.post("/create-club-activity", async (req, res) => {
       return res.status(500).send("Error creating activity");
     }
 
+    // Fetch users who are part of the club
+    const { data: clubMembers, error: clubMembersError } = await supabase
+      .from("users")
+      .select("id")
+      .eq("clubid", clubid);
+
+    if (clubMembersError) {
+      console.error("Error fetching club members:", clubMembersError.message);
+      return res.status(500).send("Error fetching club members");
+    }
+
+    // Create notifications for each club member
+    if (clubMembers.length > 0) {
+      const notifications = clubMembers.map(member => ({
+        userid: member.id,
+        type: "Club",
+        message: `New activity created: ${name}`,
+        desc: `A new activity "${name}" has been created in your club. Check it out!`,
+      }));
+
+      const { error: notificationError } = await supabase
+        .from("notifications")
+        .insert(notifications);
+
+      if (notificationError) {
+        console.error("Error creating notifications:", notificationError.message);
+        return res.status(500).send("Error creating notifications");
+      }
+    } else {
+      console.error("No club members found to notify.");
+    }
+
     // Redirect back to the club details page after successful insertion
     res.redirect(`/clubs-details/${clubid}`);
   } catch (error) {
@@ -5475,6 +5538,7 @@ app.get("/activity-attendees/:activityId", async (req, res) => {
 
 app.post('/delete-activity/:id', async (req, res) => {
   const { id } = req.params;
+  const { clubid } = req.body;
 
   const { data, error } = await supabase
       .from('club_activities')
@@ -5486,7 +5550,7 @@ app.post('/delete-activity/:id', async (req, res) => {
       res.status(500).send("Error deleting activity");
   } else {
       console.log("Activity deleted:", data);
-      res.redirect('/clubs');
+      res.redirect(`/clubs-details/${clubid}`);
   }
 });
 
