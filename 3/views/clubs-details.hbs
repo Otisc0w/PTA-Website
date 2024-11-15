@@ -413,8 +413,6 @@
       <span class="close-button">&times;</span>
       <h2>Performance Feedback</h2>
       <div id="feedback-section"></div>
-
-      <!-- Feedback input and button for adding new comments -->
       <textarea id="new-feedback" placeholder="Enter new feedback..."></textarea>
       <button id="add-feedback">Add Feedback</button>
     </div>
@@ -783,34 +781,34 @@
       document.getElementById('add-feedback').onclick = () => addFeedback(athleteId);
     }
 
-  // Close modal when the close button is clicked
-document.querySelector('.close-button').addEventListener('click', () => {
-    closeModal();
-});
+    // Close modal when the close button is clicked
+    document.querySelector('.close-button').addEventListener('click', () => {
+      closeModal();
+    });
 
-// Close modal when clicking outside the modal content
-window.addEventListener('click', (event) => {
-    const modal = document.getElementById('feedback-modal');
-    if (event.target === modal) {
+    // Close modal when clicking outside the modal content
+    window.addEventListener('click', (event) => {
+      const modal = document.getElementById('feedback-modal');
+      if (event.target === modal) {
         closeModal();
+      }
+    });
+
+    // Function to close the modal
+    function closeModal() {
+      const modal = document.getElementById('feedback-modal');
+      modal.style.display = 'none';
+      document.getElementById('new-feedback').value = ''; // Clear feedback input
     }
-});
+    function addFeedback(athleteId) {
+      const feedbackInput = document.getElementById('new-feedback');
+      const feedbackText = feedbackInput.value.trim();
 
-// Function to close the modal
-function closeModal() {
-    const modal = document.getElementById('feedback-modal');
-    modal.style.display = 'none';
-    document.getElementById('new-feedback').value = ''; // Clear feedback input
-}
-function addFeedback(athleteId) {
-    const feedbackInput = document.getElementById('new-feedback');
-    const feedbackText = feedbackInput.value.trim();
-
-    if (feedbackText) {
+      if (feedbackText) {
         const feedbackLog = JSON.parse(localStorage.getItem(`feedbackLog_${athleteId}`)) || [];
         const newEntry = {
-            text: feedbackText,
-            timestamp: new Date().toLocaleString()
+          text: feedbackText,
+          timestamp: new Date().toLocaleString()
         };
         feedbackLog.push(newEntry);
 
@@ -818,10 +816,10 @@ function addFeedback(athleteId) {
         localStorage.setItem(`feedbackLog_${athleteId}`, JSON.stringify(feedbackLog));
         displayFeedback(feedbackLog, athleteId); // Refresh feedback display
         feedbackInput.value = ''; // Clear the input field
-    } else {
+      } else {
         alert("Please enter some feedback before adding."); // Error handling for empty feedback
+      }
     }
-}
 
 
   </script>
