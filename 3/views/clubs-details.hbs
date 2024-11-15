@@ -232,32 +232,35 @@
       </div>
 
       <!-- Edit Activity Modal -->
-      <div id="editActivityModal" class="modal" style="display: none;">
-        <div class="modal-content">
-          <span class="close" onclick="closeEditActivityModal()">&times;</span>
-          <h3>Edit Activity</h3>
-          <form id="editActivityForm" action="" method="POST">
+      <!-- Edit Activity Modal -->
+<div id="editActivityModal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <span class="close" onclick="closeEditActivityModal()">&times;</span>
+        <h3>Edit Activity</h3>
+        <form id="editActivityForm" action="" method="POST">
             <input type="hidden" name="activityid" id="editActivityId">
-            <div>
-              <label for="name">Activity Name:</label>
-              <input type="text" name="name" id="editActivityName" required>
+            <div class="form-group">
+                <label for="editActivityName">Activity Name:</label>
+                <input type="text" name="name" id="editActivityName" required>
             </div>
-            <div>
-              <label for="description">Description:</label>
-              <textarea name="description" id="editActivityDescription"></textarea>
+            <div class="form-group">
+                <label for="editActivityDescription">Description:</label>
+                <textarea name="description" id="editActivityDescription" rows="3"></textarea>
             </div>
-            <div>
-              <label for="date">Date:</label>
-              <input type="date" name="date" id="editActivityDate" required>
+            <div class="form-group">
+                <label for="editActivityDate">Date:</label>
+                <input type="date" name="date" id="editActivityDate" required>
             </div>
-            <div>
-              <label for="time">Time:</label>
-              <input type="time" name="time" id="editActivityTime" required>
+            <div class="form-group">
+                <label for="editActivityTime">Time:</label>
+                <input type="time" name="time" id="editActivityTime" required>
             </div>
-            <button type="submit">Update Activity</button>
-          </form>
-        </div>
-      </div>
+            <button type="submit" class="update-button">Update Activity</button>
+        </form>
+    </div>
+</div>
+
+     
     </div>
 
     <div id="announceModal" class="modal">
