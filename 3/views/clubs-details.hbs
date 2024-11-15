@@ -154,7 +154,8 @@
         <li><a href="#">Home</a></li>
         <li><a href="#">Members</a></li>
         <li {{#unless (or (eq club.id user.clubid) (eq club.registeredby user.id))}} style="display:none;" {{/unless}}>
-          <a href="#">Announcements</a></li>
+          <a href="#">Announcements</a>
+        </li>
         <li{{#unless (eq club.registeredby user.id)}} style="display:none;" {{/unless}}><a href="#">Requests</a></li>
           <li{{#unless (or (eq club.id user.clubid) (eq club.registeredby user.id))}} style="display:none;" {{/unless}}>
             <a href="#" id="activity-tab">Activity</a></li>
@@ -715,51 +716,113 @@
       document.getElementById('add-feedback').onclick = () => addFeedback(athleteId);
     }
 
-    // Display feedback in modal
     function displayFeedback(feedbackLog, athleteId) {
       const feedbackSection = document.getElementById('feedback-section');
       feedbackSection.innerHTML = ''; // Clear existing feedback
 
-      feedbackLog.forEach(entry => {
+      feedbackLog.forEach((entry, index) => {
         const feedbackEntry = document.createElement('div');
         feedbackEntry.classList.add('feedback-entry');
-        feedbackEntry.innerHTML = `<strong>${entry.timestamp}</strong><br>${entry.text}`;
+        feedbackEntry.innerHTML = `
+            <strong>${entry.timestamp}</strong><br>
+            <span class="feedback-text">${entry.text}</span>
+            <div class="feedback-actions">
+                <button class="edit-feedback" data-id="${index}">Edit</button>
+                <button class="delete-feedback" data-id="${index}">Delete</button>
+            </div>
+        `;
         feedbackSection.appendChild(feedbackEntry);
+      });
+
+      // Event listeners for edit and delete buttons
+      document.querySelectorAll('.edit-feedback').forEach(button => {
+        button.addEventListener('click', (e) => {
+          const index = e.target.getAttribute('data-id');
+          editFeedback(athleteId, index);
+        });
+      });
+
+      document.querySelectorAll('.delete-feedback').forEach(button => {
+        button.addEventListener('click', (e) => {
+          const index = e.target.getAttribute('data-id');
+          deleteFeedback(athleteId, index);
+        });
       });
     }
 
-    // Add feedback entry
-    function addFeedback(athleteId) {
-      const feedbackInput = document.getElementById('new-feedback');
-      const feedbackText = feedbackInput.value.trim();
+    // Function to handle editing feedback
+    function editFeedback(athleteId, index) {
+      const feedbackLog = JSON.parse(localStorage.getItem(`feedbackLog_${athleteId}`)) || [];
+      const feedbackText = prompt("Edit your feedback:", feedbackLog[index].text);
 
-      if (feedbackText) {
+      if (feedbackText !== null) {
+        feedbackLog[index].text = feedbackText;
+        localStorage.setItem(`feedbackLog_${athleteId}`, JSON.stringify(feedbackLog));
+        displayFeedback(feedbackLog, athleteId);
+      }
+    }
+
+    // Function to handle deleting feedback
+    function deleteFeedback(athleteId, index) {
+      let feedbackLog = JSON.parse(localStorage.getItem(`feedbackLog_${athleteId}`)) || [];
+      feedbackLog.splice(index, 1); // Remove the feedback at the given index
+      localStorage.setItem(`feedbackLog_${athleteId}`, JSON.stringify(feedbackLog));
+      displayFeedback(feedbackLog, athleteId); // Refresh the display
+    }
+
+    // Function to open the modal
+    function openModal(athleteId) {
+      const modal = document.getElementById('feedback-modal');
+      modal.style.display = 'flex';
+
+      // Load feedback log for the selected athlete
+      const feedbackLog = JSON.parse(localStorage.getItem(`feedbackLog_${athleteId}`)) || [];
+      displayFeedback(feedbackLog, athleteId);
+
+      // Add event listener for adding new feedback
+      document.getElementById('add-feedback').onclick = () => addFeedback(athleteId);
+    }
+
+  // Close modal when the close button is clicked
+document.querySelector('.close-button').addEventListener('click', () => {
+    closeModal();
+});
+
+// Close modal when clicking outside the modal content
+window.addEventListener('click', (event) => {
+    const modal = document.getElementById('feedback-modal');
+    if (event.target === modal) {
+        closeModal();
+    }
+});
+
+// Function to close the modal
+function closeModal() {
+    const modal = document.getElementById('feedback-modal');
+    modal.style.display = 'none';
+    document.getElementById('new-feedback').value = ''; // Clear feedback input
+}
+function addFeedback(athleteId) {
+    const feedbackInput = document.getElementById('new-feedback');
+    const feedbackText = feedbackInput.value.trim();
+
+    if (feedbackText) {
         const feedbackLog = JSON.parse(localStorage.getItem(`feedbackLog_${athleteId}`)) || [];
         const newEntry = {
-          text: feedbackText,
-          timestamp: new Date().toLocaleString()
+            text: feedbackText,
+            timestamp: new Date().toLocaleString()
         };
         feedbackLog.push(newEntry);
 
         // Save to localStorage and update display
         localStorage.setItem(`feedbackLog_${athleteId}`, JSON.stringify(feedbackLog));
-        displayFeedback(feedbackLog, athleteId);
-        feedbackInput.value = ''; // Clear textarea
-      }
+        displayFeedback(feedbackLog, athleteId); // Refresh feedback display
+        feedbackInput.value = ''; // Clear the input field
+    } else {
+        alert("Please enter some feedback before adding."); // Error handling for empty feedback
     }
+}
 
-    // Close modal
-    document.querySelector('.close-button').addEventListener('click', () => {
-      document.getElementById('feedback-modal').style.display = 'none';
-    });
-
-    // Close modal when clicking outside the modal content
-    window.addEventListener('click', (event) => {
-      const modal = document.getElementById('feedback-modal');
-      if (event.target === modal) {
-        modal.style.display = 'none';
-      }
-    });
 
   </script>
 </body>
