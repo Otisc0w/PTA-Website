@@ -1387,3 +1387,20 @@ button:hover {
 #add-feedback:hover {
   background-color: #0056b3;
 }
+.feedback-actions {
+  margin-top: 5px;
+  display: flex;
+  gap: 10px;
+}
+
+.edit-feedback, .delete-feedback {
+  background-color: transparent;
+  border: none;
+  color: #007bff;
+  cursor: pointer;
+  font-size: 0.9em;
+}
+
+.edit-feedback:hover, .delete-feedback:hover {
+  color: #0056b3;
+}
