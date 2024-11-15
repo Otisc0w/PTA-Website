@@ -1308,3 +1308,82 @@ button:hover {
   outline: inherit;
   float: right;
 }
+.view-feedback-button {
+  display: inline-block;
+  padding: 8px 12px;
+  background-color: #007bff;
+  color: #fff;
+  text-decoration: none;
+  border-radius: 4px;
+  text-align: center;
+}
+
+.view-feedback-button:hover {
+  background-color: #0056b3;
+}
+
+/* Close Button */
+.close-button {
+  position: absolute;
+  top: 10px;
+  right: 20px;
+  font-size: 24px;
+  font-weight: bold;
+  color: #666; /* Subtle color */
+  cursor: pointer;
+}
+
+.close-button:hover {
+  color: #000; /* Darker on hover */
+}
+
+/* Feedback Entries */
+.feedback-entry {
+  padding: 10px;
+  margin: 8px 0;
+  background-color: #f8f9fa; /* Light gray background for feedback entries */
+  border-radius: 4px;
+  border: 1px solid #ddd;
+  font-size: 0.9em;
+  color: #333;
+}
+
+/* Feedback Log Container with Scroll */
+#feedback-section {
+  max-height: 300px; /* Fixed height to fit within modal */
+  overflow-y: auto; /* Enables scrolling if content exceeds height */
+  margin-bottom: 10px;
+  padding-right: 10px; /* Space for scrollbar */
+}
+/* Timestamp Styling */
+.feedback-entry strong {
+  display: block;
+  font-size: 0.8em;
+  color: #555; /* Slightly lighter for timestamp */
+}
+
+/* New Feedback Text Area */
+#new-feedback {
+  width: 95%;
+  margin-top: 20px;
+  padding: 5px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  resize: vertical;
+  font-size: 1em;
+  color: #333;
+  margin-left: 0;
+}
+#add-feedback {
+  padding: 8px 16px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 1em;
+  cursor: pointer;
+}
+
+#add-feedback:hover {
+  background-color: #0056b3;
+}
