@@ -403,3 +403,8 @@ strong {
     font-size: 30px;
     cursor: pointer;
   }
+
+  .rejectmsg{
+    font-size: 16px;
+    color: var(--text-color);
+  }

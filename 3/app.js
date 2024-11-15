@@ -105,7 +105,7 @@ hbs.registerHelper("formatStatus", function (status) {
     case 3:
       return '<span class="status-shipped">ID Shipped</span>';
     case 4:
-      return '<span class="status-rejected">Reject Application</span>';
+      return '<span class="status-rejected">Rejected</span>';
     case 5:
       return '<span class="status-expired">Expired</span>';
     default:
@@ -1254,6 +1254,22 @@ app.post("/update-nccstatus", async (req, res) => {
     }
 
     console.log("Registration updated:", registration);
+
+    // Check if status is 4, indicating the need to update the rejectmsg
+    if (status == 4) {
+      const { rejectmsg } = req.body; // Capture the reject message from the form
+
+      // Update the rejectmsg column
+      const { error: updateRejectMsgError } = await supabase
+      .from("ncc_registrations")
+      .update({ rejectmsg: rejectmsg })
+      .eq("id", applicationId);
+
+      if (updateRejectMsgError) {
+      console.error("Error updating rejectmsg:", updateRejectMsgError.message);
+      return res.status(500).send("Error updating rejectmsg");
+      }
+    }
 
     // Check if status is 3, indicating the need to update the user's athleteverified column and insert into athletes table
     if (status == 3) {
@@ -3368,35 +3384,273 @@ app.post("/unfollow-topic/:id", async (req, res) => {
   }
 });
 
-app.post("/create-club-announcement", async (req, res) => {
-  const { title, subject, body, originalposter, profilepic, clubid } = req.body;
+app.post("/delete-topic/:id", async (req, res) => {
+  
 
-  if (!req.session.user) {
-    return res.status(401).send("Unauthorized: No user logged in");
+  const topicId = req.params.id;
+
+  try {
+    const { error } = await supabase
+      .from("forum_topics")
+      .delete()
+      .eq("id", topicId);
+
+    if (error) {
+      console.error("Error deleting topic:", error.message);
+      return res.status(500).send("Error deleting topic");
+    }
+
+    res.redirect("/forum"); // Redirect after successful deletion
+  } catch (error) {
+    console.error("Unexpected error:", error);
+    res.status(500).send("Server error");
+  }
+});
+
+app.post('/update-activity/:id', async (req, res) => {
+  const { id } = req.params;
+  const { name, description, date, time } = req.body;
+
+  const { error } = await supabase
+      .from('club_activities')
+      .update({ name, description, date, time })
+      .eq('id', id);
+
+  if (error) {
+      console.error("Error updating activity:", error);
+      res.status(500).send("Error updating activity");
+  } else {
+      const { data: updatedActivity, fetchError } = await supabase
+          .from('club_activities')
+          .select('clubid')
+          .eq('id', id)
+          .single();
+
+      if (fetchError) {
+          console.error("Error fetching updated activity:", fetchError);
+          res.status(500).send("Error fetching updated activity");
+      } else {
+          const clubId = updatedActivity.clubid; 
+          res.redirect(`/clubs-details/${clubId}#activity`);
+      }
+  }
+});
+
+app.post('/delete-activity/:id', async (req, res) => {
+  const { id } = req.params;
+  const { clubid } = req.body;
+
+  const { data, error } = await supabase
+      .from('club_activities')
+      .delete()
+      .eq('id', id);
+
+  if (error) {
+      console.error("Error deleting activity:", error);
+      res.status(500).send("Error deleting activity");
+  } else {
+      console.log("Activity deleted:", data);
+      res.redirect(`/clubs-details/${clubid}`);
+  }
+});
+
+app.post("/create-announcement", async (req, res) => {
+  const { title, subject, body, clubid } = req.body;
+
+  if (!req.session || !req.session.user) {
+    return res.status(403).send("User not authenticated");
+  }
+
+  const originalposter = req.session.user.username;
+  const profilepic = req.session.user.profilepic;
+
+  if (!clubid) {
+    return res.status(400).send("Club ID is missing");
   }
 
   try {
-    const { data, error } = await supabase.from("club_announcements").insert([
-      {
-        title,
-        subject,
-        body,
-        originalposter,
-        profilepic,
-        clubid,
-      },
-    ]);
+    // Log the data being inserted for debugging purposes
+    console.log({
+      title,
+      subject,
+      body,
+      clubid: parseInt(clubid),
+      originalposter,
+      profilepic
+    });
+
+    // Insert the new announcement into 'club_announcements' table
+    const { data, error } = await supabase
+      .from("club_announcements")
+      .insert([
+        {
+          title,
+          subject,
+          body,
+          clubid: parseInt(clubid),
+          originalposter,
+          profilepic
+        },
+      ]);
 
     if (error) {
-      return res.status(500).render("announcements", {
-        error: "Error creating announcement.",
-        user: req.session.user,
-      });
+      console.error("Error creating announcement:", error.message);
+      return res.status(500).send("Error creating announcement");
     }
 
+    // Redirect back to the club details page after successful insertion
     res.redirect(`/clubs-details/${clubid}`);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error("Server error:", error.message);
+    res.status(500).send("Server error while creating announcement");
+  }
+});
+
+app.post("/create-club-activity", async (req, res) => {
+  const { name, description, date, time, clubid } = req.body;
+
+  // Check if the user is authenticated
+  if (!req.session || !req.session.user) {
+    console.error("User not authenticated");
+    return res.status(403).send("User not authenticated");
+  }
+
+  const createdby = req.session.user.id; // Get the user ID from the session
+
+  // Check if club_id is provided
+  if (!clubid) {
+    console.error("Club ID is missing in the request");
+    return res.status(400).send("Club ID is missing");
+  }
+
+  try {
+    // Log the data being inserted for debugging purposes
+    console.log({
+      name,
+      description,
+      date,
+      time,
+      createdby,
+      clubid
+    });
+
+    // Insert the new activity into the 'activities' table
+    const { data, error } = await supabase
+      .from("club_activities")
+      .insert([
+        {
+          name,
+          description,
+          date,
+          time,
+          createdby,
+          clubid
+        },
+      ]);
+
+    if (error) {
+      console.error("Error creating activity:", error.message);
+      return res.status(500).send("Error creating activity");
+    }
+
+    // Fetch users who are part of the club
+    const { data: clubMembers, error: clubMembersError } = await supabase
+      .from("users")
+      .select("id")
+      .eq("clubid", clubid);
+
+    if (clubMembersError) {
+      console.error("Error fetching club members:", clubMembersError.message);
+      return res.status(500).send("Error fetching club members");
+    }
+
+    // Create notifications for each club member
+    if (clubMembers.length > 0) {
+      const notifications = clubMembers.map(member => ({
+        userid: member.id,
+        type: "Club",
+        message: `New activity created: ${name}`,
+        desc: `A new activity "${name}" has been created in your club. Check it out!`,
+      }));
+
+      const { error: notificationError } = await supabase
+        .from("notifications")
+        .insert(notifications);
+
+      if (notificationError) {
+        console.error("Error creating notifications:", notificationError.message);
+        return res.status(500).send("Error creating notifications");
+      }
+    } else {
+      console.error("No club members found to notify.");
+    }
+
+    // Redirect back to the club details page after successful insertion
+    res.redirect(`/clubs-details/${clubid}`);
+  } catch (error) {
+    console.error("Server error while creating activity:", error.message);
+    res.status(500).send("Server error while creating activity");
+  }
+});
+
+app.post("/attend-activity", async (req, res) => {
+  const { activityId } = req.body;
+  const userId = req.session.user.id;
+
+  try {
+      const { data, error } = await supabase
+          .from("activity_attendance")
+          .insert([{ activity_id: activityId, user_id: userId, status: "Attending" }]);
+      if (error) throw error;
+
+      res.redirect(`/clubs-details/${req.body.club_id}`);
+  } catch (error) {
+      console.error("Error attending activity:", error.message);
+      res.status(500).send("Error attending activity");
+  }
+});
+
+app.post("/rsvp-activity", async (req, res) => {
+  const { activityId, going } = req.body;
+  const userId = req.session.user.id; // Assuming the user is logged in
+
+  try {
+    // Fetch the current attendees for the activity
+    const { data: activity, error } = await supabase
+      .from("club_activities")
+      .select("attendees")
+      .eq("id", activityId)
+      .single();
+
+    if (error) {
+      return res.status(400).json({ error: error.message });
+    }
+
+    let attendees = activity.attendees || [];
+
+    if (going) {
+      // Add the user if they're not already in the attendees list
+      if (!attendees.includes(userId)) {
+        attendees.push(userId);
+      }
+    } else {
+      // Remove the user if they clicked "I'm Not Going"
+      attendees = attendees.filter(id => id !== userId);
+    }
+
+    // Update the attendees field
+    const { error: updateError } = await supabase
+      .from("club_activities")
+      .update({ attendees })
+      .eq("id", activityId);
+
+    if (updateError) {
+      return res.status(400).json({ error: updateError.message });
+    }
+
+    res.status(200).json({ message: "RSVP updated successfully." });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
 });
 
@@ -3462,7 +3716,6 @@ app.post("/update-club", upload.single("clubpicture"), async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
-
 
 app.post("/create-event-announcement", async (req, res) => {
   const { title, subject, body, eventid } = req.body;
@@ -3873,29 +4126,6 @@ app.get("/forum", async function (req, res) {
   }
 });
 
-app.post("/delete-topic/:id", async (req, res) => {
-  
-
-  const topicId = req.params.id;
-
-  try {
-    const { error } = await supabase
-      .from("forum_topics")
-      .delete()
-      .eq("id", topicId);
-
-    if (error) {
-      console.error("Error deleting topic:", error.message);
-      return res.status(500).send("Error deleting topic");
-    }
-
-    res.redirect("/forum"); // Redirect after successful deletion
-  } catch (error) {
-    console.error("Unexpected error:", error);
-    res.status(500).send("Server error");
-  }
-});
-
 app.get("/forum-create", async function (req, res) {
   if (!req.session.user) {
     return res.redirect("/");
@@ -4197,6 +4427,55 @@ app.get("/clubs-details/:id", async function (req, res) {
   }
 });
 
+app.get("/activity-attendees/:activityId", async (req, res) => {
+  const { activityId } = req.params;
+
+  try {
+    // Fetch the activity to get the list of attendee IDs
+    const { data: activity, error: activityError } = await supabase
+      .from("club_activities")
+      .select("attendees")
+      .eq("id", activityId)
+      .single();
+
+    if (activityError) {
+      return res.status(400).json({ error: activityError.message });
+    }
+
+    const attendeeIds = activity.attendees || [];
+
+    // Fetch the names of attendees
+    const { data: attendees, error: attendeesError } = await supabase
+      .from("users") // Replace with your user table name
+      .select("id, firstname, lastname")
+      .in("id", attendeeIds);
+
+    if (attendeesError) {
+      return res.status(400).json({ error: attendeesError.message });
+    }
+
+    res.status(200).json(attendees);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.get('/edit-activity/:id', async (req, res) => {
+  const { id } = req.params;
+
+  const { data: activity, error } = await supabase
+      .from('club_activities')
+      .select('*')
+      .eq('id', id)
+      .single();
+
+  if (error) {
+      console.error("Error fetching activity:", error);
+      res.status(500).send("Error fetching activity");
+  } else {
+      res.render('edit-activity', { activity });
+  }
+});
 
 app.get("/clubs-manage", async function (req, res) {
   if (!req.session.user) {
@@ -5448,305 +5727,4 @@ app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
 });
 
-
-
-// Route to handle creating an announcement
-app.post("/create-announcement", async (req, res) => {
-  const { title, subject, body, clubid } = req.body;
-
-  if (!req.session || !req.session.user) {
-    return res.status(403).send("User not authenticated");
-  }
-
-  const originalposter = req.session.user.username;
-  const profilepic = req.session.user.profilepic;
-
-  if (!clubid) {
-    return res.status(400).send("Club ID is missing");
-  }
-
-  try {
-    // Log the data being inserted for debugging purposes
-    console.log({
-      title,
-      subject,
-      body,
-      clubid: parseInt(clubid),
-      originalposter,
-      profilepic
-    });
-
-    // Insert the new announcement into 'club_announcements' table
-    const { data, error } = await supabase
-      .from("club_announcements")
-      .insert([
-        {
-          title,
-          subject,
-          body,
-          clubid: parseInt(clubid),
-          originalposter,
-          profilepic
-        },
-      ]);
-
-    if (error) {
-      console.error("Error creating announcement:", error.message);
-      return res.status(500).send("Error creating announcement");
-    }
-
-    // Redirect back to the club details page after successful insertion
-    res.redirect(`/clubs-details/${clubid}`);
-  } catch (error) {
-    console.error("Server error:", error.message);
-    res.status(500).send("Server error while creating announcement");
-  }
-});
-
-/// Route to create a new activity
-app.post("/create-club-activity", async (req, res) => {
-  const { name, description, date, time, clubid } = req.body;
-
-  // Check if the user is authenticated
-  if (!req.session || !req.session.user) {
-    console.error("User not authenticated");
-    return res.status(403).send("User not authenticated");
-  }
-
-  const createdby = req.session.user.id; // Get the user ID from the session
-
-  // Check if club_id is provided
-  if (!clubid) {
-    console.error("Club ID is missing in the request");
-    return res.status(400).send("Club ID is missing");
-  }
-
-  try {
-    // Log the data being inserted for debugging purposes
-    console.log({
-      name,
-      description,
-      date,
-      time,
-      createdby,
-      clubid
-    });
-
-    // Insert the new activity into the 'activities' table
-    const { data, error } = await supabase
-      .from("club_activities")
-      .insert([
-        {
-          name,
-          description,
-          date,
-          time,
-          createdby,
-          clubid
-        },
-      ]);
-
-    if (error) {
-      console.error("Error creating activity:", error.message);
-      return res.status(500).send("Error creating activity");
-    }
-
-    // Fetch users who are part of the club
-    const { data: clubMembers, error: clubMembersError } = await supabase
-      .from("users")
-      .select("id")
-      .eq("clubid", clubid);
-
-    if (clubMembersError) {
-      console.error("Error fetching club members:", clubMembersError.message);
-      return res.status(500).send("Error fetching club members");
-    }
-
-    // Create notifications for each club member
-    if (clubMembers.length > 0) {
-      const notifications = clubMembers.map(member => ({
-        userid: member.id,
-        type: "Club",
-        message: `New activity created: ${name}`,
-        desc: `A new activity "${name}" has been created in your club. Check it out!`,
-      }));
-
-      const { error: notificationError } = await supabase
-        .from("notifications")
-        .insert(notifications);
-
-      if (notificationError) {
-        console.error("Error creating notifications:", notificationError.message);
-        return res.status(500).send("Error creating notifications");
-      }
-    } else {
-      console.error("No club members found to notify.");
-    }
-
-    // Redirect back to the club details page after successful insertion
-    res.redirect(`/clubs-details/${clubid}`);
-  } catch (error) {
-    console.error("Server error while creating activity:", error.message);
-    res.status(500).send("Server error while creating activity");
-  }
-});
-
-app.post("/attend-activity", async (req, res) => {
-  const { activityId } = req.body;
-  const userId = req.session.user.id;
-
-  try {
-      const { data, error } = await supabase
-          .from("activity_attendance")
-          .insert([{ activity_id: activityId, user_id: userId, status: "Attending" }]);
-      if (error) throw error;
-
-      res.redirect(`/clubs-details/${req.body.club_id}`);
-  } catch (error) {
-      console.error("Error attending activity:", error.message);
-      res.status(500).send("Error attending activity");
-  }
-});
-
-app.post("/rsvp-activity", async (req, res) => {
-  const { activityId, going } = req.body;
-  const userId = req.session.user.id; // Assuming the user is logged in
-
-  try {
-    // Fetch the current attendees for the activity
-    const { data: activity, error } = await supabase
-      .from("club_activities")
-      .select("attendees")
-      .eq("id", activityId)
-      .single();
-
-    if (error) {
-      return res.status(400).json({ error: error.message });
-    }
-
-    let attendees = activity.attendees || [];
-
-    if (going) {
-      // Add the user if they're not already in the attendees list
-      if (!attendees.includes(userId)) {
-        attendees.push(userId);
-      }
-    } else {
-      // Remove the user if they clicked "I'm Not Going"
-      attendees = attendees.filter(id => id !== userId);
-    }
-
-    // Update the attendees field
-    const { error: updateError } = await supabase
-      .from("club_activities")
-      .update({ attendees })
-      .eq("id", activityId);
-
-    if (updateError) {
-      return res.status(400).json({ error: updateError.message });
-    }
-
-    res.status(200).json({ message: "RSVP updated successfully." });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-app.get("/activity-attendees/:activityId", async (req, res) => {
-  const { activityId } = req.params;
-
-  try {
-    // Fetch the activity to get the list of attendee IDs
-    const { data: activity, error: activityError } = await supabase
-      .from("club_activities")
-      .select("attendees")
-      .eq("id", activityId)
-      .single();
-
-    if (activityError) {
-      return res.status(400).json({ error: activityError.message });
-    }
-
-    const attendeeIds = activity.attendees || [];
-
-    // Fetch the names of attendees
-    const { data: attendees, error: attendeesError } = await supabase
-      .from("users") // Replace with your user table name
-      .select("id, firstname, lastname")
-      .in("id", attendeeIds);
-
-    if (attendeesError) {
-      return res.status(400).json({ error: attendeesError.message });
-    }
-
-    res.status(200).json(attendees);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-app.post('/delete-activity/:id', async (req, res) => {
-  const { id } = req.params;
-  const { clubid } = req.body;
-
-  const { data, error } = await supabase
-      .from('club_activities')
-      .delete()
-      .eq('id', id);
-
-  if (error) {
-      console.error("Error deleting activity:", error);
-      res.status(500).send("Error deleting activity");
-  } else {
-      console.log("Activity deleted:", data);
-      res.redirect(`/clubs-details/${clubid}`);
-  }
-});
-
-// Route to display the edit form
-app.get('/edit-activity/:id', async (req, res) => {
-  const { id } = req.params;
-
-  const { data: activity, error } = await supabase
-      .from('club_activities')
-      .select('*')
-      .eq('id', id)
-      .single();
-
-  if (error) {
-      console.error("Error fetching activity:", error);
-      res.status(500).send("Error fetching activity");
-  } else {
-      res.render('edit-activity', { activity });
-  }
-});
-
-app.post('/update-activity/:id', async (req, res) => {
-  const { id } = req.params;
-  const { name, description, date, time } = req.body;
-
-  const { error } = await supabase
-      .from('club_activities')
-      .update({ name, description, date, time })
-      .eq('id', id);
-
-  if (error) {
-      console.error("Error updating activity:", error);
-      res.status(500).send("Error updating activity");
-  } else {
-      const { data: updatedActivity, fetchError } = await supabase
-          .from('club_activities')
-          .select('clubid')
-          .eq('id', id)
-          .single();
-
-      if (fetchError) {
-          console.error("Error fetching updated activity:", fetchError);
-          res.status(500).send("Error fetching updated activity");
-      } else {
-          const clubId = updatedActivity.clubid; 
-          res.redirect(`/clubs-details/${clubId}#activity`);
-      }
-  }
-});
 

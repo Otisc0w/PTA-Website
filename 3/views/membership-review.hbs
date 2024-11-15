@@ -158,7 +158,8 @@
           {{else if (eq registration.status 3)}}
           <span class="status-shipped">ID Shipped</span>
           {{else if (eq registration.status 4)}}
-          <span class="status-rejected">Rejected</span>
+          <span class="status-rejected">Rejected</span><br>
+          Reason:<p class="rejectmsg">{{registration.rejectmsg}}</p>
           {{else if (eq registration.status 5)}}
           <span class="status-unknown">Expired</span>
           {{/if}}
@@ -169,8 +170,16 @@
           <button type="submit" name="status" value="1">Under Review</button>
           <button type="submit" name="status" value="2">En-route to Regional Office</button>
           <button type="button" id="idshipped" class="idshipped">ID Shipped</button>
-          <button type="submit" name="status" value="4">Reject Application</button>
+          <button type="submit" id="rejectbtn" class="rejectbtn">Reject Application</button>
         </div>
+
+        <div class="confirmrejectscreen" id="confirmrejectscreen" style="display: none;">
+          <h3>Please state reason for rejection.</h3>
+          <textarea name="rejectmsg" id="rejectmsg" cols="30" rows="10"></textarea>
+          <button type="button" class="cancelreject" id="cancelreject">Cancel</button>
+          <button type="submit" value="4" name="status" id="confirm">Confirm</button>
+        </div>
+
         <div class="confirmscreen" id="confirmscreen" style="display: none;">
           <h3>Are you sure? The player will be notified that his ID is ready for pickup.</h3>
           <button type="button" class="cancel" id="cancel">Cancel</button>
@@ -201,9 +210,12 @@
 
   <script>
     const confirmscreen = document.getElementById("confirmscreen");
+    const confirmrejectscreen = document.getElementById("confirmrejectscreen");
+    const cancelreject = document.getElementById("cancelreject");
     const actionButtons = document.querySelector(".action-buttons");
     const cancel = document.getElementById("cancel");
     const idshipped = document.getElementById("idshipped");
+    const rejectbtn = document.getElementById("rejectbtn");
 
     cancel.addEventListener("click", function (event) {
       event.preventDefault();
@@ -216,6 +228,20 @@
       confirmscreen.style.display = "block";
       actionButtons.style.display = "none";
     });
+
+    cancelreject.addEventListener("click", function (event) {
+      event.preventDefault();
+      confirmrejectscreen.style.display = "none";
+      actionButtons.style.display = "block";
+    });
+
+    rejectbtn.addEventListener("click", function (event) {
+      event.preventDefault();
+      confirmrejectscreen.style.display = "block";
+      actionButtons.style.display = "none";
+    });
+
+
 
     function printIdCard(divName) {
       var printContents = document.getElementById(divName).innerHTML;

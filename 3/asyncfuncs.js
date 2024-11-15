@@ -209,19 +209,31 @@ async function checkAndExpireInstructorRegistrations(req, res, next) {
 
 async function checkUpcomingEvents(req, res, next) {
   const currentDate = new Date();
-  const fiveMinutesLater = new Date(currentDate.getTime() + 5 * 60000); // Current time + 5 minutes
+  const oneHourLater = new Date(currentDate.getTime() + 60 * 60000); // Current time + 1 hour
+  const twentyFourHoursLater = new Date(currentDate.getTime() + 24 * 60 * 60000); // Current time + 24 hours
 
   try {
-    const { data: events, error: eventsError } = await supabase
+    const { data: eventsInOneHour, error: eventsErrorOneHour } = await supabase
       .from("events")
       .select("*")
       .gte("starttime", moment(currentDate).format("YYYY-MM-DD HH:mm:ss"))
-      .lte("starttime", moment(fiveMinutesLater).format("YYYY-MM-DD HH:mm:ss"));
+      .lte("starttime", moment(oneHourLater).format("YYYY-MM-DD HH:mm:ss"));
 
-    if (eventsError) {
-      throw new Error(`Error fetching events: ${eventsError.message}`);
+    if (eventsErrorOneHour) {
+      throw new Error(`Error fetching events in one hour: ${eventsErrorOneHour.message}`);
     }
 
+    const { data: eventsInTwentyFourHours, error: eventsErrorTwentyFourHours } = await supabase
+      .from("events")
+      .select("*")
+      .gte("starttime", moment(currentDate).format("YYYY-MM-DD HH:mm:ss"))
+      .lte("starttime", moment(twentyFourHoursLater).format("YYYY-MM-DD HH:mm:ss"));
+
+    if (eventsErrorTwentyFourHours) {
+      throw new Error(`Error fetching events in twenty-four hours: ${eventsErrorTwentyFourHours.message}`);
+    }
+
+    const events = [...eventsInOneHour, ...eventsInTwentyFourHours];
     if (events.length > 0) {
       const eventIds = events.map(event => event.id);
 
@@ -241,9 +253,14 @@ async function checkUpcomingEvents(req, res, next) {
 
       events.forEach(event => {
         userIds.forEach(userId => {
+          const timeDiff = new Date(event.starttime) - currentDate;
+          const message = timeDiff <= 60 * 60000
+            ? `${event.name} is starting in 1 hour!`
+            : `${event.name} is starting in 24 hours!`;
+
           notifications.push({
             userid: userId,
-            message: `${event.name} is starting soon!`,
+            message: message,
             type: "Event"
           });
         });
@@ -263,11 +280,11 @@ async function checkUpcomingEvents(req, res, next) {
 
         if (!existingNotification) {
           const { error: notificationError } = await supabase
-        .from("notifications")
-        .insert(notification);
+            .from("notifications")
+            .insert(notification);
 
           if (notificationError) {
-        throw new Error(`Error inserting notifications: ${notificationError.message}`);
+            throw new Error(`Error inserting notifications: ${notificationError.message}`);
           }
         }
       }
