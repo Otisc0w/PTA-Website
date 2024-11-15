@@ -527,6 +527,7 @@ app.post("/submit-instructor", upload.fields([
   { name: "poomsaecert", maxCount: 1 },
   { name: "kukkiwoncert", maxCount: 1 },
   { name: "ptablackbeltcert", maxCount: 1 },
+  { name: "paymentproof", maxCount: 1 },
   ]),
   async (req, res) => {
   const {
@@ -685,6 +686,31 @@ app.post("/submit-instructor", upload.fields([
 
       ptablackbeltcertUrl = `${supabaseUrl}/storage/v1/object/public/documents/${ptablackbeltcertPath}`;
     }
+
+    if (req.files.paymentproof) {
+      const paymentproofPath = `documents/${Date.now()}-${
+      req.files.paymentproof[0].originalname
+      }`;
+      const { error: paymentproofUploadError } = await supabase.storage
+      .from("documents")
+      .upload(
+        paymentproofPath,
+        req.files.paymentproof[0].buffer,
+        {
+        contentType: req.files.paymentproof[0].mimetype,
+        }
+      );
+
+      if (paymentproofUploadError) {
+      console.error(
+        "Error uploading paymentproof:",
+        paymentproofUploadError.message
+      );
+      return res.status(500).send("Error uploading paymentproof");
+      }
+
+      paymentproofUrl = `${supabaseUrl}/storage/v1/object/public/documents/${paymentproofPath}`;
+    }
     } catch (error) {
     console.error("Server error during file upload:", error.message);
     return res.status(500).json({ error: error.message });
@@ -727,6 +753,7 @@ app.post("/submit-instructor", upload.fields([
       poomsaecert: poomsaecertUrl,
       kukkiwoncert: kukkiwoncertUrl,
       ptablackbeltcert: ptablackbeltcertUrl,
+      paymentproof: paymentproofUrl, // Include the payment proof URL
       })
       .eq("submittedby", submittedby);
 

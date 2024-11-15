@@ -184,10 +184,25 @@
 
 						<div class="form-row button-group">
 							<button class="cancel-button" type="button" onclick="showPreviousPage()">Previous</button>
-							<button class="next-button" type="submit" onclick="showConfirmationMessage(event)">Submit</button>
-
+							<button class="next-button" type="button" onclick="showNextPage(event)">Next</button>
 						</div>
 
+						<p id="error-message" style="color:red;"></p>
+					</div>
+          
+          {{!-- Page 4 --}}
+          <div class="ins-page ins-page4 hidden">
+						<img class="paymentqr" src="/images/paymentqr.png" alt="Payment QR Code"><br>
+						<h3>Scan the QR code to pay the application fee of PHP 500.00</h3><br>
+						<div class="form-row">
+							<div class="form-group">
+								<label for="paymentproof">Upload Payment Proof</label>
+								<input type="file" id="paymentproof" name="paymentproof" required>
+							</div>
+						</div>
+						<button class="cancel-button" type="button" onclick="showPreviousPage()">Previous</button>
+						<button class="next-button" type="submit" onclick="showConfirmationMessage(event)">Submit</button>
+						
 						<p id="error-message" style="color:red;"></p>
 					</div>
 				</form>		

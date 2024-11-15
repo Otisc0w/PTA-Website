@@ -54,17 +54,18 @@
           <p><strong>Middle Initial:</strong> {{registration.mi}}</p>
           <p><strong>Last Name:</strong> {{registration.lastname}}</p>
           <p><strong>Gender:</strong> {{registration.gender}}</p>
-          <p><strong>Birthday:</strong> {{registration.bday}}</p>
+            <p><strong>Birthday:</strong> {{formatDate registration.bday "MMMM D, YYYY"}}</p>
           <p><strong>Phone Number:</strong> {{registration.phonenum}}</p>
           <p><strong>Email:</strong> {{registration.email}}</p>
           <p><strong>Region:</strong> {{registration.region}}</p>
           <p><strong>Club:</strong> {{registration.clubname}}</p>
-          <p>submitted by: {{registration.submittedby}}</p>
+          {{!-- <p>submitted by: {{registration.submittedby}}</p> --}}
           <a href="{{registration.birthcert}}" target="_blank" download> Birth Certificate</a><br>
           <a href="{{registration.educproof}}" target="_blank" download> Proof of Education</a><br>
           <a href="{{registration.poomsaecert}}" target="_blank" download> Poomsae Certificate</a><br>
           <a href="{{registration.kukkiwoncert}}" target="_blank" download> Kukkiwon Certificate</a><br>
           <a href="{{registration.ptablackbeltcert}}" target="_blank" download> PTA Black-Belt Certificate</a><br>
+          <a href="{{registration.paymentproof}}" target="_blank" download> Payment Proof</a><br>
         </div>
 
       </section>
@@ -110,7 +111,7 @@
         <p><strong>First Name:</strong> {{registration.firstname}}</p>
         <p><strong>Middle Initial:</strong> {{registration.mi}}</p>
         <p><strong>Last Name:</strong> {{registration.lastname}}</p>
-        <p>submitted by: {{registration.submittedby}}</p>
+        {{!-- <p>submitted by: {{registration.submittedby}}</p> --}}
       </div>
 
       <div class="confirmscreen" id="confirmscreen" style="display: none;">

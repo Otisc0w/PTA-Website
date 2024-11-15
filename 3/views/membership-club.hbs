@@ -4,7 +4,7 @@
 <head>
   <title>PTA | Membership Status</title>
   <link rel="icon" type="image/x-icon" href="../images/favicon.ico" />
-  <link rel="stylesheet" type="text/css" href="../stylesheets/membership-ncc.css" />
+  <link rel="stylesheet" type="text/css" href="../stylesheets/membership-club.css" />
   <link rel="stylesheet" type="text/css" href="../stylesheets/navbar.css" />
 </head>
 
@@ -54,8 +54,6 @@
     <div class="rightside">
       <div class="formcontainer">
         <form id="clubform" action="/submit-club" method="post" enctype="multipart/form-data">
-
-
           <div class="form-row">
             <input type="hidden" id="registeree" name="registeree" value="{{user.id}}">
             <div class="form-group">
@@ -93,20 +91,24 @@
               <input type="text" id="province" name="province" required><br>
             </div>
           </div>
-
-          <div class="form-row"></div>
           <div class="form-group">
             <label for="idfile">ID File (PDF):</label><br>
             <input type="file" id="idfile" name="idfile" accept="application/pdf" required><br>
-          </div>
-          <div class="form-group">
             <label for="proofdoc">Proof Document (PDF):</label><br>
             <input type="file" id="proofdoc" name="proofdoc" accept="application/pdf" required><br>
-          </div>
-          <div class="form-group">
+            <label for="clubpic">Club Picture:</label><br>
+            <input type="file" id="clubpic" name="clubpic" accept="jpg/png/jpeg" required><br>
             <label for="clubpic">Club Picture:</label><br>
             <input type="file" id="clubpic" name="clubpic" accept="jpg/png/jpeg" required><br>
           </div>
+						Scan the QR code to pay the application fee of PHP 500.00:
+            <a href="https://rdgktrbltrabwivyyafw.supabase.co/storage/v1/object/public/pictures/paymentqr.png" target="_blank" download> Payment Proof</a>
+						<div class="form-row">
+							<div class="form-group">
+								<label for="paymentproof">Upload Payment Proof</label>
+								<input type="file" id="paymentproof" name="paymentproof" required>
+							</div>
+						</div>
           <div class="form-row button-group">
             <a href="membership" class="cancel-button" type="button">Cancel</a>
             <button class="next-button" type="submit">Submit</button>
