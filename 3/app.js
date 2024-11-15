@@ -3974,12 +3974,12 @@ app.get("/clubs-details/:id", async function (req, res) {
   }
 
   try {
+    // Fetch the club, owner, and other details
     const { data: club, error: clubsError } = await supabase
       .from("clubs")
       .select("*")
       .eq("id", id)
       .single();
-
 
     if (clubsError) {
       return res.status(400).json({ clubsError: clubsError.message });
@@ -4017,9 +4017,7 @@ app.get("/clubs-details/:id", async function (req, res) {
       .eq("clubid", id);
 
     if (announcementserror) {
-      return res
-        .status(400)
-        .json({ announcementserror: announcementserror.message });
+      return res.status(400).json({ announcementserror: announcementserror.message });
     }
 
     const { data: club_requests, error: club_requestsError } = await supabase
@@ -4061,8 +4059,8 @@ app.get("/clubs-details/:id", async function (req, res) {
     const clubMembersWithAthleteData = clubMembers.map((member) => {
       const athlete = athletes.find((athlete) => athlete.userid === member.id);
       return {
-      ...member,
-      athleteData: athlete || null,
+        ...member,
+        athleteData: athlete || null,
       };
     });
 
@@ -4084,26 +4082,44 @@ app.get("/clubs-details/:id", async function (req, res) {
       return res.status(400).json({ attendeesError: attendeesError.message });
     }
 
+    // Calculate attendance count for each member
+    const attendanceCounts = {};
+    clubactivities.forEach((activity) => {
+      (activity.attendees || []).forEach((attendeeId) => {
+        if (attendanceCounts[attendeeId]) {
+          attendanceCounts[attendeeId]++;
+        } else {
+          attendanceCounts[attendeeId] = 1;
+        }
+      });
+    });
+
+    // Add attendance count to each club member
+    const clubMembersWithAttendanceData = clubMembersWithAthleteData.map((member) => ({
+      ...member,
+      attended_count: attendanceCounts[member.id] || 0, // Set count or default to 0 if no attendance
+    }));
+
     const clubActivitiesWithUserDetails = clubactivities.map((activity) => {
       const attendeesWithDetails = (activity.attendees || []).map((attendeeId) => {
-      const user = attendees.find((user) => user.id === attendeeId);
-      return user ? { id: user.id, firstname: user.firstname, lastname: user.lastname } : null;
+        const user = attendees.find((user) => user.id === attendeeId);
+        return user ? { id: user.id, firstname: user.firstname, lastname: user.lastname } : null;
       }).filter((attendee) => attendee !== null);
 
       return {
-      ...activity,
-      attendees: attendeesWithDetails,
+        ...activity,
+        attendees: attendeesWithDetails,
       };
     });
 
     console.log("clubactivitieswithuserdetails", clubActivitiesWithUserDetails);
 
     // Render the clubs-details.hbs template with the fetched data
-  res.render("clubs-details", {
+    res.render("clubs-details", {
       club,
       clubOwner,
       allUsers,
-      clubMembersWithAthleteData,
+      clubMembersWithAthleteData: clubMembersWithAttendanceData, // Use updated data with attendance count
       announcements,
       club_requests,
       clubRequestsWithUserDetails,
@@ -4115,6 +4131,7 @@ app.get("/clubs-details/:id", async function (req, res) {
     res.status(500).json({ error: error.message });
   }
 });
+
 
 app.get("/clubs-manage", async function (req, res) {
   if (!req.session.user) {
