@@ -91,9 +91,42 @@ async function checkAndExpireNCCRegistrations(req, res, next) {
       }
 
       console.log(`Updated status to 5 for ${expiredRegistrations.length} registrations.`);
-    } else {
+
+      // Notify users about expired registrations
+      const notifications = expiredRegistrations.map(registration => ({
+        userid: registration.submittedby,
+        message: `Your NCC registration has expired.`,
+        desc: 'Please renew your registration to continue being a member of the PTA.',
+        type: "Registration"
+      }));
+
+      // Fetch existing notifications first
+      const { data: existingNotifications, error: fetchError } = await supabase
+        .from("notifications")
+        .select("*")
+        .in("userid", notifications.map(notification => notification.userid));
+
+      if (fetchError) {
+        throw new Error(`Error fetching existing notifications: ${fetchError.message}`);
+      }
+
+      for (const notification of notifications) {
+        const existingNotification = existingNotifications.find(n => 
+          n.userid === notification.userid && n.message === notification.message);
+
+        if (!existingNotification) {
+          const { error: notificationError } = await supabase
+            .from("notifications")
+            .insert(notification);
+
+          if (notificationError) {
+            throw new Error(`Error inserting notifications: ${notificationError.message}`);
+          }
+        }
+      }
+
+      console.log(`Notified users with expired registrations.`);
     }
-    
   } catch (error) {
     console.error(error.message);
   }
@@ -131,8 +164,42 @@ async function checkAndExpireInstructorRegistrations(req, res, next) {
       }
 
       console.log(`Updated status to 5 for ${expiredRegistrations.length} instructor registrations.`);
+
+      // Notify users about expired registrations
+      const notifications = expiredRegistrations.map(registration => ({
+        userid: registration.submittedby,
+        message: `Your instructor registration has expired.`,
+        desc: 'Please renew your registration to continue being an instructor.',
+        type: "Registration"
+      }));
+
+      // Fetch existing notifications first
+      const { data: existingNotifications, error: fetchError } = await supabase
+        .from("notifications")
+        .select("*")
+        .in("userid", notifications.map(notification => notification.userid));
+
+      if (fetchError) {
+        throw new Error(`Error fetching existing notifications: ${fetchError.message}`);
+      }
+
+      for (const notification of notifications) {
+        const existingNotification = existingNotifications.find(n => 
+          n.userid === notification.userid && n.message === notification.message);
+
+        if (!existingNotification) {
+          const { error: notificationError } = await supabase
+            .from("notifications")
+            .insert(notification);
+
+          if (notificationError) {
+            throw new Error(`Error inserting notifications: ${notificationError.message}`);
+          }
+        }
+      }
+
+      console.log(`Notified users with expired instructor registrations.`);
     }
-    
   } catch (error) {
     console.error(error.message);
   }

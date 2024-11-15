@@ -79,9 +79,9 @@
           {{else if (eq registration.status 3)}}
           <span class="status-shipped">ID Shipped</span>
           {{else if (eq registration.status 4)}}
-          <span class="status-rejected">Expired</span>
+          <span class="status-rejected">Rejected</span>
           {{else if (eq registration.status 5)}}
-          <span class="status-unknown">Unknown Status</span>
+          <span class="status-unknown">Expired</span>
           {{/if}}
         </h1>
         {{#if user.ptaverified}}

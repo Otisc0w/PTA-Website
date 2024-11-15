@@ -43,17 +43,29 @@
             <!-- Add any other relevant details here -->
           </div>
           <div class="application-actions">
-            <h1>{{registration.status}}</h1>
+            <h1 class="status">
+              {{#if (eq clubregistration.status 1)}}
+              <span class="status-under-review">Processing Application</span>
+              {{else if (eq clubregistration.status 2)}}
+              <span class="status-en-route">En-route to Regional Office</span>
+              {{else if (eq clubregistration.status 3)}}
+              <span class="status-shipped">Accepted and Registered. Certificate shipped to regional office.</span>
+              {{else if (eq clubregistration.status 4)}}
+              <span class="status-rejected">Rejected</span>
+              {{else if (eq clubregistration.status 5)}}
+              <span class="status-unknown">Expired</span>
+              {{/if}}
+            </h1>
             {{#if user.ptaverified}}
               <div class="status-buttons" id="status-buttons">            {{!-- VALUES NAMES AND TYPES NEED TO STAY THE SAME --}}
                 <button type="submit" name="status" value="1">Processing Application</button>
                 <button type="button" id="accepted" class="accepted">Accepted and Registered</button>
-                <button type="submit" name="status" value="0">Reject Application</button>
+                <button type="submit" name="status" value="4">Reject Application</button>
               </div>
               <div class="confirmscreen" id="confirmscreen" style="display: none;">
                 <h3>Are you sure? This will be added to the clubs page for the public to see.</h3>
                 <button class="cancel" id="cancel">Cancel</button>
-                <button  type="submit" value="4" name="status">Confirm</button>
+                <button  type="submit" value="3" name="status">Confirm</button>
               </div>
               <div class="backtolist">
                 <a href="/membership-status">Back to list</a>

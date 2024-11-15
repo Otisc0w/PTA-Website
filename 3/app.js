@@ -1427,22 +1427,24 @@ app.post("/update-instructorstatus", async (req, res) => {
 
     switch (statusInt) {
       case 1:
-        statusMessage = "Your instructor registration is under review.";
+        statusMessage = "Your Instructor registration is under review.";
+        statusDesc = "Your Instructor registration is under review. You will receive a notification once your registration has been processed.";
         break;
-      case 2:
-        statusMessage = "Your instructor registration is being processed.";
+            case 2:
+        statusMessage = "Your Instructor's License is en route to your regional office.";
+        statusDesc = "Your Instructor's License is on its way to your regional office. You will be notified once it arrives.";
         break;
-      case 3:
-        statusMessage = "Your instructor registration is approved.";
+            case 3:
+        statusMessage = "Your Instructor's License is now ready for pickup at your regional office.";
+        statusDesc = "Your Instructor's License is ready for pickup at your regional office. Please visit the office to collect it.";
         break;
-      case 4:
-        statusMessage = "Your instructor registration is verified.";
+            case 4:
+        statusMessage = "Your Instructor registration has been rejected.";
+        statusDesc = "Sorry, your Instructor registration has been rejected. Please contact support for more information.";
         break;
-      case 5:
-        statusMessage = "Your instructor registration has been rejected.";
-        break;
-      default:
+            default:
         statusMessage = "Unknown status.";
+        statusDesc = "The status of your Instructor registration is unknown. Please contact support for more information.";
     }
 
     const { error: notificationError } = await supabase
@@ -1522,7 +1524,7 @@ app.post("/update-clubstatus", async (req, res) => {
     }
 
     console.log("Registration updated:", clubregistration);
-
+    
     // Check if status is 4, indicating the need to update the user's athleteverified column and insert into athletes table
     if (status == 4) {
       const {
@@ -1559,6 +1561,43 @@ app.post("/update-clubstatus", async (req, res) => {
       }
 
       console.log("Club inserted successfully");
+    }
+
+    // Add a notification for the user about their club registration status
+    let statusMessage;
+    let statusDesc;
+
+    switch (parseInt(status, 10)) {
+      case 1:
+      statusMessage = "Your club registration is being processed.";
+      statusDesc = "Your club registration is currently being processed. You will receive further updates soon.";
+      break;
+      case 3:
+      statusMessage = "Your club registration has been accepted and shipped to the regional office.";
+      statusDesc = "Congratulations! Your club registration has been accepted and shipped to the regional office. Please check with your regional office for further details.";
+      break;
+      case 4:
+        statusMessage = "Your club registration has been rejected.";
+        statusDesc = "Sorry, your club registration has been rejected. PLease see reason(s) for rejection in your membership status.";
+      default:
+      statusMessage = "Your club registration status has been updated.";
+      statusDesc = "Your club registration status has been updated. Please check your registration details for more information.";
+    }
+
+    const { error: notificationError } = await supabase
+      .from("notifications")
+      .insert([
+      {
+        userid: clubregistration.submittedby,
+        type: "Registration",
+        message: statusMessage,
+        desc: statusDesc,
+      },
+      ]);
+
+    if (notificationError) {
+      console.error("Error creating notification:", notificationError.message);
+      return res.status(500).send("Error creating notification");
     }
 
     res.redirect(`/clubreg-review/${applicationId}`); // Redirect back to the review page
