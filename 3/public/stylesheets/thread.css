@@ -26,10 +26,10 @@ body {
     padding: 10px 15px;
     background-color: #2c2c2c;
     border-radius: 100%;
+    transition: background-color 0.3s ease;
 }
 
 .back-button a:hover{
-    border-radius: 100%;
     background-color: #1a1a1a;
 }
 
@@ -37,13 +37,14 @@ body {
     width: 60%;
     background-color: #2c2c2c;
     padding: 20px;
-    border-radius: 8px;
+    border-radius: 12px;
     color: #d7dadc; 
     justify-content: center; 
     margin: auto;
-    margin-top: 23px;
+    margin-top: 20px;
     margin-bottom: 50px;
     flex:1; 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
 .post-container, .comment {
@@ -72,16 +73,16 @@ body {
 }
 
 .vote-button {
+    background: #444;
+    color: #fff;
+    padding: 8px;
+    border-radius: 5px;
     cursor: pointer;
-    margin: 5px 0;
-    padding: 5px 10px;
-    border-radius: 4px;
+    transition: background-color 0.3s;
 }
 
 .vote-button:hover {
     background-color: #555555;
-    cursor: pointer;
-    margin: 5px 0;
 }
 
 .vote-button img {
@@ -100,20 +101,21 @@ body {
 }
 
 .post-title {
-    font-size: 24px;
+    font-size: 26px;
     margin-bottom: 10px;
-    color: #d7dadc;
+    color: #f2f2f2;
+    font-weight: bold;
 }
 
 .post-info {
     font-size: 14px;
-    color: #818384;
+    color: #a9a9a9;
     margin-bottom: 15px;
 }
 
 .post-body p, .comment-body p {
     font-size: 16px;
-    line-height: 1.5;
+    line-height: 1.6;
     color: #d7dadc;
 }
 
@@ -139,48 +141,63 @@ body {
 .comments-container {
     margin: 1rem 0;
 }
+.comments-container h3 {
+    font-size: 20px;
+    color: #f2f2f2;
+    margin-bottom: 10px;
+}
 
 .comment-content {
-    position: relative;
-    padding: 1rem;
-    margin-bottom: 1rem;
-    background: #2d2d2d;
+    background-color: #1a1a1a; /* Darker background color */
+    padding: 15px;
     border-radius: 8px;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    color: #d7dadc; /* Ensures text is still readable on dark background */
 }
+    
 
 .comment-header {
     display: flex;
     justify-content: space-between;
     font-size: 0.9rem;
-    color: #ccc;
+    color: #a9a9a9;
 }
 
 .comment-body {
     color: #fff;
+    font-size: 15px;
 }
 
 .comment-form {
-    margin-top: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 2px;
+}
+.comment-form h3 {
+    margin-bottom: 2px;
 }
 
 .comment-form textarea {
     width: 100%;
     background: #1a1a1a;
     border: 1px solid #444;
-    border-radius: 4px;
-    color: #fff;
-    padding: 0.5rem;
+    border-radius: 8px;
+    color: #f2f2f2;
+    padding: 12px;
     resize: vertical;
 }
 
 .comment-form button {
-    margin-top: 0.5rem;
-    padding: 0.5rem 1rem;
     background: #007bff;
     border: none;
-    border-radius: 4px;
+    border-radius: 8px;
     color: #fff;
+    padding: 10px 15px;
+    font-size: 16px;
     cursor: pointer;
+    transition: background-color 0.3s ease;
 }
 
 .comment-form button:hover {
@@ -223,9 +240,14 @@ body {
     color: white;
 }
 
-/* Post container styling to accommodate the dropdown */
 .post-container {
-    position: relative;
+    display: flex;
+    flex-direction: column;
+    background-color: #3a3a3a;
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 /* Dropdown container styling */
@@ -256,11 +278,12 @@ body {
 
 .dropdown-content a {
     color: white;
-    padding: 8px 12px;
-    text-decoration: none;
+    padding: 10px;
     display: block;
-    background-color: #2c2c2c;
-    
+    text-decoration: none;
+    background-color: #3a3a3a;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
 }
 
 .dropdown-content a:hover {
@@ -296,14 +319,12 @@ body {
 }
 
 .modal-content {
-    background-color:#222;
-    margin: 15% auto; /* 15% from the top and centered */
+    background-color: #333;
     padding: 20px;
-    border: 1px solid #888;
-    width: 80%; /* Could be more or less, depending on screen size */
-    max-width: 500px;
     border-radius: 10px;
-    color: white;
+    color: #f2f2f2;
+    width: 80%;
+    max-width: 500px;
 
 }
 
@@ -382,7 +403,6 @@ textarea {
     padding: 20px;
     height: 100px;
     margin-top: auto; 
-    width:100%;
 }
 
 .footer-content .pta-logo img {
