@@ -10,7 +10,6 @@ body {
     background-position: center;
     background-repeat: no-repeat;
     background-attachment: fixed;
-    position: relative;
 }
 
 .back-button{
@@ -44,6 +43,7 @@ body {
     margin: auto;
     margin-top: 23px;
     margin-bottom: 50px;
+    flex:1; 
 }
 
 .post-container, .comment {
@@ -371,6 +371,7 @@ input[type="text"]:focus, input[type="email"]:focus, input[type="password"]:focu
 textarea {
     resize: vertical;
 }
+/* Footer */
 
 .footer-content {
     background-color: #333;
@@ -381,6 +382,7 @@ textarea {
     padding: 20px;
     height: 100px;
     margin-top: auto; 
+    width:100%;
 }
 
 .footer-content .pta-logo img {
