@@ -176,3 +176,9 @@
   font-weight: bold;
   align-items: center;
 }
+
+.paymentqr{
+  width: 500px;
+  display: block;
+  margin: 0 auto;
+}

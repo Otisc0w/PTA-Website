@@ -79,6 +79,20 @@
                 <td><strong>Email:</strong></td>
                 <td class="information">{{registration.email}}</td>
               </tr>
+              <tr>
+                <tr>
+                  <td><strong>Birth Certificate:</strong></td>
+                  <td class="information">
+                  <a href="{{registration.birthcert}}" target="_blank">View Birth Certificate</a>
+                  </td>
+                </tr>
+                <tr>
+                  <td><strong>Payment Proof:</strong></td>
+                  <td class="information">
+                  <a href="{{registration.paymentproof}}" target="_blank">View Payment Proof</a>
+                  </td>
+                </tr>
+              </tr>
             </table>
           </td>
         </tr>
@@ -125,10 +139,10 @@
           <td><strong>Instructor Email:</strong></td>
           <td class="information">{{registration.instructoremail}}</td>
         </tr>
-        <tr>
+        {{!-- <tr>
           <td><strong>Submitted by:</strong></td>
           <td class="information">{{registration.submittedby}}</td>
-        </tr>
+        </tr> --}}
       </table>
     </div>
 

@@ -178,7 +178,6 @@
 							<button class="next-button" type="button" onclick="showNextPage()">Next</button>
 						</div>
 					</div>
-
 					<!-- Page 2 -->
 					<div class="ncc-page ncc-page2 hidden">
 						<div class="form-row">
@@ -217,7 +216,6 @@
 							<button class="next-button" type="button" onclick="showNextPage()">Next</button>
 						</div>
 					</div>
-
 					<!-- Page 3 -->
 					<div class="ncc-page ncc-page3 hidden">
 						<div class="form-row">
@@ -262,19 +260,30 @@
 
 						<div class="form-row button-group">
 							<button class="cancel-button" type="button" onclick="showPreviousPage()">Previous</button>
-							<button class="next-button" type="submit"
-								onclick="showConfirmationMessage(event)">Submit</button>
+							<button class="next-button" type="button" onclick="showNextPage()">Next</button>
 						</div>
+					</div>
 
+					<div class="ncc-page ncc-page4 hidden">
+						<img class="paymentqr" src="/images/paymentqr.png" alt="Payment QR Code"><br>
+						<h3>Scan the QR code to pay the application fee of PHP 500.00</h3><br>
+						<div class="form-row">
+							<div class="form-group">
+								<label for="paymentproof">Upload Payment Proof</label>
+								<input type="file" id="paymentproof" name="paymentproof" required>
+							</div>
+						</div>
+						<button class="cancel-button" type="button" onclick="showPreviousPage()">Previous</button>
+						<button class="next-button" type="submit" onclick="showConfirmationMessage(event)">Submit</button>
+						
 						<p id="error-message" style="color:red;"></p>
 					</div>
 				</form>
 
-				<div id="error-message1" class="hidden">Please fill up all fields before submitting.
-				</div>
+				
 				<div id="confirmation-message" class="hidden">Application successful! Please allow up to 2 weeks to receive an update on your
-					membership status.</div>
-
+					membership status.
+				</div>
 			</div>
 		</div>
 	</div>
@@ -395,9 +404,6 @@
 			}
 		}
 
-
 	</script>
-
 </body>
-
 </html>

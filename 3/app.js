@@ -301,6 +301,7 @@ app.post("/submit-signup", async (req, res) => {
 app.post("/submit-ncc", upload.fields([
     { name: "birthcert", maxCount: 1 },
     { name: "portrait", maxCount: 1 },
+    { name: "paymentproof", maxCount: 1 },
   ]),
   async (req, res) => {
     const {
@@ -332,6 +333,7 @@ app.post("/submit-ncc", upload.fields([
 
     let birthcertUrl = null;
     let portraitUrl = null;
+    let paymentproofUrl = null;
 
     if (req.files) {
       try {
@@ -375,6 +377,27 @@ app.post("/submit-ncc", upload.fields([
           }
 
           portraitUrl = `${supabaseUrl}/storage/v1/object/public/documents/${portraitPath}`;
+        }
+
+        if (req.files.paymentproof) {
+          const paymentproofPath = `documents/${Date.now()}-${
+            req.files.paymentproof[0].originalname
+          }`;
+          const { error: paymentproofUploadError } = await supabase.storage
+            .from("documents")
+            .upload(paymentproofPath, req.files.paymentproof[0].buffer, {
+              contentType: req.files.paymentproof[0].mimetype,
+            });
+
+          if (paymentproofUploadError) {
+            console.error(
+              "Error uploading paymentproof:",
+              paymentproofUploadError.message
+            );
+            return res.status(500).send("Error uploading paymentproof");
+          }
+
+          paymentproofUrl = `${supabaseUrl}/storage/v1/object/public/documents/${paymentproofPath}`;
         }
       } catch (error) {
         console.error("Server error during file upload:", error.message);
@@ -423,6 +446,7 @@ app.post("/submit-ncc", upload.fields([
             status,
             birthcert: birthcertUrl, // Include the birth certificate URL
             portrait: portraitUrl, // Include the portrait URL
+            paymentproof: paymentproofUrl, // Include the payment proof URL
           })
           .eq("submittedby", submittedby);
 
@@ -2780,6 +2804,22 @@ app.post("/decide-kyorugi-winners/:eventid", async (req, res) => {
         console.error("Error inserting match history:", matchHistoryError.message);
         return res.status(500).send("Error inserting match history");
       }
+    }
+
+    const notifications = participants.map((participant) => ({
+      userid: participant.userid,
+      type: "Event",
+      message: `The event ${event.name} has concluded.`,
+      desc: `The event ${event.name} has concluded. Check the event details for the results.`,
+    }));
+
+    const { error: notificationError } = await supabase
+      .from("notifications")
+      .insert(notifications);
+
+    if (notificationError) {
+      console.error("Error creating notifications:", notificationError.message);
+      return res.status(500).send("Error creating notifications");
     }
 
     res.redirect(`/events-details/${eventid}`);
