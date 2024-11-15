@@ -1604,6 +1604,7 @@ app.post("/submit-club",
     { name: "idfile", maxCount: 1 },
     { name: "proofdoc", maxCount: 1 },
     { name: "clubpic", maxCount: 1 },
+    { name: "paymentproof", maxCount: 1 },
   ]),
   async (req, res) => {
     const {
@@ -1627,6 +1628,7 @@ app.post("/submit-club",
     let idfileUrl = "";
     let proofdocUrl = "";
     let clubpicUrl = "";
+    let paymentproofUrl = "";
 
     console.log("Files received:", req.files);
 
@@ -1697,6 +1699,29 @@ app.post("/submit-club",
           clubpicUrl = `${supabaseUrl}/storage/v1/object/public/documents/${clubpicPath}`;
           console.log("Club picture uploaded to:", clubpicUrl);
         }
+
+        if (req.files.paymentproof) {
+          const paymentproofPath = `documents/${Date.now()}-${
+            req.files.paymentproof[0].originalname
+          }`;
+          console.log("Uploading club picture:", paymentproofPath);
+          const { error: paymentproofError } = await supabase.storage
+            .from("documents")
+            .upload(paymentproofPath, req.files.paymentproof[0].buffer, {
+              contentType: req.files.paymentproof[0].mimetype,
+            });
+
+          if (paymentproofError) {
+            console.error(
+              "Error uploading club picture:",
+              paymentproofError.message
+            );
+            return res.status(500).send("Error uploading club picture");
+          }
+
+          paymentproofUrl = `${supabaseUrl}/storage/v1/object/public/documents/${paymentproofPath}`;
+          console.log("Club picture uploaded to:", paymentproofUrl);
+        }
       } catch (error) {
         console.error("Server error during file upload:", error.message);
         return res.status(500).json({ error: error.message });
@@ -1723,6 +1748,7 @@ app.post("/submit-club",
             idfile: idfileUrl,
             proofdoc: proofdocUrl,
             clubpic: clubpicUrl, // Include the club picture URL
+            paymentproof: paymentproofUrl, // Include the payment proof URL
             submittedby,
             status,
           },
