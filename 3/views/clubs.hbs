@@ -14,12 +14,12 @@
     <div class="navbar">
       <a href="home"><img src="/images/logo.png" class="logo" alt="Logo"></a>
       <ul class="tabs">
-        <li class="home"><a href="home">Home</a></li>
-        <li class="athletes"><a href="athletes">Athletes</a></li>
-        <li class="clubs"><a href="clubs">Clubs</a></li>
-        <li class="events"><a href="events">Events</a></li>
-        <li class="membership"><a href="membership">Membership</a></li>
-        <li class="forum"><a href="forum">Forum</a></li>
+        <li class="home"><a href="/home">Home</a></li>
+        <li class="athletes"><a href="/athletes">Athletes</a></li>
+        <li class="clubs"><a href="/clubs">Clubs</a></li>
+        <li class="events"><a href="/events">Events</a></li>
+        <li class="membership"><a href="/membership">Membership</a></li>
+        <li class="forum"><a href="/forum">Forum</a></li>
         <li class="notifications">
           <a href="/notifications">Notifications
             {{#if notifications}}
@@ -27,7 +27,7 @@
             {{/if}}
           </a>
         </li>
-        <li class="analytics"><a href="analytics">Reports</a></li>
+        <li class="analytics"><a href="/analytics">Reports</a></li>
         <li class="profile-pic">
           {{#if user.profilepic}}
           <a href="#" onclick="toggleDropdown()"><img src="{{user.profilepic}}" alt="Profile Picture"
