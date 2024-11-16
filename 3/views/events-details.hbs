@@ -137,12 +137,17 @@
               <div class="form-group">
                 <label for="beltlevel">Belt Level:</label>
                 <select id="beltlevel" name="beltlevel">
-                  <option value="white" {{#if (eq event.beltlevel "white" )}}selected{{/if}}>White</option>
-                  <option value="yellow" {{#if (eq event.beltlevel "yellow" )}}selected{{/if}}>Yellow</option>
-                  <option value="green" {{#if (eq event.beltlevel "green" )}}selected{{/if}}>Green</option>
-                  <option value="blue" {{#if (eq event.beltlevel "blue" )}}selected{{/if}}>Blue</option>
-                  <option value="red" {{#if (eq event.beltlevel "red" )}}selected{{/if}}>Red</option>
-                  <option value="black" {{#if (eq event.beltlevel "black" )}}selected{{/if}}>Black</option>
+                    <option value="White Belt" {{#if (eq event.beltlevel "White Belt")}}selected{{/if}}>White Belt</option>
+                    <option value="Low Yellow Belt" {{#if (eq event.beltlevel "Low Yellow Belt")}}selected{{/if}}>Low Yellow Belt</option>
+                    <option value="High Yellow Belt" {{#if (eq event.beltlevel "High Yellow Belt")}}selected{{/if}}>High Yellow Belt</option>
+                    <option value="Low Blue Belt" {{#if (eq event.beltlevel "Low Blue Belt")}}selected{{/if}}>Low Blue Belt</option>
+                    <option value="High Blue Belt" {{#if (eq event.beltlevel "High Blue Belt")}}selected{{/if}}>High Blue Belt</option>
+                    <option value="Low Red Belt" {{#if (eq event.beltlevel "Low Red Belt")}}selected{{/if}}>Low Red Belt</option>
+                    <option value="High Red Belt" {{#if (eq event.beltlevel "High Red Belt")}}selected{{/if}}>High Red Belt</option>
+                    <option value="Low Brown Belt" {{#if (eq event.beltlevel "Low Brown Belt")}}selected{{/if}}>Low Brown Belt</option>
+                    <option value="High Brown Belt" {{#if (eq event.beltlevel "High Brown Belt")}}selected{{/if}}>High Brown Belt</option>
+                    <option value="Junior/Poom Black Belt" {{#if (eq event.beltlevel "Junior/Poom Black Belt")}}selected{{/if}}>Junior/Poom Black Belt</option>
+                    <option value="Black/Dan Belt" {{#if (eq event.beltlevel "Black/Dan Belt")}}selected{{/if}}>Black/Dan Belt</option>
                 </select>
               </div>
               <div class="form-group">
