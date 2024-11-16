@@ -110,16 +110,17 @@
           <form id="eventform" class="event-form" action="/update-event" method="post" enctype="multipart/form-data">
 
             <!-- Event Status Dropdown -->
-            <div class="form-group">
+            {{!-- <div class="form-group">
               <label for="eventstatus">Event Status:</label>
               <select id="eventstatus" name="status" onchange="toggleCancellationFields()">
                 <option value="Active" {{#if (eq event.status "Active" )}}selected{{/if}}>Active</option>
                 <option value="Cancelled" {{#if (eq event.status "Cancelled" )}}selected{{/if}}>Cancelled</option>
               </select>
-            </div>
+            </div> --}}
 
             <!-- Default Fields (Visible when event status is Active) -->
             <div id="defaultFields">
+              <label for="eventpicture">Event Picture:</label>
               <input type="hidden" name="eventid" value="{{event.id}}">
               <input type="hidden" value="{{event.eventtype}}" name="eventtype">
               <div class="eventpic">
@@ -246,28 +247,28 @@
             <h3>Rankings</h3>
             <div class="leaderboard-list">
               <div class="leaderboard-item first-place">
-                <span class="ranking">1</span>
+                <span class="ranking">1st</span>
                 <span class="name">{{champion.name}}</span>
                 <button class="winnersviewathlete"
                   onclick="window.location.href='/athletes-profile/{{champion.id}}'">&#8614;</button>
               </div>
 
               <div class="leaderboard-item ">
-                <span class="ranking">2</span>
+                <span class="ranking">2nd</span>
                 <span class="name">{{secondPlace.name}}</span>
                 <button class="winnersviewathlete"
                   onclick="window.location.href='/athletes-profile/{{secondPlace.id}}'">&#8614;</button>
               </div>
 
               <div class="leaderboard-item">
-                <span class="ranking">3</span>
+                <span class="ranking">3rd</span>
                 <span class="name">{{thirdPlace1.name}}</span>
                 <button class="winnersviewathlete"
                   onclick="window.location.href='/athletes-profile/{{thirdPlace1.id}}'">&#8614;</button>
               </div>
 
               <div class="leaderboard-item">
-                <span class="ranking">4</span>
+                <span class="ranking">3rd</span>
                 <span class="name">{{thirdPlace2.name}}</span>
                 <button class="winnersviewathlete"
                   onclick="window.location.href='/athletes-profile/{{thirdPlace2.id}}'">&#8614;</button>
@@ -418,42 +419,53 @@
       </div>
 
       <div class="eventrightside">
+        {{#unless (eq event.status 'Cancelled')}}
         <div class="eventregistercodediv">
           <div class="buttondiv">
             {{#unless champion}}
-            {{#if user.athleteverified}}
-            {{#unless (or currentregistrant (me registrationcount event.registrationcap))}}
-            {{#if (eq event.status 'Active')}}
-            <a href="/events-registration/{{event.id}}" class="register-button">Register</a>
-            {{else if (eq event.status 'Cancelled')}}
-            <h3>This event has been<br> CANCELLED</h3>
-            {{else if (eq event.status 'Concluded')}}
-            <h3>This event has been<br> COMPLETED</h3>
-            {{else}}
-            <h3>Registration Closed</h3>
-            {{/if}}
-            {{else if currentregistrant.registered}}
-            <p>Your check-in code is:</p>
-            <h1 class="code">{{currentregistrant.id}}</h1>
-            {{else if currentregistrant}}
-            <p>Your check-in code is:</p>
-            <h1 class="pending">pending</h1>
-            {{else}}
-            <h1 class="pending">Registration Limit Reached</h1>
-            {{/unless}}
-            {{else}}
-            <a class="grayed-register-button">Not Registered</a>
-            {{/if}}
+              {{#if user.athleteverified}}
+                {{#if (3ands (eq currentUserAthlete.agedivision event.agedivision) (eq currentUserAthlete.gender event.gender) (eq currentUserAthlete.beltlevel event.beltlevel))}}
+                  {{#unless (or currentregistrant (me registrationcount event.registrationcap))}}
+                    {{#if (eq event.status 'Active')}}
+                      <a href="/events-registration/{{event.id}}" class="register-button">Register</a>
+                        {{else if (eq event.status 'Cancelled')}}
+                          <h3>This event has been<br> CANCELLED</h3>
+                        {{else if (eq event.status 'Concluded')}}
+                          <h3>This event has been<br> COMPLETED</h3>
+                        {{else}}
+                          <h3>Registration Closed</h3>
+                        {{/if}}
+                        {{else if currentregistrant.registered}}
+                          <p>Your check-in code is:</p>
+                          <h1 class="code">{{currentregistrant.id}}</h1>
+                        {{else if currentregistrant}}
+                          <p>Your check-in code is:</p>
+                          <h1 class="pending">pending</h1>
+                          <form action="/withdraw-from-event" method="post" onsubmit="return confirm('Are you sure you want to withdraw from this event?');">
+                            <input type="hidden" name="eventid" value="{{event.id}}">
+                            <input type="hidden" name="userid" value="{{user.id}}">
+                            <button class="withdraw" type="submit">Withdraw Registration</button>
+                          </form>
+                        {{else}}
+                          <h1 class="pending">Registration Limit Reached</h1>
+                  {{/unless}}
+                {{else}}
+                  <p>You don't fit this category</p>
+                {{/if}}
+              {{else}}
+              <a class="grayed-register-button">Not Registered</a>
+              {{/if}}
             {{/unless}}
             {{#if (eq event.status 'Concluded')}}
-            <h1 class="pending">This Competition has</h1>
-            <h1 class="pending"> Concluded</h1>
-            {{else if (eq event.status 'Ongoing')}}
-            <h1 class="pending">This Competition is</h1>
-            <h1 class="pending"> Ongoing</h1>
+              <h1 class="pending">This Competition has</h1>
+              <h1 class="pending"> Concluded</h1>
+              {{else if (eq event.status 'Ongoing')}}
+              <h1 class="pending">This Competition is</h1>
+              <h1 class="pending"> Ongoing</h1>
             {{/if}}
           </div>
         </div>
+        {{/unless}}
       </div>
 
 

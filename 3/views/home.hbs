@@ -47,10 +47,7 @@
   </div>
 
   <div class="home-container">
-    <div class="left-panel"></div>
-
     <div class="main-panel">
-
       <!-- Recognition Section -->
       <div class="recognition-section">
         <div class="recognition-banner">
@@ -58,10 +55,6 @@
           <p>Our athletes are recognized for their dedication, skill, and achievements.</p>
         </div>
 
-        <div class="flying-banner">
-          <span>🎉 Congratulations to the Top Performers of the Year! 🎉 Keep pushing, stay dedicated, and strive for
-            excellence! Every effort brings you closer to greatness! 💪🥇</span>
-        </div>
         <div class="recognition-cards">
           {{#each athletes}}
         <div class="card">
@@ -126,8 +119,6 @@
         </div>
       </div>
 
-      <!-- Upcoming events section -->
-
       <div class="upcoming-events">
         <h2>Upcoming Events</h2>
         <div id="events" class="horizontal-container">
@@ -141,25 +132,7 @@
           {{/each}}
         </div>
       </div>
-
-      <!-- News section -->
-
-      <div class="news">
-        <h2>News</h2>
-        <div id="events" class="horizontal-container">
-          {{#each events}}
-          <div class="event">
-            <img src="{{eventpicture}}" alt="Event {{id}}">
-            <h3>{{title}} - May 26, 2024 7:00AM</h3>
-            <p>{{description}}</p>
-            <a href="#">Read More</a>
-          </div>
-          {{/each}}
-        </div>
-      </div>
-    </div>
-    <div class="right-panel"></div>
-  </div>
+  
 
   <footer>
     <div class="footer-content">
@@ -182,7 +155,7 @@
       </div>
     </div>
   </footer>
-
+</div>
   <script>
     function toggleDropdown() {
       document.getElementById("dropdown").classList.toggle("show");

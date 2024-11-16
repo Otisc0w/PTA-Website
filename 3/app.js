@@ -69,6 +69,9 @@ hbs.handlebars.registerHelper("or", function (a, b) {
 hbs.handlebars.registerHelper("and", function (a, b) {
   return a && b;
 });
+hbs.registerHelper("3ands", function (a, b, c) {
+  return a && b && c;
+});
 hbs.registerHelper("arraySize", function (array) {
   return array.length;
 });
@@ -1312,7 +1315,6 @@ app.post("/update-nccstatus", async (req, res) => {
       clubregion,
       beltlevel,
       portrait,
-      division,
       height,
       weight,
       submittedby,
@@ -1352,6 +1354,21 @@ app.post("/update-nccstatus", async (req, res) => {
       const instructor = `${instructorfirstname} ${instructorlastname}`;
 
       const userid = submittedby;
+      
+      let division;
+      if (age >= 10 && age <= 11) {
+        division = "Youth";
+      } else if (age >= 12 && age <= 14) {
+        division = "Cadet";
+      } else if (age >= 15 && age <= 17) {
+        division = "Junior";
+      } else if (age >= 18 && age <= 32) {
+        division = "Senior";
+      } else if (age >= 33) {
+        division = "Ultra";
+      } else {
+        division = "Unknown";
+      }
 
       // Check if the athlete already exists
       const { data: existingAthlete, error: fetchAthleteError } = await supabase
@@ -1376,7 +1393,7 @@ app.post("/update-nccstatus", async (req, res) => {
         clubregion,
         beltlevel,
         portrait,
-        division,
+        agedivision: division,
         height,
         weight,
         instructor,
@@ -1402,7 +1419,7 @@ app.post("/update-nccstatus", async (req, res) => {
           clubregion,
           beltlevel,
           portrait,
-          division,
+          agedivision: division,
           height,
           weight,
           instructor,
@@ -2511,6 +2528,47 @@ app.post("/cancel-event/:id", async (req, res) => {
       return res.status(500).send("Error cancelling event");
     }
 
+    // Fetch the registered users for the event
+    const { data: registeredUsers, error: registeredUsersError } = await supabase
+      .from("events_registrations")
+      .select("userid")
+      .eq("eventid", id)
+      .eq("registered", "true");
+
+    if (registeredUsersError) {
+      console.error("Error fetching registered users:", registeredUsersError.message);
+      return res.status(500).send("Error fetching registered users");
+    }
+
+    // Fetch the event details
+    const { data: event, error: eventError } = await supabase
+      .from("events")
+      .select("name, date")
+      .eq("id", id)
+      .single();
+
+    if (eventError) {
+      console.error("Error fetching event details:", eventError.message);
+      return res.status(500).send("Error fetching event details");
+    }
+
+    // Create notifications for each registered user
+    const notifications = registeredUsers.map((user) => ({
+      userid: user.userid,
+      type: "Event",
+      message: `The event ${event.name} has been cancelled.`,
+      desc: `The event ${event.name} scheduled for ${event.date} has been cancelled. Please check the event details for more information.`,
+    }));
+
+    const { error: notificationError } = await supabase
+      .from("notifications")
+      .insert(notifications);
+
+    if (notificationError) {
+      console.error("Error creating notifications:", notificationError.message);
+      return res.status(500).send("Error creating notifications");
+    }
+
     res.redirect(`/events-details/${id}`);
   } catch (error) {
     console.error("Server error:", error.message);
@@ -2642,6 +2700,62 @@ app.post("/submit-player", upload.fields([{ name: 'heightpicture' }, { name: 'we
   } catch (error) {
     console.error("Server error:", error.message);
     res.status(500).send("Error handling registration.");
+  }
+});
+
+app.post("/withdraw-from-event", async (req, res) => {
+  const { eventid, userid } = req.body;
+
+  if (!req.session.user) {
+    return res.status(401).send("Unauthorized: No user logged in");
+  }
+
+  try {
+    // Delete the event registration
+    const { error } = await supabase
+      .from("events_registrations")
+      .delete()
+      .eq("eventid", eventid)
+      .eq("userid", userid);
+
+    if (error) {
+      console.error("Error withdrawing from event:", error.message);
+      return res.status(500).send("Error withdrawing from event");
+    }
+
+    // Fetch the event details
+    const { data: event, error: eventError } = await supabase
+      .from("events")
+      .select("name")
+      .eq("id", eventid)
+      .single();
+
+    if (eventError) {
+      console.error("Error fetching event details:", eventError.message);
+      return res.status(500).send("Error fetching event details");
+    }
+
+    // Create a notification for the user about their withdrawal
+    const { error: notificationError } = await supabase
+      .from("notifications")
+      .insert([
+        {
+          userid,
+          type: "Event",
+          message: `You have successfully withdrawn from the event ${event.name}.`,
+          desc: `Your registration for the event ${event.name} has been successfully withdrawn.`,
+        },
+      ]);
+
+    if (notificationError) {
+      console.error("Error creating notification:", notificationError.message);
+      return res.status(500).send("Error creating notification");
+    }
+
+    res.redirect(`/events-details/${eventid}`);
+  } catch (error) {
+    console.error("Server error:", error.message);
+    res.status(500).json({ error: error.message });
   }
 });
 
@@ -2976,7 +3090,6 @@ app.post("/decide-kyorugi-winners/:eventid", async (req, res) => {
             ranking,
             eventname: event.name,
             eventlocation: event.location,
-            poomsaefinalscore: "N/A",
           },
         ]);
 
@@ -4123,11 +4236,35 @@ app.get("/home", async function (req, res) {
       return res.status(400).json({ error: athletesError.message });
     }
 
+    // Fetch events that the user is registered in
+    const { data: registeredEvents, error: registeredEventsError } = await supabase
+      .from("events_registrations")
+      .select("eventid")
+      .eq("userid", req.session.user.id)
+      .eq("registered", "true");
+
+    if (registeredEventsError) {
+      return res.status(400).json({ error: registeredEventsError.message });
+    }
+
+    const eventIds = registeredEvents.map((registration) => registration.eventid);
+
+    const { data: userEvents, error: userEventsError } = await supabase
+      .from("events")
+      .select("*")
+      .in("id", eventIds);
+
+    if (userEventsError) {
+      return res.status(400).json({ error: userEventsError.message });
+    }
+
+    console.log("Fetched user registered events:", userEvents);
+
     console.log("Fetched events:", events);
     console.log("Fetched top athletes:", athletes);
 
     // Render the home.hbs template with events, top athletes, and the session user data
-    res.render("home", { athletes, events, user: req.session.user });
+    res.render("home", { athletes, events, userEvents, user: req.session.user });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -5097,6 +5234,19 @@ app.get("/events-details/:id", async function (req, res) {
       return res.status(400).json({ error: poomsaenontop4Error.message });
     }
 
+    // Fetch athlete data of the current user
+    const { data: currentUserAthlete, error: currentUserAthleteError } = await supabase
+      .from("athletes")
+      .select("*")
+      .eq("userid", userId)
+      .single();
+
+    if (currentUserAthleteError) {
+      return res.status(400).json({ error: currentUserAthleteError.message });
+    }
+
+    console.log("Fetched current user athlete data:", currentUserAthlete); // Log the current user athlete data to the console
+
     console.log("Fetched top players data:", poomsaetop4); // Log the top players data to the console
 
     console.log("Fetched event data:", event); // Log the event data to the console
@@ -5126,7 +5276,8 @@ app.get("/events-details/:id", async function (req, res) {
       secondPlace,
       thirdPlace1,
       thirdPlace2,
-      otherPlayersWithDetails
+      otherPlayersWithDetails,
+      currentUserAthlete,
     });
   } catch (error) {
     res.status(500).json({ error: error.message });

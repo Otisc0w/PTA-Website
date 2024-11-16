@@ -1306,3 +1306,22 @@ input[type="number"]:focus {
   height: 20px;
   vertical-align: middle;
 }
+
+.withdraw{
+  background-color: #f44336;
+  color: white;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  text-align: center;
+  font-size: 14px;
+  font-weight: bold;
+  display: block;
+  margin: 0 auto;
+}
+
+.withdraw:hover{
+  background-color: #d32f2f;
+}
