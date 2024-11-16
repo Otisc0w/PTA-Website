@@ -48,19 +48,6 @@
 
   <div class="home-container">
     <div class="main-panel">
-      <h3 class="usereventstitle">Events you're currently registered in</h3><br>
-        <div class="userevents">
-          {{#each userEvents}}
-          <div class="registered-event-card">
-            <img src="{{eventpicture}}" alt="Event {{id}}" class="event-image">
-            <h3>{{name}}</h3>
-            <p>{{description}}</p>
-            <p>{{datetime}}</p><br>
-            <a href="/events-details/{{id}}">Go to Event</a>
-          </div>
-          {{/each}}
-        </div>
-
       <!-- Recognition Section -->
       <div class="recognition-section">
         <div class="recognition-banner">
@@ -133,6 +120,20 @@
           </div>
         </div>
       </div>
+
+       <h3 class="usereventstitle">Events you're currently registered in:</h3><br>
+        <div class="userevents">
+          {{#each userEvents}}
+          <div class="registered-event-card">
+            <img src="{{eventpicture}}" alt="Event {{id}}" class="event-image">
+            <h3>{{name}}</h3>
+            <p>{{description}}</p>
+            <p>{{datetime}}</p><br>
+            <a href="/events-details/{{id}}">Go to Event</a>
+          </div>
+          {{/each}}
+        </div>
+
 
       <div class="upcoming-events">
         <h2>Upcoming Events</h2>
