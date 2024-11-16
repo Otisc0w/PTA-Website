@@ -33,6 +33,7 @@
 .upcoming-events h2,
 .news h2 {
     color: white;
+    font-size: 2em;
 }
 
 .event,
@@ -123,6 +124,9 @@
     background-color: #1A1A1A;
 }
 
+
+/* Footer */
+
 .footer-content {
     background-color: #333;
     color: #fff;
@@ -131,7 +135,7 @@
     align-items: center;
     padding: 20px;
     height: 100px;
-    margin-top: auto;
+    margin-top: 0;
 }
 
 .footer-content .pta-logo img {
@@ -170,7 +174,6 @@
 .footer-content .social-media img {
     height: 30px;
 }
-
 /* 09/25/24 */
 /* Style for the "Clubs" title */
 .clubs-title {
@@ -330,13 +333,13 @@
     background: #444;
     color: #FFFFFF;
     border-radius: 10px;
-    background-size: 200% 200%;
+    background-size: 150% 150%;
     min-height: 60px;
     position: relative;
     z-index: 10;
-    margin: 0 auto;
-    width: 95%;
-    max-width: 1200px;
+    /*margin: 0 auto;
+   /* width: 95%;
+    /* max-width: 1200px;*/
 }
 
 .recognition-banner h1 {
@@ -441,7 +444,8 @@
 }
 
 .usereventstitle{
-    margin-left: 100px;
+    align-items: center;
+    font-size: 2em;
 }
 
 /* Button Styles */
