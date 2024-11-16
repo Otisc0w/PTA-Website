@@ -383,16 +383,22 @@
               <tr>
                 <td>{{round}}</td>
                 <td>
-                  {{#if matchtime}}
-                  <p class="match-time">{{matchtime}}</p>
-                  {{else}}
-                  <form class="matchtime" action="/update-matchtime" method="post">
+                    {{#if matchtime}}
+                    <p class="match-time" id="match-time-{{id}}">{{matchtime}}</p><button id="edittime-{{id}}" class="edittime" onclick="showmatchtimeform('{{id}}')"></button>
+                    {{else}}
+                    <form class="matchtime" action="/update-matchtime" method="post">
                     <input type="hidden" name="id" value="{{id}}">
                     <input type="hidden" name="eventid" value="{{eventid}}">
                     <input type="time" class="matchtime" name="matchtime">
                     <button type="submit">OK</button>
-                  </form>
-                  {{/if}}
+                    </form>
+                    {{/if}}
+                    <form class="matchtime" id="matchtimeform-{{id}}" action="/update-matchtime" method="post" style="display:none">
+                    <input type="hidden" name="id" value="{{id}}">
+                    <input type="hidden" name="eventid" value="{{eventid}}">
+                    <input type="time" class="matchtime" name="matchtime">
+                    <button type="submit">OK</button>
+                    </form>
                 </td>
                 <td>{{player1_name}}:<p class="playerscore">{{player1score}}</p>
                 </td>
@@ -560,11 +566,6 @@
                   <td>3</td>
                   <td><input type="number" name="player1_round3"></td>
                   <td><input type="number" name="player2_round3"></td>
-                </tr>
-                <tr>
-                  <td>OT</td>
-                  <td><input type="number" name="player1_ot"></td>
-                  <td><input type="number" name="player2_ot"></td>
                 </tr>
                 <tr>
                   <td>Total</td>
@@ -749,7 +750,7 @@
           <tr>
             <th>Rank</th>
             <th>Player</th>
-            <th>Final Score</th>
+            <th>Total Round Wins</th>
           </tr>
         </thead>
         <tbody>
@@ -926,25 +927,25 @@
       }
 
       document.addEventListener('input', function () {
-        let player1_total = 0;
-        let player2_total = 0;
+        let player1_wins = 0;
+        let player2_wins = 0;
         const player1_rounds = document.querySelectorAll('input[name^="player1_round"]');
         const player2_rounds = document.querySelectorAll('input[name^="player2_round"]');
         const player1_ot = document.querySelector('input[name="player1_ot"]');
         const player2_ot = document.querySelector('input[name="player2_ot"]');
 
-        player1_rounds.forEach(input => player1_total += parseInt(input.value) || 0);
-        player2_rounds.forEach(input => player2_total += parseInt(input.value) || 0);
+        player1_rounds.forEach((input, index) => {
+          const player1_score = parseInt(input.value) || 0;
+          const player2_score = parseInt(player2_rounds[index].value) || 0;
+          if (player1_score > player2_score) {
+        player1_wins += 1;
+          } else if (player2_score > player1_score) {
+        player2_wins += 1;
+          }
+        });
 
-        if (player1_ot) {
-          player1_total += parseInt(player1_ot.value) || 0;
-        }
-        if (player2_ot) {
-          player2_total += parseInt(player2_ot.value) || 0;
-        }
-
-        document.querySelector('input[name="player1_total"]').value = player1_total;
-        document.querySelector('input[name="player2_total"]').value = player2_total;
+        document.querySelector('input[name="player1_total"]').value = player1_wins;
+        document.querySelector('input[name="player2_total"]').value = player2_wins;
       });
     });
 
@@ -972,12 +973,17 @@
       document.getElementById('canceleventmodal').style.display = 'none';
     }
 
+    function showmatchtimeform(id) {
+      document.getElementById(`matchtimeform-${id}`).style.display = 'block';
+      document.getElementById(`match-time-${id}`).style.display = 'none';
+      document.getElementById(`edittime-${id}`).style.display = 'none';
+    }
+
     window.onclick = function (event) {
       if (event.target == document.getElementById('announceModal')) {
         closeannounceModal();
       }
     }
-
 
   </script>
 </body>

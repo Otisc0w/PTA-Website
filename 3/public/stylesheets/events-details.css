@@ -1287,3 +1287,22 @@ input[type="number"]:focus {
 .canceleventmodal button[type="submit"]:hover {
   background-color: #d32f2f;
 }
+
+.edittime, .match-time{
+  display: inline-block;
+  margin-left: 5px;
+}
+
+.edittime{
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  cursor: pointer;
+  outline: inherit;
+  background: url('/images/edit.png') no-repeat center center;
+  background-size: contain;
+  width: 20px;
+  height: 20px;
+  vertical-align: middle;
+}

@@ -2976,6 +2976,7 @@ app.post("/decide-kyorugi-winners/:eventid", async (req, res) => {
             ranking,
             eventname: event.name,
             eventlocation: event.location,
+            poomsaefinalscore: "N/A",
           },
         ]);
 
