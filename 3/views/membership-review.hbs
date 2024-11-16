@@ -154,7 +154,7 @@
           {{#if (eq registration.status 1)}}
           <span class="status-under-review">Under Review</span>
           {{else if (eq registration.status 2)}}
-          <span class="status-en-route">En-route to Regional Office</span>
+            <span class="status-en-route">Accepted and En-route to Regional Office</span>
           {{else if (eq registration.status 3)}}
           <span class="status-shipped">ID Shipped</span>
           {{else if (eq registration.status 4)}}
@@ -162,15 +162,21 @@
           Reason:<p class="rejectmsg">{{registration.rejectmsg}}</p>
           {{else if (eq registration.status 5)}}
           <span class="status-unknown">Expired</span>
+          {{else if (eq registration.status 6)}}
+          <span class="status-unknown">Suspended</span>
           {{/if}}
         </h1>
         {{#if user.ptaverified}}
         <div class="action-buttons">
           <button onclick="printIdCard('printableArea')" class="printbtn">Print ID</button>
           <button type="submit" name="status" value="1">Under Review</button>
-          <button type="submit" name="status" value="2">En-route to Regional Office</button>
+          <button type="submit" name="status" value="2">Accepted and En-route to Regional Office</button>
           <button type="button" id="idshipped" class="idshipped">ID Shipped</button>
-          <button type="submit" id="rejectbtn" class="rejectbtn">Reject Application</button>
+          {{#if (eq registration.status 3)}}
+            <button type="button" id="suspendbtn" class="suspendbtn">Suspend this Player</button>
+          {{else}}
+            <button type="button" id="rejectbtn" class="rejectbtn">Reject Application</button>
+          {{/if}}
         </div>
 
         <div class="confirmrejectscreen" id="confirmrejectscreen" style="display: none;">
@@ -180,6 +186,13 @@
           <button type="submit" value="4" name="status" id="confirm">Confirm</button>
         </div>
 
+        <div class="confirmsuspendscreen" id="confirmsuspendscreen" style="display: none;">
+          <h3>This action will remove the player's athlete profile suspending him from registering into any games. Please state reason for suspension.</h3>
+          <textarea name="suspendmsg" id="suspendmsg" cols="30" rows="10"></textarea>
+          <button type="button" class="cancelsuspend" id="cancelsuspend">Cancel</button>
+          <button type="submit" value="6" name="status" id="confirm">Confirm</button>
+        </div>
+
         <div class="confirmscreen" id="confirmscreen" style="display: none;">
           <h3>Are you sure? The player will be notified that his ID is ready for pickup.</h3>
           <button type="button" class="cancel" id="cancel">Cancel</button>
@@ -187,8 +200,9 @@
         </div>
         {{/if}}
         <div class="back">
-          <button type="button" onclick="window.location.href='/membership-status'" class="backtolist">Back to
-            list</button>
+          <button type="button" onclick="window.location.href='/membership-status'" class="backtolist">
+          Back to list
+          </button>
         </div>
       </section>
       <div id="printableArea">
@@ -216,6 +230,24 @@
     const cancel = document.getElementById("cancel");
     const idshipped = document.getElementById("idshipped");
     const rejectbtn = document.getElementById("rejectbtn");
+
+    document.addEventListener("DOMContentLoaded", function() {
+      const suspendbtn = document.getElementById("suspendbtn");
+      const confirmsuspendscreen = document.getElementById("confirmsuspendscreen");
+      const cancelsuspend = document.getElementById("cancelsuspend");
+
+      cancelsuspend.addEventListener("click", function (event) {
+        event.preventDefault();
+        confirmsuspendscreen.style.display = "none";
+        actionButtons.style.display = "block";
+      });
+
+      suspendbtn.addEventListener("click", function (event) {
+        event.preventDefault();
+        confirmsuspendscreen.style.display = "block";
+        actionButtons.style.display = "none";
+      });
+    });
 
     cancel.addEventListener("click", function (event) {
       event.preventDefault();

@@ -4230,21 +4230,42 @@ app.get("/clubs", async (req, res) => {
       return res.status(400).json({ error: ownedclubError.message });
     }
 
-    if (ownedclub.length === 0) {
-      return res.status(404).json({ error: "No clubs found for the user" });
-    }
 
     const userClubId = req.session.user.clubid; // Assuming clubid is stored in the session
 
-    const { data: userClub, error: userClubError } = await supabase
-      .from("clubs")
-      .select("*")
-      .eq("id", userClubId)
-      .single();
+    let userClub = null;
+    if (userClubId) {
+      const { data: fetchedUserClub, error: userClubError } = await supabase
+        .from("clubs")
+        .select("*")
+        .eq("id", userClubId)
+        .single();
 
-    if (userClubError) {
-      return res.status(400).json({ error: userClubError.message });
+      if (userClubError) {
+        return res.status(400).json({ error: userClubError.message });
+      }
+
+      userClub = fetchedUserClub;
     }
+
+    console.log("Fetched user's club:", userClub); // Log the user's club data to the console
+
+    res.render("clubs", { 
+      clubs,
+      ownedclub,
+      userClub,
+      user: req.session.user,
+    });
+
+    // const { data: userClub, error: userClubError } = await supabase
+    //   .from("clubs")
+    //   .select("*")
+    //   .eq("id", userClubId)
+    //   .single();
+
+    // if (userClubError) {
+    //   return res.status(400).json({ error: userClubError.message });
+    // }
 
     console.log("Fetched user's club:", userClub); // Log the user's club data to the console
 

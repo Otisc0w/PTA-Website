@@ -126,6 +126,19 @@ async function checkAndExpireNCCRegistrations(req, res, next) {
       }
 
       console.log(`Notified users with expired registrations.`);
+
+      // Update athleteverified column to false for users with expired registrations
+      const userIds = expiredRegistrations.map(registration => registration.submittedby);
+      const { error: updateUserError } = await supabase
+        .from("users")
+        .update({ athleteverified: false })
+        .in("id", userIds);
+
+      if (updateUserError) {
+        throw new Error(`Error updating user athleteverified status: ${updateUserError.message}`);
+      }
+
+      console.log(`Updated athleteverified to false for users with expired registrations.`);
     }
   } catch (error) {
     console.error(error.message);
