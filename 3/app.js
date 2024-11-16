@@ -444,6 +444,7 @@ app.post("/submit-ncc", upload.fields([
             instructormobile,
             instructoremail,
             status,
+            expireson: null,
             birthcert: birthcertUrl, // Include the birth certificate URL
             portrait: portraitUrl, // Include the portrait URL
             paymentproof: paymentproofUrl, // Include the payment proof URL
@@ -1230,7 +1231,11 @@ app.post("/update-nccstatus", async (req, res) => {
         break;
             case 4:
         statusMessage = "Your NCC registration has been rejected.";
-        statusDesc = "Sorry, your NCC registration has been rejected. Please contact support for more information.";
+        statusDesc = "Sorry, your NCC registration has been rejected. Please check your membership status for more information.";
+        break;
+            case 6:
+        statusMessage = "Your NCC registration has been suspended.";
+        statusDesc = "Sorry, your NCC registration has been rejected. Please check the reason for your suspension in your membership status.";
         break;
             default:
         statusMessage = "Unknown status.";
@@ -1254,6 +1259,31 @@ app.post("/update-nccstatus", async (req, res) => {
     }
 
     console.log("Registration updated:", registration);
+
+    if (status == 6) {
+      const { suspendmsg } = req.body; // Capture the reject message from the form
+
+      // Update the suspendmsg column
+      const { error: updatesuspendmsgError } = await supabase
+      .from("ncc_registrations")
+      .update({ suspendmsg: suspendmsg })
+      .eq("id", applicationId);
+
+      if (updatesuspendmsgError) {
+      console.error("Error updating suspendmsg:", updatesuspendmsgError.message);
+      return res.status(500).send("Error updating suspendmsg");
+      }
+
+      const { error: updateAthleteVerifiedError } = await supabase
+        .from("users")
+        .update({ athleteverified: false })
+        .eq("id", registration.submittedby);
+
+      if (updateAthleteVerifiedError) {
+        console.error("Error updating athleteverified:", updateAthleteVerifiedError.message);
+        return res.status(500).send("Error updating athleteverified");
+      }
+    }
 
     // Check if status is 4, indicating the need to update the rejectmsg
     if (status == 4) {

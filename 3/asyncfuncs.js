@@ -66,6 +66,9 @@ async function checkAndExpireNCCRegistrations(req, res, next) {
   const currentDateString = currentDate.toISOString().split('T')[0]; // Get current date in YYYY-MM-DD format
 
   try {
+    const currentDateString = moment().format('YYYY-MM-DD');
+
+    // Fetch all NCC registrations
     const { data: registrations, error: registrationsError } = await supabase
       .from("ncc_registrations")
       .select("*");
@@ -74,6 +77,7 @@ async function checkAndExpireNCCRegistrations(req, res, next) {
       throw new Error(`Error fetching NCC registrations: ${registrationsError.message}`);
     }
 
+    // Filter registrations that expire today
     const expiredRegistrations = registrations.filter(registration => {
       const expiresOn = new Date(registration.expireson);
       return expiresOn.toISOString().split('T')[0] === currentDateString;
@@ -92,41 +96,6 @@ async function checkAndExpireNCCRegistrations(req, res, next) {
 
       console.log(`Updated status to 5 for ${expiredRegistrations.length} registrations.`);
 
-      // Notify users about expired registrations
-      const notifications = expiredRegistrations.map(registration => ({
-        userid: registration.submittedby,
-        message: `Your NCC registration has expired.`,
-        desc: 'Please renew your registration to continue being a member of the PTA.',
-        type: "Registration"
-      }));
-
-      // Fetch existing notifications first
-      const { data: existingNotifications, error: fetchError } = await supabase
-        .from("notifications")
-        .select("*")
-        .in("userid", notifications.map(notification => notification.userid));
-
-      if (fetchError) {
-        throw new Error(`Error fetching existing notifications: ${fetchError.message}`);
-      }
-
-      for (const notification of notifications) {
-        const existingNotification = existingNotifications.find(n => 
-          n.userid === notification.userid && n.message === notification.message);
-
-        if (!existingNotification) {
-          const { error: notificationError } = await supabase
-            .from("notifications")
-            .insert(notification);
-
-          if (notificationError) {
-            throw new Error(`Error inserting notifications: ${notificationError.message}`);
-          }
-        }
-      }
-
-      console.log(`Notified users with expired registrations.`);
-
       // Update athleteverified column to false for users with expired registrations
       const userIds = expiredRegistrations.map(registration => registration.submittedby);
       const { error: updateUserError } = await supabase
@@ -139,9 +108,47 @@ async function checkAndExpireNCCRegistrations(req, res, next) {
       }
 
       console.log(`Updated athleteverified to false for users with expired registrations.`);
+
+      // Notify users about expired registrations
+      const notifications = expiredRegistrations.map(registration => ({
+        userid: registration.submittedby,
+        message: `Your NCC registration has expired.`,
+        desc: 'Please renew your registration to continue being a member of the PTA.',
+        type: "Registration",
+        created_at: new Date().toISOString()
+      }));
+
+      // Fetch existing notifications first
+      const { data: existingNotifications, error: fetchError } = await supabase
+        .from("notifications")
+        .select("*")
+        .in("userid", notifications.map(notification => notification.userid));
+
+      if (fetchError) {
+        throw new Error(`Error fetching existing notifications: ${fetchError.message}`);
+      }
+
+      const daysThreshold = 10; // Define the threshold in days
+
+      for (const notification of notifications) {
+        const existingNotification = existingNotifications.find(n => 
+          n.userid === notification.userid && n.message === notification.message);
+
+        if (!existingNotification || (existingNotification && moment(existingNotification.created_at).isBefore(moment().subtract(daysThreshold, 'days')))) {
+          const { error: notificationError } = await supabase
+            .from("notifications")
+            .insert(notification);
+
+          if (notificationError) {
+            throw new Error(`Error inserting notifications: ${notificationError.message}`);
+          }
+        }
+      }
+
+      console.log(`Inserted notifications for users with expired registrations.`);
     }
   } catch (error) {
-    console.error(error.message);
+    console.error("Error handling expired registrations:", error.message);
   }
 
   next();

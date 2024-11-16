@@ -164,6 +164,7 @@
           <span class="status-unknown">Expired</span>
           {{else if (eq registration.status 6)}}
           <span class="status-unknown">Suspended</span>
+          Reason:<p class="suspendmsg">{{registration.suspendmsg}}</p>
           {{/if}}
         </h1>
         {{#if user.ptaverified}}
