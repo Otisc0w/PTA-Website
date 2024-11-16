@@ -80,25 +80,47 @@
           <span class="status-shipped">ID Shipped</span>
           {{else if (eq registration.status 4)}}
           <span class="status-rejected">Rejected</span>
+          Reason:<p class="suspendmsg">{{registration.rejectmsg}}</p>
           {{else if (eq registration.status 5)}}
           <span class="status-unknown">Expired</span>
+          {{else if (eq registration.status 6)}}
+          <span class="status-unknown">Suspended</span>
+          Reason:<p class="suspendmsg">{{registration.suspendmsg}}</p>
           {{/if}}
         </h1>
         {{#if user.ptaverified}}
-        <div class="action-buttons">
-          <button type="button" onclick="printDiv('printableArea')">Print</button>
-          <button type="submit" name="status" value="1">Under Review</button>
-          <button type="submit" name="status" value="2">En-route to Regional Office</button>
-          <button type="button" id="idshipped" class="idshipped">ID Shipped</button>
-          <button type="submit" name="status" value="4">Reject Application</button>
-        </div>
+          <div class="action-buttons">
+            <button type="button" onclick="printDiv('printableArea')">Print</button>
+            <button type="submit" name="status" value="1">Under Review</button>
+            <button type="submit" name="status" value="2">En-route to Regional Office</button>
+            <button type="button" id="idshipped" class="idshipped">ID Shipped</button>
+            {{#if (eq registration.status 3)}}
+              <button type="button" id="suspendbtn" class="suspendbtn">Suspend this Instructor</button>
+            {{else}}
+              <button type="button" id="rejectbtn" class="rejectbtn">Reject Application</button>
+            {{/if}}
+          </div>
 
-        <div class="confirmscreen" id="confirmscreen" style="display: none;">
-          <h3>Are you sure? The applicant will be notified that his ID is ready. This registration will also disappear
-            after a few days.</h3>
-          <button type="button" class="cancel" id="cancel">Cancel</button>
-          <button type="submit" value="3" name="status" id="confirm">Confirm</button>
-        </div>
+          <div class="confirmrejectscreen" id="confirmrejectscreen" style="display: none;">
+            <h3>Please state reason for rejection.</h3>
+            <textarea name="rejectmsg" id="rejectmsg" cols="30" rows="10"></textarea>
+            <button type="button" class="cancelreject" id="cancelreject">Cancel</button>
+            <button type="submit" value="4" name="status" id="confirm">Confirm</button>
+          </div>
+
+          <div class="confirmsuspendscreen" id="confirmsuspendscreen" style="display: none;">
+            <h3>This action will suspend the instructor's license, not allowing him to register any more clubs. Please state reason for suspension.</h3>
+            <textarea name="suspendmsg" id="suspendmsg" cols="30" rows="10"></textarea>
+            <button type="button" class="cancelsuspend" id="cancelsuspend">Cancel</button>
+            <button type="submit" value="6" name="status" id="confirm">Confirm</button>
+          </div>
+
+          <div class="confirmscreen" id="confirmscreen" style="display: none;">
+            <h3>Are you sure? The applicant will be notified that his ID is ready. This registration will also disappear
+              after a few days.</h3>
+            <button type="button" class="cancel" id="cancel">Cancel</button>
+            <button type="submit" value="3" name="status" id="confirm">Confirm</button>
+          </div>
         {{/if}}
         <div class="backtolist">
           <a href="/membership-status">Back to list</a>
@@ -125,9 +147,30 @@
 
   <script>
     const confirmscreen = document.getElementById("confirmscreen");
+    const confirmrejectscreen = document.getElementById("confirmrejectscreen");
+    const cancelreject = document.getElementById("cancelreject");
     const actionButtons = document.querySelector(".action-buttons");
     const cancel = document.getElementById("cancel");
     const idshipped = document.getElementById("idshipped");
+    const rejectbtn = document.getElementById("rejectbtn");
+
+    document.addEventListener("DOMContentLoaded", function() {
+      const suspendbtn = document.getElementById("suspendbtn");
+      const confirmsuspendscreen = document.getElementById("confirmsuspendscreen");
+      const cancelsuspend = document.getElementById("cancelsuspend");
+
+      cancelsuspend.addEventListener("click", function (event) {
+        event.preventDefault();
+        confirmsuspendscreen.style.display = "none";
+        actionButtons.style.display = "block";
+      });
+
+      suspendbtn.addEventListener("click", function (event) {
+        event.preventDefault();
+        confirmsuspendscreen.style.display = "block";
+        actionButtons.style.display = "none";
+      });
+    });
 
     cancel.addEventListener("click", function (event) {
       event.preventDefault();
@@ -138,6 +181,18 @@
     idshipped.addEventListener("click", function (event) {
       event.preventDefault();
       confirmscreen.style.display = "block";
+      actionButtons.style.display = "none";
+    });
+
+    cancelreject.addEventListener("click", function (event) {
+      event.preventDefault();
+      confirmrejectscreen.style.display = "none";
+      actionButtons.style.display = "block";
+    });
+
+    rejectbtn.addEventListener("click", function (event) {
+      event.preventDefault();
+      confirmrejectscreen.style.display = "block";
       actionButtons.style.display = "none";
     });
 

@@ -159,6 +159,9 @@ async function checkAndExpireInstructorRegistrations(req, res, next) {
   const currentDateString = currentDate.toISOString().split('T')[0]; // Get current date in YYYY-MM-DD format
 
   try {
+    const currentDateString = moment().format('YYYY-MM-DD');
+
+    // Fetch all instructor registrations
     const { data: registrations, error: registrationsError } = await supabase
       .from("instructor_registrations")
       .select("*");
@@ -167,6 +170,7 @@ async function checkAndExpireInstructorRegistrations(req, res, next) {
       throw new Error(`Error fetching instructor registrations: ${registrationsError.message}`);
     }
 
+    // Filter registrations that expire today
     const expiredRegistrations = registrations.filter(registration => {
       const expiresOn = new Date(registration.expireson);
       return expiresOn.toISOString().split('T')[0] === currentDateString;
@@ -185,12 +189,26 @@ async function checkAndExpireInstructorRegistrations(req, res, next) {
 
       console.log(`Updated status to 5 for ${expiredRegistrations.length} instructor registrations.`);
 
+      // Update instructorverified column to false for users with expired registrations
+      const userIds = expiredRegistrations.map(registration => registration.submittedby);
+      const { error: updateUserError } = await supabase
+        .from("users")
+        .update({ instructorverified: false })
+        .in("id", userIds);
+
+      if (updateUserError) {
+        throw new Error(`Error updating user instructorverified status: ${updateUserError.message}`);
+      }
+
+      console.log(`Updated instructorverified to false for users with expired registrations.`);
+
       // Notify users about expired registrations
       const notifications = expiredRegistrations.map(registration => ({
         userid: registration.submittedby,
         message: `Your instructor registration has expired.`,
         desc: 'Please renew your registration to continue being an instructor.',
-        type: "Registration"
+        type: "Registration",
+        created_at: new Date().toISOString()
       }));
 
       // Fetch existing notifications first
@@ -203,11 +221,13 @@ async function checkAndExpireInstructorRegistrations(req, res, next) {
         throw new Error(`Error fetching existing notifications: ${fetchError.message}`);
       }
 
+      const daysThreshold = 10; // Define the threshold in days
+
       for (const notification of notifications) {
         const existingNotification = existingNotifications.find(n => 
           n.userid === notification.userid && n.message === notification.message);
 
-        if (!existingNotification) {
+        if (!existingNotification || (existingNotification && moment(existingNotification.created_at).isBefore(moment().subtract(daysThreshold, 'days')))) {
           const { error: notificationError } = await supabase
             .from("notifications")
             .insert(notification);
@@ -218,10 +238,10 @@ async function checkAndExpireInstructorRegistrations(req, res, next) {
         }
       }
 
-      console.log(`Notified users with expired instructor registrations.`);
+      console.log(`Inserted notifications for users with expired instructor registrations.`);
     }
   } catch (error) {
-    console.error(error.message);
+    console.error("Error handling expired instructor registrations:", error.message);
   }
 
   next();
@@ -281,7 +301,8 @@ async function checkUpcomingEvents(req, res, next) {
           notifications.push({
             userid: userId,
             message: message,
-            type: "Event"
+            type: "Event",
+            created_at: new Date().toISOString()
           });
         });
       });
@@ -298,7 +319,7 @@ async function checkUpcomingEvents(req, res, next) {
           throw new Error(`Error checking existing notifications: ${existingNotificationError.message}`);
         }
 
-        if (!existingNotification) {
+        if (!existingNotification || (existingNotification && moment(existingNotification.created_at).isBefore(moment().subtract(5, 'days')))) {
           const { error: notificationError } = await supabase
             .from("notifications")
             .insert(notification);

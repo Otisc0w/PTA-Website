@@ -1508,6 +1508,47 @@ app.post("/update-instructorstatus", async (req, res) => {
       return res.status(500).send("Error creating notification");
     }
 
+    if (status == 6) {
+      const { suspendmsg } = req.body; // Capture the suspend message from the form
+
+      // Update the suspendmsg column
+      const { error: updatesuspendmsgError } = await supabase
+      .from("instructor_registrations")
+      .update({ suspendmsg: suspendmsg })
+      .eq("id", applicationId);
+
+      if (updatesuspendmsgError) {
+      console.error("Error updating suspendmsg:", updatesuspendmsgError.message);
+      return res.status(500).send("Error updating suspendmsg");
+      }
+
+      const { error: updateInstructorVerifiedError } = await supabase
+      .from("users")
+      .update({ instructorverified: false })
+      .eq("id", registration.submittedby);
+
+      if (updateInstructorVerifiedError) {
+      console.error("Error updating instructorverified:", updateInstructorVerifiedError.message);
+      return res.status(500).send("Error updating instructorverified");
+      }
+    }
+
+    // Check if status is 4, indicating the need to update the rejectmsg
+    if (status == 4) {
+      const { rejectmsg } = req.body; // Capture the reject message from the form
+
+      // Update the rejectmsg column
+      const { error: updateRejectMsgError } = await supabase
+      .from("instructor_registrations")
+      .update({ rejectmsg: rejectmsg })
+      .eq("id", applicationId);
+
+      if (updateRejectMsgError) {
+      console.error("Error updating rejectmsg:", updateRejectMsgError.message);
+      return res.status(500).send("Error updating rejectmsg");
+      }
+    }
+
     // Check if status is 4, indicating the need to update the user's instructorverified column
     if (status == 3) {
       const { submittedby } = registration;
