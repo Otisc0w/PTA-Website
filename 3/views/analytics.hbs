@@ -12,47 +12,51 @@
 </head>
 
 <body class="container">
-    <div class="navbar">
-      <a href="/home"><img src="/images/logo.png" class="logo" alt="Logo"></a>
-      <ul class="tabs">
-        <!-- Navigation Tabs -->
-        <li class="home"><a href="/home">Home</a></li>
-        <li class="athletes"><a href="/athletes">Athletes</a></li>
-        <li class="clubs"><a href="/clubs">Clubs</a></li>
-        <li class="events"><a href="/events">Events</a></li>
-        <li class="membership"><a href="/membership">Membership</a></li>
-        <li class="forum"><a href="/forum">Forum</a></li>
-        <li class="notifications">
-          <a href="/notifications">Notifications
-            {{#if notifications}}
-            <span class="badge">{{notifications.length}}</span>
-            {{/if}}
-          </a>
-        </li>
-        <li class="analytics"><a href="/analytics">Reports</a></li>
-        <li class="profile-pic">
-          {{#if user.profilepic}}
-          <a href="#" onclick="toggleDropdown()"><img src="{{user.profilepic}}" alt="Profile Picture"
-              class="profile-picture"></a>
-          {{else}}
-          <a href="#" onclick="toggleDropdown()" class="profile-picture"><img src="/images/none.jpg"
-              alt="Profile Picture" class="profile-picture"></a>
+  <div class="navbar">
+    <a href="/home"><img src="/images/logo.png" class="logo" alt="Logo"></a>
+    <ul class="tabs">
+      <!-- Navigation Tabs -->
+      <li class="home"><a href="/home">Home</a></li>
+      <li class="athletes"><a href="/athletes">Athletes</a></li>
+      <li class="clubs"><a href="/clubs">Clubs</a></li>
+      <li class="events"><a href="/events">Events</a></li>
+      <li class="membership"><a href="/membership">Membership</a></li>
+      <li class="forum"><a href="/forum">Forum</a></li>
+      <li class="notifications">
+        <a href="/notifications">Notifications
+          {{#if notifications}}
+          <span class="badge">{{notifications.length}}</span>
           {{/if}}
-          <div id="dropdown" class="dropdown-content">
-            <a href="profile">Profile</a>
-            <a href="settings">Settings</a>
-            <a href="help-center">FAQs</a>
-            <a href="/">Logout</a>
-          </div>
-        </li>
-      </ul>
-    </div>
+        </a>
+      </li>
+      <li class="analytics"><a href="/analytics">Reports</a></li>
+      <li class="profile-pic">
+        {{#if user.profilepic}}
+        <a href="#" onclick="toggleDropdown()"><img src="{{user.profilepic}}" alt="Profile Picture"
+            class="profile-picture"></a>
+        {{else}}
+        <a href="#" onclick="toggleDropdown()" class="profile-picture"><img src="/images/none.jpg" alt="Profile Picture"
+            class="profile-picture"></a>
+        {{/if}}
+        <div id="dropdown" class="dropdown-content">
+          <a href="profile">Profile</a>
+          <a href="settings">Settings</a>
+          <a href="help-center">FAQs</a>
+          <a href="/">Logout</a>
+        </div>
+      </li>
+    </ul>
+  </div>
 
-    <div class="analytics-header">
-      <h1>Reports Overview</h1>
-      <p>Gain insights into club participation, performance, and other key metrics for strategic improvements.</p>
-    </div>
-  
+  <div class="analytics-header">
+    <h1>Reports Overview</h1>
+    <p>Gain insights into club participation, performance, and other key metrics for strategic improvements.</p>
+  </div>
+
+  <div class="download-container">
+    <button id="download-csv" class="download-btn">Download as CSV</button>
+  </div>
+
   <!-- Analytics Content -->
   <div class="analytics-container">
 
@@ -71,37 +75,37 @@
       </div>
     </div>
 
-      <div class="card participation-card">
+    <div class="card participation-card">
       <h2>Clubs Overview</h2>
       <div id="participationChart" class="chart">
-         {{#each clubsByMonth}}
-    <h3>Joined in: {{@key}}</h3>
-    <div class="club-list">
-      {{#each this}}
-      <div class="club-item">
-        <span class="club-name">{{this.clubname}}</span>
-        <!--<span class="members-count">Members: {{this.members}}</span>-->
-      </div>
-      {{/each}}
-    </div>
-    {{/each}}
+        {{#each clubsByMonth}}
+        <h3>Joined in: {{@key}}</h3>
+        <div class="club-list">
+          {{#each this}}
+          <div class="club-item">
+            <span class="club-name">{{this.clubname}}</span>
+            <!--<span class="members-count">Members: {{this.members}}</span>-->
+          </div>
+          {{/each}}
+        </div>
+        {{/each}}
       </div>
     </div>
 
-      <div class="card participation-card">
+    <div class="card participation-card">
       <h2>Events Overview</h2>
       <div id="participationChart" class="chart">
         {{#each eventsByMonth}}
-    <h3>Created in: {{@key}}</h3>
-    <div class="club-list">
-      {{#each this}}
-      <div class="club-item">
-        <span class="club-name">{{this.name}}</span>
-        <span class="club-type">Type: {{this.eventtype}}</span>
-      </div>
-      {{/each}}
-    </div>
-    {{/each}}
+        <h3>Created in: {{@key}}</h3>
+        <div class="club-list">
+          {{#each this}}
+          <div class="club-item">
+            <span class="club-name">{{this.name}}</span>
+            <span class="club-type">Type: {{this.eventtype}}</span>
+          </div>
+          {{/each}}
+        </div>
+        {{/each}}
       </div>
     </div>
 
@@ -115,7 +119,7 @@
       </ul>
     </div>
 
-   <div class="card participants-card">
+    <div class="card participants-card">
       <h2>List of Participants</h2>
       <ul class="participants-list">
         <li>Active Members: <span>{{participantCounts.active}}</span></li>
@@ -125,8 +129,8 @@
       <!-- <button onclick="viewParticipantList()">View Full List</button> -->
     </div>
 
-    
-      
+
+
   </div>
 
   <footer>
@@ -151,7 +155,13 @@
     </div>
   </footer>
 
-  <script src="../scripts/analytics.js"></script>
+  <script>
+    document.getElementById('download-csv').addEventListener('click', () => {
+      window.location.href = '/download-reports';
+    });
+
+
+  </script>
 </body>
 
 </html>
