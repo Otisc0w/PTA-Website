@@ -31,6 +31,7 @@ li {
 .create-post-container {
     width: 60%;
     margin: 50px auto;
+    margin-top: 0;
     background-color: #2c2c2c;
     padding: 20px;
     border-radius: 8px;
@@ -102,3 +103,27 @@ li {
 }
 
 
+.back-button{
+    margin-top: 90px;
+    margin-left: 19%;
+}
+
+.back-button a{
+    
+    text-decoration: none;
+    color: white;
+    font-size: 20px;
+    font-style: bold;
+    padding: 10px 15px;
+    background-color: #2c2c2c;
+    border-radius: 100%;
+    transition: background-color 0.3s ease;
+}
+
+.back-button a:hover{
+    background-color: #1a1a1a;
+}
+
+.back-btn a{
+    color: white;
+}
