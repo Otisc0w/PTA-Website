@@ -4459,13 +4459,6 @@ app.get("/clubs", async (req, res) => {
 
     console.log("Fetched user's club:", userClub); // Log the user's club data to the console
 
-    res.render("clubs", { 
-      clubs,
-      ownedclub,
-      userClub,
-      user: req.session.user,
-    });
-
     // const { data: userClub, error: userClubError } = await supabase
     //   .from("clubs")
     //   .select("*")
