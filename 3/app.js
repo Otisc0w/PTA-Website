@@ -4226,14 +4226,18 @@ app.get("/home", async function (req, res) {
     }
 
     // Fetch clubs the user is in
-    const { data: userclub, error: userclubError } = await supabase
-      .from("clubs")
-      .select("*")
-      .eq("id", req.session.user.clubid)
-      .single();
+    let userclub = null;
+    if(req.session.user.clubid) {
+      const { data, error: userclubError } = await supabase
+        .from("clubs")
+        .select("*")
+        .eq("id", req.session.user.clubid)
+        .single();
 
-    if (userclubError) {
-      return res.status(400).json({ error: userclubError.message });
+      if (userclubError) {
+        return res.status(400).json({ error: userclubError.message });
+      }
+      userclub = data;
     }
 
     // Fetch clubs the user registered
@@ -4246,8 +4250,8 @@ app.get("/home", async function (req, res) {
       return res.status(400).json({ error: registeredClubsError.message });
     }
 
-    console.log("Fetched clubs user is in:", userclub);
-    console.log("Fetched clubs user registered:", registeredClubs);
+     console.log("Fetched clubs user is in:", userclub);
+    // console.log("Fetched clubs user registered:", registeredClubs);
 
     // Fetch the top 3 athletes based on ranking points
     const { data: athletes, error: athletesError } = await supabase
@@ -4288,7 +4292,7 @@ app.get("/home", async function (req, res) {
     console.log("Fetched top athletes:", athletes);
 
     // Render the home.hbs template with events, top athletes, and the session user data
-    res.render("home", { athletes, userclub, registeredClubs, events, userEvents, user: req.session.user });
+    res.render("home", { athletes, registeredClubs, userclub, events, userEvents, user: req.session.user });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
