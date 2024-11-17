@@ -392,7 +392,7 @@
           <th>Height (cm)</th>
           <th>Weight (kg)</th>
           <th>Activities Attended</th>
-          {{#if (eq club.id user.clubid)}}
+          {{#if (eq club.registeredby user.id)}}
           <th>Performance Feedback</th>
           {{/if}}
         </tr>
@@ -405,7 +405,7 @@
           <td>{{this.height}}</td>
           <td>{{this.weight}}</td>
           <td>{{this.attended_count}}</td>
-          {{#if (eq ../club.id ../user.clubid)}}
+          {{#if (eq ../club.registeredby ../user.id)}}
           <td>
             <button class="view-feedback-button" data-id="{{this.id}}">View Feedback</button>
           </td>

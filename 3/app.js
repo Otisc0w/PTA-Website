@@ -1941,7 +1941,7 @@ app.post("/invite-user", async (req, res) => {
 });
 
 app.post("/invite-player", async (req, res) => {
-  const { userid, clubid } = req.body;
+  const { athleteid, clubid,  } = req.body;
 
   if (!req.session.user) {
     return res.status(401).send("Unauthorized: No user logged in");
@@ -1949,8 +1949,20 @@ app.post("/invite-player", async (req, res) => {
 
   const inviter_user = req.session.user.id; // Get the current user's ID
   const invitername = req.session.user.firstname + req.session.user.lastname;
-  const invited_user = userid;
+  
 
+  const { data: athlete, error: athleteError } = await supabase
+    .from("athletes")
+    .select("userid")
+    .eq("id", athleteid)
+    .single();
+
+  if (athleteError) {
+    return res.status(500).json({ error: athleteError.message });
+  }
+
+  const userid = athlete.userid;
+  const invited_user = userid;
   try {
     // Fetch the club name where the club ID is provided
     const { data: clubData, error: clubError } = await supabase

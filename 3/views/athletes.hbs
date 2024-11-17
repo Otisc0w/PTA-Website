@@ -115,9 +115,6 @@
           <th>Club</th>
           <th>Belt Level</th>
           <th>Points</th>
-          {{#if user.isAdmin}}
-          <th>Actions</th>
-          {{/if}}
         </tr>
       </thead>
       <tbody id="athletes-tbody">
@@ -150,7 +147,7 @@
               </table>
             </td>
             <td colspan="1">
-              <button onclick="openModal()" class="invite-button">Invite Athlete</button>
+              <button onclick="openinvitemodal('{{id}}')" class="invite-button">Invite Athlete</button>
             </td>
             <td colspan="1">
             </td>
@@ -167,7 +164,7 @@
     <div class="modal-content">
       <span class="close">&times;</span>
       <form action="/invite-player" method="POST">
-        <input type="hidden" name="userid" id="modal-userid" value="">
+        <input type="" name="athleteid" id="modal-userid" value="">
         <label for="club">Select Club:</label>
         <select id="clubid" name="clubid">
           {{#each clubs}}
@@ -269,8 +266,9 @@
     var modal = document.getElementById("inviteModal");
     var span = document.getElementsByClassName("close")[0];
 
-    function openModal() {
+    function openinvitemodal(id) {
       modal.style.display = "block";
+      document.getElementById('modal-userid').value = id;
     }
 
     span.onclick = function () {
