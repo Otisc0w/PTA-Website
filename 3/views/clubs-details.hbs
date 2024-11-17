@@ -107,8 +107,8 @@
 
           <!-- Region -->
           <div class="form-group">
-            <label for="region">Region:</label>
-            <input type="text" id="region" name="region" value="{{club.region}}" required>
+            <label for="province">Province:</label>
+            <input type="text" id="province" name="province" value="{{club.province}}" required>
           </div>
 
           <!-- Brief Description -->
@@ -299,7 +299,7 @@
           <div class="details">
             <span>Details</span>
             {{#if (eq club.registeredby user.id)}}
-            <button class="edit-button" onclick="openModal()"></button>
+            <button class="edit-button" onclick="openEditModal()"></button>
             <button class="deleteclub-button" onclick="confirmDelete()"></button>
             <div class="confirmdeletescreen" style="display: none;">
               Are you sure you <br>want to delete this club?<br>
@@ -353,6 +353,7 @@
         </thead>
         <tbody>
           {{#each clubRequestsWithUserDetails}}
+          {{#if (eq status 'pending')}}
           <tr>
             <td>{{firstname}} {{lastname}}</td>
             <td>{{message}}</td>
@@ -371,6 +372,7 @@
               </form>
             </td>
           </tr>
+          {{/if}}
           {{/each}}
         </tbody>
       </table>
@@ -398,7 +400,7 @@
       <tbody>
         {{#each clubMembersWithAthleteData}}
         <tr>
-          <td><img src="{{this.portrait}}" alt="Member Picture"></td>
+          <td><img src="{{this.profilepic}}" alt="Member Picture"></td>
           <td>{{this.firstname}} {{this.lastname}}</td>
           <td>{{this.height}}</td>
           <td>{{this.weight}}</td>
