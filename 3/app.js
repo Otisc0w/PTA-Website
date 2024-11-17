@@ -1630,7 +1630,7 @@ app.post("/update-clubstatus", async (req, res) => {
     console.log("Registration updated:", clubregistration);
     
     // Check if status is 4, indicating the need to update the user's athleteverified column and insert into athletes table
-    if (status == 4) {
+    if (status == 3) {
       const {
         phonenum,
         email,
@@ -1657,7 +1657,7 @@ app.post("/update-clubstatus", async (req, res) => {
           registeree,
           clubpic,
         },
-      ]);
+      ]);      
 
       if (insertClubError) {
         console.error("Error inserting athlete:", insertClubError.message);
@@ -2606,6 +2606,7 @@ const eventImageUpload = multer();
 
 app.post("/submit-player", upload.fields([{ name: 'heightpicture' }, { name: 'weightpicture' }]), async (req, res) => {
   const {
+    userid,
     athleteid,
     eventid,
     email,
@@ -2620,7 +2621,6 @@ app.post("/submit-player", upload.fields([{ name: 'heightpicture' }, { name: 'we
     instructor
   } = req.body;
 
-  const userId = req.session.user.id;
   const registered = "false";
   
   // Upload file helper function
@@ -2645,7 +2645,7 @@ app.post("/submit-player", upload.fields([{ name: 'heightpicture' }, { name: 'we
       .insert([
         {
           athleteid,
-          userid: userId,
+          userid: userid,
           eventid,
           registered,
           email,
@@ -2684,7 +2684,7 @@ app.post("/submit-player", upload.fields([{ name: 'heightpicture' }, { name: 'we
       .from("notifications")
       .insert([
         {
-          userid: userId,
+          userid: userid,
           type: "Event",
           message: `You have successfully registered for ${thisevent.name}`,
           desc: `Your registration for the event ${thisevent.name} has been successfully submitted.`,
@@ -4225,6 +4225,30 @@ app.get("/home", async function (req, res) {
       return res.status(400).json({ error: eventsError.message });
     }
 
+    // Fetch clubs the user is in
+    const { data: userclub, error: userclubError } = await supabase
+      .from("clubs")
+      .select("*")
+      .eq("id", req.session.user.clubid)
+      .single();
+
+    if (userclubError) {
+      return res.status(400).json({ error: userclubError.message });
+    }
+
+    // Fetch clubs the user registered
+    const { data: registeredClubs, error: registeredClubsError } = await supabase
+      .from("clubs")
+      .select("*")
+      .eq("registeredby", req.session.user.id);
+
+    if (registeredClubsError) {
+      return res.status(400).json({ error: registeredClubsError.message });
+    }
+
+    console.log("Fetched clubs user is in:", userclub);
+    console.log("Fetched clubs user registered:", registeredClubs);
+
     // Fetch the top 3 athletes based on ranking points
     const { data: athletes, error: athletesError } = await supabase
       .from("athletes")
@@ -4264,7 +4288,7 @@ app.get("/home", async function (req, res) {
     console.log("Fetched top athletes:", athletes);
 
     // Render the home.hbs template with events, top athletes, and the session user data
-    res.render("home", { athletes, events, userEvents, user: req.session.user });
+    res.render("home", { athletes, userclub, registeredClubs, events, userEvents, user: req.session.user });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -4817,19 +4841,52 @@ app.get("/events-registration/:id", async function (req, res) {
     }
 
     // Fetch the athlete details for the current user
-    const { data: athlete, error: athleteError } = await supabase
+    const { data: currentuserathlete, error: currentuserathleteError } = await supabase
       .from("athletes")
       .select("*")
       .eq("userid", userId)
       .single();
 
-    if (athleteError) {
-      return res.status(400).json({ error: athleteError.message });
+    if (currentuserathleteError) {
+      return res.status(400).json({ error: currentuserathleteError.message });
     }
+
+    // Fetch the athlete details for the current user
+    const { data: athletes, error: athletesError } = await supabase
+      .from("athletes")
+      .select("*");
+
+    if (athletesError) {
+      return res.status(400).json({ error: athletesError.message });
+    }
+
+    // Fetch the members of the user's registered club
+    const { data: clubMembers, error: clubMembersError } = await supabase
+      .from("users")
+      .select("*")
+      .eq("clubid", req.session.user.clubid);
+
+    if (clubMembersError) {
+      return res.status(400).json({ error: clubMembersError.message });
+    }
+    // Map athlete data to each of the users
+    const clubMembersWithAthleteData = clubMembers.map((member) => {
+      const athlete = athletes.find((athlete) => athlete.userid === member.id);
+      return {
+        ...member,
+        athleteData: athlete || null,
+      };
+    });
+
+    console.log("Fetched club members with athlete data:", clubMembersWithAthleteData); // Log the club members with athlete data to the console
+
+    console.log("Fetched club members data:", clubMembers); // Log the club members data to the console
 
     res.render("events-registration", {
       event,
-      athlete,
+      currentuserathlete,
+      clubMembers,
+      clubMembersWithAthleteData,
       user: req.session.user,
     });
   } catch (error) {

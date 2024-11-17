@@ -429,7 +429,7 @@
           <div class="buttondiv">
             {{#unless champion}}
               {{#if user.athleteverified}}
-                {{#if (3ands (eq currentUserAthlete.agedivision event.agedivision) (eq currentUserAthlete.gender event.gender) (eq currentUserAthlete.beltlevel event.beltlevel))}}
+                {{#if (or (3ands (eq currentUserAthlete.agedivision event.agedivision) (eq currentUserAthlete.gender event.gender) (eq currentUserAthlete.beltlevel event.beltlevel)) user.instructorverified)}}
                   {{#unless (or currentregistrant (me registrationcount event.registrationcap))}}
                     {{#if (eq event.status 'Active')}}
                       <a href="/events-registration/{{event.id}}" class="register-button">Register</a>

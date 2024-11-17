@@ -55,8 +55,6 @@
           <p>Our athletes are recognized for their dedication, skill, and achievements.</p>
         </div>
 
-        
-
         <div class="recognition-cards">
           {{#each athletes}}
           <div class="card">
@@ -121,18 +119,40 @@
         </div>
       </div>
 
-       <h3 class="usereventstitle">Events you're currently registered in:</h3><br>
-        <div class="userevents">
-          {{#each userEvents}}
-          <div class="registered-event-card">
-            <img src="{{eventpicture}}" alt="Event {{id}}" class="event-image">
-            <h3>{{name}}</h3>
-            <p>{{description}}</p>
-            <p>{{datetime}}</p><br>
-            <a href="/events-details/{{id}}">Go to Event</a>
-          </div>
-          {{/each}}
+      <h3 class="usereventstitle">Events you're currently registered in</h3><br>
+      <div class="userevents">
+        {{#each userEvents}}
+        <div class="registered-event-card">
+          <img src="{{eventpicture}}" alt="Event {{id}}" class="event-image">
+          <h3>{{name}}</h3>
+          <p>{{description}}</p>
+          <p>{{datetime}}</p><br>
+          <a href="/events-details/{{id}}">Go to Event</a>
         </div>
+        {{/each}}
+      </div>
+      
+      {{#if userclub}}
+        <h3 class="usereventstitle">Your Club</h3>
+        <div class="registered-event-card">
+          <img src="{{clubpic}}" alt="{{userclub.clubname}} Logo" class="club-logo">
+          <h3>{{userclub.clubname}}</h3>
+          <p>{{userclub.clubdescription}}</p>
+          <a href="/club-details/{{userclub.id}}">View Club</a>
+        </div><br>
+      {{/if}}
+
+      {{#if registeredClubs}}
+      <h3 class="usereventstitle">Registered Clubs</h3>
+        {{#each registeredClubs}}
+        <div class="registered-event-card">
+          <img src="{{clubpic}}" alt="{{this.clubname}} Logo" class="club-logo">
+          <h3>{{this.clubname}}</h3>
+          <p>{{this.clubdescription}}</p>
+          <a href="/club-details/{{this.id}}">View Club</a>
+        </div>
+        {{/each}}
+      {{/if}}
 
 
       <div class="upcoming-events">

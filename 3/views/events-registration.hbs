@@ -6,7 +6,7 @@
   <title>Event Registration</title>
   <link rel="icon" type="image/x-icon" href="../images/favicon.ico" />
   <link rel="stylesheet" type="text/css" href="../stylesheets/navbar.css" />
-  <link rel="stylesheet" type="text/css" href="../stylesheets/events.css" />
+  <link rel="stylesheet" type="text/css" href="../stylesheets/events-registration.css" />
 </head>
 
 <body class="container">
@@ -15,7 +15,7 @@
       <a href="/home"><img src="/images/logo.png" class="logo" alt="Logo"></a>
       <ul class="tabs">
         <li class="home"><a href="/home">Home</a></li>
-        <li class="athletes"><a href="/athletes">Athletes</a></li>
+        <li class="currentuserathlete."><a href="/currentuserathlete.">Athletes</a></li>
         <li class="clubs"><a href="/clubs">Clubs</a></li>
         <li class="events"><a href="/events">Events</a></li>
         <li class="membership"><a href="/membership">Membership</a></li>
@@ -49,44 +49,90 @@
 
   <div class="form-container margin">
     <h2>Event Registration for {{event.name}}</h2>
-    <form id="registrationForm" action="/submit-player" method="post" enctype="multipart/form-data">
 
+    <form id="registrationForm" action="/submit-player" method="post" enctype="multipart/form-data">
       <div class="form-group">
         <input type="hidden" id="eventid" name="eventid" value="{{event.id}}">
       </div>
       <div class="form-group">
-        <input type="hidden" id="athleteid" name="athleteid" value="{{athlete.id}}">
+      <input type="hidden" id="athleteid" name="athleteid" value="{{currentuserathlete.id}}">
+      </div>
+      <div class="form-group">
+        <input type="" id="userid" name="userid" value="{{user.id}}">
       </div>
 
       <div class="flex">
         <div class="small-margin">
-          <div class="form-group">
-            <label for="playername">Player Name:</label><br>
-            <input type="text" id="playername" name="playername" value="{{athlete.name}}">
-          </div><br>
+          {{#if (and clubMembersWithAthleteData user.instructorverified)}}
+            <div class="form-group">
+              <label for="playername">Player Name:</label><br>
+              <select id="playername" name="playername" required>
+                <option value="" disabled selected>Please select</option>
+                {{#each clubMembersWithAthleteData}}
+                  {{#if this.athleteData.id}}
+                        {{#if (3ands (eq this.athleteData.beltlevel ../event.beltlevel) (eq this.athleteData.gender ../event.gender) (eq this.athleteData.agedivision ../event.agedivision))}}
+                          <option class="{{this.id}}" value="{{this.athleteData.name}}">
+                          {{this.athleteData.name}} - {{this.athleteData.beltlevel}}
+                          {{#if (eq this.athleteData.userid ../user.id)}}(you){{/if}}
+                          </option>
+                        {{else}}
+                          <option class="{{this.id}}" value="{{this.athleteData.name}}" disabled>
+                          {{this.athleteData.name}} - Wrong Category
+                          {{#if (eq this.athleteData.userid ../user.id)}}(you){{/if}}
+                          </option>
+                        {{/if}}
+                  {{/if}}
+                {{/each}}
+              </select>
+            </div>
+          {{else}}
+            <div class="form-group">
+              <label for="playername">Player Name:</label><br>
+              <input type="text" id="playername" name="playername" value="{{currentuserathlete.name}}" readonly>
+            </div>
+          {{/if}}
+
+          <br>
           <div class="form-group">
             <label for="email">Email:</label><br>
             <input type="email" id="email" name="email" value="{{user.email}}">
+            <script>
+                document.getElementById('playername').addEventListener('change', function() {
+                const selectedPlayerClass = this.options[this.selectedIndex].className;
+                const clubMembers = {{{json clubMembersWithAthleteData}}};
+                const selectedPlayer = clubMembers.find(member => member.id == selectedPlayerClass);
+
+                if (selectedPlayer) {
+                  document.getElementById('email').value = selectedPlayer.email || '';
+                  document.getElementById('bday').value = selectedPlayer.athleteData.bday || '';
+                  document.getElementById('height').value = selectedPlayer.athleteData.height || '';
+                  document.getElementById('weight').value = selectedPlayer.athleteData.weight || '';
+                  document.getElementById('division').value = selectedPlayer.athleteData.agedivision || '';
+                  document.getElementById('belt').value = selectedPlayer.athleteData.beltlevel || '';
+                  document.getElementById('instructor').value = selectedPlayer.athleteData.instructor || '';
+                  document.getElementById('userid').value = selectedPlayer.id || '';
+                  document.getElementById('athleteid').value = selectedPlayer.athleteData.id || '';
+                }
+                });
+            </script>
           </div><br>
           <div class="form-group">
             <label for="bday">Birth Date:</label><br>
-            <input type="date" id="bday" name="bday" value="{{athlete.bday}}">
+            <input type="date" id="bday" name="bday" value="{{currentuserathlete.bday}}">
           </div><br>
-
-          
           <div class="form-group">
             <label for="height">Height (cm):</label><br>
-            <input type="number" id="height" name="height" value="{{athlete.height}}">
+            <input type="number" id="height" name="height" value="{{currentuserathlete.height}}">
           <div> 
-            <label for="heightpicture">Upload a picture of the athlete standing against a measuring tape:</label><br>
+            <label for="heightpicture">Upload a picture of the player standing against a measuring tape:</label><br>
             <input type="file" name="heightpicture" id="heightpicture" >
           </div>
           </div><br>
           <div class="form-group">
             <label for="weight">Weight (kg):</label><br>
-            <input type="number" id="weight" name="weight" value="{{athlete.weight}}">
+            <input type="number" id="weight" name="weight" value="{{currentuserathlete.weight}}">
           <div>
-            <label for="weightpicture">Upload a picture of the athlete on the weighing scale:</label><br>
+            <label for="weightpicture">Upload a picture of the player on the weighing scale:</label><br>
             <input type="file" name="weightpicture" id="weightpicture"  >
             </div>
           </div>
@@ -99,15 +145,15 @@
           </div><br>
           <div class="form-group">
             <label for="division">Age Division:</label><br>
-            <input type="text" id="division" name="division" value="{{athlete.agedivision}}" readonly>
+            <input type="text" id="division" name="division" value="{{currentuserathlete.agedivision}}" readonly>
           </div><br>
           <div class="form-group">
             <label for="belt">Belt:</label><br>
-            <input type="text" id="belt" name="belt" value="{{athlete.beltlevel}}" readonly>
+            <input type="text" id="belt" name="belt" value="{{currentuserathlete.beltlevel}}" readonly>
           </div><br>
           <div class="form-group">
             <label for="instructor">Instructor:</label><br>
-            <input type="text" id="instructor" name="instructor" value="{{athlete.instructor}}" readonly>
+            <input type="text" id="instructor" name="instructor" value="{{currentuserathlete.instructor}}" readonly>
           </div><br>
         </div>
       </div>
