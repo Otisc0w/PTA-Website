@@ -46,6 +46,7 @@ body {
 .rankings {
     width: 100%;
     border-collapse: collapse;
+    table-layout: fixed;
 }
 
 .rankings th,
@@ -62,17 +63,24 @@ body {
     text-transform: capitalize;
 }
 
-.rankings tbody tr:nth-child(even) {
-    background-color: #0000000b;
+.rankings tbody tr:nth-child(4n+1),
+.rankings tbody tr:nth-child(4n+2) {
+    background-color: #2C2C2C;
 }
 
-.rankings tbody tr:nth-child(odd) {
-    background-color: #666;
+.rankings tbody tr:nth-child(4n+3),
+.rankings tbody tr:nth-child(4n+4) {
+    background-color: #3a3a3a;
 }
 
-.rankings tbody tr:hover {
-    background-color: #fff6 !important;
+.rankings tbody tr:nth-child(4n+1):hover{
+    background-color: #333;
 }
+.rankings tbody tr:nth-child(4n+3):hover{
+    background-color: #444 !important;
+}
+
+
 
 /* Athlete Details */
 .athlete-details {
@@ -91,11 +99,10 @@ body {
     position: relative;
 }
 
-.athlete-header img {
+.portrait {
     width: 100px;
     height: 100px;
     border-radius: 50%;
-    margin-right: 20px;
 }
 
 .athlete-info {
@@ -185,8 +192,8 @@ body {
     height: 30px;
 }
 
-.moredets a,
-.invite-button button {
+.moredets,
+.invite-button {
     padding: 10px 20px;
     background-color: #007BFF;
     color: white;
@@ -195,8 +202,8 @@ body {
     border: none;
 }
 
-.moredets a:hover,
-.invite-button button:hover {
+.moredetshover,
+.invite-button:hover {
     background-color: #0056b3;
 }
 
@@ -205,9 +212,6 @@ body {
     margin-right: 15px;
 }
 
-.invite-button {
-    margin-left: 20px;
-}
 
 /* The Modal (background) */
 .modal {
@@ -513,4 +517,19 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
+}
+
+.details-box p {
+    margin-left: 120px;
+}
+
+.details-box strong{
+    font-family: 'SF Pro Display', Arial, sans-serif;
+    font-size: 1.2em;
+}
+
+.added-details{
+    border: none;
+    background: none;
+    box-shadow: none;
 }
