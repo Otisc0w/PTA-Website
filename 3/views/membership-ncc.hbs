@@ -183,15 +183,15 @@
 						<div class="form-row">
 							<div class="form-group">
 								<label for="instructorfirstname">Instructor First Name</label>
-								<input type="text" id="instructorfirstname" name="instructorfirstname" required>
+								<input type="text" id="instructorfirstname" name="instructorfirstname" value="{{headInstructor.firstname}}" required>
 							</div>
 							<div class="form-group">
 								<label for="instructormi">Instructor M.I.</label>
-								<input type="text" id="instructormi" name="instructormi" required>
+								<input type="text" id="instructormi" name="instructormi" value="{{headInstructor.middlename}}" required>
 							</div>
 							<div class="form-group">
 								<label for="instructorlastname">Instructor Last Name</label>
-								<input type="text" id="instructorlastname" name="instructorlastname" required>
+								<input type="text" id="instructorlastname" name="instructorlastname" value="{{headInstructor.lastname}}" required>
 							</div>
 						</div>
 
@@ -199,11 +199,11 @@
 							<div class="form-group">
 								<label for="instructormobile">Instructor Mobile Number</label>
 								<input type="tel" id="instructormobile" name="instructormobile"
-									pattern="\d{4}\d{3}\d{4}" placeholder="0912-345-6789" required>
+									pattern="\d{4}\d{3}\d{4}" placeholder="0912-345-6789" value="{{headInstructor.phonenum}}" required>
 							</div>
 							<div class="form-group">
 								<label for="instructoremail">Instructor E-mail</label>
-								<input type="email" id="instructoremail" name="instructoremail" required>
+								<input type="email" id="instructoremail" name="instructoremail" value="{{headInstructor.email}}" required>
 							</div>
 							<div class="form-group">
 								<label for="confemail">Verify E-mail</label>
