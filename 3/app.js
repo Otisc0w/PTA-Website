@@ -5295,7 +5295,8 @@ app.get("/events-details/:id", async function (req, res) {
       .eq("userid", userId)
       .single();
 
-    if (currentUserAthleteError) {
+    if (currentUserAthleteError && currentUserAthleteError.code !== "PGRST116") {
+      // PGRST116 indicates no rows found, which is okay in this context
       return res.status(400).json({ error: currentUserAthleteError.message });
     }
 

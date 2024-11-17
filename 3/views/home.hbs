@@ -119,6 +119,8 @@
         </div>
       </div>
 
+
+      {{#if userEvents}}
       <h3 class="usereventstitle">Events you're currently registered in</h3><br>
       <div class="userevents">
         {{#each userEvents}}
@@ -131,6 +133,7 @@
         </div>
         {{/each}}
       </div>
+      {{/if}}
       
       {{#if userclub}}
         <h3 class="usereventstitle">Your Club</h3>
