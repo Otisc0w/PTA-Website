@@ -360,7 +360,7 @@
                   <td class="totalscore">{{totalscore}}</td>
                   <td>
                     {{#unless (eq ranking 0)}}
-                    {{#if (eq event.status 'Ongoing')}}
+                    {{#if (eq ../../event.status 'Ongoing')}}
                     <button
                       onclick="openPoomsaeScoresheet('{{id}}', '{{name}}', '{{totalscore}}', '{{technicalscore}}', '{{performancescore}}')"
                       class="open-poomsae-scoresheet">Open Scoresheet ->
@@ -812,8 +812,8 @@
             <tr>
               <th>Rank</th>
               <th>Player</th>
-              <th>Techniscal</th>
-              <th>Performance</th>
+              {{!-- <th>Techniscal</th>
+              <th>Performance</th> --}}
               <th>Total Score</th>
             </tr>
           </thead>
@@ -822,8 +822,8 @@
             <tr>
               <td>{{ranking}}</td>
               <td><button class="resultsviewathlete" onclick="window.location.href='/athletes-profile/{{athleteid}}'">{{name}}</button></td>
-              <td>{{technicalscore}}</td>
-              <td>{{performancescore}}</td>
+              {{!-- <td>{{technicalscore}}</td>
+              <td>{{performancescore}}</td> --}}
               <td>{{totalscore}}</td>
               
             </tr>
@@ -832,8 +832,8 @@
             <tr>
               <td>P</td>
               <td><button class="resultsviewathlete" onclick="window.location.href='/athletes-profile/{{athleteid}}'">{{name}}</button></td>
-              <td>{{technicalscore}}</td>
-              <td>{{performancescore}}</td>
+              {{!-- <td>{{technicalscore}}</td>
+              <td>{{performancescore}}</td> --}}
               <td>{{totalscore}}</td>
             
             </tr>

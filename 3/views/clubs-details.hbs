@@ -405,11 +405,9 @@
           <td>{{this.height}}</td>
           <td>{{this.weight}}</td>
           <td>{{this.attended_count}}</td>
-          {{#if (eq ../club.registeredby ../user.id)}}
           <td>
             <button class="view-feedback-button" data-id="{{this.id}}">View Feedback</button>
           </td>
-          {{/if}}
         </tr>
         {{/each}}
       </tbody>
@@ -422,8 +420,10 @@
       <span class="close-button">&times;</span>
       <h2>Performance Feedback</h2>
       <div id="feedback-section"></div>
+      {{#if (eq club.registeredby user.id)}}
       <textarea id="new-feedback" placeholder="Enter new feedback..."></textarea>
       <button id="add-feedback">Add Feedback</button>
+      {{/if}}
     </div>
   </div>
 
