@@ -168,11 +168,11 @@
               <div class="form-group">
                 <label for="agedivision">Age Division:</label>
                 <select id="agedivision" name="agedivision">
-                  <option value="Youth">Youth</option>
-                  <option value="Cadet">Cadet</option>
-                  <option value="Junior">Junior</option>
-                  <option value="Senior">Senior</option>
-                  <option value="Ultra">Ultra</option>
+                    <option value="Youth" {{#if (eq event.agedivision "Youth")}}selected{{/if}}>Youth</option>
+                    <option value="Cadet" {{#if (eq event.agedivision "Cadet")}}selected{{/if}}>Cadet</option>
+                    <option value="Junior" {{#if (eq event.agedivision "Junior")}}selected{{/if}}>Junior</option>
+                    <option value="Senior" {{#if (eq event.agedivision "Senior")}}selected{{/if}}>Senior</option>
+                    <option value="Ultra" {{#if (eq event.agedivision "Ultra")}}selected{{/if}}>Ultra</option>
                 </select>
               </div>
               <div class="form-group">
@@ -418,7 +418,7 @@
                   <td>{{player2_name}}:<p class="playerscore">{{player2score}}</p>
                   </td>
                   <td>
-                    {{#if (eq event.status 'Ongoing')}}
+                    {{#if (eq ../event.status 'Ongoing')}}
                     <button href="#"
                       onclick="openKyorugiScoresheet('{{id}}', '{{matchtime}}', '{{eventid}}', '{{player1}}', '{{player2}}', '{{player1_name}}', '{{player2_name}}', '{{player1score}}', '{{player2score}}', '{{matchtime}}', '{{winner}}', '{{loser}}', '{{matchttype}}', '{{round}}', '{{status}}')"
                       class="open-kyorugi-scoresheet">Scoresheet -></button>
