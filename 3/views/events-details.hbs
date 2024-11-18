@@ -86,7 +86,7 @@
           </div>
 
           <p>{{event.description}}</p>
-          <p><strong>Backout Deadline:</strong> {{formatDate event.backoutdl "MMMM D, YYYY"}}</p>
+          <p><strong>Registration Deadline:</strong> {{formatDate event.backoutdl "MMMM D, YYYY"}}</p>
           <p><strong>Event Date:</strong> {{formatDate event.date "MMMM D, YYYY"}}</p>
           <p><strong>Time:</strong> {{formatTime event.starttime "h:mm A"}} - {{formatTime event.endtime "h:mm A"}}</p>
           <p><strong>Location:</strong> {{event.location}}</p>
@@ -529,7 +529,11 @@
                 {{#if (orray (3ands (eq currentUserAthlete.agedivision event.agedivision) (eq currentUserAthlete.gender event.gender) (eq currentUserAthlete.beltlevel event.beltlevel)) clubMembers)}}
                   {{#unless (or currentregistrant (me registrationcount event.registrationcap))}}
                     {{#if (eq event.status 'Active')}}
+                      {{#isBefore (now) event.backoutdl}}
                       <a href="/events-registration/{{event.id}}" class="register-button">Register</a>
+                      {{else}}
+                      <h3>Registration Closed</h3>
+                      {{/isBefore}}
                         {{else if (eq event.status 'Cancelled')}}
                           <h3>This event has been<br> CANCELLED</h3>
                         {{else if (eq event.status 'Concluded')}}
@@ -860,35 +864,29 @@
           <tr>
             <th>Rank</th>
             <th>Player</th>
-            <th>Total Round Wins</th>
           </tr>
         </thead>
         <tbody>
           <tr>
             <td>1</td>
             <td><button class="resultsviewathlete" onclick="window.location.href='/athletes-profile/{{champion.id}}'">{{champion.name}}</button></td>
-            <td>{{totalscore}}</td>
           </tr>
           <tr>
             <td>2</td>
             <td><button class="resultsviewathlete" onclick="window.location.href='/athletes-profile/{{secondPlace.id}}'">{{secondPlace.name}}</button></td>
-            <td>{{totalscore}}</td>
           </tr>
           <tr>
             <td>3</td>
             <td><button class="resultsviewathlete" onclick="window.location.href='/athletes-profile/{{thirdPlace1.id}}'">{{thirdPlace1.name}}</button></td>
-            <td>{{totalscore}}</td>
           </tr>
           <tr>
             <td>3</td>
             <td><button class="resultsviewathlete" onclick="window.location.href='/athletes-profile/{{thirdPlace2.id}}'">{{thirdPlace2.name}}</button></td>
-            <td>{{totalscore}}</td>
           </tr>
           {{#each otherPlayersWithDetails}}
             <tr>
             <td>P</td>
             <td><button class="resultsviewathlete" onclick="window.location.href='/athletes-profile/{{loserDetails.id}}'">{{loserDetails.name}}</button></td>
-            <td>{{player1score}}</td>
           </tr>
           {{/each}}
         </tbody>
