@@ -1652,13 +1652,13 @@ app.post("/update-clubstatus", async (req, res) => {
         province,
         submittedby,
         clubpic,
-        registeree,
       } = clubregistration;
 
       console.log("Updating user with username:", submittedby);
 
       const registeredby = submittedby;
 
+      let registeree = clubregistration.firstname + " " + clubregistration.lastname;
       const { error: insertClubError } = await supabase.from("clubs").insert([
         {
           clubname,
@@ -1670,7 +1670,7 @@ app.post("/update-clubstatus", async (req, res) => {
           registeree,
           clubpic,
         },
-      ]);      
+      ]);
 
       if (insertClubError) {
         console.error("Error inserting athlete:", insertClubError.message);
@@ -1884,8 +1884,6 @@ app.post("/submit-club",
       }
     }
 
-    const registeree = `${firstname} ${lastname}`;
-
     console.log("ID File URL:", idfileUrl);
     console.log("Proof Document URL:", proofdocUrl);
     console.log("Club Picture URL:", clubpicUrl);
@@ -1908,7 +1906,6 @@ app.post("/submit-club",
             clubpic: clubpicUrl, // Include the club picture URL
             paymentproof: paymentproofUrl, // Include the payment proof URL
             submittedby,
-            registeree,
             status,
           },
         ])
@@ -4649,7 +4646,7 @@ app.get("/clubs", async (req, res) => {
   try {
     const { data: clubs, error } = await supabase
       .from("clubs")
-      .select("id, clubname, clubpic, clubaddress, email, phonenum, region, description, capacity");
+      .select("*");
 
     if (error) {
       console.error("Error fetching clubs:", error.message);
