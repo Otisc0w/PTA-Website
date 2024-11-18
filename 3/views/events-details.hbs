@@ -58,17 +58,12 @@
       <ul>
         <li><a href="#" id="details-tab">Details</a></li>
         <li><a href="#" id="participants-tab">Participants</a></li>
-
         <li{{#unless user.ptaverified}} style="display:none;" {{/unless}}><a href="#"
             id="registrations-tab">Registrations</a></li>
-
-
-          <li{{#if (or currentregistrant user.ptaverified)}} style="display:block;" {{else}} style="display:none;"
-            {{/if}}><a href="#" id="announcements-tab">Announcements</a></li>
-
-
-            <li {{#unless (eq event.status 'Concluded' )}}style="display: none" {{/unless}}><a href="#"
-                id="results-tab">Results</a></li>
+        <li{{#if (or currentregistrant user.ptaverified)}} style="display:block;" {{else}} style="display:none;"
+          {{/if}}><a href="#" id="announcements-tab">Announcements</a></li>
+        <li {{#unless (eq event.status 'Concluded' )}}style="display: none" {{/unless}}><a href="#"
+              id="results-tab">Results</a></li>
 
       </ul>
     </div><br>
@@ -91,6 +86,7 @@
           </div>
 
           <p>{{event.description}}</p>
+          <p><strong>Backout Deadline:</strong> {{formatDate event.backoutdl "MMMM D, YYYY"}}</p>
           <p><strong>Event Date:</strong> {{formatDate event.date "MMMM D, YYYY"}}</p>
           <p><strong>Time:</strong> {{formatTime event.starttime "h:mm A"}} - {{formatTime event.endtime "h:mm A"}}</p>
           <p><strong>Location:</strong> {{event.location}}</p>
@@ -420,6 +416,17 @@
             </tbody>
           </table>
           {{/if}}
+
+          {{#if (eq event.eventtype 'Promotion')}}
+            {{#each promotionPlayersWithAthleteData}}
+            <div class="promotionplayer">
+              <h3>{{name}}</h3>
+              <p>{{belt}}</p>
+              <p>{{currentbelt}}</p>
+              <p>{{beltlevel}}</p>
+            </div>
+            {{/each}}
+          {{/if}}
         </div>
       </div>
 
@@ -428,8 +435,8 @@
         <div class="eventregistercodediv">
           <div class="buttondiv">
             {{#unless champion}}
-              {{#if user.athleteverified}}
-                {{#if (or (3ands (eq currentUserAthlete.agedivision event.agedivision) (eq currentUserAthlete.gender event.gender) (eq currentUserAthlete.beltlevel event.beltlevel)) user.instructorverified)}}
+              {{#if (orray user.athleteverified clubMembers)}}
+                {{#if (orray (3ands (eq currentUserAthlete.agedivision event.agedivision) (eq currentUserAthlete.gender event.gender) (eq currentUserAthlete.beltlevel event.beltlevel)) clubMembers)}}
                   {{#unless (or currentregistrant (me registrationcount event.registrationcap))}}
                     {{#if (eq event.status 'Active')}}
                       <a href="/events-registration/{{event.id}}" class="register-button">Register</a>
@@ -446,11 +453,13 @@
                         {{else if currentregistrant}}
                           <p>Your check-in code is:</p>
                           <h1 class="pending">pending</h1>
+                          {{#isBefore (now) event.backoutdl}}
                           <form action="/withdraw-from-event" method="post" onsubmit="return confirm('Are you sure you want to withdraw from this event?');">
                             <input type="hidden" name="eventid" value="{{event.id}}">
                             <input type="hidden" name="userid" value="{{user.id}}">
                             <button class="withdraw" type="submit">Withdraw Registration</button>
                           </form>
+                          {{/isBefore}}
                         {{else}}
                           <h1 class="pending">Registration Limit Reached</h1>
                   {{/unless}}
@@ -472,7 +481,6 @@
         </div>
         {{/unless}}
       </div>
-
 
       <div class="poomsae-score-sheet">
         <span class="close" onclick="closePoomsaeScoresheet()">&times;</span>
