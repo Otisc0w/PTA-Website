@@ -79,6 +79,9 @@ hbs.registerHelper("arraySize", function (array) {
   return array.length;
 });
 hbs.registerHelper('ordinal', function (number) {
+  if (number === null || number === undefined) {
+    return 'N/A';
+  }
   const suffixes = ["th", "st", "nd", "rd"];
   const v = number % 100;
   return number + (suffixes[(v - 20) % 10] || suffixes[v] || suffixes[0]);
@@ -2787,92 +2790,38 @@ app.post("/begin-promotion-event/:id", async (req, res) => {
   const { id: eventid } = req.params; // Get the event ID from the URL
 
   try {
-    // Fetch all registered players for the event
-    const { data: players, error: playersError } = await supabase
+    // Fetch the event registrations for the specific event where registered is true
+    const { data: registeredPlayers, error: registeredPlayersError } = await supabase
       .from("events_registrations")
       .select("*")
       .eq("eventid", eventid)
       .eq("registered", "true");
 
-    if (playersError) {
-      console.error("Error fetching registered players:", playersError.message);
+    if (registeredPlayersError) {
+      console.error("Error fetching registered players:", registeredPlayersError.message);
       return res.status(500).send("Error fetching registered players.");
     }
 
-    // Insert all players' userid and athlete id into the promotion_players table
-    for (const player of players) {
-      // Check if the player already exists in the promotion_players table
-      const { data: existingPlayer, error: fetchError } = await supabase
-        .from("promotion_players")
-        .select("*")
-        .eq("eventid", eventid)
-        .eq("userid", player.userid)
-        .single();
+    // Insert the registered players into the promotion_players table
+    const promotionPlayers = registeredPlayers.map(player => ({
+      eventid: player.eventid,
+      userid: player.userid,
+      athleteid: player.athleteid,
+    }));
 
-      if (fetchError && fetchError.code !== 'PGRST116') {
-        console.error("Error checking existing promotion player:", fetchError.message);
-        continue;
-      }
-
-      if (!existingPlayer) {
-        const { error: insertError } = await supabase
-          .from("promotion_players")
-          .insert([
-            {
-              eventid,
-              userid: player.userid,
-              athleteid: player.athleteid,
-              round: 1,
-              name: player.playername,
-            },
-          ]);
-
-        if (insertError) {
-          console.error("Error inserting promotion player:", insertError.message);
-        }
-      }
-    }
-
-    const { error: updateEventError } = await supabase
-      .from("events")
-      .update({ status: "Ongoing", currentround: 1 })
-      .eq("id", eventid);
-
-    if (updateEventError) {
-      console.error("Error updating event status:", updateEventError.message);
-      return res.status(500).send("Error updating event status");
-    }
-
-    console.log("Promotion players inserted successfully");
-    res.redirect(`/events-details/${eventid}`);
-  } catch (error) {
-    console.error("Server error:", error.message);
-    res.status(500).send("Server error");
-  }
-});
-
-app.post("/conclude-promotion-event/:id", async (req, res) => {
-  const { id: eventid } = req.params; // Get the event ID from the URL
-
-  try {
-    // Fetch all promotion players for the event
-    const { data: players, error: playersError } = await supabase
+    const { error: insertError } = await supabase
       .from("promotion_players")
-      .select("*")
-      .eq("eventid", eventid);
+      .insert(promotionPlayers);
 
-    if (playersError) {
-      console.error("Error fetching promotion players:", playersError.message);
-      return res.status(500).send("Error fetching promotion players.");
+    if (insertError) {
+      console.error("Error inserting promotion players:", insertError.message);
+      return res.status(500).send("Error inserting promotion players.");
     }
 
-    // Determine the winners based on the highest round and other criteria
-    const winners = players.sort((a, b) => b.round - a.round || b.score - a.score);
-
-    // Update the event status to "Concluded"
+    // Update the event status to 'Ongoing'
     const { error: updateEventStatusError } = await supabase
       .from("events")
-      .update({ status: "Concluded" })
+      .update({ status: "Ongoing" })
       .eq("id", eventid);
 
     if (updateEventStatusError) {
@@ -2880,49 +2829,93 @@ app.post("/conclude-promotion-event/:id", async (req, res) => {
       return res.status(500).send("Error updating event status.");
     }
 
-    // Insert match history for all players
-    for (const player of players) {
-      const ranking = winners.indexOf(player) + 1;
-      const { error: matchHistoryError } = await supabase
-        .from("match_history")
-        .insert([
-          {
-            eventid,
-            athleteid: player.athleteid,
-            ranking,
-            eventname: player.eventname,
-            eventlocation: player.eventlocation,
-          },
-        ]);
-
-      if (matchHistoryError) {
-        console.error("Error inserting match history:", matchHistoryError.message);
-        return res.status(500).send("Error inserting match history.");
-      }
-    }
-
-    // Create notifications for all participants
-    const notifications = players.map((player) => ({
-      userid: player.userid,
-      type: "Event",
-      message: `The promotion event ${player.eventname} has concluded.`,
-      desc: `The promotion event ${player.eventname} has concluded. Check the event details for the results.`,
-    }));
-
-    const { error: notificationError } = await supabase
-      .from("notifications")
-      .insert(notifications);
-
-    if (notificationError) {
-      console.error("Error creating notifications:", notificationError.message);
-      return res.status(500).send("Error creating notifications.");
-    }
-
     res.redirect(`/events-details/${eventid}`);
   } catch (error) {
     console.error("Server error:", error.message);
     res.status(500).json({ error: error.message });
   }
+});
+
+app.post("/conclude-promotion-event/:id", async (req, res) => {
+
+  const { id: eventid } = req.params;
+  
+  const { data: promotionPlayers, error: promotionPlayersError } = await supabase
+    .from("promotion_players")
+    .select("*")
+    .eq("eventid", eventid);
+
+  if (promotionPlayersError) {
+    console.error("Error fetching promotion players:", promotionPlayersError.message);
+    return res.status(500).send("Error fetching promotion players");
+  }
+
+  for (const player of promotionPlayers) {
+    const { form, selfdef, kicking, freesparring, basicmove, behavior, breaking, athleteid } = player;
+
+    // Check if all grades are 3 and above
+    if (
+      form >= 3 &&
+      selfdef >= 3 &&
+      kicking >= 3 &&
+      freesparring >= 3 &&
+      basicmove >= 3 &&
+      behavior >= 3 &&
+      breaking >= 3
+    ) {
+      // Fetch the current belt level of the athlete
+      const { data: athlete, error: athleteError } = await supabase
+        .from("athletes")
+        .select("beltlevel")
+        .eq("id", athleteid)
+        .single();
+
+      if (athleteError) {
+        console.error("Error fetching athlete:", athleteError.message);
+        continue;
+      }
+
+        const beltLevels = [
+          "White Belt",
+          "Low Yellow Belt",
+          "High Yellow Belt",
+          "Low Blue Belt",
+          "High Blue Belt",
+          "Low Red Belt",
+          "High Red Belt",
+          "Low Brown Belt",
+          "High Brown Belt",
+          "Junior/Poom Black Belt",
+          "Black/Dan Belt"
+        ];
+
+        const currentBeltIndex = beltLevels.indexOf(athlete.beltlevel);
+        const newBeltLevel = currentBeltIndex >= 0 && currentBeltIndex < beltLevels.length - 1
+          ? beltLevels[currentBeltIndex + 1]
+          : athlete.beltlevel;
+
+      const { error: updateError } = await supabase
+        .from("athletes")
+        .update({ beltlevel: newBeltLevel })
+        .eq("id", athleteid);
+
+      if (updateError) {
+        console.error("Error updating belt level:", updateError.message);
+      }
+    }
+  }
+  // Update the event status to 'Concluded'
+  const { error: updateEventStatusError } = await supabase
+    .from("events")
+    .update({ status: "Concluded" })
+    .eq("id", eventid);
+
+  if (updateEventStatusError) {
+    console.error("Error updating event status:", updateEventStatusError.message);
+    return res.status(500).send("Error updating event status");
+  }
+
+  res.redirect(`/events-details/${eventid}`);
 });
 
 
@@ -4171,6 +4164,45 @@ app.post("/submit-poomsae-scores", async (req, res) => {
 
     res.redirect(`/events-details/${eventid}`);
   } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.post("/submit-grade-sheet", async (req, res) => {
+  const {
+    id,
+    eventid,
+    form,
+    selfdef,
+    kicking,
+    freesparring,
+    basicmove,
+    behavior,
+    breaking,
+  } = req.body;
+
+  try {
+    // Update the grade sheet in the promotion_players table
+    const { error } = await supabase
+      .from("promotion_players")
+      .update({
+        form,
+        selfdef,
+        kicking,
+        freesparring,
+        basicmove,
+        behavior,
+        breaking,
+      })
+      .eq("id", id);
+
+    if (error) {
+      return res.status(400).json({ error: error.message });
+    }
+
+    res.redirect(`/events-details/${eventid}`);
+  } catch (error) {
+    console.error("Error submitting grade sheet:", error.message);
     res.status(500).json({ error: error.message });
   }
 });

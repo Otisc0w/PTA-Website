@@ -1325,3 +1325,11 @@ input[type="number"]:focus {
 .withdraw:hover{
   background-color: #d32f2f;
 }
+
+.promotiontable{
+  table-layout: fixed;
+}
+
+.promotiontable th, .promotiontable td {
+  font-size: 12px;
+}

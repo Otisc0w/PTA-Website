@@ -283,15 +283,19 @@
         <div class="schedule">
           {{#if (and user.ptaverified (me registrationcount event.registrationcap ))}}
           {{#if (eq event.status 'Active')}}
-          {{#if (eq event.eventtype 'Kyorugi')}}
-          <form action="/begin-kyorugi-competition/{{event.id}}" method="post" onsubmit="return confirm('Are you sure you want to begin this competition? This will form initial Kyorugi matches');">
-            <button type="submit" class="begincompe">Begin Competition</button>
-          </form>
-          {{else if (eq event.eventtype 'Poomsae')}}
-          <form action="/begin-poomsae-competition/{{event.id}}" method="post" onsubmit="return confirm('Are you sure you want to begin this competition? This will form lineups for the competition');">
-            <button type="submit" class="begincompe">Begin Competition</button>
-          </form>
-          {{/if}}
+            {{#if (eq event.eventtype 'Kyorugi')}}
+              <form action="/begin-kyorugi-competition/{{event.id}}" method="post" onsubmit="return confirm('Are you sure you want to begin this competition? This will form initial Kyorugi matches');">
+                <button type="submit" class="begincompe">Begin Competition</button>
+              </form>
+            {{else if (eq event.eventtype 'Poomsae')}}
+              <form action="/begin-poomsae-competition/{{event.id}}" method="post" onsubmit="return confirm('Are you sure you want to begin this competition? This will form lineups for the competition');">
+                <button type="submit" class="begincompe">Begin Competition</button>
+              </form>
+            {{else if (eq event.eventtype 'Promotion')}}
+              <form action="/begin-promotion-event/{{event.id}}" method="post" onsubmit="return confirm('Are you sure you want to begin this competition?');">
+                <button type="submit" class="begincompe">Begin Promotion Event</button>
+              </form>
+            {{/if}}
           {{else if (eq event.status 'Ongoing')}}
           {{#if (le event.currentround 1)}}
           {{#if (eq event.eventtype 'Poomsae')}}
@@ -302,6 +306,11 @@
           {{else if (eq event.eventtype 'Kyorugi')}}
           <form action="/next-kyorugi-round/{{event.id}}" method="post" onsubmit="return confirm('Are you sure you want to proceed to the next round? Check if all matches have been scored and have a winner.');">
             <button type="submit" class="begincompe">Proceed to next round</button>
+          </form>
+          
+          {{else if (eq event.eventtype 'Promotion')}}
+          <form action="/conclude-promotion-event/{{event.id}}" method="post" onsubmit="return confirm('WARNING: This action will update players' belt levels and record the event in each players match history');">
+            <button type="submit" class="begincompe">Conclude Event</button>
           </form>
           {{/if}}
           {{else}}
@@ -321,115 +330,178 @@
           {{#if (eq event.eventtype 'Poomsae')}}
           {{#if sortedGroupedByRound}}
           {{#each sortedGroupedByRound}}
-          <h3>Round: {{@key}}</h3>
-          <table class="schedule-table">
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>Schedule</th>
-                <th>Total Score</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {{#each this}}
-              
-              <tr{{#if (eq ranking 0)}} class="eliminated" {{/if}}>
-                <td>{{name}}</td>
-                <td>
-                  {{#if this.schedule}}
-                    {{this.schedule}}
-                  {{else}}
-                    <form class="matchtime" action="/update-performance-sched" method="post">
-                      <input type="hidden" name="id" value="{{id}}">
-                      <input type="hidden" name="eventid" value="{{eventid}}">
-                      <input type="time" class="matchtime" name="schedule">
-                      <button type="submit">OK</button>
-                    </form>
-                  {{/if}}
-                </td>
-                <td class="totalscore">{{totalscore}}</td>
-                <td>
-                  {{#unless (eq ranking 0)}}
-                  <button
-                    onclick="openPoomsaeScoresheet('{{id}}', '{{name}}', '{{totalscore}}', '{{technicalscore}}', '{{performancescore}}')"
-                    class="open-poomsae-scoresheet">Open Scoresheet ->
-                  </button>
-                  {{else}}
-                  <h3 class="eliminatedtag">Eliminated</h3>
-                  {{/unless}}
-                </td>
-              </tr>
-              {{/each}}
-            </tbody>
-          </table>
+            <h3>Round: {{@key}}</h3>
+            <table class="schedule-table">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Schedule</th>
+                  <th>Total Score</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {{#each this}}
+                
+                <tr{{#if (eq ranking 0)}} class="eliminated" {{/if}}>
+                  <td>{{name}}</td>
+                  <td>
+                    {{#if this.schedule}}
+                      {{this.schedule}}
+                    {{else}}
+                      <form class="matchtime" action="/update-performance-sched" method="post">
+                        <input type="hidden" name="id" value="{{id}}">
+                        <input type="hidden" name="eventid" value="{{eventid}}">
+                        <input type="time" class="matchtime" name="schedule">
+                        <button type="submit">OK</button>
+                      </form>
+                    {{/if}}
+                  </td>
+                  <td class="totalscore">{{totalscore}}</td>
+                  <td>
+                    {{#unless (eq ranking 0)}}
+                    <button
+                      onclick="openPoomsaeScoresheet('{{id}}', '{{name}}', '{{totalscore}}', '{{technicalscore}}', '{{performancescore}}')"
+                      class="open-poomsae-scoresheet">Open Scoresheet ->
+                    </button>
+                    {{else}}
+                    <h3 class="eliminatedtag">Eliminated</h3>
+                    {{/unless}}
+                  </td>
+                </tr>
+                {{/each}}
+              </tbody>
+            </table>
           {{/each}}
           {{else}}
-          <p>No rounds available.</p>
+            <p>No rounds available.</p>
           {{/if}}
           {{/if}}
 
           {{#if (eq event.eventtype 'Kyorugi')}}
-          <table class="matches-table">
-            <thead>
-              <tr>
-                <th>Round</th>
-                <th>Match Time</th>
-                <th>Player 1</th>
-                <th>Player 2</th>
-                <th>Scoresheet</th>
-              </tr>
-            </thead>
-            <tbody>
-              {{#each matches}}
-              <tr>
-                <td>{{round}}</td>
-                <td>
-                    {{#if matchtime}}
-                    <p class="match-time" id="match-time-{{id}}">{{matchtime}}</p><button id="edittime-{{id}}" class="edittime" onclick="showmatchtimeform('{{id}}')"></button>
-                    {{else}}
-                    <form class="matchtime" action="/update-matchtime" method="post">
-                    <input type="hidden" name="id" value="{{id}}">
-                    <input type="hidden" name="eventid" value="{{eventid}}">
-                    <input type="time" class="matchtime" name="matchtime">
-                    <button type="submit">OK</button>
-                    </form>
-                    {{/if}}
-                    <form class="matchtime" id="matchtimeform-{{id}}" action="/update-matchtime" method="post" style="display:none">
-                    <input type="hidden" name="id" value="{{id}}">
-                    <input type="hidden" name="eventid" value="{{eventid}}">
-                    <input type="time" class="matchtime" name="matchtime">
-                    <button type="submit">OK</button>
-                    </form>
-                </td>
-                <td>{{player1_name}}:<p class="playerscore">{{player1score}}</p>
-                </td>
-                <td>{{player2_name}}:<p class="playerscore">{{player2score}}</p>
-                </td>
-                <td>
-                  <button href="#"
-                    onclick="openKyorugiScoresheet('{{id}}', '{{matchtime}}', '{{eventid}}', '{{player1}}', '{{player2}}', '{{player1_name}}', '{{player2_name}}', '{{player1score}}', '{{player2score}}', '{{matchtime}}', '{{winner}}', '{{loser}}', '{{matchttype}}', '{{round}}', '{{status}}')"
-                    class="open-kyorugi-scoresheet">Scoresheet -></button>
-                </td>
-              </tr>
-              {{/each}}
-            </tbody>
-          </table>
+            <table class="matches-table">
+              <thead>
+                <tr>
+                  <th>Round</th>
+                  <th>Match Time</th>
+                  <th>Player 1</th>
+                  <th>Player 2</th>
+                  <th>Scoresheet</th>
+                </tr>
+              </thead>
+              <tbody>
+                {{#each matches}}
+                <tr>
+                  <td>{{round}}</td>
+                  <td>
+                      {{#if matchtime}}
+                      <p class="match-time" id="match-time-{{id}}">{{matchtime}}</p><button id="edittime-{{id}}" class="edittime" onclick="showmatchtimeform('{{id}}')"></button>
+                      {{else}}
+                      <form class="matchtime" action="/update-matchtime" method="post">
+                      <input type="hidden" name="id" value="{{id}}">
+                      <input type="hidden" name="eventid" value="{{eventid}}">
+                      <input type="time" class="matchtime" name="matchtime">
+                      <button type="submit">OK</button>
+                      </form>
+                      {{/if}}
+                      <form class="matchtime" id="matchtimeform-{{id}}" action="/update-matchtime" method="post" style="display:none">
+                      <input type="hidden" name="id" value="{{id}}">
+                      <input type="hidden" name="eventid" value="{{eventid}}">
+                      <input type="time" class="matchtime" name="matchtime">
+                      <button type="submit">OK</button>
+                      </form>
+                  </td>
+                  <td>{{player1_name}}:<p class="playerscore">{{player1score}}</p>
+                  </td>
+                  <td>{{player2_name}}:<p class="playerscore">{{player2score}}</p>
+                  </td>
+                  <td>
+                    <button href="#"
+                      onclick="openKyorugiScoresheet('{{id}}', '{{matchtime}}', '{{eventid}}', '{{player1}}', '{{player2}}', '{{player1_name}}', '{{player2_name}}', '{{player1score}}', '{{player2score}}', '{{matchtime}}', '{{winner}}', '{{loser}}', '{{matchttype}}', '{{round}}', '{{status}}')"
+                      class="open-kyorugi-scoresheet">Scoresheet -></button>
+                  </td>
+                </tr>
+                {{/each}}
+              </tbody>
+            </table>
           {{/if}}
 
           {{#if (eq event.eventtype 'Promotion')}}
+          <table class="promotiontable">
+            <tr>
+              <th>Name</th>
+              <th>Grade Sheet</th>
+            </tr>
             {{#each promotionPlayersWithAthleteData}}
-            <div class="promotionplayer">
-              <h3>{{name}}</h3>
-              <p>{{belt}}</p>
-              <p>{{currentbelt}}</p>
-              <p>{{beltlevel}}</p>
-            </div>
+              <tr>
+                <td>{{this.athleteData.name}}</td>
+                <td><button class="view-grade-sheet" onclick="openGradeSheetModal('{{this.id}}', '{{this.form}}', '{{this.selfdef}}', '{{this.kicking}}', '{{this.freesparring}}', '{{this.basicmove}}', '{{this.behavior}}', '{{this.breaking}}')">&#8614;</button></td>
+              </tr>
             {{/each}}
+            </table>
           {{/if}}
+
+          <div id="gradesheetmodal" class="modal" style="dispaly:none;">
+            <div class="modal-content">
+              <span class="close" onclick="closeGradeSheetModal()">&times;</span>
+              <h2>Grade Sheet</h2>
+              <form id="gradesheetform" action="/submit-grade-sheet" method="post">
+                <input type="hidden" name="id">
+                <input type="hidden" name="eventid" value="{{event.id}}">
+                <div class="form-group">
+                  <label for="form">Form:</label>
+                  <input type="number" id="form" name="form" step="0.1" min="0" max="10" required>
+                </div>
+                <div class="form-group">
+                  <label for="selfdef">Self Defense:</label>
+                  <input type="number" id="selfdef" name="selfdef" step="0.1" min="0" max="10" required>
+                </div>
+                <div class="form-group">
+                  <label for="kicking">Kicking:</label>
+                  <input type="number" id="kicking" name="kicking" step="0.1" min="0" max="10" required>
+                </div>
+                <div class="form-group">
+                  <label for="freesparring">Free Sparring:</label>
+                  <input type="number" id="freesparring" name="freesparring" step="0.1" min="0" max="10" required>
+                </div>
+                <div class="form-group">
+                  <label for="basicmove">Basic Movement:</label>
+                  <input type="number" id="basicmove" name="basicmove" step="0.1" min="0" max="10" required>
+                </div>
+                <div class="form-group">
+                  <label for="behavior">Behavior:</label>
+                  <input type="number" id="behavior" name="behavior" step="0.1" min="0" max="10" required>
+                </div>
+                <div class="form-group">
+                  <label for="breaking">Breaking:</label>
+                  <input type="number" id="breaking" name="breaking" step="0.1" min="0" max="10" required>
+                </div>
+                <button type="submit" class="submit-grade-sheet">Submit</button>
+              </form>
+            </div>
+          </div>
+
+          
         </div>
       </div>
+          <script>
+            function openGradeSheetModal(id, form, selfdefense, kicking, freesparring, basicmovement, behavior, breaking) {
+              const modal = document.getElementById('gradesheetmodal');
+              modal.style.display = 'block';
+              modal.querySelector('input[name="id"]').value = id;
+              modal.querySelector('input[name="form"]').value = form;
+              modal.querySelector('input[name="selfdef"]').value = selfdefense;
+              modal.querySelector('input[name="kicking"]').value = kicking;
+              modal.querySelector('input[name="freesparring"]').value = freesparring;
+              modal.querySelector('input[name="basicmove"]').value = basicmovement;
+              modal.querySelector('input[name="behavior"]').value = behavior;
+              modal.querySelector('input[name="breaking"]').value = breaking;
+            }
 
+            function closeGradeSheetModal() {
+              document.getElementById('gradesheetmodal').style.display = 'none';
+            }
+          </script>
       <div class="eventrightside">
         {{#unless (eq event.status 'Cancelled')}}
         <div class="eventregistercodediv">
