@@ -105,7 +105,7 @@
       <div class="content">
         <h2>Recent Threads</h2>
         <div class="forum-header">
-          <input type="text" id="searchBar" placeholder="Search threads..." onkeyup="filterThreads()">
+          <input type="text" id="searchBar" placeholder="Search threads...">
           <div class="create-post-button-container">
             <button id="createPostButton" class="create-post-button" href="/create-post">
               <span class="plus-icon">+</span> Create a post
@@ -292,6 +292,8 @@
       });
 
       // Filter threads based on search input
+      document.getElementById('searchBar').addEventListener('keyup', filterThreads);
+
       function filterThreads() {
         const searchInput = document.getElementById('searchBar').value.toLowerCase();
         const posts = document.querySelectorAll('.post-container');
