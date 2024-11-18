@@ -3305,6 +3305,41 @@ app.post("/decide-kyorugi-winners/:eventid", async (req, res) => {
       desc: `The event ${event.name} has concluded. Check the event details for the results.`,
     }));
 
+    const { data: registeredParticipants, error: registeredParticipantsError } = await supabase
+      .from("events_registrations")
+      .select("athleteid")
+      .eq("eventid", eventid)
+      .eq("registered", "true");
+
+    if (registeredParticipantsError) {
+      console.error("Error fetching registered participants:", registeredParticipantsError.message);
+      return res.status(500).send("Error fetching registered participants");
+    }
+
+    for (const participant of registeredParticipants) {
+      const { data: athlete, error: athleteError } = await supabase
+        .from("athletes")
+        .select("gp")
+        .eq("id", participant.athleteid)
+        .single();
+
+      if (athleteError) {
+        console.error("Error fetching athlete:", athleteError.message);
+        continue;
+      }
+
+      const newGp = (athlete.gp || 0) + 1;
+
+      const { error: updateGpError } = await supabase
+        .from("athletes")
+        .update({ gp: newGp })
+        .eq("id", participant.athleteid);
+
+      if (updateGpError) {
+        console.error("Error updating gp:", updateGpError.message);
+      }
+    }
+
     const { error: notificationError } = await supabase
       .from("notifications")
       .insert(notifications);
@@ -3580,6 +3615,32 @@ app.post("/decide-poomsae-winners/:eventid", async (req, res) => {
       if (matchHistoryError) {
       console.error("Error inserting match history:", matchHistoryError.message);
       return res.status(500).send("Error inserting match history");
+      }
+    }
+
+    // Update the 'gp' column for each athlete
+    for (const player of sortedPlayers) {
+      const { error: fetchGpError, data: athlete } = await supabase
+        .from("athletes")
+          .select("gp")
+          .eq("id", player.athleteid)
+          .single();
+  
+        if (fetchGpError) {
+          console.error("Error fetching gp:", fetchGpError.message);
+          return res.status(500).send("Error fetching gp");
+        }
+  
+        const newGp = (athlete.gp || 0) + 1;
+  
+        const { error: updateGpError } = await supabase
+          .from("athletes")
+          .update({ gp: newGp })
+          .eq("id", player.athleteid);
+
+      if (updateGpError) {
+        console.error("Error updating gp:", updateGpError.message);
+        return res.status(500).send("Error updating gp");
       }
     }
 
@@ -5708,7 +5769,7 @@ app.get("/athletes", async function (req, res) {
     const { data: athletes, error: athletesError } = await supabase
       .from("athletes")
       .select("*")
-      .order("rankingpoints", { ascending: false });
+      .order("gp", { ascending: false });
 
     if (athletesError) {
       return res.status(400).json({ error: athletesError.message });
