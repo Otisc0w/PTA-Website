@@ -418,9 +418,11 @@
                   <td>{{player2_name}}:<p class="playerscore">{{player2score}}</p>
                   </td>
                   <td>
+                    {{#if (eq event.status 'Ongoing')}}
                     <button href="#"
                       onclick="openKyorugiScoresheet('{{id}}', '{{matchtime}}', '{{eventid}}', '{{player1}}', '{{player2}}', '{{player1_name}}', '{{player2_name}}', '{{player1score}}', '{{player2score}}', '{{matchtime}}', '{{winner}}', '{{loser}}', '{{matchttype}}', '{{round}}', '{{status}}')"
                       class="open-kyorugi-scoresheet">Scoresheet -></button>
+                    {{/if}}
                   </td>
                 </tr>
                 {{/each}}
