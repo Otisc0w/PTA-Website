@@ -307,7 +307,7 @@
           <form action="/next-kyorugi-round/{{event.id}}" method="post" onsubmit="return confirm('Are you sure you want to proceed to the next round? Check if all matches have been scored and have a winner.');">
             <button type="submit" class="begincompe">Proceed to next round</button>
           </form>
-          
+
           {{else if (eq event.eventtype 'Promotion')}}
           <form action="/conclude-promotion-event/{{event.id}}" method="post" onsubmit="return confirm('WARNING: This action will update players' belt levels and record the event in each players match history');">
             <button type="submit" class="begincompe">Conclude Event</button>
@@ -360,10 +360,12 @@
                   <td class="totalscore">{{totalscore}}</td>
                   <td>
                     {{#unless (eq ranking 0)}}
+                    {{#if (eq event.status 'Ongoing')}}
                     <button
                       onclick="openPoomsaeScoresheet('{{id}}', '{{name}}', '{{totalscore}}', '{{technicalscore}}', '{{performancescore}}')"
                       class="open-poomsae-scoresheet">Open Scoresheet ->
                     </button>
+                    {{/if}}
                     {{else}}
                     <h3 class="eliminatedtag">Eliminated</h3>
                     {{/unless}}
