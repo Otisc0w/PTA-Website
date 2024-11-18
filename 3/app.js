@@ -66,6 +66,9 @@ hbs.registerHelper("ne", function (a, b) {
 hbs.handlebars.registerHelper("or", function (a, b) {
   return a || b;
 });
+hbs.handlebars.registerHelper('orray', function (a, b) {
+  return a || (Array.isArray(b) && b.length > 0);
+});
 hbs.handlebars.registerHelper("and", function (a, b) {
   return a && b;
 });
@@ -124,6 +127,13 @@ hbs.registerHelper('formatCreatedAt', function (created_at) {
 });
 hbs.registerHelper('formatTime', function (time, format) {
   return moment(time, 'HH:mm:ss').format(format);
+});
+hbs.registerHelper('isBefore', function (date1, date2, options) {
+  if (moment(date1).isBefore(moment(date2))) {
+    return options.fn(this);
+  } else {
+    return options.inverse(this);
+  }
 });
 
 
@@ -2359,6 +2369,7 @@ app.post("/create-event", upload.single("eventpicture"), async (req, res) => {
     weightclass,
     beltlevel,
     gender,
+    backoutdl
   } = req.body; // Capture user input from the form
 
   if (!req.session.user) {
@@ -2410,6 +2421,7 @@ app.post("/create-event", upload.single("eventpicture"), async (req, res) => {
           beltlevel,
           gender,
           status: "Active",
+          backoutdl,
         },
       ])
       .select(); // Ensure the data is returned
@@ -2771,6 +2783,147 @@ app.post("/withdraw-from-event", async (req, res) => {
   }
 });
 
+app.post("/begin-promotion-event/:id", async (req, res) => {
+  const { id: eventid } = req.params; // Get the event ID from the URL
+
+  try {
+    // Fetch all registered players for the event
+    const { data: players, error: playersError } = await supabase
+      .from("events_registrations")
+      .select("*")
+      .eq("eventid", eventid)
+      .eq("registered", "true");
+
+    if (playersError) {
+      console.error("Error fetching registered players:", playersError.message);
+      return res.status(500).send("Error fetching registered players.");
+    }
+
+    // Insert all players' userid and athlete id into the promotion_players table
+    for (const player of players) {
+      // Check if the player already exists in the promotion_players table
+      const { data: existingPlayer, error: fetchError } = await supabase
+        .from("promotion_players")
+        .select("*")
+        .eq("eventid", eventid)
+        .eq("userid", player.userid)
+        .single();
+
+      if (fetchError && fetchError.code !== 'PGRST116') {
+        console.error("Error checking existing promotion player:", fetchError.message);
+        continue;
+      }
+
+      if (!existingPlayer) {
+        const { error: insertError } = await supabase
+          .from("promotion_players")
+          .insert([
+            {
+              eventid,
+              userid: player.userid,
+              athleteid: player.athleteid,
+              round: 1,
+              name: player.playername,
+            },
+          ]);
+
+        if (insertError) {
+          console.error("Error inserting promotion player:", insertError.message);
+        }
+      }
+    }
+
+    const { error: updateEventError } = await supabase
+      .from("events")
+      .update({ status: "Ongoing", currentround: 1 })
+      .eq("id", eventid);
+
+    if (updateEventError) {
+      console.error("Error updating event status:", updateEventError.message);
+      return res.status(500).send("Error updating event status");
+    }
+
+    console.log("Promotion players inserted successfully");
+    res.redirect(`/events-details/${eventid}`);
+  } catch (error) {
+    console.error("Server error:", error.message);
+    res.status(500).send("Server error");
+  }
+});
+
+app.post("/conclude-promotion-event/:id", async (req, res) => {
+  const { id: eventid } = req.params; // Get the event ID from the URL
+
+  try {
+    // Fetch all promotion players for the event
+    const { data: players, error: playersError } = await supabase
+      .from("promotion_players")
+      .select("*")
+      .eq("eventid", eventid);
+
+    if (playersError) {
+      console.error("Error fetching promotion players:", playersError.message);
+      return res.status(500).send("Error fetching promotion players.");
+    }
+
+    // Determine the winners based on the highest round and other criteria
+    const winners = players.sort((a, b) => b.round - a.round || b.score - a.score);
+
+    // Update the event status to "Concluded"
+    const { error: updateEventStatusError } = await supabase
+      .from("events")
+      .update({ status: "Concluded" })
+      .eq("id", eventid);
+
+    if (updateEventStatusError) {
+      console.error("Error updating event status:", updateEventStatusError.message);
+      return res.status(500).send("Error updating event status.");
+    }
+
+    // Insert match history for all players
+    for (const player of players) {
+      const ranking = winners.indexOf(player) + 1;
+      const { error: matchHistoryError } = await supabase
+        .from("match_history")
+        .insert([
+          {
+            eventid,
+            athleteid: player.athleteid,
+            ranking,
+            eventname: player.eventname,
+            eventlocation: player.eventlocation,
+          },
+        ]);
+
+      if (matchHistoryError) {
+        console.error("Error inserting match history:", matchHistoryError.message);
+        return res.status(500).send("Error inserting match history.");
+      }
+    }
+
+    // Create notifications for all participants
+    const notifications = players.map((player) => ({
+      userid: player.userid,
+      type: "Event",
+      message: `The promotion event ${player.eventname} has concluded.`,
+      desc: `The promotion event ${player.eventname} has concluded. Check the event details for the results.`,
+    }));
+
+    const { error: notificationError } = await supabase
+      .from("notifications")
+      .insert(notifications);
+
+    if (notificationError) {
+      console.error("Error creating notifications:", notificationError.message);
+      return res.status(500).send("Error creating notifications.");
+    }
+
+    res.redirect(`/events-details/${eventid}`);
+  } catch (error) {
+    console.error("Server error:", error.message);
+    res.status(500).json({ error: error.message });
+  }
+});
 
 
 app.post("/begin-kyorugi-competition/:id", async (req, res) => {
@@ -4863,7 +5016,7 @@ app.get("/events-registration/:id", async function (req, res) {
       .eq("userid", userId)
       .single();
 
-    if (currentuserathleteError) {
+    if (currentuserathleteError && currentuserathleteError.code !== 'PGRST116') {
       return res.status(400).json({ error: currentuserathleteError.message });
     }
 
@@ -4875,16 +5028,32 @@ app.get("/events-registration/:id", async function (req, res) {
     if (athletesError) {
       return res.status(400).json({ error: athletesError.message });
     }
-
-    // Fetch the members of the user's registered club
-    const { data: clubMembers, error: clubMembersError } = await supabase
-      .from("users")
+    
+    const { data: registeredClub, error: registeredClubError } = await supabase
+      .from("clubs")
       .select("*")
-      .eq("clubid", req.session.user.clubid);
+      .eq("registeredby", userId)
+      .single();
 
-    if (clubMembersError) {
-      return res.status(400).json({ error: clubMembersError.message });
+    if (registeredClubError && registeredClubError.code !== 'PGRST116') {
+      return res.status(400).json({ error: registeredClubError.message });
     }
+
+    let clubMembers = [];
+    if (registeredClub) {
+      const { data: clubMembersData, error: clubMembersError } = await supabase
+        .from("users")
+        .select("*")
+        .eq("clubid", registeredClub.id);
+
+      if (clubMembersError) {
+        return res.status(400).json({ error: clubMembersError.message });
+      }
+      clubMembers = clubMembersData;
+    }
+    console.log("Fetched clOOOOOOb members data:", clubMembers);
+
+    console.log("Fetched registered club data THIS OSTHOSTIHIOST:", registeredClub); // Log the registered club data to the console
     // Map athlete data to each of the users
     const clubMembersWithAthleteData = clubMembers.map((member) => {
       const athlete = athletes.find((athlete) => athlete.userid === member.id);
@@ -4896,7 +5065,7 @@ app.get("/events-registration/:id", async function (req, res) {
 
     console.log("Fetched club members with athlete data:", clubMembersWithAthleteData); // Log the club members with athlete data to the console
 
-    console.log("Fetched club members data:", clubMembers); // Log the club members data to the console
+    console.log("Fetched club members data FOR EVENTSREGISTRATION:", clubMembers); // Log the club members data to the console
 
     res.render("events-registration", {
       event,
@@ -5312,6 +5481,71 @@ app.get("/events-details/:id", async function (req, res) {
       return res.status(400).json({ error: currentUserAthleteError.message });
     }
 
+    
+
+    // Fetch the club registered by the current user
+    const { data: registeredClub, error: registeredClubError } = await supabase
+      .from("clubs")
+      .select("*")
+      .eq("registeredby", userId)
+      .single();
+
+    if (registeredClubError && registeredClubError.code !== 'PGRST116') {
+      return res.status(400).json({ error: registeredClubError.message });
+    }
+
+    let clubMembers = [];
+    if (registeredClub) {
+      const { data: clubMembersData, error: clubMembersError } = await supabase
+      .from("users")
+      .select("*")
+      .eq("clubid", registeredClub.id);
+
+      if (clubMembersError) {
+      return res.status(400).json({ error: clubMembersError.message });
+      }
+      clubMembers = clubMembersData;
+    }
+
+    console.log("Fetched club members data:", clubMembers);
+    console.log("Fetched club members data:", clubMembers); // Log the club members data to the console
+
+    // PROMOTION PART OF THIS VIEW
+
+    // Fetch promotion players for the specific event
+    const { data: promotionplayers, error: promotionplayersError } = await supabase
+      .from("promotion_players")
+      .select("*")
+      .eq("eventid", id);
+
+    if (promotionplayersError) {
+      return res.status(400).json({ error: promotionplayersError.message });
+    }
+
+    // Fetch athlete data for promotion players
+    const athleteIds = promotionplayers.map((player) => player.athleteid);
+    const { data: athletes, error: athletesError } = await supabase
+      .from("athletes")
+      .select("*")
+      .in("id", athleteIds);
+
+    if (athletesError) {
+      return res.status(400).json({ error: athletesError.message });
+    }
+
+    // Map athlete data to promotion players
+    const promotionPlayersWithAthleteData = promotionplayers.map((player) => {
+      const athlete = athletes.find((athlete) => athlete.id === player.athleteid);
+      return {
+        ...player,
+        athleteData: athlete || null,
+      };
+    });
+
+    console.log("Fetched promotion players with athlete data:", promotionPlayersWithAthleteData); // Log the promotion players with athlete data to the console
+
+    console.log("Fetched promotion players data:", promotionplayers); // Log the promotion players data to the console
+
     console.log("Fetched current user athlete data:", currentUserAthlete); // Log the current user athlete data to the console
 
     console.log("Fetched top players data:", poomsaetop4); // Log the top players data to the console
@@ -5345,6 +5579,9 @@ app.get("/events-details/:id", async function (req, res) {
       thirdPlace2,
       otherPlayersWithDetails,
       currentUserAthlete,
+      promotionplayers,
+      promotionPlayersWithAthleteData,
+      clubMembers,
     });
   } catch (error) {
     res.status(500).json({ error: error.message });

@@ -63,7 +63,7 @@
 
       <div class="flex">
         <div class="small-margin">
-          {{#if (and clubMembersWithAthleteData user.instructorverified)}}
+          {{#if clubMembersWithAthleteData}}
             <div class="form-group">
               <label for="playername">Player Name:</label><br>
               <select id="playername" name="playername" required>
@@ -104,6 +104,7 @@
 
                 if (selectedPlayer) {
                   document.getElementById('email').value = selectedPlayer.email || '';
+                  document.getElementById('club').value = selectedPlayer.club || '';
                   document.getElementById('bday').value = selectedPlayer.athleteData.bday || '';
                   document.getElementById('height').value = selectedPlayer.athleteData.height || '';
                   document.getElementById('weight').value = selectedPlayer.athleteData.weight || '';
