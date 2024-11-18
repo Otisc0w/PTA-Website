@@ -880,6 +880,37 @@
           {{/each}}
         </tbody>
       </table>
+    {{else if (eq event.eventtype 'Promotion')}}
+      <table class="results-table">
+        <thead>
+          <tr>
+            <th>Player</th>
+            <th>Form</th>
+            <th>Self Defense</th>
+            <th>Kicking</th>
+            <th>Free Sparring</th>
+            <th>Basic Movement</th>
+            <th>Behavior</th>
+            <th>Breaking</th>
+            <th>Result</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each promotionPlayersWithAthleteData}}
+          <tr>
+            <td><button class="resultsviewathlete" onclick="window.location.href='/athletes-profile/{{this.athleteData.id}}'">{{this.athleteData.name}}</button></td>
+            <td>{{this.form}}</td>
+            <td>{{this.selfdef}}</td>
+            <td>{{this.kicking}}</td>
+            <td>{{this.freesparring}}</td>
+            <td>{{this.basicmove}}</td>
+            <td>{{this.behavior}}</td>
+            <td>{{this.breaking}}</td>
+            <td>{{this.result}}</td>
+          </tr>
+          {{/each}}
+        </tbody>
+      </table>
     {{/if}}
   </div>
 

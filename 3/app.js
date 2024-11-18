@@ -2837,9 +2837,8 @@ app.post("/begin-promotion-event/:id", async (req, res) => {
 });
 
 app.post("/conclude-promotion-event/:id", async (req, res) => {
-
   const { id: eventid } = req.params;
-  
+
   const { data: promotionPlayers, error: promotionPlayersError } = await supabase
     .from("promotion_players")
     .select("*")
@@ -2854,15 +2853,10 @@ app.post("/conclude-promotion-event/:id", async (req, res) => {
     const { form, selfdef, kicking, freesparring, basicmove, behavior, breaking, athleteid } = player;
 
     // Check if all grades are 3 and above
-    if (
-      form >= 3 &&
-      selfdef >= 3 &&
-      kicking >= 3 &&
-      freesparring >= 3 &&
-      basicmove >= 3 &&
-      behavior >= 3 &&
-      breaking >= 3
-    ) {
+    const passed = form >= 3 && selfdef >= 3 && kicking >= 3 && freesparring >= 3 && basicmove >= 3 && behavior >= 3 && breaking >= 3;
+    const result = passed ? "Pass" : "Fail";
+
+    if (passed) {
       // Fetch the current belt level of the athlete
       const { data: athlete, error: athleteError } = await supabase
         .from("athletes")
@@ -2875,24 +2869,24 @@ app.post("/conclude-promotion-event/:id", async (req, res) => {
         continue;
       }
 
-        const beltLevels = [
-          "White Belt",
-          "Low Yellow Belt",
-          "High Yellow Belt",
-          "Low Blue Belt",
-          "High Blue Belt",
-          "Low Red Belt",
-          "High Red Belt",
-          "Low Brown Belt",
-          "High Brown Belt",
-          "Junior/Poom Black Belt",
-          "Black/Dan Belt"
-        ];
+      const beltLevels = [
+        "White Belt",
+        "Low Yellow Belt",
+        "High Yellow Belt",
+        "Low Blue Belt",
+        "High Blue Belt",
+        "Low Red Belt",
+        "High Red Belt",
+        "Low Brown Belt",
+        "High Brown Belt",
+        "Junior/Poom Black Belt",
+        "Black/Dan Belt"
+      ];
 
-        const currentBeltIndex = beltLevels.indexOf(athlete.beltlevel);
-        const newBeltLevel = currentBeltIndex >= 0 && currentBeltIndex < beltLevels.length - 1
-          ? beltLevels[currentBeltIndex + 1]
-          : athlete.beltlevel;
+      const currentBeltIndex = beltLevels.indexOf(athlete.beltlevel);
+      const newBeltLevel = currentBeltIndex >= 0 && currentBeltIndex < beltLevels.length - 1
+        ? beltLevels[currentBeltIndex + 1]
+        : athlete.beltlevel;
 
       const { error: updateError } = await supabase
         .from("athletes")
@@ -2903,7 +2897,18 @@ app.post("/conclude-promotion-event/:id", async (req, res) => {
         console.error("Error updating belt level:", updateError.message);
       }
     }
+
+    // Update the result column for the promotion player
+    const { error: updateResultError } = await supabase
+      .from("promotion_players")
+      .update({ result })
+      .eq("id", player.id);
+
+    if (updateResultError) {
+      console.error("Error updating result:", updateResultError.message);
+    }
   }
+
   // Update the event status to 'Concluded'
   const { error: updateEventStatusError } = await supabase
     .from("events")
