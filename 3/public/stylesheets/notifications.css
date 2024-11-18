@@ -106,8 +106,9 @@ body {
 }
 
 .focus {
-    font-size: 30px;
+    font-size: 20px;
     font-weight: bold;
+    color: #ffff; 
 }
 
 .button-3 {
