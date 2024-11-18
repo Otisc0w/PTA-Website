@@ -2483,6 +2483,7 @@ app.post("/update-event", upload.single("eventpicture"), async (req, res) => {
     name,
     description,
     date,
+    backoutdl,
     eventtype,
     createdby,
     registrationcap,
@@ -2543,6 +2544,7 @@ app.post("/update-event", upload.single("eventpicture"), async (req, res) => {
         description: description,
         eventpicture: eventpicture, // Use the public URL of the uploaded image or the old one
         date: date,
+        backoutdl: backoutdl,
         eventtype: eventtype,
         createdby: createdby,
         registrationcap: registrationcap,

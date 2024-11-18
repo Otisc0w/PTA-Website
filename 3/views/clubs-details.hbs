@@ -39,7 +39,6 @@
           <div id="dropdown" class="dropdown-content">
             <a href="/profile">Profile</a>
             <a href="/settings">Settings</a>
-           
             <a href="/">Logout</a>
           </div>
         </li>
@@ -71,7 +70,7 @@
 
     <div id="editclubmodal" class="modal">
       <div class="modal-content">
-        <span class="close" onclick="closeModal()">&times;</span>
+        <span class="close" onclick="closeEditModal()">&times;</span>
         <form id="clubform" class="club-form" action="/update-club" method="post" enctype="multipart/form-data">
           <input type="hidden" name="clubid" value="{{club.id}}">
 
@@ -559,11 +558,11 @@
 
     });
 
-    function openModal() {
+    function openEditModal() {
       document.getElementById('editclubmodal').style.display = 'block';
     }
 
-    function closeModal() {
+    function closeEditModal() {
       document.getElementById('editclubmodal').style.display = 'none';
     }
 
@@ -829,8 +828,6 @@
         alert("Please enter some feedback before adding."); // Error handling for empty feedback
       }
     }
-
-
   </script>
 </body>
 
