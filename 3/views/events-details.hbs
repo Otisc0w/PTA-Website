@@ -438,12 +438,20 @@
           <table class="promotiontable">
             <tr>
               <th>Name</th>
+              <th>Status</th>
               <th>Grade Sheet</th>
             </tr>
             {{#each promotionPlayersWithAthleteData}}
               <tr>
                 <td>{{this.athleteData.name}}</td>
-                <td><button class="view-grade-sheet" onclick="openGradeSheetModal('{{this.id}}', '{{this.form}}', '{{this.selfdef}}', '{{this.kicking}}', '{{this.freesparring}}', '{{this.basicmove}}', '{{this.behavior}}', '{{this.breaking}}')">&#8614;</button></td>
+                <td class="checks">
+                    {{#if (and this.form this.selfdef this.kicking this.freesparring this.basicmove this.behavior this.breaking)}}
+                    Done Grading
+                    {{else}}
+                    Not Graded
+                    {{/if}}
+                </td>
+                <td ><button class="view-grade-sheet" onclick="openGradeSheetModal('{{this.id}}', '{{this.form}}', '{{this.selfdef}}', '{{this.kicking}}', '{{this.freesparring}}', '{{this.basicmove}}', '{{this.behavior}}', '{{this.breaking}}')">&#8614;</button></td>
               </tr>
             {{/each}}
             </table>
@@ -484,7 +492,9 @@
                   <label for="breaking">Breaking:</label>
                   <input type="number" id="breaking" name="breaking" step="0.1" min="0" max="10" required>
                 </div>
+                {{#if (eq event.status 'Ongoing')}}
                 <button type="submit" class="submit-grade-sheet">Submit</button>
+                {{/if}}
               </form>
             </div>
           </div>
