@@ -1884,6 +1884,8 @@ app.post("/submit-club",
       }
     }
 
+    const registeree = `${firstname} ${lastname}`;
+
     console.log("ID File URL:", idfileUrl);
     console.log("Proof Document URL:", proofdocUrl);
     console.log("Club Picture URL:", clubpicUrl);
@@ -1906,6 +1908,7 @@ app.post("/submit-club",
             clubpic: clubpicUrl, // Include the club picture URL
             paymentproof: paymentproofUrl, // Include the payment proof URL
             submittedby,
+            registeree,
             status,
           },
         ])
