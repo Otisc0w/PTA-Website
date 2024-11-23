@@ -117,6 +117,8 @@ hbs.registerHelper("formatStatus", function (status) {
       return '<span class="status-rejected">Rejected</span>';
     case 5:
       return '<span class="status-expired">Expired</span>';
+    case 6:
+      return '<span class="status-verified">Suspended</span>';
     default:
       return '<span class="status-unknown">Unknown Status</span>';
       

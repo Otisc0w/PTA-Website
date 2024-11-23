@@ -63,11 +63,10 @@ async function fetchUserData(req, res, next) {
 
 async function checkAndExpireNCCRegistrations(req, res, next) {
   const currentDate = new Date();
-  const currentDateString = currentDate.toISOString().split('T')[0]; // Get current date in YYYY-MM-DD format
+  const currentDateString = moment().format('YYYY-MM-DD');
+  const oneWeekBeforeDateString = moment().subtract(7, 'days').format('YYYY-MM-DD');
 
   try {
-    const currentDateString = moment().format('YYYY-MM-DD');
-
     // Fetch all NCC registrations
     const { data: registrations, error: registrationsError } = await supabase
       .from("ncc_registrations")
@@ -81,6 +80,12 @@ async function checkAndExpireNCCRegistrations(req, res, next) {
     const expiredRegistrations = registrations.filter(registration => {
       const expiresOn = new Date(registration.expireson);
       return expiresOn.toISOString().split('T')[0] === currentDateString;
+    });
+
+    // Filter registrations that expire in one week
+    const oneWeekBeforeRegistrations = registrations.filter(registration => {
+      const expiresOn = new Date(registration.expireson);
+      return expiresOn.toISOString().split('T')[0] === oneWeekBeforeDateString;
     });
 
     if (expiredRegistrations.length > 0) {
@@ -147,6 +152,46 @@ async function checkAndExpireNCCRegistrations(req, res, next) {
 
       console.log(`Inserted notifications for users with expired registrations.`);
     }
+
+    if (oneWeekBeforeRegistrations.length > 0) {
+      // Notify users about upcoming expiration
+      const notifications = oneWeekBeforeRegistrations.map(registration => ({
+        userid: registration.submittedby,
+        message: `Your NCC registration will expire in one week.`,
+        desc: 'Please renew your registration to continue being a member of the PTA.',
+        type: "Registration",
+        created_at: new Date().toISOString()
+      }));
+
+      // Fetch existing notifications first
+      const { data: existingNotifications, error: fetchError } = await supabase
+        .from("notifications")
+        .select("*")
+        .in("userid", notifications.map(notification => notification.userid));
+
+      if (fetchError) {
+        throw new Error(`Error fetching existing notifications: ${fetchError.message}`);
+      }
+
+      const daysThreshold = 10; // Define the threshold in days
+
+      for (const notification of notifications) {
+        const existingNotification = existingNotifications.find(n => 
+          n.userid === notification.userid && n.message === notification.message);
+
+        if (!existingNotification || (existingNotification && moment(existingNotification.created_at).isBefore(moment().subtract(daysThreshold, 'days')))) {
+          const { error: notificationError } = await supabase
+            .from("notifications")
+            .insert(notification);
+
+          if (notificationError) {
+            throw new Error(`Error inserting notifications: ${notificationError.message}`);
+          }
+        }
+      }
+
+      console.log(`Inserted notifications for users with upcoming NCC registration expirations.`);
+    }
   } catch (error) {
     console.error("Error handling expired registrations:", error.message);
   }
@@ -156,11 +201,10 @@ async function checkAndExpireNCCRegistrations(req, res, next) {
 
 async function checkAndExpireInstructorRegistrations(req, res, next) {
   const currentDate = new Date();
-  const currentDateString = currentDate.toISOString().split('T')[0]; // Get current date in YYYY-MM-DD format
+  const currentDateString = moment().format('YYYY-MM-DD');
+  const oneWeekBeforeDateString = moment().subtract(7, 'days').format('YYYY-MM-DD');
 
   try {
-    const currentDateString = moment().format('YYYY-MM-DD');
-
     // Fetch all instructor registrations
     const { data: registrations, error: registrationsError } = await supabase
       .from("instructor_registrations")
@@ -174,6 +218,12 @@ async function checkAndExpireInstructorRegistrations(req, res, next) {
     const expiredRegistrations = registrations.filter(registration => {
       const expiresOn = new Date(registration.expireson);
       return expiresOn.toISOString().split('T')[0] === currentDateString;
+    });
+
+    // Filter registrations that expire in one week
+    const oneWeekBeforeRegistrations = registrations.filter(registration => {
+      const expiresOn = new Date(registration.expireson);
+      return expiresOn.toISOString().split('T')[0] === oneWeekBeforeDateString;
     });
 
     if (expiredRegistrations.length > 0) {
@@ -239,6 +289,46 @@ async function checkAndExpireInstructorRegistrations(req, res, next) {
       }
 
       console.log(`Inserted notifications for users with expired instructor registrations.`);
+    }
+
+    if (oneWeekBeforeRegistrations.length > 0) {
+      // Notify users about upcoming expiration
+      const notifications = oneWeekBeforeRegistrations.map(registration => ({
+        userid: registration.submittedby,
+        message: `Your instructor registration will expire in one week.`,
+        desc: 'Please renew your registration to continue being an instructor.',
+        type: "Registration",
+        created_at: new Date().toISOString()
+      }));
+
+      // Fetch existing notifications first
+      const { data: existingNotifications, error: fetchError } = await supabase
+        .from("notifications")
+        .select("*")
+        .in("userid", notifications.map(notification => notification.userid));
+
+      if (fetchError) {
+        throw new Error(`Error fetching existing notifications: ${fetchError.message}`);
+      }
+
+      const daysThreshold = 10; // Define the threshold in days
+
+      for (const notification of notifications) {
+        const existingNotification = existingNotifications.find(n => 
+          n.userid === notification.userid && n.message === notification.message);
+
+        if (!existingNotification || (existingNotification && moment(existingNotification.created_at).isBefore(moment().subtract(daysThreshold, 'days')))) {
+          const { error: notificationError } = await supabase
+            .from("notifications")
+            .insert(notification);
+
+          if (notificationError) {
+            throw new Error(`Error inserting notifications: ${notificationError.message}`);
+          }
+        }
+      }
+
+      console.log(`Inserted notifications for users with upcoming instructor registration expirations.`);
     }
   } catch (error) {
     console.error("Error handling expired instructor registrations:", error.message);
