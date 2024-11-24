@@ -1269,7 +1269,7 @@ app.post("/update-nccstatus", async (req, res) => {
         statusDesc = "Sorry, your NCC registration has been rejected. Please check your membership status for more information.";
         break;
             case 6:
-        statusMessage = "Your NCC registration has been suspended.";
+        statusMessage = "Your NCC registration has been suspended. Any current events registrations have been removed.";
         statusDesc = "Sorry, your NCC registration has been rejected. Please check the reason for your suspension in your membership status.";
         break;
             default:
@@ -1296,12 +1296,12 @@ app.post("/update-nccstatus", async (req, res) => {
     console.log("Registration updated:", registration);
 
     if (status == 6) {
-      const { suspendmsg } = req.body; // Capture the reject message from the form
+      const { suspendmsg, susdescription } = req.body; // Capture the reject message from the form
 
       // Update the suspendmsg column
       const { error: updatesuspendmsgError } = await supabase
       .from("ncc_registrations")
-      .update({ suspendmsg: suspendmsg })
+      .update({ suspendmsg: suspendmsg, susdescription: susdescription })
       .eq("id", applicationId);
 
       if (updatesuspendmsgError) {
@@ -1318,16 +1318,26 @@ app.post("/update-nccstatus", async (req, res) => {
         console.error("Error updating athleteverified:", updateAthleteVerifiedError.message);
         return res.status(500).send("Error updating athleteverified");
       }
+
+      const { error: deleteEventRegistrationsError } = await supabase
+        .from("events_registrations")
+        .delete()
+        .eq("userid", registration.submittedby);
+
+      if (deleteEventRegistrationsError) {
+        console.error("Error deleting event registrations:", deleteEventRegistrationsError.message);
+        return res.status(500).send("Error deleting event registrations");
+      }
     }
 
     // Check if status is 4, indicating the need to update the rejectmsg
     if (status == 4) {
-      const { rejectmsg } = req.body; // Capture the reject message from the form
+      const { rejectmsg, description } = req.body; // Capture the reject message from the form
 
       // Update the rejectmsg column
       const { error: updateRejectMsgError } = await supabase
       .from("ncc_registrations")
-      .update({ rejectmsg: rejectmsg })
+      .update({ rejectmsg: rejectmsg,  description: description })
       .eq("id", applicationId);
 
       if (updateRejectMsgError) {
@@ -1558,12 +1568,12 @@ app.post("/update-instructorstatus", async (req, res) => {
     }
 
     if (status == 6) {
-      const { suspendmsg } = req.body; // Capture the suspend message from the form
+      const { suspendmsg, susdescription } = req.body; // Capture the suspend message from the form
 
       // Update the suspendmsg column
       const { error: updatesuspendmsgError } = await supabase
       .from("instructor_registrations")
-      .update({ suspendmsg: suspendmsg })
+      .update({ suspendmsg: suspendmsg, susdescription: susdescription })
       .eq("id", applicationId);
 
       if (updatesuspendmsgError) {
@@ -1584,12 +1594,12 @@ app.post("/update-instructorstatus", async (req, res) => {
 
     // Check if status is 4, indicating the need to update the rejectmsg
     if (status == 4) {
-      const { rejectmsg } = req.body; // Capture the reject message from the form
+      const { rejectmsg, description } = req.body; // Capture the reject message from the form
 
       // Update the rejectmsg column
       const { error: updateRejectMsgError } = await supabase
       .from("instructor_registrations")
-      .update({ rejectmsg: rejectmsg })
+      .update({ rejectmsg: rejectmsg, description: description })
       .eq("id", applicationId);
 
       if (updateRejectMsgError) {

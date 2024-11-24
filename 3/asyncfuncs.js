@@ -64,7 +64,7 @@ async function fetchUserData(req, res, next) {
 async function checkAndExpireNCCRegistrations(req, res, next) {
   const currentDate = new Date();
   const currentDateString = moment().format('YYYY-MM-DD');
-  const oneWeekBeforeDateString = moment().subtract(7, 'days').format('YYYY-MM-DD');
+  const oneWeekBeforeDateString = moment().add(7, 'days').format('YYYY-MM-DD');
 
   try {
     // Fetch all NCC registrations
@@ -85,7 +85,7 @@ async function checkAndExpireNCCRegistrations(req, res, next) {
     // Filter registrations that expire in one week
     const oneWeekBeforeRegistrations = registrations.filter(registration => {
       const expiresOn = new Date(registration.expireson);
-      return expiresOn.toISOString().split('T')[0] === oneWeekBeforeDateString;
+      return moment(expiresOn).isSame(oneWeekBeforeDateString, 'day');
     });
 
     if (expiredRegistrations.length > 0) {
@@ -112,12 +112,24 @@ async function checkAndExpireNCCRegistrations(req, res, next) {
         throw new Error(`Error updating user athleteverified status: ${updateUserError.message}`);
       }
 
+      // Remove event registrations for users with expired registrations
+      const { error: deleteEventRegistrationsError } = await supabase
+        .from("events_registrations")
+        .delete()
+        .in("userid", userIds);
+
+      if (deleteEventRegistrationsError) {
+        throw new Error(`Error deleting event registrations: ${deleteEventRegistrationsError.message}`);
+      }
+
+      console.log(`Deleted event registrations for users with expired registrations.`);
+
       console.log(`Updated athleteverified to false for users with expired registrations.`);
 
       // Notify users about expired registrations
       const notifications = expiredRegistrations.map(registration => ({
         userid: registration.submittedby,
-        message: `Your NCC registration has expired.`,
+        message: `Your NCC registration has expired. Any event registrations have been removed.`,
         desc: 'Please renew your registration to continue being a member of the PTA.',
         type: "Registration",
         created_at: new Date().toISOString()
@@ -202,7 +214,7 @@ async function checkAndExpireNCCRegistrations(req, res, next) {
 async function checkAndExpireInstructorRegistrations(req, res, next) {
   const currentDate = new Date();
   const currentDateString = moment().format('YYYY-MM-DD');
-  const oneWeekBeforeDateString = moment().subtract(7, 'days').format('YYYY-MM-DD');
+  const oneWeekBeforeDateString = moment().add(7, 'days').format('YYYY-MM-DD');
 
   try {
     // Fetch all instructor registrations

@@ -160,11 +160,13 @@
           {{else if (eq registration.status 4)}}
           <span class="status-rejected">Rejected</span><br>
           Reason:<p class="rejectmsg">{{registration.rejectmsg}}</p>
+          <p>{{registration.description}}</p>
           {{else if (eq registration.status 5)}}
           <span class="status-unknown">Expired</span>
           {{else if (eq registration.status 6)}}
           <span class="status-unknown">Suspended</span>
           Reason:<p class="suspendmsg">{{registration.suspendmsg}}</p>
+          <p>{{registration.susdescription}}</p>
           {{/if}}
         </h1>
         {{#if user.ptaverified}}
@@ -182,14 +184,26 @@
 
           <div class="confirmrejectscreen" id="confirmrejectscreen" style="display: none;">
             <h3>Please state reason for rejection.</h3>
-            <textarea name="rejectmsg" id="rejectmsg" cols="30" rows="10"></textarea>
+            <select name="rejectmsg" id="rejectmsg">
+              <option value="Incomplete documents">Incomplete documents</option>
+              <option value="Invalid information">Invalid information</option>
+              <option value="Non-compliance with requirements">Non-compliance with requirements</option>
+              <option value="Other">Other</option>
+            </select>
+            <textarea name="description" id="description" cols="30" rows="10">Describe in more detail</textarea>
             <button type="button" class="cancelreject" id="cancelreject">Cancel</button>
             <button type="submit" value="4" name="status" id="confirm">Confirm</button>
           </div>
 
           <div class="confirmsuspendscreen" id="confirmsuspendscreen" style="display: none;">
             <h3>This action will remove the player's athlete profile suspending them from registering into any games. Please state reason for suspension.</h3>
-            <textarea name="suspendmsg" id="suspendmsg" cols="30" rows="10"></textarea>
+            <select name="suspendmsg" id="suspendmsg">
+              <option value="Violent behavior">Violent behavior</option>
+              <option value="Cheating">Cheating</option>
+              <option value="Non-compliance with requirements">Non-compliance with requirements</option>
+              <option value="Other">Other</option>
+            </select>
+            <textarea name="susdescription" id="susdescription" cols="30" rows="10"></textarea>
             <button type="button" class="cancelsuspend" id="cancelsuspend">Cancel</button>
             <button type="submit" value="6" name="status" id="confirm">Confirm</button>
           </div>
