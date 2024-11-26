@@ -76,13 +76,13 @@
 							<div class="form-group">
 								<label for="gender">Gender</label>
 								<select id="gender" name="gender" required>
-									<option value="female">Female</option>
-									<option value="male">Male</option>
+									<option value="female" {{#if (eq user.gender "female")}}selected{{/if}}>Female</option>
+									<option value="male" {{#if (eq user.gender "male")}}selected{{/if}}>Male</option>
 								</select>
 							</div>
 							<div class="form-group">
 								<label for="bday">Birthday</label>
-								<input type="date" id="bday" name="bday" required>
+								<input type="date" id="bday" name="bday" value="{{usersncc.bday}}" required>
 							</div>
 							<div class="form-group">
 								<label for="age">Age:</label>
@@ -94,7 +94,7 @@
 							<div class="form-group">
 								<label for="phonenum">Mobile Number</label>
 								<input type="tel" id="phonenum" name="phonenum" pattern="\d{4}\d{3}\d{4}"
-									placeholder="0912-345-6789" required>
+									placeholder="0912-345-6789" value="{{usersncc.phonenum}}" required>
 							</div>
 							<div class="form-group">
 								<label for="email">E-mail</label>
@@ -109,31 +109,28 @@
 						<div class="form-row">
 							<div class="form-group">
 								<label for="lastpromo">Date of Last Promotion Test</label>
-								<input type="date" id="lastpromo" name="lastpromo" required>
+								<input type="date" id="lastpromo" name="lastpromo" value="{{usersncc.lastpromo}}" required>
 							</div>
 							<div class="form-group">
 								<label for="promolocation">Location of Last Promotion</label>
 								<select name="promolocation" id="promolocation" required>
-									<option value="Region I – Ilocos Region">Region I – Ilocos Region</option>
-									<option value="Region II – Cagayan Valley">Region II – Cagayan Valley</option>
-									<option value="Region III – Central Luzon">Region III – Central Luzon</option>
-									<option value="Region IV‑A – CALABARZON">Region IV‑A – CALABARZON</option>
-									<option value="MIMAROPA Region">MIMAROPA Region</option>
-									<option value="Region V – Bicol Region">Region V – Bicol Region</option>
-									<option value="Region VI – Western Visayas">Region VI – Western Visayas</option>
-									<option value="Region VII – Central Visayas">Region VII – Central Visayas</option>
-									<option value="Region VIII – Eastern Visayas">Region VIII – Eastern Visayas</option>
-									<option value="Region IX – Zamboanga Peninsula">Region IX – Zamboanga Peninsula
-									</option>
-									<option value="Region X – Northern Mindanao">Region X – Northern Mindanao</option>
-									<option value="Region XI – Davao Region">Region XI – Davao Region</option>
-									<option value="Region XII – SOCCSKSARGEN">Region XII – SOCCSKSARGEN</option>
-									<option value="Region XIII – Caraga">Region XIII – Caraga</option>
-									<option value="NCR – National Capital Region">NCR – National Capital Region</option>
-									<option value="CAR – Cordillera Administrative Region">CAR – Cordillera
-										Administrative Region</option>
-									<option value="BARMM – Bangsamoro Autonomous Region in Muslim Mindanao">BARMM –
-										Bangsamoro Autonomous Region in Muslim Mindanao</option>
+									<option value="Region I – Ilocos Region" {{#if (eq usersncc.promolocation "Region I – Ilocos Region")}}selected{{/if}}>Region I – Ilocos Region</option>
+									<option value="Region II – Cagayan Valley" {{#if (eq usersncc.promolocation "Region II – Cagayan Valley")}}selected{{/if}}>Region II – Cagayan Valley</option>
+									<option value="Region III – Central Luzon" {{#if (eq usersncc.promolocation "Region III – Central Luzon")}}selected{{/if}}>Region III – Central Luzon</option>
+									<option value="Region IV‑A – CALABARZON" {{#if (eq usersncc.promolocation "Region IV‑A – CALABARZON")}}selected{{/if}}>Region IV‑A – CALABARZON</option>
+									<option value="MIMAROPA Region" {{#if (eq usersncc.promolocation "MIMAROPA Region")}}selected{{/if}}>MIMAROPA Region</option>
+									<option value="Region V – Bicol Region" {{#if (eq usersncc.promolocation "Region V – Bicol Region")}}selected{{/if}}>Region V – Bicol Region</option>
+									<option value="Region VI – Western Visayas" {{#if (eq usersncc.promolocation "Region VI – Western Visayas")}}selected{{/if}}>Region VI – Western Visayas</option>
+									<option value="Region VII – Central Visayas" {{#if (eq usersncc.promolocation "Region VII – Central Visayas")}}selected{{/if}}>Region VII – Central Visayas</option>
+									<option value="Region VIII – Eastern Visayas" {{#if (eq usersncc.promolocation "Region VIII – Eastern Visayas")}}selected{{/if}}>Region VIII – Eastern Visayas</option>
+									<option value="Region IX – Zamboanga Peninsula" {{#if (eq usersncc.promolocation "Region IX – Zamboanga Peninsula")}}selected{{/if}}>Region IX – Zamboanga Peninsula</option>
+									<option value="Region X – Northern Mindanao" {{#if (eq usersncc.promolocation "Region X – Northern Mindanao")}}selected{{/if}}>Region X – Northern Mindanao</option>
+									<option value="Region XI – Davao Region" {{#if (eq usersncc.promolocation "Region XI – Davao Region")}}selected{{/if}}>Region XI – Davao Region</option>
+									<option value="Region XII – SOCCSKSARGEN" {{#if (eq usersncc.promolocation "Region XII – SOCCSKSARGEN")}}selected{{/if}}>Region XII – SOCCSKSARGEN</option>
+									<option value="Region XIII – Caraga" {{#if (eq usersncc.promolocation "Region XIII – Caraga")}}selected{{/if}}>Region XIII – Caraga</option>
+									<option value="NCR – National Capital Region" {{#if (eq usersncc.promolocation "NCR – National Capital Region")}}selected{{/if}}>NCR – National Capital Region</option>
+									<option value="CAR – Cordillera Administrative Region" {{#if (eq usersncc.promolocation "CAR – Cordillera Administrative Region")}}selected{{/if}}>CAR – Cordillera Administrative Region</option>
+									<option value="BARMM – Bangsamoro Autonomous Region in Muslim Mindanao" {{#if (eq usersncc.promolocation "BARMM – Bangsamoro Autonomous Region in Muslim Mindanao")}}selected{{/if}}>BARMM – Bangsamoro Autonomous Region in Muslim Mindanao</option>
 								</select>
 							</div>
 						</div>
@@ -142,13 +139,13 @@
 							<div class="form-group">
 								<label for="clubregion">Province of Club</label>
 								<select name="clubregion" id="clubregion" required>
-									<option value="Aurora">Aurora</option>
-									<option value="Bataan">Bataan</option>
-									<option value="Bulacan">Bulacan</option>
-									<option value="Nueva Ecija">Nueva Ecija</option>
-									<option value="Pampanga">Pampanga</option>
-									<option value="Tarlac">Tarlac</option>
-									<option value="Zamabales">Zamabales</option>
+									<option value="Aurora" {{#if (eq usersncc.clubregion "Aurora")}}selected{{/if}}>Aurora</option>
+									<option value="Aurora" {{#if (eq usersncc.clubregion "Bataan")}}selected{{/if}}>Bataan</option>
+									<option value="Bulacan" {{#if (eq usersncc.clubregion "Bulacan")}}selected{{/if}}>Bulacan</option>
+									<option value="Nueva Ecija" {{#if (eq usersncc.clubregion "Nueva Ecija")}}selected{{/if}}>Nueva Ecija</option>
+									<option value="Pampanga" {{#if (eq usersncc.clubregion "Pampanga")}}selected{{/if}}>Pampanga</option>
+									<option value="Tarlac" {{#if (eq usersncc.clubregion "Tarlac")}}selected{{/if}}>Tarlac</option>
+									<option value="Zamabales" {{#if (eq usersncc.clubregion "Zamabales")}}selected{{/if}}>Zamabales</option>
 								</select>
 							</div>
 						</div>
@@ -156,6 +153,9 @@
 						<div class="form-row">
 							<div class="form-group">
 								<label for="beltlevel">Current Belt Level</label>
+								{{#if usersathlete}}
+								<input type="text" id="beltlevel" name="beltlevel" value="{{usersathlete.beltlevel}}" readonly>
+								{{else}}
 								<select name="beltlevel" id="beltlevel" required>
 									<option value="White Belt">White Belt</option>
 									<option value="Low Yellow Belt">Low Yellow Belt</option>
@@ -169,6 +169,7 @@
 									<option value="Junior/Poom Black Belt">Junior/Poom Black Belt</option>
 									<option value="Black/Dan Belt">Black/Dan Belt</option>
 								</select>
+								{{/if}}
 							</div>
 						</div>
 
@@ -221,11 +222,19 @@
 						<div class="form-row">
 							<div class="form-group">
 								<label for="birthcert">Birth Certificate NSO/PSA</label>
+								{{#if usersncc.birthcert}} 
+								<input type="text" value="&#10003; File accepted" readonly>
+								{{else}}
 								<input type="file" id="birthcert" name="birthcert" required>
+								{{/if}}
 							</div>
 							<div class="form-group">
 								<label for="portrait">1:1 Player Picture</label>
+								{{#if usersncc.portrait}} 
+								<input type="text" value="&#10003; File accepted" readonly>
+								{{else}}
 								<input type="file" id="portrait" name="portrait" required>
+								{{/if}}
 							</div>
 							<div class="form-group">
 								<label for="signature">Sign Here</label>
@@ -270,7 +279,12 @@
 						<div class="form-row">
 							<div class="form-group">
 								<label for="paymentproof">Upload Payment Proof</label>
+								{{#if usersncc.paymentproof}}
+								<input type="text" value="&#10003; Already Paid" readonly>
+								{{else}}
 								<input type="file" id="paymentproof" name="paymentproof" required>
+								{{/if}}
+								
 							</div>
 						</div>
 						<button class="cancel-button" type="button" onclick="showPreviousPage()">Previous</button>

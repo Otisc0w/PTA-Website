@@ -444,28 +444,28 @@ app.post("/submit-ncc", upload.fields([
         const { data, error } = await supabase
           .from("ncc_registrations")
           .update({
-            firstname,
-            middlename,
-            lastname,
-            gender,
-            bday,
-            age,
-            phonenum,
-            email,
-            lastpromo,
-            promolocation,
-            clubregion,
-            beltlevel,
-            instructorfirstname,
-            instructormi,
-            instructorlastname,
-            instructormobile,
-            instructoremail,
-            status,
+            firstname: firstname || existingRegistration.firstname,
+            middlename: middlename || existingRegistration.middlename,
+            lastname: lastname || existingRegistration.lastname,
+            gender: gender || existingRegistration.gender,
+            bday: bday || existingRegistration.bday,
+            age: age || existingRegistration.age,
+            phonenum: phonenum || existingRegistration.phonenum,
+            email: email || existingRegistration.email,
+            lastpromo: lastpromo || existingRegistration.lastpromo,
+            promolocation: promolocation || existingRegistration.promolocation,
+            clubregion: clubregion || existingRegistration.clubregion,
+            beltlevel: beltlevel || existingRegistration.beltlevel,
+            instructorfirstname: instructorfirstname || existingRegistration.instructorfirstname,
+            instructormi: instructormi || existingRegistration.instructormi,
+            instructorlastname: instructorlastname || existingRegistration.instructorlastname,
+            instructormobile: instructormobile || existingRegistration.instructormobile,
+            instructoremail: instructoremail || existingRegistration.instructoremail,
+            status: status || existingRegistration.status,
             expireson: null,
-            birthcert: birthcertUrl, // Include the birth certificate URL
-            portrait: portraitUrl, // Include the portrait URL
-            paymentproof: paymentproofUrl, // Include the payment proof URL
+            birthcert: birthcertUrl || existingRegistration.birthcert, // Include the birth certificate URL
+            portrait: portraitUrl || existingRegistration.portrait, // Include the portrait URL
+            paymentproof: paymentproofUrl || existingRegistration.paymentproof, // Include the payment proof URL
           })
           .eq("submittedby", submittedby);
 
@@ -6133,13 +6133,33 @@ app.get("/membership-ncc", async function (req, res) {
       headInstructor = fetchedHeadInstructor;
     }
 
+    const { data: usersncc, error: usersnccError } = await supabase
+      .from("ncc_registrations")
+      .select("*")
+      .eq("submittedby", req.session.user.id)
+      .single();
+
+    if (usersnccError && usersnccError.code !== 'PGRST116') {
+      return res.status(400).json({ error: usersnccError.message });
+    }
+
+    const { data: usersathlete, error: usersathleteError } = await supabase
+      .from("athletes")
+      .select("*")
+      .eq("userid", req.session.user.id)
+      .single();
+
+    if (usersathleteError && usersathleteError.code !== 'PGRST116') {
+      return res.status(400).json({ error: usersathleteError.message });
+    }
+
     console.log("Fetched user's club:", userClub); // Log the user's club data to the console
     console.log("Fetched head instructor:", headInstructor); // Log the head instructor data to the console
 
     console.log("Fetched data:", data); // Log the data to the console
 
     // Render the athletes.hbs template with the fetched data
-    res.render("membership-ncc", { clubs: data, user: req.session.user, headInstructor });
+    res.render("membership-ncc", { clubs: data, user: req.session.user, headInstructor, usersncc, usersathlete });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
